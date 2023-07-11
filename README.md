@@ -14,6 +14,7 @@
 * *turbo run build* - to build apps
 * *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case
 * *turbo run dev* - to launch both apps in the develpment mode; to access the NestJS server go to *localhost:3000/api*; to access the React server go to *localhost:5173*
+* if the aforementioned commands do not work, replace *turbo* with *npm*
 
 ## Project structure
 * apps - folder for frontend and backend parts
