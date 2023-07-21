@@ -9,5 +9,13 @@
   },
   "workspaces": [
     "apps/*"
-  ]
+  ],
+  "dependencies": {
+    "@nestjs/config": "^3.0.0",
+    "@nestjs/jwt": "^10.1.0",
+    "@nestjs/passport": "^10.0.0",
+    "@nestjs/typeorm": "^10.0.0",
+    "passport": "^0.6.0",
+    "typeorm": "^0.3.17"
+  }
 }

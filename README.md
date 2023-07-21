@@ -22,6 +22,7 @@
 * turbo.json - config for turborepo
 * package.json - contains commands for turborepo
 
-
+## Oauth2
+* sudo npm install typeorm passport @nestjs/passport @nestjs/config @nestjs/typeorm
 
 
