@@ -22,7 +22,22 @@
 * turbo.json - config for turborepo
 * package.json - contains commands for turborepo
 
+
+## DB
+* npm install --save @nestjs/config @nestjs/typeorm typeorm pg
+* download and install postgresql: https://www.postgresql.org/download/
+* you can also install db beaver to manage databases
+* grant access right on public schema: 
+>[DB_NAME] postgres
+>GRANT ALL ON SCHEMA [DB_NAME] TO [DB_USER];
+
 ## Oauth2
-* sudo npm install typeorm passport @nestjs/passport @nestjs/config @nestjs/typeorm
+* sudo npm install --save passport @nestjs/passport jwt
+* sudo npm install --save class-validator class-transformer
+
+## NEstJS terms
+*
+* dto is  a sort of schema/model to parse request body
+* entity looks like dto, but it describes database structure
 
 
