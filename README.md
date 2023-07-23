@@ -30,10 +30,11 @@
 * grant access right on public schema: 
 >[DB_NAME] postgres
 >GRANT ALL ON SCHEMA [DB_NAME] TO [DB_USER];
+* to validate input: sudo npm install --save class-validator class-transformer
+* to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
 
 ## Oauth2
 * sudo npm install --save passport @nestjs/passport jwt
-* sudo npm install --save class-validator class-transformer
 
 ## NEstJS terms
 *
