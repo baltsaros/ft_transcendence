@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/passport-local": "^1.0.35",
     "turbo": "^1.10.7"
   },
   "scripts": {
@@ -19,6 +20,8 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "pg": "^8.11.1",
     "typeorm": "^0.3.17"
   }

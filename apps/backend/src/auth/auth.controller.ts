@@ -9,22 +9,27 @@ import {
 	UseGuards
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Public } from './decorators/public.decorators';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
 	constructor(private authService: AuthService) {}
 
-	@Public()
-	@HttpCode(HttpStatus.OK)
+	// @Public()
+	// @HttpCode(HttpStatus.OK)
+	// guard make calls the linked strategy that is supposed to validate a user
+	@UseGuards(LocalAuthGuard)
 	@Post('login')
-	signIn(@Body() signInDto: Record<string, any>) {
-		return this.authService.signIn(signInDto.username, signInDto.password);
+	async login(@Request() req) {
+		return this.authService.login(req.user);
 	}
 
+	// @Public()
+	@UseGuards(JwtAuthGuard)
 	@Get('profile')
-	getProfile(@Request() req) {
+	async getProfile(@Request() req) {
 		return req.user;
 	}
 }

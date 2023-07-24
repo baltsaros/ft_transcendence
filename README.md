@@ -1,5 +1,21 @@
 # ft_transcendence
 
+## Preprequisites:
+* Installing nodejs on ubuntu:
+>cd ~
+>
+>curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+>
+>sudo bash nodesource_setup.sh
+>
+>sudo apt install -y nodejs
+>
+* To check versions:
+>node -v
+>
+>npm -v
+>
+
 ## Setting up environment
 * Install turborepo. It allows to connect backend with frontend: *npm install -D turbo*
 * Inside *apps* create nestjs project: *npx nest new backend*
@@ -24,21 +40,29 @@
 
 
 ## DB
-* npm install --save @nestjs/config @nestjs/typeorm typeorm pg
+* installing dependancies; typeorm connects nestjs and postgresql: npm install --save @nestjs/config @nestjs/typeorm typeorm pg
 * download and install postgresql: https://www.postgresql.org/download/
 * you can also install db beaver to manage databases
-* grant access right on public schema: 
->[DB_NAME] postgres
+* grant access right on public schema:
+>sudo -i -u postgres
+>
+> psql
+>
+>[DB_NAME] postgres;
+>
 >GRANT ALL ON SCHEMA [DB_NAME] TO [DB_USER];
+>
 * to validate input: sudo npm install --save class-validator class-transformer
 * to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
 
 ## Oauth2
-* sudo npm install --save passport @nestjs/passport jwt
+* sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
+* sudo npm install --save-dev @types/passport-local
 
 ## NEstJS terms
-*
 * dto is  a sort of schema/model to parse request body
-* entity looks like dto, but it describes database structure
+* entity looks like dto, but it describes/defines database structure
+* strategy defines how authentication is carried out
+* guards check whether access rights and allow/disallow incoming requests
 
 
