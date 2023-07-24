@@ -28,7 +28,7 @@
 
 ## Some commands
 * *turbo run build* - to build apps
-* *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case
+* *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case; also need to have .env in the root directory
 * *turbo run dev* - to launch both apps in the develpment mode; to access the NestJS server go to *localhost:3000/api*; to access the React server go to *localhost:5173*
 * if the aforementioned commands do not work, replace *turbo* with *npm*
 
@@ -43,6 +43,16 @@
 * installing dependancies; typeorm connects nestjs and postgresql: npm install --save @nestjs/config @nestjs/typeorm typeorm pg
 * download and install postgresql: https://www.postgresql.org/download/
 * you can also install db beaver to manage databases
+* create a new user and a new database:
+>sudo -u postgres psql
+>
+>postgres=# create database [DB_NAME];
+>
+>postgres=# create user [DB_USER] with encrypted password '[DB_PASS]';
+>
+>postgres=# grant all privileges on database [DB_NAME] to [DB_USER];
+>
+
 * grant access right on public schema:
 >sudo -i -u postgres
 >
@@ -65,4 +75,9 @@
 * strategy defines how authentication is carried out
 * guards check whether access rights and allow/disallow incoming requests
 
-
+## Pages in frontend
+* npm install --save react-router-dom localforage match-sorter sort-by
+* some design: npm install --save react-icons
+* for api routing: npm install --save axios
+* for floating messages: npm install --save react-toastify
+* tools for login: npm install --save @reduxjs/toolkit react-redux
