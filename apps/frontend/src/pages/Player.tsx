@@ -1,9 +1,7 @@
-import { FC } from 'react'
+import { FC } from "react";
 
 const Player: FC = () => {
-  return (
-    <div>Player</div>
-  )
-}
+  return <div>Player</div>;
+};
 
-export default Player
+export default Player;

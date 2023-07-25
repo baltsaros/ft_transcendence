@@ -10,14 +10,14 @@ import { toast } from "react-toastify";
 const Header: FC = () => {
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const logoutHandler = () => {
     dispatch(logout());
-    removeTokenFromLocalStorage('token');
-    toast.success('Bye!')
-    navigate('/');
-  }
+    removeTokenFromLocalStorage("token");
+    toast.success("Bye!");
+    navigate("/");
+  };
 
   return (
     <header>

@@ -10,7 +10,7 @@ const Layout: FC = () => {
         <Outlet />
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

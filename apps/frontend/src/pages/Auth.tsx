@@ -38,7 +38,7 @@ const Auth: FC = () => {
       e.preventDefault();
       const data = await AuthService.login({ username, email, password });
       if (data) {
-        setTokenToLocalStorage("token", data.token);
+        setTokenToLocalStorage("token", data.access_token);
         dispatch(login(data));
         toast.success("Access granted ;)");
         navigate("/");
@@ -53,7 +53,7 @@ const Auth: FC = () => {
     <div>
       <h1>{isLogin ? "Login" : "Registration"}</h1>
 
-      <form onSubmit={isLogin ? loginHandler: registrationHandler}>
+      <form onSubmit={isLogin ? loginHandler : registrationHandler}>
         <input
           type="text"
           className="input"

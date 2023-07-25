@@ -7,22 +7,22 @@ import Player from "../pages/Player";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <Layout />,
     errorElement: <ErrorPage />,
-    children:[
+    children: [
       {
         index: true,
         element: <Home />,
       },
       {
-        path: 'auth',
-        element: <Auth />
+        path: "auth",
+        element: <Auth />,
       },
       {
-        path: 'player',
-        element: <Player />
-      }
+        path: "player",
+        element: <Player />,
+      },
     ],
   },
-])
+]);

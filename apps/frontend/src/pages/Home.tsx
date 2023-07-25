@@ -1,12 +1,10 @@
 import { FC } from "react";
-import { useEffect, useState } from 'react'
-import ftLogo from '../assets/42_Logo.svg'
+import { useEffect, useState } from "react";
+import ftLogo from "../assets/42_Logo.svg";
 
 const Home: FC = () => {
   const [count, setCount] = useState(0);
-  useEffect(() => {
-    fetch('/api')
-  }, []);
+  useEffect(() => {}, []);
   return (
     <>
       <div>
@@ -20,11 +18,9 @@ const Home: FC = () => {
           count is {count}
         </button>
       </div>
-      <p className="read-the-docs">
-        Click on the 42 to be redirected...
-      </p>
+      <p className="read-the-docs">Click on the 42 to be redirected...</p>
     </>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

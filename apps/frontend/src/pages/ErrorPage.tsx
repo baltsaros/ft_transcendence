@@ -1,12 +1,13 @@
 import { FC } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const ErrorPage: FC = () => {
   return (
-    <div>ErrorPage
-      <Link to={'/'}>Home</Link>
+    <div>
+      ErrorPage
+      <Link to={"/"}>Home</Link>
     </div>
-  )
-}
+  );
+};
 
-export default ErrorPage
+export default ErrorPage;
