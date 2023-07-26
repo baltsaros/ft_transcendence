@@ -18,13 +18,12 @@
 
 ## Setting up environment
 * Install turborepo. It allows to connect backend with frontend: *npm install -D turbo*
+* Install tailwind. It is a CSS utility: npm install -D tailwindcss postcss autoprefixer
 * Inside *apps* create nestjs project: *npx nest new backend*
 * In the same folder create React project with Vite: *npm create vite@latest frontend*
 * Set up dependencies in the root directory: *npm install*
 * Install a package to serve static content for a single page application from the root directory: *npm install --workspace backend --save @nestjs/serve-static*
 * In the root directory create and set up *turbo.json*, set up *package.json*, edit *vite.config.ts* in the frontend, edit *main.ts* and *app.module.ts* in the backend
-
-#Installing TypeORM to handle db and PostgreSQL as db driver: npm install --save @nestjs/typeorm typeorm pg
 
 ## Some commands
 * *turbo run build* - to build apps
