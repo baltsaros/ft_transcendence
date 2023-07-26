@@ -58,9 +58,9 @@
 >
 > psql
 >
->[DB_NAME] postgres;
+>\c [DB_NAME] postgres;
 >
->GRANT ALL ON SCHEMA [DB_NAME] TO [DB_USER];
+>GRANT ALL ON SCHEMA public TO [DB_USER];
 >
 * to validate input: sudo npm install --save class-validator class-transformer
 * to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
