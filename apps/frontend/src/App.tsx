@@ -1,31 +1,38 @@
-import { useEffect, useState } from 'react'
-import ftLogo from './assets/42_Logo.svg'
-import './App.css'
+// import ftLogo from './assets/42_Logo.svg'
+import "./App.css";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./router/router";
+import { useAppDispatch } from "./store/hooks";
+import { getTokenFromLocalStorage } from "./helpers/localstorage.helper";
+import { AuthService } from "./services/auth.service";
+import { login, logout } from "./store/user/userSlice";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const dispatch = useAppDispatch();
+
+  const checkAuth = async () => {
+    const token = getTokenFromLocalStorage();
+    try {
+      if (token) {
+        const data = await AuthService.getProfile();
+        if (data) {
+          dispatch(login(data));
+        } else {
+          dispatch(logout());
+        }
+      }
+    } catch (err: any) {
+      const error = err.response?.data.message;
+      toast.error(error.toString());
+    }
+  };
   useEffect(() => {
-    fetch('/api')
+    checkAuth();
   }, []);
 
-  return (
-    <>
-      <div>
-        <a href="https://profile.intra.42.fr/" target="_blank">
-          <img src={ftLogo} className="logo" alt="42 logo" />
-        </a>
-      </div>
-      <h1>Under construction...</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-      <p className="read-the-docs">
-        Click on the 42 to be redirected...
-      </p>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
