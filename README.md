@@ -80,3 +80,11 @@
 * for api routing: npm install --save axios
 * for floating messages: npm install --save react-toastify
 * tools for login: npm install --save @reduxjs/toolkit react-redux
+
+## Tailwind
+* Install tailwind: npm install -D tailwindcss postcss autoprefixer
+* Official website (it has various useful docs): https://tailwindcss.com/
+* To setup, edit tailwind.config.js, index.html (link to fonts), index.css (styling)
+* Fonts: https://fonts.google.com/
+* Install forms for tailwind: npm install -D @tailwindcss/forms
+* Install plugin for prettier: npm install -D prettier prettier-plugin-tailwindcss
