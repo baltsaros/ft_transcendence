@@ -1,3 +1,4 @@
+/* Entry point of our nestjs appliation */
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
