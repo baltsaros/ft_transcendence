@@ -18,13 +18,12 @@
 
 ## Setting up environment
 * Install turborepo. It allows to connect backend with frontend: *npm install -D turbo*
+* Install tailwind. It is a CSS utility: npm install -D tailwindcss postcss autoprefixer
 * Inside *apps* create nestjs project: *npx nest new backend*
 * In the same folder create React project with Vite: *npm create vite@latest frontend*
 * Set up dependencies in the root directory: *npm install*
 * Install a package to serve static content for a single page application from the root directory: *npm install --workspace backend --save @nestjs/serve-static*
 * In the root directory create and set up *turbo.json*, set up *package.json*, edit *vite.config.ts* in the frontend, edit *main.ts* and *app.module.ts* in the backend
-
-#Installing TypeORM to handle db and PostgreSQL as db driver: npm install --save @nestjs/typeorm typeorm pg
 
 ## Some commands
 * *turbo run build* - to build apps
@@ -58,9 +57,9 @@
 >
 > psql
 >
->[DB_NAME] postgres;
+>\c [DB_NAME] postgres;
 >
->GRANT ALL ON SCHEMA [DB_NAME] TO [DB_USER];
+>GRANT ALL ON SCHEMA public TO [DB_USER];
 >
 * to validate input: sudo npm install --save class-validator class-transformer
 * to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
@@ -81,3 +80,11 @@
 * for api routing: npm install --save axios
 * for floating messages: npm install --save react-toastify
 * tools for login: npm install --save @reduxjs/toolkit react-redux
+
+## Tailwind
+* Install tailwind: npm install -D tailwindcss postcss autoprefixer
+* Official website (it has various useful docs): https://tailwindcss.com/
+* To setup, edit tailwind.config.js, index.html (link to fonts), index.css (styling)
+* Fonts: https://fonts.google.com/
+* Install forms for tailwind: npm install -D @tailwindcss/forms
+* Install plugin for prettier: npm install -D prettier prettier-plugin-tailwindcss

@@ -4,7 +4,7 @@ import Header from "../components/Header";
 
 const Layout: FC = () => {
   return (
-    <div>
+    <div className="min-h-screen bg-gray-950 font-roboto text-grey">
       <Header />
       <div className="container">
         <Outlet />
