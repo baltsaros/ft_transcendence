@@ -26,7 +26,7 @@ const Header: FC = () => {
           to={"/"}
           className="py-2 text-white/50 hover:text-white"
         >
-          <img src={ftLogo} className="logo" alt="42 logo" /> 19 POGN GAME
+          <img src={ftLogo} className="logo" alt="42 logo" /> 19 PONG GAME
         </NavLink>
       {isAuth && (
         <nav className="ml-auto mr-10">
