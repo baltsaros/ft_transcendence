@@ -4,7 +4,7 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Auth from "../pages/Auth";
 import Player from "../pages/Player";
-import Chat from "../pages/Chat";
+import Chat from "../pages/ChatPage";
 
 export const router = createBrowserRouter([
   {
