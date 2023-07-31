@@ -21,12 +21,13 @@ const Header: FC = () => {
   };
 
   return (
-    <header className="flex items-center justify-between p-4 shadow-sm bg-gray-600 backdrop-blur-sm">
+    <header className="flex items-center p-4 shadow-sm bg-gray-500 backdrop-blur-sm">
+        <img src={ftLogo} className="logo" alt="42 logo" style={{ width: '70px', height: '70px' }}/> 
         <NavLink
           to={"/"}
           className="py-2 text-white/50 hover:text-white"
         >
-          <img src={ftLogo} className="logo" alt="42 logo" /> 19 POGN GAME
+        19 POGN GAME
         </NavLink>
       {isAuth && (
         <nav className="ml-auto mr-10">
@@ -51,7 +52,7 @@ const Header: FC = () => {
           <FaSignOutAlt />
         </button>
       ) : (
-        <Link className="py-2 text-white/50 hover:text-white" to={"auth"}>
+        <Link className="py-2 text-white/50 hover:text-white ml-auto" to={"auth"}>
           Sign In
         </Link>
       )}

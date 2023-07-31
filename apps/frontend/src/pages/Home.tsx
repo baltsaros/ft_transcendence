@@ -7,7 +7,7 @@ const Home: FC = () => {
   useEffect(() => {}, []);
   return (
     <>
-      <div>
+      <div className="flex items-center justify-center">
         <a href="https://profile.intra.42.fr/" target="_blank">
           <img src={ftLogo} className="logo" alt="42 logo" />
         </a>
