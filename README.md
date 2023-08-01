@@ -1,18 +1,33 @@
 # ft_transcendence
 
+## Preprequisites:
+* Installing nodejs on ubuntu:
+>cd ~
+>
+>curl -sL https://deb.nodesource.com/setup_18.x -o nodesource_setup.sh
+>
+>sudo bash nodesource_setup.sh
+>
+>sudo apt install -y nodejs
+>
+* To check versions:
+>node -v
+>
+>npm -v
+>
+
 ## Setting up environment
 * Install turborepo. It allows to connect backend with frontend: *npm install -D turbo*
+* Install tailwind. It is a CSS utility: npm install -D tailwindcss postcss autoprefixer
 * Inside *apps* create nestjs project: *npx nest new backend*
 * In the same folder create React project with Vite: *npm create vite@latest frontend*
 * Set up dependencies in the root directory: *npm install*
 * Install a package to serve static content for a single page application from the root directory: *npm install --workspace backend --save @nestjs/serve-static*
 * In the root directory create and set up *turbo.json*, set up *package.json*, edit *vite.config.ts* in the frontend, edit *main.ts* and *app.module.ts* in the backend
 
-#Installing TypeORM to handle db and PostgreSQL as db driver: npm install --save @nestjs/typeorm typeorm pg
-
 ## Some commands
 * *turbo run build* - to build apps
-* *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case
+* *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case; also need to have .env in the root directory
 * *turbo run dev* - to launch both apps in the develpment mode; to access the NestJS server go to *localhost:3000/api*; to access the React server go to *localhost:5173*
 * if the aforementioned commands do not work, replace *turbo* with *npm*
 
@@ -23,6 +38,7 @@
 * package.json - contains commands for turborepo
 
 
+<<<<<<< HEAD
 ## Setting up a database with PostgreSql on a VM
 
 The database is located on a VM using a debian image. The vm does not contain a graphic interface.
@@ -67,5 +83,55 @@ The databse will listen to the port `5432`.
 ⚠️ The Vm needs to run and the service needs to be active if you want to have access to your database.
 
 
+=======
+## DB
+* installing dependancies; typeorm connects nestjs and postgresql: npm install --save @nestjs/config @nestjs/typeorm typeorm pg
+* download and install postgresql: https://www.postgresql.org/download/
+* you can also install db beaver to manage databases
+* create a new user and a new database:
+>sudo -u postgres psql
+>
+>postgres=# create database [DB_NAME];
+>
+>postgres=# create user [DB_USER] with encrypted password '[DB_PASS]';
+>
+>postgres=# grant all privileges on database [DB_NAME] to [DB_USER];
+>
+>>>>>>> jvander
 
+* grant access right on public schema:
+>sudo -i -u postgres
+>
+> psql
+>
+>\c [DB_NAME] postgres;
+>
+>GRANT ALL ON SCHEMA public TO [DB_USER];
+>
+* to validate input: sudo npm install --save class-validator class-transformer
+* to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
 
+## Oauth2
+* sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
+* sudo npm install --save-dev @types/passport-local
+
+## NEstJS terms
+* dto is  a sort of schema/model to parse request body
+* entity looks like dto, but it describes/defines database structure
+* strategy defines how authentication is carried out
+* guards check whether access rights and allow/disallow incoming requests
+
+## Pages in frontend
+* npm install --save react-router-dom localforage match-sorter sort-by
+* some design: npm install --save react-icons
+* for api routing: npm install --save axios
+* for floating messages: npm install --save react-toastify
+* tools for login: npm install --save @reduxjs/toolkit react-redux
+
+## Tailwind
+* Install tailwind: npm install -D tailwindcss postcss autoprefixer
+* Official website (it has various useful docs): https://tailwindcss.com/
+* To setup, edit tailwind.config.js, index.html (link to fonts), index.css (styling)
+* Fonts: https://fonts.google.com/
+* Install forms for tailwind: npm install -D @tailwindcss/forms
+* Install plugin for prettier: npm install -D prettier prettier-plugin-tailwindcss
