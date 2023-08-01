@@ -7,15 +7,18 @@ import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
 import ftLogo from "../assets/42_Logo.svg";
+import { useCookies} from "react-cookie";
 
 const Header: FC = () => {
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [cookies, removeCookie] = useCookies(['username']);
 
   const logoutHandler = () => {
     dispatch(logout());
     removeTokenFromLocalStorage("token");
+    removeCookie('username', {path: '/'});
     toast.success("Bye!");
     navigate("/");
   };
@@ -39,7 +42,7 @@ const Header: FC = () => {
                   isActive ? "py-2 text-white hover:text-white/50" : "text-white/50"
                 }
               >
-                Player Name
+                {cookies.username}
               </NavLink>
             </li>
           </ul>

@@ -5,6 +5,7 @@ import { setTokenToLocalStorage } from "../helpers/localstorage.helper";
 import { useAppDispatch } from "../store/hooks";
 import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const Auth: FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -13,7 +14,7 @@ const Auth: FC = () => {
   const [isLogin, setIsLogin] = useState<boolean>(true);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const [_cookies, setCookie] = useCookies(['username']);
   const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -41,6 +42,7 @@ const Auth: FC = () => {
         setTokenToLocalStorage("token", data.access_token);
         dispatch(login(data));
         toast.success("Access granted ;)");
+        setCookie('username', username, {path: '/'})
         navigate("/");
       }
     } catch (err: any) {
