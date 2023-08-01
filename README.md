@@ -37,8 +37,6 @@
 * turbo.json - config for turborepo
 * package.json - contains commands for turborepo
 
-
-<<<<<<< HEAD
 ## Setting up a database with PostgreSql on a VM
 
 The database is located on a VM using a debian image. The vm does not contain a graphic interface.
@@ -97,7 +95,6 @@ The databse will listen to the port `5432`.
 >
 >postgres=# grant all privileges on database [DB_NAME] to [DB_USER];
 >
->>>>>>> jvander
 
 * grant access right on public schema:
 >sudo -i -u postgres
@@ -135,3 +132,6 @@ The databse will listen to the port `5432`.
 * Fonts: https://fonts.google.com/
 * Install forms for tailwind: npm install -D @tailwindcss/forms
 * Install plugin for prettier: npm install -D prettier prettier-plugin-tailwindcss
+
+## Cookies for react
+* Install react-cookie : `npm install react-cookie`
