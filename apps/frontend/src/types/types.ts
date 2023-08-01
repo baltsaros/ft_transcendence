@@ -40,3 +40,7 @@ export interface IResponseUserData {
   token: string;
   user: IResponseUser;
 }
+
+export interface IChannels {
+  id: number;
+}
