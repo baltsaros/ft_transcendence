@@ -81,7 +81,6 @@ The databse will listen to the port `5432`.
 ⚠️ The Vm needs to run and the service needs to be active if you want to have access to your database.
 
 
-=======
 ## DB
 * installing dependancies; typeorm connects nestjs and postgresql: npm install --save @nestjs/config @nestjs/typeorm typeorm pg
 * download and install postgresql: https://www.postgresql.org/download/
