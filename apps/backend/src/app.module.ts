@@ -1,5 +1,5 @@
 /* Modules encapsulating controllers and providers 
-** A provider can, for example, fetches data from the database, and a controller can make use of that provider
+** A provider/service can, for example, fetches data from the database, and a controller can make use of that provider
 ** The code in the controller will thus remain lean. ==> modularity of Nestjs
 ** Modules bundle multiple controllers and providers. Modules can depend on each others
 ** Modules are typically splitted by features of our web application

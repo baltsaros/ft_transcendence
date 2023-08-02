@@ -41,6 +41,6 @@ export interface IResponseUserData {
   user: IResponseUser;
 }
 
-export interface IChannels {
-  id: number;
-}
+// export interface IChannels {
+//   id: string;
+// }

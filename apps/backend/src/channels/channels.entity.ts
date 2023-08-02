@@ -12,6 +12,9 @@ export class Channels {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @Column({ name: 'channelId'})
+    channelId: string;
+
     @Column({ name: 'channel_name'})
     name: string;
 
