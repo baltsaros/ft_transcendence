@@ -21,24 +21,18 @@
 //     }
 // }
 
-import { Controller, Get, Post, UsePipes, ValidationPipe } from '@nestjs/common';
-import { getTreeRepository } from 'typeorm';
+import { Controller, Get } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
+
 
 @Controller('channels')
 export class ChannelController {
   constructor(private readonly channelsService: ChannelsService) {}
-
-//   @Post()
-//   @UsePipes(new ValidationPipe()) {
-//     poster() {
-
-//         return {message: "1"}; 
-//     }
-//   }
-
+  
   @Get()
     getter() {
-        return this.channelsService.getter();
+      console.log("request");
+      const response = this.channelsService.getter();
+      return response;
     }
 }

@@ -24,15 +24,16 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 
     const handleOk = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
-            event.preventDefault();
-            // instance.post('channels', channelId) // URL should be updated to /channels/addchannel
-            const response = await instance.get<string>('channels');
-            console.log(response);
-            // setMessage(response);
-        } catch (error) {
-            console.log("Error adding channel:", error);
-            // setMessage("Channel could not be added");
-        }
+                event.preventDefault();
+                // instance.post('channels', channelId) // URL should be updated to /channels/addchannel
+                console.log('Channel ID:', channelId);
+                const response = await instance.get('channels');
+                console.log(response);
+                // setMessage(response);
+            } catch (error) {
+                    console.log("Error adding channel:", error);
+                    // setMessage("Channel could not be added");
+                }
     }
 
     // render
