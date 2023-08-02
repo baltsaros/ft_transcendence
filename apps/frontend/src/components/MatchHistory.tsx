@@ -2,7 +2,7 @@ import { useState } from "react";
 import { IMatch } from "../types/types";
 import Match from "./Match";
 
-export default function PlyerProfileBox() {
+export default function MatchHistory() {
 
     //state
     const [matches] = useState<IMatch[]>([
@@ -38,7 +38,7 @@ export default function PlyerProfileBox() {
           </thead>
           <tbody className="divide-y-2 divide-gray-400">
             {matches.map((match) => (
-              <Match
+              <Match key={match.id}
                   {...match}
                 />
             ))}

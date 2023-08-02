@@ -1,6 +1,6 @@
 import { IUserPlayerProfileData } from "../types/types";
 
-export default function PlyerProfileBox(user: IUserPlayerProfileData) {
+export default function PlayerStats(user: IUserPlayerProfileData) {
 
     //state
 
