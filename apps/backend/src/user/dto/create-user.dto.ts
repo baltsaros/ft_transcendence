@@ -11,4 +11,10 @@ export class CreateUserDto {
   @MinLength(6, {message: 'Password must be longer than 5 characters'})
   @IsNotEmpty()
   password: string;
+
+  // @IsNotEmpty()
+  // avatar: string;
+
+  // @IsNotEmpty()
+  // intra_id: number;
 }

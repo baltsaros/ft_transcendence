@@ -64,7 +64,11 @@
 * to validate input: sudo npm install --save class-validator class-transformer
 * to hash password: sudo npm install --save argon2 (if it does not work, add *--ignore-scripts*)
 
-## Oauth2
+## 42 authentication
+* help to connect to 42 API: sudo npm install --save passport-42
+* middleware to save the current session: sudo npm install --save express-session @types/express-session
+
+## Local authentication
 * sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
 * sudo npm install --save-dev @types/passport-local
 
