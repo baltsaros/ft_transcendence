@@ -42,8 +42,8 @@ export interface IResponseUserData {
 }
 
 export interface IAddChannelsData {
-  channelId: string;
-  // name: string;
+  name: string;
+  mode: string;
 }
 
 export interface IResponseAddChannelData {

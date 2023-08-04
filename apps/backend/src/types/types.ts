@@ -5,8 +5,8 @@ export interface IUser {
 }
 
 export interface IAddChannelsData {
-  channelId: string;
-  // name: string;
+  name: string;
+  mode: string;
 }
 
 export interface IResponseAddChannelData {

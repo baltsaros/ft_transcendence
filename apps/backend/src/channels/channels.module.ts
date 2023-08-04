@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ChannelsService } from './channels.service';
-import { ChannelController } from './channels.controller';
+import { AddChannelController } from './channels.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Channels } from './channels.entity';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,7 +19,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  controllers: [ChannelController],
+  controllers: [AddChannelController],
   providers: [ChannelsService],
   exports: [ChannelsService],
 })

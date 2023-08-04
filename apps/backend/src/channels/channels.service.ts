@@ -17,9 +17,10 @@ export class ChannelsService {
         ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
         */
         const newChannel = this.channelsRepository.create({
-            channelId: channelData.channelId,
-            // name: channelData.name,
+            name: channelData.name,
+            mode: channelData.mode,
         });
+        console.log(channelData.name);
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
         await this.channelsRepository.save(newChannel);

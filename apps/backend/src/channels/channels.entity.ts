@@ -12,11 +12,11 @@ export class Channels {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ name: 'channelId'})
-    channelId: string;
-
-    // @Column({ name: 'channel_name'})
-    // name: string;
+    @Column({nullable: true})
+    name: string;
+    
+    @Column()
+    mode: string;
 
     // @Column("simple-array", {array: true})
     // status: string[];
