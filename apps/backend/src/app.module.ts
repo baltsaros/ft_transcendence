@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { AuthService } from "./auth/auth.service";
+import { ChannelsModule } from "./channels/channels.module";
 
 @Module({
   imports: [
