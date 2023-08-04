@@ -66,7 +66,8 @@
 
 ## 42 authentication
 * help to connect to 42 API: sudo npm install --save passport-42
-* middleware to save the current session: sudo npm install --save express-session @types/express-session
+* middleware to save the current session: sudo npm install --save express-session @types/express-session (leaking, only for dev)
+* sudo npm install --save js-cookie
 
 ## Local authentication
 * sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
