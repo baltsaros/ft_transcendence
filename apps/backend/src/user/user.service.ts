@@ -14,13 +14,11 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly dataStorage: DataStorageService,
+    private readonly dataStorage: DataStorageService
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const userData: Profile  = this.dataStorage.getData();
-    const accessToken = this.dataStorage.getAccessToken();
-    console.log("token: " + accessToken);
+    // take care of a case when 42 name is already in the db, but it is a different person
     const existName = await this.userRepository.findOne({
       where: {
         username: createUserDto.username,
@@ -35,35 +33,28 @@ export class UserService {
     });
     if (existEmail)
       throw new BadRequestException("User with such an email already exists!");
-    // const existId = await this.userRepository.findOne({
-    //   where: {
-    //     intra_id: userData.profile.id,
-    //   },
-    // });
-    // if (existId)
-    //   throw new BadRequestException("User with such an intra id already have an account!");
-    
-    console.log('create profile: ' + userData);
-    console.log('create id: ' + userData.intra_id);
-    console.log('create avatar: ' + userData.avatar);
+
     const user = await this.userRepository.save({
       username: createUserDto.username,
       email: createUserDto.email,
-      intra_id: userData.intra_id,
-      password: await argon2.hash(createUserDto.password),
+      intraId: createUserDto.intraId,
+      intraToken: createUserDto.intraToken,
+      avatar: createUserDto.avatar,
       authentication: true,
       rank: 0,
       wins: 0,
       loses: 0,
       status: "",
-      avatar: userData.avatar,
     });
-    console.log('username: ' + user.username);
-    console.log('user intra_id: ' + user.intra_id);
-    console.log('user avatar: ' + user.avatar);
+    // console.log('username: ' + user.username);
+    // console.log('user intra_id: ' + user.intraId);
+    // console.log('user avatar: ' + user.avatar);
     const token = this.jwtService.sign({
       username: createUserDto.username,
+      avatar: createUserDto.avatar,
+      intraId: createUserDto.intraId,
       email: createUserDto.email,
+      intraToken: createUserDto.intraToken,
     });
     return { user, token };
   }
@@ -78,13 +69,10 @@ export class UserService {
     });
   }
 
-  async findOneById(intra_id: number, profile: Profile, accessToken: string) {
+  async findOneById(intraId: number, profile: Profile, accessToken: string) {
     const user = await this.userRepository.findOne({
-      where: { intra_id: intra_id },
+      where: { intraId: intraId },
     });
-    console.log('find by Id: ' + user);
-    if (!user)
-      this.dataStorage.setData(accessToken, profile);
     return user;
   }
 

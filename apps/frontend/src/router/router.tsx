@@ -4,7 +4,6 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Auth from "../pages/Auth";
 import Player from "../pages/Player";
-import Redir from "../pages/Redir";
 
 export const router = createBrowserRouter([
   {
@@ -23,10 +22,6 @@ export const router = createBrowserRouter([
       {
         path: "player",
         element: <Player />,
-      },
-      {
-        path: "redir",
-        element: <Redir />,
       },
     ],
   },

@@ -3,11 +3,11 @@ import { Profile } from "passport-42"
 
 export interface IUser {
   id: string;
-  intra_id: number;
   username: string;
-  email: string;
   avatar: string;
-  access_token: string;
+  intraId: string;
+  email: string;
+  intraToken: string;
 }
 
 export type Done = (err: Error, profile: Profile) => void;

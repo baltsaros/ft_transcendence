@@ -1,22 +1,25 @@
 export interface IUser {
   id: number;
+  intraId: number;
   username: string;
   email: string;
   avatar: string;
-  access_token: string;
+  intraToken: string;
 }
 
 export interface IUserData {
   username: string;
   email: string;
-  password: string;
+  avatar: string;
+  intraToken: string;
 }
 
 export interface IResponseUser {
   _id?: number | undefined;
+  intraId: number | undefined;
   username: string | undefined;
   email: string | undefined;
-  password: string | undefined;
+  intraToken: string | undefined;
   authentication: boolean | undefined;
   rank: number | undefined;
   avatar: string | undefined;

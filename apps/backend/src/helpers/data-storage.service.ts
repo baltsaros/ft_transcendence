@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Profile } from 'passport-42'
+import { Profile } from "passport-42";
 
 @Injectable()
 export class DataStorageService {
@@ -11,13 +11,17 @@ export class DataStorageService {
     this.accessToken = token;
     this.id = profile.id;
     this.avatar = profile._json.image.link;
-    console.log("what was set: " + this.id + " " + this.avatar);
+    // console.log("what was set: " + this.id + " " + this.avatar);
   }
-  
+
   getData(): any {
-    return { accessToken: this.accessToken, intra_id: this.id, avatar: this.avatar };
+    return {
+      accessToken: this.accessToken,
+      intra_id: this.id,
+      avatar: this.avatar,
+    };
   }
-  
+
   getAccessToken(): string {
     return this.accessToken;
   }

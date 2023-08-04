@@ -22,15 +22,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, "42") {
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
     console.log("42 api");
     // console.log(profile);
-    console.log("id: " + profile.id);
-    console.log("login: " + profile.username);
-    console.log("avatar: " + profile._json.image.link);
-    console.log("token: " + accessToken);
+    // console.log("id: " + profile.id);
+    // console.log("login: " + profile.username);
+    // console.log("avatar: " + profile._json.image.link);
+    // console.log("token: " + accessToken);
     // const {id, username, _json} = profile;
     // console.log("profile: " + profile._json.image.link + profile._json.id);
-    // const details = {id: _json.id, username: _json.id}
-    const user = await this.authService.validateIntraUser(accessToken, profile);
-    // console.log("details: " + details);
-    return accessToken;
+    const user = await this.authService.validateUser(accessToken, profile);
+    return { user, accessToken };
   }
 }

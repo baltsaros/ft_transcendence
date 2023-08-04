@@ -15,7 +15,7 @@ export class User {
   id: number;
 
   @Column({ unique: true })
-  intra_id: number;
+  intraId: number;
 
   @Column({ unique: true })
   username: string;
@@ -24,7 +24,7 @@ export class User {
   email: string;
 
   @Column()
-  password: string;
+  intraToken: string;
 
   @Column()
   authentication: boolean;
