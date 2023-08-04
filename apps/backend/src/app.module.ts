@@ -10,6 +10,7 @@ import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
+import { AddChannelModule } from "./channels/channel.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
@@ -19,6 +20,7 @@ import { AuthService } from "./auth/auth.service";
   imports: [
     UserModule,
     AuthModule,
+    AddChannelModule,
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

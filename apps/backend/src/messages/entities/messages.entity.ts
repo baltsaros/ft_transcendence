@@ -12,12 +12,12 @@ export class Messages {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    content: string;
+    // @Column()
+    // content: string;
 
-    @Column()
-    user: string;
+    // @Column()
+    // user: string;
 
-    @ManyToOne(() => Channels, channels => channels.channel_messages)
-    channels: Channels;
+    // @ManyToOne(() => Channels, channels => channels.channel_messages)
+    // channels: Channels;
 }

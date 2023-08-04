@@ -3,3 +3,14 @@ export interface IUser {
   username: string;
   email: string;
 }
+
+export interface IAddChannelsData {
+  channelId: string;
+  // name: string;
+}
+
+export interface IResponseAddChannelData {
+  status: boolean;
+  message: string;
+}
+ 

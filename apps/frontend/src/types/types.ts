@@ -41,6 +41,13 @@ export interface IResponseUserData {
   user: IResponseUser;
 }
 
-// export interface IChannels {
-//   id: string;
-// }
+export interface IAddChannelsData {
+  channelId: string;
+  // name: string;
+}
+
+export interface IResponseAddChannelData {
+  status: boolean;
+  message: string;
+}
+ 
