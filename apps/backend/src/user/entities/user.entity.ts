@@ -4,10 +4,13 @@ import {
   Entity,
   ManyToMany,
   OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   JoinTable,
 } from "typeorm";
+
+import { Channels } from "src/channels/channels.entity";
 
 @Entity()
 export class User {
@@ -61,4 +64,10 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(()=> Channels, channels => channels.owner,
+  {
+    cascade: true
+  })
+  channel_owned: Channels[];
 }

@@ -1,4 +1,4 @@
-import { User } from "src/user/entities/user.entity";
+
 import { Profile } from "passport-42"
 
 export interface IUser {

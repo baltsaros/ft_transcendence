@@ -1,3 +1,5 @@
+import { User } from ''
+
 export interface IUser {
   id: number;
   intraId: number;

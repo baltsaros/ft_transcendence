@@ -1,9 +1,11 @@
 import { Messages } from 'src/messages/entities/messages.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     OneToMany,
+    ManyToOne,
     JoinColumn
 } from 'typeorm';
 
@@ -18,8 +20,8 @@ export class Channels {
     @Column()
     mode: string;
     
-    @Column({nullable: true})
-    owner: string;
+    @ManyToOne(() => User, user =>  user.channel_owned)
+    owner: User;
 
     // @Column()
     // password: string;

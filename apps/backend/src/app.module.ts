@@ -18,7 +18,6 @@ import { AuthService } from "./auth/auth.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
-import { ChannelsModule } from "./channels/channels.module";
 
 @Module({
   imports: [
@@ -44,7 +43,6 @@ import { ChannelsModule } from "./channels/channels.module";
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),
-    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, DataStorageService],

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { instance } from "../api/axios.api";
 import { IAddChannelsData} from "../types/types"
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -12,6 +14,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     /* STATE */
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
+    const user = useAppSelector((state: RootState) => state.user.user);
 
     /* BEHAVIOR */
     const handleChannelName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,11 +35,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             const channelData: IAddChannelsData = {
                 name: channelName,
                 mode: channelMode,
-                owner: Cookies.get('username'),
+                owner: user.username,
             }
-            const token = Cookies.get("jwt_token");
-            instance.defaults.headers.common["Authorization"] = "Bearer " + token;
-            console.log(token.username);
             // const ret = await instance.get();
             console.log(channelData.name);
             const response = await instance.post('channels', channelData);
