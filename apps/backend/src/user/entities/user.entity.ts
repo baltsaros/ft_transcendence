@@ -14,7 +14,10 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    nullable: true,
+   })
   intraId: number;
 
   @Column({ unique: true })
@@ -23,7 +26,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({nullable: true})
   intraToken: string;
 
   @Column()
