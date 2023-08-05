@@ -43,7 +43,7 @@ const Header: FC = () => {
         style={{ width: "70px", height: "70px" }}
       />
       <NavLink to={"/"} className="py-2 text-white/50 hover:text-white">
-        19 POGN GAME
+        19 PONG GAME
       </NavLink>
       {isAuth && (
         <nav className="ml-auto mr-10">
