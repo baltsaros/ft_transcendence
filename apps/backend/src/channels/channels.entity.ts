@@ -17,15 +17,12 @@ export class Channels {
     
     @Column()
     mode: string;
-
-    // @Column("simple-array", {array: true})
-    // status: string[];
+    
+    @Column({nullable: true})
+    owner: string;
 
     // @Column()
     // password: string;
-
-    // @Column()
-    // owner: string;
 
     // @Column("simple-array", {array: true})
     // administrators: string[];

@@ -15,6 +15,7 @@ export type Done = (err: Error, profile: Profile) => void;
 export interface IAddChannelsData {
   name: string;
   mode: string;
+  owner: string;
 }
 
 export interface IResponseAddChannelData {

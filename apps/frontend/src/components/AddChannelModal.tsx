@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { instance } from "../api/axios.api";
 import { IAddChannelsData} from "../types/types"
+import Cookies from "js-cookie";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -31,9 +32,14 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             const channelData: IAddChannelsData = {
                 name: channelName,
                 mode: channelMode,
+                owner: Cookies.get('username'),
             }
+            const token = Cookies.get("jwt_token");
+            instance.defaults.headers.common["Authorization"] = "Bearer " + token;
+            console.log(token.username);
+            // const ret = await instance.get();
             console.log(channelData.name);
-            const response = await instance.post('channels', channelData)
+            const response = await instance.post('channels', channelData);
             console.log(response.data.message);
         } catch (error) {
             console.log("Error adding channel:", error);
@@ -112,10 +118,10 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
           {/* Buttons */}
           <div className="flex justify-end">
             <button
-              onClick={handleCancel}
+              onClick={handleOk}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">Ok
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleOk}>Cancel</button>
+            <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleCancel}>Cancel</button>
           </div>
         </div>
       </div>

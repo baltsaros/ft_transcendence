@@ -69,6 +69,7 @@ export interface IMatch {
 export interface IAddChannelsData {
   name: string;
   mode: string;
+  owner: string;
 }
 
 export interface IResponseAddChannelData {
