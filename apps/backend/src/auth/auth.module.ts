@@ -10,6 +10,9 @@ import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { FortyTwoStrategy } from "./strategies/42.strategy";
+import { SessionSerializer } from "./guards/serializer";
+import { DataStorageService } from "src/helpers/data-storage.service";
 
 @Module({
   imports: [
@@ -26,14 +29,17 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
   ],
   controllers: [AuthController],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: AuthGuard,
-    // },
+    {
+      provide: 'AUTH_SERVICE',
+      useClass: AuthService,
+    },
+    SessionSerializer,
+    DataStorageService,
+    FortyTwoStrategy,
     LocalStrategy,
-    AuthService,
+    // AuthService,
     JwtStrategy
   ],
-  exports: [AuthService],
+  // exports: [AuthService],
 })
 export class AuthModule {}

@@ -7,51 +7,51 @@ import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
 
 const Auth: FC = () => {
-  const [username, setUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [isLogin, setIsLogin] = useState<boolean>(true);
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  // const [username, setUsername] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [isLogin, setIsLogin] = useState<boolean>(true);
+  // const dispatch = useAppDispatch();
+  // const navigate = useNavigate();
 
-  const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      const data = await AuthService.registration({
-        username,
-        email,
-        password,
-      });
-      if (data) {
-        toast.success("Account was successfully created!");
-        setIsLogin(!isLogin);
-        navigate("/");
-      }
-    } catch (err: any) {
-      const error = err.response?.data.message;
-      toast.error(error.toString());
-    }
-  };
+  // const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   try {
+  //     e.preventDefault();
+  //     const data = await AuthService.registration({
+  //       username,
+  //       email,
+  //       password,
+  //     });
+  //     if (data) {
+  //       toast.success("Account was successfully created!");
+  //       setIsLogin(!isLogin);
+  //       navigate("/");
+  //     }
+  //   } catch (err: any) {
+  //     const error = err.response?.data.message;
+  //     toast.error(error.toString());
+  //   }
+  // };
 
-  const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      const data = await AuthService.login({ username, email, password });
-      if (data) {
-        setTokenToLocalStorage("token", data.access_token);
-        dispatch(login(data));
-        toast.success("Access granted ;)");
-        navigate("/");
-      }
-    } catch (err: any) {
-      const error = err.response?.data.message;
-      toast.error(error.toString());
-    }
-  };
+  // const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+  //   try {
+  //     e.preventDefault();
+  //     const data = await AuthService.login({ username, email, password });
+  //     if (data) {
+  //       setTokenToLocalStorage("token", data.access_token);
+  //       dispatch(login(data));
+  //       toast.success("Access granted ;)");
+  //       navigate("/");
+  //     }
+  //   } catch (err: any) {
+  //     const error = err.response?.data.message;
+  //     toast.error(error.toString());
+  //   }
+  // };
 
   return (
     <div>
-      <h1>{isLogin ? "Login" : "Registration"}</h1>
+      {/* <h1>{isLogin ? "Login" : "Registration"}</h1>
 
       <form onSubmit={isLogin ? loginHandler : registrationHandler}>
         <input
@@ -89,7 +89,7 @@ const Auth: FC = () => {
             Already have an account?
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

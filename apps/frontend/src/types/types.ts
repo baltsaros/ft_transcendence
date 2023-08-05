@@ -1,21 +1,25 @@
 export interface IUser {
   id: number;
+  intraId: number;
   username: string;
   email: string;
-  access_token: string;
+  avatar: string;
+  intraToken: string;
 }
 
 export interface IUserData {
   username: string;
   email: string;
-  password: string;
+  avatar: string;
+  intraToken: string;
 }
 
 export interface IResponseUser {
   _id?: number | undefined;
+  intraId: number | undefined;
   username: string | undefined;
   email: string | undefined;
-  password: string | undefined;
+  intraToken: string | undefined;
   authentication: boolean | undefined;
   rank: number | undefined;
   avatar: string | undefined;
@@ -36,9 +40,30 @@ export interface IResponseUser {
   createdAt: Date | undefined;
 }
 
+//Interface for the playerProfile
+export interface IUserPlayerProfileData {
+  username: string;
+  wins: number;
+  losses: number;
+  rank: number;
+  // @OneToMany(() => IMatch)
+  // @JoinTable()
+  // matches: IMatch[];
+}
+
 export interface IResponseUserData {
   token: string;
   user: IResponseUser;
+}
+
+export interface IMatch {
+  id: number;
+  score: number;
+  scoreOpponent: number;
+ // @OneToOne(() => User)
+  // @JoinTable()
+  // opponent: User;
+  opponent: string;
 }
 
 export interface IAddChannelsData {
@@ -50,4 +75,3 @@ export interface IResponseAddChannelData {
   status: boolean;
   message: string;
 }
- 

@@ -15,13 +15,16 @@ export class User {
   id: number;
 
   @Column({ unique: true })
+  intraId: number;
+
+  @Column({ unique: true })
   username: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column()
-  password: string;
+  intraToken: string;
 
   @Column()
   authentication: boolean;

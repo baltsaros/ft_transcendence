@@ -16,4 +16,6 @@ export const AuthService = {
     const { data } = await instance.get<IUser>("auth/profile");
     if (data) return data;
   },
+
+  // async getIntraKey(): 
 };
