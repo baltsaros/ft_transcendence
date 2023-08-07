@@ -42,10 +42,10 @@ export interface IResponseUser {
 
 //Interface for the playerProfile
 export interface IUserPlayerProfileData {
-  username: string;
-  wins: number;
-  losses: number;
-  rank: number;
+  username: string | undefined;
+  wins: number | undefined;
+  loses: number | undefined;
+  rank: number | undefined;
   // @OneToMany(() => IMatch)
   // @JoinTable()
   // matches: IMatch[];
