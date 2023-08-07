@@ -4,6 +4,7 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Auth from "../pages/Auth";
 import Player from "../pages/Player";
+import Chat from "../pages/ChatPage";
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,10 @@ export const router = createBrowserRouter([
       {
         path: "player/:username",
         element: <Player />,
+      },
+      {
+        path: "chat",
+        element: <Chat />,
       },
     ],
   },

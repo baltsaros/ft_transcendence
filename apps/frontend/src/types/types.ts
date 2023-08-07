@@ -1,3 +1,5 @@
+import { User } from ''
+
 export interface IUser {
   id: number;
   intraId: number;
@@ -64,4 +66,16 @@ export interface IMatch {
   // @JoinTable()
   // opponent: User;
   opponent: string;
+}
+
+export interface IAddChannelsData {
+  name: string;
+  mode: string;
+  owner: string;
+  password: string,
+}
+
+export interface IResponseAddChannelData {
+  status: boolean;
+  message: string;
 }
