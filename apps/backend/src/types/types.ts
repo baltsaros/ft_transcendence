@@ -16,6 +16,7 @@ export interface IAddChannelsData {
   name: string;
   mode: string;
   owner: string;
+  password: string,
 }
 
 export interface IResponseAddChannelData {

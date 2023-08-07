@@ -23,8 +23,8 @@ export class Channels {
     @ManyToOne(() => User, user =>  user.channel_owned)
     owner: User;
 
-    // @Column()
-    // password: string;
+    @Column({nullable: true})
+    password: string;
 
     // @Column("simple-array", {array: true})
     // administrators: string[];

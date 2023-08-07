@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { instance } from "../api/axios.api";
 import { IAddChannelsData} from "../types/types"
-// import Cookies from "js-cookie";
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 
@@ -14,6 +13,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     /* STATE */
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
+    const [isProtected, setIsProtected] = useState(false);
+    const [channelPassword, setChannelPassword] = useState('');
     const user = useAppSelector((state: RootState) => state.user.user);
 
     /* BEHAVIOR */
@@ -22,7 +23,13 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     }
     
     const handleChannelMode = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setChannelMode(event.target.value);
+      const mode = event.target.value;
+      setChannelMode(mode);
+      setIsProtected(mode === 'Protected');
+    }
+
+    const handleChannelPassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setChannelPassword(event.target.value);
     }
 
     const handleCancel = () => {
@@ -36,8 +43,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
                 name: channelName,
                 mode: channelMode,
                 owner: user.username,
+                password: channelPassword,
             }
-            // const ret = await instance.get();
             console.log(channelData.name);
             const response = await instance.post('channels', channelData);
             console.log(response.data.message);
@@ -48,40 +55,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 
     /* RENDERING */
     return (
-        // <div className="modal">
-        //     <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black">
-        //         <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col">
-        //             <div className="modal-content text-black">
-        //                 <header className="text-2xl font-bold">
-        //                     <h2>Add Channel</h2>
-        //                     </header>
-        //                     <div className="mb-4">
-        //                         <div className="w-full mt-1 p-2 border rounded">
-        //                             <input
-        //                             value={channelName}
-        //                             type="text"
-        //                             placeholder="Type the channel name..."
-        //                             onChange={handleChannelName}
-        //                             />
-        //                         </div>
-        //                             <div>
-        //                                 <input
-        //                                 value={channelMode}
-        //                                 type="text"
-        //                                 placeholder="Type the channel mode..."
-        //                                 onChange={handleChannelMode}
-        //                                 />
-        //                             </div>
-        //                                 <div className="flex ">
-        //                                     <button className="bg-blue-500 text-white p-3 rounded-r-lg mr-2" onClick={handleOk}>OK</button>
-        //                                     <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleCancel}>Cancel</button>
-        //                                 </div>
-        //                         </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-        
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black">
         <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col">
           {/* Modal content */}
@@ -105,16 +78,54 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             <label htmlFor="channelDescription" className="block text-sm font-medium text-gray-700">
               Channel Mode
             </label>
-            <div className='text-black'>
-            <input
-              type="text"
-              id="channelMode"
+            <div className="flex flex-col text-black">
+              <div className="flex items-center">
+                <input
+                className="mr2"
+                type="radio" 
+                value="Public"
+                name="Mode"
+                /* The checked attribute determines whether the radio button is selected or not
+                ** It is set to true when the state matches the value "Public"
+                */
+                checked={channelMode === "Public"}
+                /* onChange event handler updates the value of the state*/
+                onChange={handleChannelMode}
+                />Public
+             </div>
+            <div className="flex items-center">
+             <input
+             className="mr2"
+             type="radio"
+             value="Private"
+             name="Mode"
+             checked={channelMode === "Private"}
+             onChange={handleChannelMode}
+             />Private
+            </div>
+            <div className="flex items-center">
+             <input
+             className="mr2"
+             type="radio"
+             value="Protected"
+             name="Mode"
+             checked={channelMode === "Protected"}
+             onChange={handleChannelMode}
+             />Protected
+            </div>
+            <div>
+              {isProtected &&
+              <input
+              type="password"
+              id="channelPassword"
               className="w-full mt-1 p-2 border rounded"
-              placeholder="Enter channel mode"
-              onChange={handleChannelMode}
-            />
+              placeholder="Enter channel password"
+              onChange={handleChannelPassword}
+              />
+              }
+            </div>
           </div>
-          </div>
+        </div>
           {/* Buttons */}
           <div className="flex justify-end">
             <button

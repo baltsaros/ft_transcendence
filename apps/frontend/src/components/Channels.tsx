@@ -1,11 +1,24 @@
 import AddChannel from "./AddChannel";
+import { useEffect, useState } from 'react';
+import { instance } from '../api/axios.api'
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
 
 function Channels() {
-    // state
+    /* STATE */
+    const user = useAppSelector((state: RootState) => state.user.user);
+    const [data, setData] = useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await instance.get('channels', user.username);
+            console.log (result.data);
+            setData(result.data);
+        }
+    }, []);
 
-    // behavior
+    /* BEHAVIOR */
 
-    // render
+    /* RENDER */
     return (   
         <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
                 <div className="flex flex-grow w-full">
