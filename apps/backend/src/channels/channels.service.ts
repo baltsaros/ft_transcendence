@@ -14,7 +14,6 @@ export class ChannelsService {
     ) {}
 
     async addChannel(channelData: IAddChannelsData) {
-        // const channel = await this.channelsRepository.findOne(channelId);
         /* The create method TypeOrm does not involve any interactions with the database
         ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
         */
@@ -32,5 +31,14 @@ export class ChannelsService {
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
         await this.channelsRepository.save(newChannel);
+    }
+
+    async getChannel(given_username: string) {
+        const channels = await this.channelsRepository.find({where: {owner: {username: given_username} },
+        select: ['name'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
+    });
+
+    /* Map takes an array of elements and transforms each element using the supplied function */
+    return channels.map(Channels => Channels.name);
     }
 }

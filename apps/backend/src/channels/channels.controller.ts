@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body} from '@nestjs/common';
+import { Controller, Post, Get, Body, Param} from '@nestjs/common';
 import { ChannelsService } from './channels.service';
 import { IAddChannelsData, IResponseAddChannelData } from 'src/types/types';
 
@@ -20,7 +20,7 @@ export class AddChannelController {
     }
 
     @Get()
-    async getter() {
-        return {message: "Channel added successfully!"};
+    async getChannel(@Param('user.username') given_username: string) {
+        return (this.channelsService)
     }
 }
