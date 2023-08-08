@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IMatch } from "../types/types";
 import Match from "./Match";
+import { toast } from "react-toastify";
+import { MatchService } from "../services/matches.service";
 
 export default function MatchHistory() {
 
@@ -10,7 +12,20 @@ export default function MatchHistory() {
         {id: 2, score:1, scoreOpponent:2, opponent: "abuzdin"},
         {id: 3, score:2, scoreOpponent:7, opponent: "ejoo-tho"}
       ])
+
+    const getAllMatchForUser = async () => {
+      try {
+        const data =  await MatchService.getAllMatchForPlayer("jvander-");
+        console.log(data);
+      } catch (err: any) {
+        const error = err.response?.data.message;
+        toast.error(error.toString());
+      }
+    }
     //behaviour
+    useEffect(() => {
+      getAllMatchForUser();
+    }, [])
 
     //render
     return (

@@ -66,6 +66,14 @@ export interface IMatch {
   // @JoinTable()
   // opponent: User;
   opponent: string;
+  user: string;
+}
+
+export interface IMatchData {
+  username: string,
+  opponent: string,
+  scoreUser: number,
+  scoreOpponent: number
 }
 
 export interface IAddChannelsData {
