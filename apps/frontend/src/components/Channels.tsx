@@ -9,27 +9,22 @@ function Channels() {
     /* STATE */
     const user = useAppSelector((state: RootState) => state.user.user);
     const [data, setData] = useState([]);
-    const test = () => {
-        console.log("here");
-        const channels: IGetChannels = {
-            username: user.username,
-        }
-        console.log(channels.username);
-    }
+    console.log(user.username);
+
+
+    /* BEHAVIOR */
     useEffect(() => {
         const channels: IGetChannels = {
             username: user.username,
         }
         console.log(channels.username);
         const fetchData = async () => {
-            const result = await instance.get('channels', channels.username);
+            const result = await instance.get('channels', channels);
             console.log (result.data);
-            // setData(result.data);
+            setData(result.data);
         }
         fetchData();
     }, []);
-
-    /* BEHAVIOR */
 
     /* RENDER */
     return (   
@@ -38,7 +33,7 @@ function Channels() {
                     <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
                         <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
-                            <div>
+                            <div className="text-black">
                                 <ul>
                                     {data.map(name => <li>{name}</li>)}
                                 </ul>

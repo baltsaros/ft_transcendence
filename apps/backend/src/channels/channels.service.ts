@@ -33,7 +33,6 @@ export class ChannelsService {
     }
 
     async getChannel(username: string) {
-        console.log("2");
         const channels = await this.channelsRepository.find({
             where: {
                 owner:{
