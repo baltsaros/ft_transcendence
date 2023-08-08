@@ -1,4 +1,3 @@
-import { User } from ''
 
 export interface IUser {
   id: number;
@@ -72,10 +71,18 @@ export interface IAddChannelsData {
   name: string;
   mode: string;
   owner: string;
-  password: string,
+  password: string;
 }
 
 export interface IResponseAddChannelData {
   status: boolean;
   message: string;
+}
+
+export interface IGetChannels {
+  username: string;
+}
+
+export interface IResponseGetChannels {
+  channels: string[];
 }

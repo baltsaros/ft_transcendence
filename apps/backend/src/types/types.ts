@@ -23,3 +23,11 @@ export interface IResponseAddChannelData {
   status: boolean;
   message: string;
 }
+
+export interface IGetChannels {
+  username: string;
+}
+
+export interface IResponseGetChannels {
+  channels: string[];
+}

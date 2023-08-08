@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param} from '@nestjs/common';
 import { ChannelsService } from './channels.service';
-import { IAddChannelsData, IResponseAddChannelData } from 'src/types/types';
+import { IAddChannelsData, IResponseAddChannelData, IGetChannels } from 'src/types/types';
 
 
 @Controller('channels')
@@ -20,7 +20,10 @@ export class AddChannelController {
     }
 
     @Get()
-    async getChannel(@Param('user.username') given_username: string) {
-        return (this.channelsService)
+    async getChannel(@Param('username') data: string) {
+        const name = data;
+        console.log("1");
+        // console.log(name);
+        return await (this.channelsService.getChannel(name))
     }
 }

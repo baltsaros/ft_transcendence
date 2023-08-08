@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channels } from './channels.entity';
-import { IAddChannelsData } from 'src/types/types';
+import { IAddChannelsData, IGetChannels } from 'src/types/types';
 import { UserService } from '../user/user.service'
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
@@ -15,8 +15,7 @@ export class ChannelsService {
 
     async addChannel(channelData: IAddChannelsData) {
         /* The create method TypeOrm does not involve any interactions with the database
-        ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
-        */
+        ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.*/
        const user = await this.userService.findOne(channelData.owner);
         const newChannel = this.channelsRepository.create({
             name: channelData.name,
@@ -33,12 +32,18 @@ export class ChannelsService {
         await this.channelsRepository.save(newChannel);
     }
 
-    async getChannel(given_username: string) {
-        const channels = await this.channelsRepository.find({where: {owner: {username: given_username} },
+    async getChannel(username: string) {
+        console.log("2");
+        const channels = await this.channelsRepository.find({
+            where: {
+                owner:{
+                    username
+                }
+            },
         select: ['name'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
     });
 
     /* Map takes an array of elements and transforms each element using the supplied function */
-    return channels.map(Channels => Channels.name);
+    return channels.map(channels => channels.name);
     }
 }

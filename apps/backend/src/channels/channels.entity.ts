@@ -6,7 +6,6 @@ import {
     Column,
     OneToMany,
     ManyToOne,
-    JoinColumn
 } from 'typeorm';
 
 @Entity()
