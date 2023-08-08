@@ -11,7 +11,7 @@ export default function PlayerStats(user: IUserPlayerProfileData) {
     <div className="w-96 text-2xl">
         <div className="grid grid-cols-2">
             <p className="bg-green-600">Wins: {user.wins}</p>
-            <p className="bg-red-600">Losses: {user.losses}</p>
+            <p className="bg-red-600">Losses: {user.loses}</p>
         </div>
         <div>
             <p className="bg-cyan-300">Rank: {user.rank}</p>
