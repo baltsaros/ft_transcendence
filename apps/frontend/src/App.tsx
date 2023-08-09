@@ -43,7 +43,7 @@ function App() {
 
   useEffect(() => {
     if (Cookies.get("jwt_token"))
-      setTokenToLocalStorage("token", Cookies.get("jwt_token"));
+      setTokenToLocalStorage("token", Cookies.get("jwt_token") || "");
     checkAuth();
     // checkUsername();
   }, []);
