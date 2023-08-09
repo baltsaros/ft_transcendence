@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  NotImplementedException,
+} from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -46,17 +51,9 @@ export class UserService {
       loses: 0,
       status: "",
     });
-    // console.log('username: ' + user.username);
-    // console.log('user intra_id: ' + user.intraId);
-    // console.log('user avatar: ' + user.avatar);
-    const token = this.jwtService.sign({
-      username: createUserDto.username,
-      avatar: createUserDto.avatar,
-      intraId: createUserDto.intraId,
-      email: createUserDto.email,
-      intraToken: createUserDto.intraToken,
-    });
-    return { user, token };
+    if (!user)
+      throw new NotImplementedException("Cannot create this user");
+    return user;
   }
 
   findAll() {
@@ -69,42 +66,27 @@ export class UserService {
     });
   }
 
-  async findOneById(id: number, profile: Profile, accessToken: string) {
+  async findOneById(id: number) {
     const user = await this.userRepository.findOne({
       where: { id: id },
     });
     return user;
   }
 
-  async findOneByIntraId(intraId: number, profile: Profile, accessToken: string) {
+  async findOneByIntraId(intraId: number) {
     const user = await this.userRepository.findOne({
       where: { intraId: intraId },
     });
     return user;
   }
 
-  async update(intraId: number, updateUserDto: UpdateUserDto) {
-    const user = await this.findOneByIntraId(intraId, null, null);
-    if (user) {
-      const data = await this.userRepository.save({
-        username: updateUserDto.username,
-        intraId: updateUserDto.intraId,
-        email: updateUserDto.email,
-        avatar: updateUserDto.avatar,
-        intraToken: updateUserDto.intraToken,
-        rank: user.rank,
-        friends: user.friends,
-        status: user.status,
-        blocked: user.blocked,
-        wins: user.wins,
-        loses: user.loses,
-        createdAt: user.createdAt,
-        authentication: user.authentication,
-        id: user.id,
-      });
-      return data;
-    }
-    return user;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    if (!user) throw new NotFoundException("User not found");
+    const data = await this.userRepository.update(id, updateUserDto);
+    return data;
   }
 
   remove(id: number) {

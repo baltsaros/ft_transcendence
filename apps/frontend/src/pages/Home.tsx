@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
 
 const Home: FC = () => {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  // const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);

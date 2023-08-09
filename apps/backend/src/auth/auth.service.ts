@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable, NotImplementedException, UnauthorizedException } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { JwtService } from "@nestjs/jwt";
 import { IUser } from "src/types/types";
@@ -16,17 +16,7 @@ export class AuthService {
 
   async validateUser(accessToken: string, profile: Profile) {
     console.log("validateIntraUser");
-    const user = await this.usersService.findOneByIntraId(
-      profile.id,
-      profile,
-      accessToken
-    );
-    // console.log(profile);
-    // console.log("username: " + profile.username);
-    // console.log("email: " + profile._json.email);
-    // console.log("avatar: " + profile._json.image.link);
-    // console.log("intraId: " + profile.id);
-    // console.log("intraToken: " + accessToken);
+    const user = await this.usersService.findOneByIntraId(profile.id);
     if (!user) {
       this.dataStorage.setData(accessToken, profile);
       const data = new CreateUserDto();
@@ -35,15 +25,16 @@ export class AuthService {
       data["avatar"] = profile._json.image.link;
       data["intraId"] = profile.id;
       data["intraToken"] = accessToken;
-      await this.usersService.create(data);
-      return data;
+      return await this.usersService.create(data);
     }
+    // console.log(user);
     return user;
   }
 
   async login(user: IUser) {
     const { id, username, avatar, intraId, email, intraToken } = user;
     return {
+      id, 
       intraId,
       intraToken,
       username,
@@ -57,5 +48,11 @@ export class AuthService {
         intraToken: user.intraToken,
       }),
     };
+  }
+
+  async getProfile(intraId: number) {
+    const user = await this.usersService.findOneByIntraId(intraId);
+    if (!user) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
+    return user;
   }
 }

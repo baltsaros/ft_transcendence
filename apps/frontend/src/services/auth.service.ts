@@ -17,7 +17,7 @@ export const AuthService = {
     if (data) return data;
   },
   async update(userData: IUser): Promise<IUser | undefined> {
-    const { data } = await instance.patch<IUser>("user/" + userData['intraId'].toString(), userData);
+    const { data } = await instance.patch<IUser>("user/" + userData['id'].toString(), userData);
     if (data) return data;
   },
 

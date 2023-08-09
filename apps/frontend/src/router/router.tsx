@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../pages/Layout";
 import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
-import Auth from "../pages/Auth";
 import Player from "../pages/Player";
 import Profile from "../pages/Profile";
 import { ProtectedRoute } from "../components/ProtectedRoute";
@@ -16,10 +15,6 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
-      },
-      {
-        path: "auth",
-        element: <Auth />,
       },
       {
         path: "player",
