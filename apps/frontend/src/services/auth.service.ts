@@ -20,6 +20,4 @@ export const AuthService = {
     const { data } = await instance.patch<IUser>("user/" + userData['id'].toString(), userData);
     if (data) return data;
   },
-
-  // async getIntraKey():
 };

@@ -26,7 +26,7 @@ const Header: FC = () => {
   const user = useAppSelector((state: RootState) => state.user.user);
 
   // useEffect(() => {
-  // setUsername(user?.username);
+  // console.log("change");
   // // const user = useAppSelector((state: RootState) => state.user.user);
   // }, [user]);
 

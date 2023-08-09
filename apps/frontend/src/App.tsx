@@ -13,14 +13,15 @@ import Cookies from "js-cookie";
 
 function App() {
   const dispatch = useAppDispatch();
-  // const user = useAppSelector((state: RootState) => state.user.user);
+  const user = useAppSelector((state: RootState) => state.user.user);
   const checkAuth = async () => {
     const token = getTokenFromLocalStorage();
+    // console.log('token: ' + token);
     try {
       if (token.length > 0) {
         const data = await AuthService.getProfile();
         if (data) {
-          console.log(data);
+          // console.log(data);
           dispatch(login(data));
         } else {
           dispatch(logout());
@@ -35,7 +36,8 @@ function App() {
   // const checkUsername = async () => {
   //   const data = await AuthService.getProfile();
   //   if (user && data && data.username != user.username) {
-  //     dispatch(login(data));
+  //     // dispatch(login(data));
+  //     window.location.reload();
   //   }
   // }
 

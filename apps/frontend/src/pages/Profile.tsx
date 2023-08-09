@@ -15,22 +15,26 @@ const Profile: FC = () => {
   const nameUpdateHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      console.log('user' + user?.id);
+      if (username == user?.username) {
+        toast.error("Username cannot be the same");
+        return;
+      }
       const tmp = {
         username: username,
-        avatar: user? user.avatar : "",
-        id: user? user.id : 0,
-        intraId: user? user.intraId: 0,
-        intraToken: user? user.intraToken : "",
-        email: user? user.email : "",
+        avatar: user ? user.avatar : "",
+        id: user ? user.id : 0,
+        intraId: user ? user.intraId : 0,
+        intraToken: user ? user.intraToken : "",
+        email: user ? user.email : "",
       };
       console.log(tmp);
       const data = await AuthService.update(tmp);
       if (data) {
         toast.success("Username was successfully update!");
-        console.log(data.username);
-        navigate("/");
+        // console.log(data.username);
         dispatch(login(data));
+        navigate("/");
+        window.location.reload();
       }
     } catch (err: any) {
       const error = err.response?.data.message;
