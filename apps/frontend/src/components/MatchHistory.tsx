@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
-import { IMatch } from "../types/types";
+import { IMatch, IUserPlayerProfileData } from "../types/types";
 import Match from "./Match";
 import { toast } from "react-toastify";
 import { MatchService } from "../services/matches.service";
 
-export default function MatchHistory() {
+
+export default function MatchHistory(userData: IUserPlayerProfileData) {
 
     //state
     const [matches, setMatches] = useState<IMatch[] | undefined>([
-        {id: NaN, scoreUser:-1, scoreOpponent:-1, opponent: "undefined"},
+        {id: NaN, user: {username: "undefined"}, scoreUser:-1, scoreOpponent:-1, opponent: {username: "undefined"}},
       ])
-
+      console.log("username MatchHistory = " + userData.username);
     const getAllMatchForUser = async () => {
       try {
-        const data =  await MatchService.getAllMatchForPlayer("jvander-");
-        console.log(data);
-        setMatches(data)
+        const data =  await MatchService.getAllMatchForPlayer(userData.username!);
+        setMatches(data);
       } catch (err: any) {
         const error = err.response?.data.message;
         toast.error(error.toString());
@@ -51,7 +51,7 @@ export default function MatchHistory() {
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-gray-400">
-            {matches.map((match) => (
+            {matches!.map((match) => (
               <Match key={match.id}
                   {...match}
                 />

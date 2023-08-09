@@ -1,16 +1,24 @@
 import { User } from "src/user/entities/user.entity";
-import { Column, Entity, JoinTable, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToOne, ManyToOne, JoinColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Match {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    user: string;
+    @Column({name: 'userId'})
+    userId: number;
 
-    @Column()
-    opponent: string;
+    @ManyToOne(() => User, (user) => user.id, {eager: true})
+    @JoinColumn({name: 'userId'})
+    user: User;
+
+    @Column({name: 'opponentId'})
+    opponentId: number;
+
+    @ManyToOne(() => User, (user) => user.id, {eager: true})
+    @JoinColumn({name: 'opponentId'})
+    opponent: User;
 
     @Column()
     scoreUser: number;

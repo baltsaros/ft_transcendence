@@ -4,6 +4,7 @@ import { IMatch, IMatchData } from "../types/types";
 export const MatchService = {
 
   async getAllMatchForPlayer(username: string): Promise<IMatch[] | undefined> {
+    console.log("matches services " + username);
     const { data } = await instance.get<IMatch[]>("matches/" + username);
     if (data) return data;
   },

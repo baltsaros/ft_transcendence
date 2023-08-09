@@ -16,7 +16,7 @@ export default function Match(matchInfo: IMatch) {
                 {matchInfo.scoreUser > matchInfo.scoreOpponent
                     ? <div className="text-green-600"> Win </div>
                     : <div className="text-red-600"> Loss </div>}
-                <div><button className="rounded-full w-full bg-cyan-300 text-black">{matchInfo.opponent}</button></div>
+                <div><button className="rounded-full w-full bg-cyan-300 text-black">{matchInfo.opponent.username}</button></div>
             </div>
             </td>
         </tr>
