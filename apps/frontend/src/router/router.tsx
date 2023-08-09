@@ -4,6 +4,8 @@ import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Auth from "../pages/Auth";
 import Player from "../pages/Player";
+import Profile from "../pages/Profile";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -21,7 +23,19 @@ export const router = createBrowserRouter([
       },
       {
         path: "player",
-        element: <Player />,
+        element: (
+          <ProtectedRoute>
+            <Player />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

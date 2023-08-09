@@ -16,7 +16,7 @@ export class AuthService {
 
   async validateUser(accessToken: string, profile: Profile) {
     console.log("validateIntraUser");
-    const user = await this.usersService.findOneById(
+    const user = await this.usersService.findOneByIntraId(
       profile.id,
       profile,
       accessToken
@@ -42,7 +42,7 @@ export class AuthService {
   }
 
   async login(user: IUser) {
-    const { username, avatar, intraId, email, intraToken } = user;
+    const { id, username, avatar, intraId, email, intraToken } = user;
     return {
       intraId,
       intraToken,

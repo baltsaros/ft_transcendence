@@ -16,6 +16,10 @@ export const AuthService = {
     const { data } = await instance.get<IUser>("auth/profile");
     if (data) return data;
   },
+  async update(userData: IUser): Promise<IUser | undefined> {
+    const { data } = await instance.patch<IUser>("user/" + userData['intraId'].toString(), userData);
+    if (data) return data;
+  },
 
-  // async getIntraKey(): 
+  // async getIntraKey():
 };

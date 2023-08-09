@@ -69,15 +69,42 @@ export class UserService {
     });
   }
 
-  async findOneById(intraId: number, profile: Profile, accessToken: string) {
+  async findOneById(id: number, profile: Profile, accessToken: string) {
+    const user = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    return user;
+  }
+
+  async findOneByIntraId(intraId: number, profile: Profile, accessToken: string) {
     const user = await this.userRepository.findOne({
       where: { intraId: intraId },
     });
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(intraId: number, updateUserDto: UpdateUserDto) {
+    const user = await this.findOneByIntraId(intraId, null, null);
+    if (user) {
+      const data = await this.userRepository.save({
+        username: updateUserDto.username,
+        intraId: updateUserDto.intraId,
+        email: updateUserDto.email,
+        avatar: updateUserDto.avatar,
+        intraToken: updateUserDto.intraToken,
+        rank: user.rank,
+        friends: user.friends,
+        status: user.status,
+        blocked: user.blocked,
+        wins: user.wins,
+        loses: user.loses,
+        createdAt: user.createdAt,
+        authentication: user.authentication,
+        id: user.id,
+      });
+      return data;
+    }
+    return user;
   }
 
   remove(id: number) {
