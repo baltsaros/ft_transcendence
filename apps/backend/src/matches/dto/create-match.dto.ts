@@ -1,6 +1,10 @@
 import { IsDecimal, IsNotEmpty, IsPositive } from "class-validator";
 
 export class CreateMatchDto {
+
+    @IsNotEmpty()
+    id: number;
+
     @IsNotEmpty()
     username: string;
 

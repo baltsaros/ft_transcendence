@@ -7,16 +7,15 @@ import { MatchService } from "../services/matches.service";
 export default function MatchHistory() {
 
     //state
-    const [matches] = useState<IMatch[]>([
-        {id: 1, score:4, scoreOpponent:3, opponent: "hdony"},
-        {id: 2, score:1, scoreOpponent:2, opponent: "abuzdin"},
-        {id: 3, score:2, scoreOpponent:7, opponent: "ejoo-tho"}
+    const [matches, setMatches] = useState<IMatch[] | undefined>([
+        {id: NaN, scoreUser:-1, scoreOpponent:-1, opponent: "undefined"},
       ])
 
     const getAllMatchForUser = async () => {
       try {
         const data =  await MatchService.getAllMatchForPlayer("jvander-");
         console.log(data);
+        setMatches(data)
       } catch (err: any) {
         const error = err.response?.data.message;
         toast.error(error.toString());

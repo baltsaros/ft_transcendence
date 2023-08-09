@@ -6,10 +6,10 @@ export class Match {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ManyToOne(() => User)
+    @Column()
     user: string;
 
-    @ManyToOne(() => User)
+    @Column()
     opponent: string;
 
     @Column()

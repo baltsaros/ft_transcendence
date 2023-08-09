@@ -22,6 +22,7 @@ export class MatchService {
         console.log("score = " + createMatchDto.scoreUser);
         console.log("score oppo = " + createMatchDto.scoreOpponent);
         const existUser = this.userService.findOne(createMatchDto.username);
+        
         if (!existUser)
             throw new BadRequestException("User not present in database.");
         const existOpponent = this.userService.findOne(createMatchDto.opponent);
@@ -39,6 +40,14 @@ export class MatchService {
 
     async findAllMatchForUser(username: string)
     {
-        return 'this get all matches';
+        return await this.matchRepository.find({
+            where:{
+                user: username,
+            }, 
+            order: {
+                id: "ASC"
+            },
+            
+        })
     }
 }

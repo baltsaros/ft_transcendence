@@ -1,4 +1,3 @@
-import { User } from ''
 
 export interface IUser {
   id: number;
@@ -60,7 +59,7 @@ export interface IResponseUserData {
 
 export interface IMatch {
   id: number;
-  score: number;
+  scoreUser: number;
   scoreOpponent: number;
  // @OneToOne(() => User)
   // @JoinTable()
