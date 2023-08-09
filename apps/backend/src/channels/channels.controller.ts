@@ -9,14 +9,7 @@ export class AddChannelController {
 
     @Post()
     async addChannel(@Body() channelData: IAddChannelsData): Promise<IResponseAddChannelData> {
-        await this.channelsService.addChannel(channelData);
-
-        const response: IResponseAddChannelData = {
-          status: true,
-          message: "Channel successfully created",
-        };
-        console.log(response.message);
-        return (response);
+        return await this.channelsService.addChannel(channelData);
     }
 
     @Get()

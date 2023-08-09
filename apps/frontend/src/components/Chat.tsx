@@ -1,28 +1,11 @@
 import ChatBar from "./ChatBar";
-// import ChatList from "./ChatList";
 
 function Chat() {
-    // state
+    /* STATE */
 
-    // type Message = {
-    //     senderId: string,
-    //     text: string,
-    // }
+    /* BEHAVIOR */
 
-    // const dummyData: Message[] = [
-    //     {
-    //         senderId: "hdony",
-    //         text: "hello"
-    //     },
-    //     {
-    //         senderId: "jvander",
-    //         text: "hey"
-    //     }
-    // ]
-
-    // behavior
-
-    // render
+    /* RENDER */
     /* <div> is a container to encapsulate jsx code */
     return (   
     <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
@@ -32,7 +15,6 @@ function Chat() {
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 </div>
                 <div className="mt-auto">
-                    {/* <ChatList /> */}
                     <ChatBar />
                 </div>
             </div>

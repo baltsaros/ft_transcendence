@@ -1,29 +1,32 @@
 import AddChannel from "./AddChannel";
 import { useEffect, useState } from 'react';
 import { instance } from '../api/axios.api'
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
+// import { useAppSelector } from "../store/hooks";
+// import { RootState } from "../store/store";
 import { IGetChannels } from "../types/types"
+import Cookies from "js-cookie";
 
 function Channels() {
     /* STATE */
-    const user = useAppSelector((state: RootState) => state.user.user);
+    // const user = useAppSelector((state: RootState) => state.user.user);
     const [data, setData] = useState([]);
-    console.log(user.username);
-
-
+    
     /* BEHAVIOR */
     useEffect(() => {
-        const channels: IGetChannels = {
-            username: user.username,
+        const user = Cookies.get('username');
+        if (user) {
+            const username: string = user;
+            const channels: IGetChannels = {
+                username: username,
+            }
+            console.log(channels.username);
+            const fetchData = async () => {
+                const result = await instance.get('channels', channels);
+                console.log (result.data);
+                setData(result.data);
+            }
+            fetchData();
         }
-        console.log(channels.username);
-        const fetchData = async () => {
-            const result = await instance.get('channels', channels);
-            console.log (result.data);
-            setData(result.data);
-        }
-        fetchData();
     }, []);
 
     /* RENDER */
@@ -41,9 +44,6 @@ function Channels() {
                         </div>
                         <div className="mt-auto">
                             <AddChannel/>
-                            <button
-                                className="text-black"
-                                onClick={test}>TEST</button>
                         </div>
                     </div>
                 </div>

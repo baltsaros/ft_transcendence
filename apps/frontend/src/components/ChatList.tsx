@@ -8,11 +8,11 @@ type Message = {
   };
 
 function ChatList({messageProp}: ChatListProps) {
-    // state
+    /* STATE */
 
-    // behavior
+    /* BEHAVIOR */
 
-    // render
+    /* RENDER */
     return (
         <div className="max-w-lg mx-auto">
         <div className="bg-gray-100 p-4 rounded-lg shadow-md">

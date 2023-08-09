@@ -15,7 +15,7 @@ function SimpleChat() {
     <div className="flex items-stretch justify-center">
         <Channels />
         <Chat />
-        <PlayersOnServer />
+        {/* <PlayersOnServer /> */}
     </div>
     );
 }

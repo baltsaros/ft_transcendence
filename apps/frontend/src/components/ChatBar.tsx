@@ -7,11 +7,11 @@ type Message = {
   };
 
 function ChatBar() {
-    // state
+    /* STATE */
     const [newmessage, setMessage] =  useState("");
     const [messageList, setMessageList] =  useState<Message[]>([]);
 
-    // behavior
+    /* BEHAVIOR */
     const handleClick = () => {
         const message = {
             senderId: "hdony",
@@ -25,7 +25,7 @@ function ChatBar() {
         setMessage(event.target.value);
     }
 
-    // render
+    /* RENDER */
     return (
         <div>
             <ChatList messageProp={messageList} />

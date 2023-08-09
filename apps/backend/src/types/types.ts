@@ -20,8 +20,7 @@ export interface IAddChannelsData {
 }
 
 export interface IResponseAddChannelData {
-  status: boolean;
-  message: string;
+  id: number;
 }
 
 export interface IGetChannels {

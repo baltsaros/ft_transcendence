@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { instance } from "../api/axios.api";
 import { IAddChannelsData} from "../types/types"
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
+import { setChannels } from "../store/channels/channelsSlice";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -16,6 +18,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const [isProtected, setIsProtected] = useState(false);
     const [channelPassword, setChannelPassword] = useState('');
     const user = useAppSelector((state: RootState) => state.user.user);
+    const dispatch = useDispatch();
 
     /* BEHAVIOR */
     const handleChannelName = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,9 +48,12 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
                 owner: user.username,
                 password: channelPassword,
             }
-            console.log(channelData.name);
+            // why here no : to define the type of the variable
             const response = await instance.post('channels', channelData);
-            console.log(response.data.message);
+            // why here do I use .data ?
+            const channelId = response.data.id;
+            dispatch(setChannels([channelId]));
+            console.log(response.data.id);
         } catch (error) {
             console.log("Error adding channel:", error);
         }

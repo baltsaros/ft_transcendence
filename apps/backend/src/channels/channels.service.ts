@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channels } from './channels.entity';
-import { IAddChannelsData, IGetChannels } from 'src/types/types';
+import { IAddChannelsData, IResponseAddChannelData ,IGetChannels } from 'src/types/types';
 import { UserService } from '../user/user.service'
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
@@ -23,13 +23,13 @@ export class ChannelsService {
             owner: user,
             password: channelData.password,
         });
-        console.log(channelData.name);
-        console.log(channelData.mode);
-        console.log(user.username);
-        console.log(channelData.password);
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
-        await this.channelsRepository.save(newChannel);
+       await this.channelsRepository.save(newChannel);
+       const response : IResponseAddChannelData = {
+           id: newChannel.id,
+       }
+        return (response);
     }
 
     async getChannel(username: string) {
