@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 
 import { Channels } from "src/channels/channels.entity";
+import { Match } from "src/matches/entities/matches.entity";
 
 @Entity()
 export class User {
@@ -49,8 +50,8 @@ export class User {
   status: string;
 
   // Change later
-  // @OneToMany()
-  // history: History[];
+  // @OneToMany(() => Match, (match) => match.user)
+  // matches: Match[];
 
   @ManyToMany(() => User)
   @JoinTable()

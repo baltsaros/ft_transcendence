@@ -13,11 +13,15 @@ import { AuthService } from "./auth/auth.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
+import { MatchService } from "./matches/match.service";
+import { MatchModule } from "./matches/match.module";
+import { MatchController } from "./matches/match.controller";
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
+    MatchModule,
     AddChannelModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),

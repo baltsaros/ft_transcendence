@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import { IUserPlayerProfileData } from "../types/types";
+import {  IUserPlayerProfileData } from "../types/types";
 
 export const PlayerService = {
 
@@ -7,5 +7,4 @@ export const PlayerService = {
     const { data } = await instance.get<IUserPlayerProfileData>("user/" + username);
     if (data) return data;
   },
-
 };
