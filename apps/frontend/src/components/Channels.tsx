@@ -10,6 +10,7 @@ function Channels() {
     /* STATE */
     // const user = useAppSelector((state: RootState) => state.user.user);
     const [data, setData] = useState([]);
+    // const [channelID, setChannelID] = useState('');
     
     /* BEHAVIOR */
     useEffect(() => {
@@ -24,11 +25,23 @@ function Channels() {
                 const result = await instance.get('channels', channels);
                 console.log (result.data);
                 setData(result.data);
-                // console.log(result.data);
+                console.log(result.data.name);
+                console.log(result.data.id);
             }
             fetchData();
         }
     }, []);
+
+    /* Why this syntax does not work ? */
+    // handleOpenChannel() => (
+
+    // )
+
+    /* Why =>{} and not () like w. map ? */
+    const handleOpenChannel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        
+
+    }
 
     /* RENDER */
     return (   
@@ -38,8 +51,11 @@ function Channels() {
                         <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="flex flex-col text-black space-y-4">
-                                {data.map((item, index) => (
-                                <button className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded" key={index}>{item}</button>))
+                                {data.map(({name, id}) => (
+                                <button
+                                 key={id} 
+                                 onClick={handleOpenChannel} 
+                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{name}</button>))
                                 }
                             </div>
                         </div>

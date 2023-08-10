@@ -39,10 +39,10 @@ export class ChannelsService {
                     username
                 }
             },
-        select: ['name'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
+        select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
     });
 
     /* Map takes an array of elements and transforms each element using the supplied function */
-    return channels.map(channels => channels.name);
+    return channels;
     }
 }

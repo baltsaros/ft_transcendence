@@ -27,6 +27,11 @@ export interface IGetChannels {
   username: string;
 }
 
+export interface IChannel {
+  name: string,
+  id: number,
+}
+
 export interface IResponseGetChannels {
-  channels: string[];
+  channels: IChannel[];
 }
