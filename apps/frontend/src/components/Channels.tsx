@@ -38,7 +38,7 @@ function Channels() {
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="text-black">
                                 <ul>
-                                    {data.map(name => <li>{name}</li>)}
+                                    {data.map(/*map param*/ (item, index) => (<button>item</button>)}
                                 </ul>
                             </div>
                         </div>
