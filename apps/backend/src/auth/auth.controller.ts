@@ -34,8 +34,8 @@ export class AuthController {
       sameSite: "none",
       secure: true,
     });
-    return res.redirect("http://localhost:5173/profile");
-    // return res.redirect("http://localhost:5173");
+    // return res.redirect("http://localhost:5173/profile");
+    return res.redirect("http://localhost:5173");
   }
 
   @Post("login")
