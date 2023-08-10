@@ -9,6 +9,7 @@ import {
   Response,
   UseGuards,
   Inject,
+  NotImplementedException,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
@@ -26,13 +27,15 @@ export class AuthController {
   @Get("redir")
   @UseGuards(FortyTwoAuthGuard)
   async fortyTwoAPI(@Request() req, @Response() res) {
+    // console.log('redir')
     const user = req.user.user;
     const jwt = await this.authService.login(user);
     res.cookie("jwt_token", jwt.access_token, {
       sameSite: "none",
       secure: true,
     });
-    return res.redirect("http://localhost:5173/");
+    // return res.redirect("http://localhost:5173/profile");
+    return res.redirect("http://localhost:5173");
   }
 
   @Post("login")
@@ -42,9 +45,12 @@ export class AuthController {
   }
 
   @Get("profile")
-  // @UseGuards(FortyTwoAuthGuard)
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req) {
-    return req.user;
+    // console.log('getProfile');
+    const intraId = req.user.intraId;
+    if (!intraId) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
+    const user = await this.authService.getProfile(intraId);
+    return user;
   }
 }

@@ -1,4 +1,3 @@
-
 export interface IUser {
   id: number;
   intraId: number;
@@ -20,19 +19,19 @@ export interface IUserUsername {
 }
 
 export interface IResponseUser {
-  _id?: number | undefined;
-  intraId: number | undefined;
-  username: string | undefined;
-  email: string | undefined;
-  intraToken: string | undefined;
-  authentication: boolean | undefined;
-  rank: number | undefined;
-  avatar: string | undefined;
+  id: number;
+  intraId: number;
+  username: string;
+  email: string;
+  intraToken: string;
+  authentication: boolean;
+  rank: number;
+  avatar: string;
 
   // @ManyToMany(() => User)
   // @JoinTable()
   // friends: User[];
-  status: string | undefined;
+  status: string;
   // Change later
   // @OneToMany()
   // history: History[];
@@ -40,9 +39,9 @@ export interface IResponseUser {
   // @ManyToMany(() => User)
   // @JoinTable()
   // blocked: User[];
-  wins: number | undefined;
-  loses: number | undefined;
-  createdAt: Date | undefined;
+  wins: number;
+  loses: number;
+  createdAt: Date;
 }
 
 //Interface for the playerProfile

@@ -2,8 +2,9 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../pages/Layout";
 import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
-import Auth from "../pages/Auth";
 import Player from "../pages/Player";
+import Profile from "../pages/Profile";
+import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 
 export const router = createBrowserRouter([
@@ -17,16 +18,28 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "auth",
-        element: <Auth />,
+        path: "player/:username",
+        element: (
+          <ProtectedRoute>
+            <Player />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: "player/:username",
-        element: <Player />,
+        path: "profile",
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "chat",
-        element: <Chat />,
+        element: (
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
