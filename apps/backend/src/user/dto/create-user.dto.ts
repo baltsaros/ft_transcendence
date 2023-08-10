@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
+import { PrimaryGeneratedColumn } from "typeorm";
 
 export class CreateUserDto {
   @IsNotEmpty()

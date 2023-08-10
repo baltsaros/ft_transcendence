@@ -11,11 +11,11 @@ import ftLogo from "../assets/42_Logo.svg";
 import Cookies from "js-cookie";
 
 const Header: FC = () => {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  // const [username, setUsername] = useState(user?.username);
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  
   const logoutHandler = () => {
     dispatch(logout());
     removeTokenFromLocalStorage("token");
@@ -24,6 +24,12 @@ const Header: FC = () => {
     Cookies.remove("username")
     navigate("/");
   };
+  const user = useAppSelector((state: RootState) => state.user.user);
+
+  // useEffect(() => {
+  // console.log("change");
+  // // const user = useAppSelector((state: RootState) => state.user.user);
+  // }, [user]);
 
   // const UserComponent = async () => {
   //   // const [username, setUsername] = useState('');

@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 
 const Home: FC = () => {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  // const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);

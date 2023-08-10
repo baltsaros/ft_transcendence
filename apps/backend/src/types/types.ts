@@ -2,10 +2,10 @@
 import { Profile } from "passport-42"
 
 export interface IUser {
-  id: string;
+  id: number;
   username: string;
   avatar: string;
-  intraId: string;
+  intraId: number;
   email: string;
   intraToken: string;
 }
