@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useState } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import { NavLink } from "react-router-dom";
@@ -6,14 +6,25 @@ import jwtDecode from "jwt-decode";
 import { RootState } from "../store/store";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
+import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAuth();
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);
-  // const decoded = jwtDecode<any>(cookies.jwt_token);
-  // console.log(decoded);
+  const token = Cookies.get('jwt_token');
+ 
+
+
+  useEffect(() => {
+    if (token){
+      const decoded = jwtDecode<any>(Cookies.get('jwt_token')!)
+      if (decoded)
+        Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
+    }
+  },  [])
 
   return (
     <>
@@ -39,6 +50,11 @@ const Home: FC = () => {
             count is {count}
           </button>
           <p className="read-the-docs">Click on the 42 to be redirected...</p>
+          <div className="flex h-screen items-center justify-center">
+            <Link to="/chat">
+              <button className="flex flex-col px-40 py-20 bg-gray-500 text-black text-4xl">GO TO CHAT</button>
+            </Link>
+          </div>
         </div>
       )}
     </>

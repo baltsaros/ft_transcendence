@@ -1,9 +1,11 @@
+
 import { Module } from "@nestjs/common";
 import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
+import { AddChannelModule } from "./channels/channel.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
@@ -16,6 +18,7 @@ import { DataStorageService } from "./helpers/data-storage.service";
   imports: [
     UserModule,
     AuthModule,
+    AddChannelModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
@@ -35,7 +38,6 @@ import { DataStorageService } from "./helpers/data-storage.service";
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),
-    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, DataStorageService],

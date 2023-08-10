@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { RootState } from "../store/store";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
@@ -21,6 +21,7 @@ const Header: FC = () => {
     removeTokenFromLocalStorage("token");
     toast.success("Bye!");
     Cookies.remove("jwt_token");
+    Cookies.remove("username")
     navigate("/");
   };
   const user = useAppSelector((state: RootState) => state.user.user);
@@ -49,7 +50,7 @@ const Header: FC = () => {
         style={{ width: "70px", height: "70px" }}
       />
       <NavLink to={"/"} className="py-2 text-white/50 hover:text-white">
-        19 POGN GAME
+        19 PONG GAME
       </NavLink>
       {isAuth && (
         <nav className="ml-auto mr-10">
@@ -67,7 +68,7 @@ const Header: FC = () => {
             </li>
             <li>
               <NavLink
-                to={"player"}
+                to={"player/" + Cookies.get('username')}
                 className={({ isActive }) =>
                   isActive
                     ? "py-2 text-white hover:text-white/50"

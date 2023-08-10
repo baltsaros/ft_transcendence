@@ -5,6 +5,7 @@ import Home from "../pages/Home";
 import Player from "../pages/Player";
 import Profile from "../pages/Profile";
 import { ProtectedRoute } from "../components/ProtectedRoute";
+import Chat from "../pages/ChatPage";
 
 export const router = createBrowserRouter([
   {
@@ -17,7 +18,7 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "player",
+        path: "player/:username",
         element: (
           <ProtectedRoute>
             <Player />
@@ -29,6 +30,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <Profile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "chat",
+        element: (
+          <ProtectedRoute>
+            <Chat />
           </ProtectedRoute>
         ),
       },

@@ -1,6 +1,7 @@
 {
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.4",
+    "@types/js-cookie": "^3.0.3",
     "@types/passport-local": "^1.0.35",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.27",
@@ -28,6 +29,7 @@
     "axios": "^1.4.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "express-session": "^1.17.3",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^3.1.2",
     "localforage": "^1.10.0",

@@ -4,17 +4,23 @@ import {
   Entity,
   ManyToMany,
   OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   JoinTable,
 } from "typeorm";
+
+import { Channels } from "src/channels/channels.entity";
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    nullable: true,
+   })
   intraId: number;
 
   @Column({ unique: true })
@@ -23,7 +29,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column()
+  @Column({nullable: true})
   intraToken: string;
 
   @Column()
@@ -58,4 +64,10 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(()=> Channels, channels => channels.owner,
+  {
+    cascade: true
+  })
+  channel_owned: Channels[];
 }

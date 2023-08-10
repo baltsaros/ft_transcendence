@@ -1,4 +1,4 @@
-import { User } from "src/user/entities/user.entity";
+
 import { Profile } from "passport-42"
 
 export interface IUser {
@@ -11,3 +11,15 @@ export interface IUser {
 }
 
 export type Done = (err: Error, profile: Profile) => void;
+
+export interface IAddChannelsData {
+  name: string;
+  mode: string;
+  owner: string;
+  password: string,
+}
+
+export interface IResponseAddChannelData {
+  status: boolean;
+  message: string;
+}

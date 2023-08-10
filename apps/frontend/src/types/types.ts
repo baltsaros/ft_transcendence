@@ -42,10 +42,10 @@ export interface IResponseUser {
 
 //Interface for the playerProfile
 export interface IUserPlayerProfileData {
-  username: string;
-  wins: number;
-  losses: number;
-  rank: number;
+  username: string | undefined;
+  wins: number | undefined;
+  loses: number | undefined;
+  rank: number | undefined;
   // @OneToMany(() => IMatch)
   // @JoinTable()
   // matches: IMatch[];
@@ -64,4 +64,16 @@ export interface IMatch {
   // @JoinTable()
   // opponent: User;
   opponent: string;
+}
+
+export interface IAddChannelsData {
+  name: string;
+  mode: string;
+  owner: string;
+  password: string,
+}
+
+export interface IResponseAddChannelData {
+  status: boolean;
+  message: string;
 }
