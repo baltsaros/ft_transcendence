@@ -10,7 +10,7 @@ function Channels() {
     /* STATE */
     // const user = useAppSelector((state: RootState) => state.user.user);
     const [data, setData] = useState([]);
-    // const [channelID, setChannelID] = useState('');
+    const [channelId, setChannelId] = useState('');
     
     /* BEHAVIOR */
     useEffect(() => {
@@ -32,15 +32,12 @@ function Channels() {
         }
     }, []);
 
-    /* Why this syntax does not work ? */
-    // handleOpenChannel() => (
-
-    // )
-
-    /* Why =>{} and not () like w. map ? */
-    const handleOpenChannel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    /* Why =>{} and not () like w. map ? Because it is JavaScript not JSX here */
+    const handleOpenChannel = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, channelId: number) => {
+        event.preventDefault();
+        console.log(channelId);
+        // get request 
         
-
     }
 
     /* RENDER */
@@ -51,12 +48,16 @@ function Channels() {
                         <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="flex flex-col text-black space-y-4">
-                                {data.map(({name, id}) => (
-                                <button
-                                 key={id} 
-                                 onClick={handleOpenChannel} 
-                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{name}</button>))
-                                }
+                                {data.map(({name, id}) => {
+                                    console.log('channel id:', id);
+                                    return (
+                                        <button
+                                         key={id}
+                                         /* use arrow function to pass parameter + explicitly passing event to the function */
+                                         onClick={event => handleOpenChannel(event, id)} 
+                                         className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{name}</button>
+                                         );
+                                    })}
                             </div>
                         </div>
                         <div className="mt-auto">
