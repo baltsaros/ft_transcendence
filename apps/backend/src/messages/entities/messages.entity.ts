@@ -4,13 +4,15 @@ import {
     PrimaryGeneratedColumn,
     Column,
     ManyToOne,
-    JoinColumn
 } from 'typeorm'
 
 @Entity()
 export class Messages {
     @PrimaryGeneratedColumn()
     id: number;
+    
+    @ManyToOne(() => Channels, channels => channels.channelMessages)
+    channels: Channels;
 
     // @Column()
     // content: string;
@@ -18,6 +20,4 @@ export class Messages {
     // @Column()
     // user: string;
 
-    // @ManyToOne(() => Channels, channels => channels.channel_messages)
-    // channels: Channels;
 }

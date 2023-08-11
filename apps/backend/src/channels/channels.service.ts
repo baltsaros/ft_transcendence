@@ -42,7 +42,17 @@ export class ChannelsService {
         select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
     });
 
-    /* Map takes an array of elements and transforms each element using the supplied function */
     return channels;
+    }
+
+    /* for the moment this query retrieves all fields fo the channel entity
+    ** check w. querybuilder if it can be lighter */
+    async getChannelById(channelId: number) {
+        const channelMessages = await this.channelsRepository.find
+        (
+            {where: { id: channelId },
+            relations: ['channelMessages'],
+        })
+        return channelMessages;
     }
 }

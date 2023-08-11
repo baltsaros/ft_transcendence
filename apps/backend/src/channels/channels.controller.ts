@@ -18,4 +18,12 @@ export class AddChannelController {
         const name = data.username;
         return await (this.channelsService.getChannel(name))
     }
+
+    @Get(':channelId')
+    async getChannelById(@Param('channelId') channelId: number) {
+        console.log('channelId BE:', channelId)
+        return await this.channelsService.getChannelById(channelId);
+
+    }
+
 }

@@ -25,6 +25,12 @@ export class Channels {
     @Column({nullable: true})
     password: string;
 
+    @OneToMany(()=> Messages, messages => messages.channels,
+    {
+        cascade: true
+    })
+    channelMessages: Messages[];
+
     // @Column("simple-array", {array: true})
     // administrators: string[];
 
@@ -37,9 +43,4 @@ export class Channels {
     // @Column("simple-array", {array: true})
     // banned_users: string[];
 
-    // @OneToMany(()=> Messages, messages => messages.channels,
-    // {
-    //     cascade: true
-    // })
-    // channel_messages: Messages[];
 } 
