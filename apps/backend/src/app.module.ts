@@ -13,6 +13,7 @@ import { AuthService } from "./auth/auth.service";
 import { PassportModule } from "@nestjs/passport";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
+import { ChatModule } from "./chat/chat.module";
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { DataStorageService } from "./helpers/data-storage.service";
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),
+    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, DataStorageService],
