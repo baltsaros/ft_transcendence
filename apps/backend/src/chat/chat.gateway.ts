@@ -15,25 +15,4 @@ export class ChatGateway {
     // Need to fetch all user id of the same channel except sender's id ?
     // Persists the message to the db (through service)
   }
-
-  @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
-  }
-
-  @SubscribeMessage('join')
-  joinChannel(
-    @MessageBody('name') name: string, 
-    @ConnectedSocket() client: Socket) {
-      return this.chatService.identify(name, client.id);
-    }
-
-  @SubscribeMessage('typing')
-  async typing(
-    @MessageBody('isTyping') isTyping: boolean,
-    @ConnectedSocket() client:Socket) {
-      const name = await this.chatService.getClientName(client.id);
-
-      client.broadcast.emit('typing', { name, isTyping});
-    }
 }

@@ -12,14 +12,14 @@ export interface IUser {
 
 export type Done = (err: Error, profile: Profile) => void;
 
-export interface IAddChannelsData {
+export interface IChannelsData {
   name: string;
   mode: string;
   owner: string;
   password: string,
 }
 
-export interface IResponseAddChannelData {
+export interface IResponseChannelData {
   id: number;
 }
 
@@ -35,3 +35,4 @@ export interface IChannel {
 export interface IResponseGetChannels {
   channels: IChannel[];
 }
+

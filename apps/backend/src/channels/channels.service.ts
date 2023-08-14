@@ -1,23 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Channels } from './channels.entity';
-import { IAddChannelsData, IResponseAddChannelData ,IGetChannels } from 'src/types/types';
+import { Channels } from './entities/channels.entity';
+import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
 import { UserService } from '../user/user.service'
+import { userChannelService } from 'src/userChannel/userChannel.service';
+import { userChannel } from 'src/userChannel/userChannel.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelsService {
     constructor( // ChannelsService constructor
         @InjectRepository(Channels) // dependency injection of a TypeORM repository, used to inject a rep. of a specific entity (here channels)
         private readonly channelsRepository: Repository<Channels>, // perform CRUD operations on the entity
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly userChannelService: userChannelService
     ) {}
 
-    async addChannel(channelData: IAddChannelsData) {
+    async createChannel(channelData: IChannelsData) {
         /* The create method TypeOrm does not involve any interactions with the database
         ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.*/
        const user = await this.userService.findOne(channelData.owner);
-        const newChannel = this.channelsRepository.create({
+       const newChannel = this.channelsRepository.create({
             name: channelData.name,
             mode: channelData.mode,
             owner: user,
@@ -26,10 +30,15 @@ export class ChannelsService {
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
        await this.channelsRepository.save(newChannel);
-       const response : IResponseAddChannelData = {
+       const response : IResponseChannelData = {
            id: newChannel.id,
        }
-        return (response);
+       const UserChannel = new userChannel();
+       UserChannel.user = newChannel.owner;
+       UserChannel.channels = newChannel;
+       await this.userChannelService.createUserChannel(UserChannel)
+       
+       return (response);
     }
 
     async getChannel(username: string) {

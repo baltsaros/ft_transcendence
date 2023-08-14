@@ -1,5 +1,6 @@
 import { Messages } from 'src/messages/entities/messages.entity';
 import { User } from 'src/user/entities/user.entity';
+import { userChannel } from 'src/userChannel/userChannel.entity'
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -8,6 +9,7 @@ import {
     ManyToOne,
 } from 'typeorm';
 
+// Entity is a TypeScript class that maps to a database table
 @Entity()
 export class Channels {
     @PrimaryGeneratedColumn()
@@ -19,7 +21,7 @@ export class Channels {
     @Column()
     mode: string;
     
-    @ManyToOne(() => User, user =>  user.channel_owned)
+    @ManyToOne(() => User, user =>  user.channels)
     owner: User;
 
     @Column({nullable: true})
@@ -30,6 +32,9 @@ export class Channels {
         cascade: true
     })
     channelMessages: Messages[];
+
+    @ManyToOne(() => userChannel, userChannels => userChannels.channels)
+    userChannels: userChannel[]; 
 
     // @Column("simple-array", {array: true})
     // administrators: string[];

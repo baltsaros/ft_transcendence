@@ -66,14 +66,14 @@ export interface IMatch {
   opponent: string;
 }
 
-export interface IAddChannelsData {
+export interface IChannelsData {
   name: string;
   mode: string;
   owner: string;
   password: string;
 }
 
-export interface IResponseAddChannelData {
+export interface IResponseChannelData {
   id: number;
 }
 

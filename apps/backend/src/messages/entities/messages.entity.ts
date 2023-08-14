@@ -1,4 +1,4 @@
-import { Channels } from 'src/channels/channels.entity';
+import { Channels } from 'src/channels/entities/channels.entity';
 import {
     Entity,
     PrimaryGeneratedColumn,

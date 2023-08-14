@@ -5,7 +5,7 @@ import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
-import { AddChannelModule } from "./channels/channel.module";
+import { ChannelModule } from "./channels/channel.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
@@ -19,7 +19,7 @@ import { ChatModule } from "./chat/chat.module";
   imports: [
     UserModule,
     AuthModule,
-    AddChannelModule,
+    ChannelModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { instance } from "../api/axios.api";
-import { IAddChannelsData} from "../types/types"
+import { IChannelsData} from "../types/types"
 import { useAppSelector } from "../store/hooks";
 import { RootState } from "../store/store";
 import { setChannels } from "../store/channels/channelsSlice";
@@ -42,15 +42,13 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const handleOk = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
             event.preventDefault();
-            const channelData: IAddChannelsData = {
+            const channelData: IChannelsData = {
                 name: channelName,
                 mode: channelMode,
                 owner: user.username,
                 password: channelPassword,
             }
-            // why here no : to define the type of the variable
             const response = await instance.post('channels', channelData);
-            // why here do I use .data ?
             const channelId = response.data.id;
             dispatch(setChannels([channelId]));
             console.log(response.data.id);

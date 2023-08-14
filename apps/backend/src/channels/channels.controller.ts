@@ -1,15 +1,15 @@
 import { Controller, Post, Get, Body, Param, Query} from '@nestjs/common';
 import { ChannelsService } from './channels.service';
-import { IAddChannelsData, IResponseAddChannelData, IGetChannels } from 'src/types/types';
+import { IChannelsData, IResponseChannelData, IGetChannels } from 'src/types/types';
 
 
 @Controller('channels')
-export class AddChannelController {
+export class ChannelController {
     constructor(private readonly channelsService: ChannelsService) {}
 
     @Post()
-    async addChannel(@Body() channelData: IAddChannelsData): Promise<IResponseAddChannelData> {
-        return await this.channelsService.addChannel(channelData);
+    async addChannel(@Body() channelData: IChannelsData): Promise<IResponseChannelData> {
+        return await this.channelsService.createChannel(channelData);
     }
 
     @Get()
