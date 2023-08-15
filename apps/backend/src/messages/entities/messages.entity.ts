@@ -1,4 +1,4 @@
-import { Channels } from 'src/channels/entities/channels.entity';
+import { Channel } from 'src/channels/channels.entity';
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -11,8 +11,8 @@ export class Messages {
     @PrimaryGeneratedColumn()
     id: number;
     
-    @ManyToOne(() => Channels, channels => channels.channelMessages)
-    channels: Channels;
+    @ManyToOne(() => Channel, channels => channels.channelMessages)
+    channel: Channel;
 
     // @Column()
     // content: string;

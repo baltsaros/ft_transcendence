@@ -1,27 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Channels } from './entities/channels.entity';
+import { Channel } from './channels.entity';
 import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
-import { UserService } from '../user/user.service'
-import { userChannelService } from 'src/userChannel/userChannel.service';
-import { userChannel } from 'src/userChannel/userChannel.entity';
+import { UserService } from '../user/user.service';
 import { User } from 'src/user/entities/user.entity';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
-export class ChannelsService {
-    constructor( // ChannelsService constructor
-        @InjectRepository(Channels) // dependency injection of a TypeORM repository, used to inject a rep. of a specific entity (here channels)
-        private readonly channelsRepository: Repository<Channels>, // perform CRUD operations on the entity
+export class ChannelService {
+    constructor( // ChannelService constructor
+        @InjectRepository(Channel) // dependency injection of a TypeORM repository, used to inject a rep. of a specific entity (here channels)
+        private readonly channelRepository: Repository<Channel>, // perform CRUD operations on the entity
         private readonly userService: UserService,
-        private readonly userChannelService: userChannelService
+        // private readonly userChannelService: userChannelService
     ) {}
 
     async createChannel(channelData: IChannelsData) {
         /* The create method TypeOrm does not involve any interactions with the database
         ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.*/
        const user = await this.userService.findOne(channelData.owner);
-       const newChannel = this.channelsRepository.create({
+       const newChannel = this.channelRepository.create({
             name: channelData.name,
             mode: channelData.mode,
             owner: user,
@@ -29,20 +27,33 @@ export class ChannelsService {
         });
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
-       await this.channelsRepository.save(newChannel);
+       await this.channelRepository.save(newChannel);
        const response : IResponseChannelData = {
            id: newChannel.id,
        }
-       const UserChannel = new userChannel();
-       UserChannel.user = newChannel.owner;
-       UserChannel.channels = newChannel;
-       await this.userChannelService.createUserChannel(UserChannel)
+    user.channels.push(newChannel);
+    await this.channelRepository.save(user);
+       //    newChannel.users = [user];
+    //    const UserChannel = new userChannel();
+    //    UserChannel.user = newChannel.owner;
+    //    UserChannel.channel = newChannel;
+    //    await this.userChannelService.createUserChannel(UserChannel)
        
        return (response);
     }
 
+    async findOne(channelId: number)
+    {
+        return await this.channelRepository.findOne
+        (
+            { 
+                where: {id: channelId }
+            }
+        );
+    }
+
     async getChannel(username: string) {
-        const channels = await this.channelsRepository.find({
+        const channels = await this.channelRepository.find({
             where: {
                 owner:{
                     username
@@ -57,7 +68,7 @@ export class ChannelsService {
     /* for the moment this query retrieves all fields fo the channel entity
     ** check w. querybuilder if it can be lighter */
     async getChannelById(channelId: number) {
-        const channelMessages = await this.channelsRepository.find
+        const channelMessages = await this.channelRepository.find
         (
             {where: { id: channelId },
             relations: ['channelMessages'],

@@ -1,17 +1,19 @@
 import { Messages } from 'src/messages/entities/messages.entity';
 import { User } from 'src/user/entities/user.entity';
-import { userChannel } from 'src/userChannel/userChannel.entity'
+// import { userChannel } from 'src/userChannel/userChannel.entity'
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     OneToMany,
     ManyToOne,
+    ManyToMany,
+    JoinTable,
 } from 'typeorm';
 
 // Entity is a TypeScript class that maps to a database table
 @Entity()
-export class Channels {
+export class Channel {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -27,14 +29,18 @@ export class Channels {
     @Column({nullable: true})
     password: string;
 
-    @OneToMany(()=> Messages, messages => messages.channels,
+    @OneToMany(()=> Messages, messages => messages.channel,
     {
         cascade: true
     })
     channelMessages: Messages[];
 
-    @ManyToOne(() => userChannel, userChannels => userChannels.channels)
-    userChannels: userChannel[]; 
+    // @ManyToOne(() => userChannel, userChannels => userChannels.channel)
+    // userChannels: userChannel[]; 
+
+    @ManyToMany(() => User, user => user.channel)
+    @JoinTable()
+    users: User[];
 
     // @Column("simple-array", {array: true})
     // administrators: string[];

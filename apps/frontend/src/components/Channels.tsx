@@ -3,8 +3,9 @@ import { useEffect, useState } from 'react';
 import { instance } from '../api/axios.api'
 // import { useAppSelector } from "../store/hooks";
 // import { RootState } from "../store/store";
-import { IGetChannels } from "../types/types"
+import { IChannel, IGetChannels } from "../types/types"
 import Cookies from "js-cookie";
+import socket from "../services/socket.service"
 
 function Channels() {
     // const user = useAppSelector((state: RootState) => state.user.user);
@@ -17,6 +18,7 @@ function Channels() {
     /* useEffect() hook: 2nd arg. is [] so that useEffect is executed only once, when the React component is mounted
     ** later it should be changed as the useEffect should be called when a new channel is added 
     ** setData set the fetched data into the local state */
+    const user = Cookies.get('username');
     useEffect(() => {
         const user = Cookies.get('username');
         if (user) {
@@ -33,12 +35,14 @@ function Channels() {
         }
     }, []);
 
-    /* Why =>{} and not () like w. map on rendering ? Because it is JavaScript not JSX here */
-    const handleOpenChannel = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, channelId: number) => {
+    const handleJoinChannel = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, channelId: number) => {
         event.preventDefault();
-        const response = await instance.get("channels/" + channelId);
-        console.log(response.data);
+        const data: IChannel = {
+            name: user,
+            id: channelId,
         }
+        socket.emit("join", data);
+    }
 
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
@@ -53,7 +57,7 @@ function Channels() {
                                 <button
                                 key={id}
                                 /* use arrow function to pass parameter + explicitly passing event to the function */
-                                onClick={event => handleOpenChannel(event, id)} 
+                                onClick={event => handleJoinChannel(event, id)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{name}</button>)
                                 )
                                 }

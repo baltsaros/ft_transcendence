@@ -10,8 +10,7 @@ import {
   JoinTable,
 } from "typeorm";
 
-import { Channels } from "src/channels/entities/channels.entity";
-import { userChannel } from "src/userChannel/userChannel.entity";
+import { Channel } from "src/channels/channels.entity";
 
 @Entity()
 export class User {
@@ -66,13 +65,14 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(()=> Channels, channels => channels.owner,
+  @OneToMany(()=> Channel, channels => channels.owner,
   {
     cascade: true
   })
-  channels: Channels[];
-  
-  @OneToMany(() => userChannel, userChannel => userChannel.user)
-  userChannels: userChannel[];
+  channels: Channel[];
+
+  @ManyToMany(() => Channel, channel => channel.users)
+  @JoinTable()
+  channel: Channel[];
 }
 
