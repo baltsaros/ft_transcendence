@@ -1,8 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, Res, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { randomUUID } from 'crypto';
+import Path = require('path');
+
+const storage = {
+  storage: diskStorage({
+    destination: 'src/uploads/avatars',
+    filename: (req, file, cb) => {
+      const filename: string = "avatar-" + randomUUID();
+      const extension: string = Path.parse(file.originalname).ext;
+      cb(null, `${filename}${extension}`)
+    }
+  })
+}
 
 @Controller('user')
 export class UserController {
@@ -34,5 +49,19 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
+  }
+
+  @Post('upload/:id')
+  @UseInterceptors(FileInterceptor('file', storage))
+  @UseGuards(JwtAuthGuard)
+  uploadAvatar(@Req() req, @Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    console.log('back ' + file.filename);
+    return file;
+  }
+
+  @Get('avatars/:path')
+  async getAvatar(@Param('path') avatar, @Res() res) {
+    // console.log('getAvatar: ' + avatar);
+    res.sendFile("/avatars/" + avatar, {root: './src/uploads'});
   }
 }
