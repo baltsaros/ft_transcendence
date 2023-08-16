@@ -46,13 +46,15 @@ const Home: FC = () => {
             <img src={ftLogo} className="logo" alt="42 logo" />
           </a>
           <h1>Under construction...</h1>
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
+		  <div className="flex items-center justify-center">
+		    <Link to="/game">
+              <button className="flex flex-col px-20 py-20 bg-green-800 text-black text-4xl">Find a game</button>
+            </Link>
+		  </div>
           <p className="read-the-docs">Click on the 42 to be redirected...</p>
           <div className="flex h-screen items-center justify-center">
             <Link to="/chat">
-              <button className="flex flex-col px-40 py-20 bg-gray-500 text-black text-4xl">GO TO CHAT</button>
+              <button className="flex flex-col px-20 py-20 bg-gray-500 text-black text-4xl">GO TO CHAT</button>
             </Link>
           </div>
         </div>
