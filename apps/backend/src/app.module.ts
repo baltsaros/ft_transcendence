@@ -20,6 +20,7 @@ import { ChatModule } from "./chat/chat.module";
     UserModule,
     AuthModule,
     ChannelModule,
+    ChatModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
@@ -39,7 +40,6 @@ import { ChatModule } from "./chat/chat.module";
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),
-    ChatModule
   ],
   controllers: [AppController],
   providers: [AppService, AuthService, JwtService, DataStorageService],

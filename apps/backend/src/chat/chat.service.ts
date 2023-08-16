@@ -11,6 +11,7 @@ export class ChatService {
         @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>
     ) {}
     async JoinChannel(user: User, channel: Channel) {
+        console.log(user);
         channel.users.push(user);
         await this.channelRepository.save(channel);
     }

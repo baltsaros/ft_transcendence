@@ -31,7 +31,9 @@ export class ChannelService {
        const response : IResponseChannelData = {
            id: newChannel.id,
        }
-    user.channels.push(newChannel);
+    console.log('User:', user);
+    console.log('New Channel:', newChannel);
+    user.channel.push(newChannel);
     await this.channelRepository.save(user);
        //    newChannel.users = [user];
     //    const UserChannel = new userChannel();
