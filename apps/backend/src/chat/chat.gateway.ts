@@ -1,4 +1,4 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer} from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { UserService } from '../user/user.service'
 import { ChannelService } from 'src/channels/channels.service';
@@ -6,20 +6,51 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io'
 import { JoinChannelDto } from './dto/join-channel.dto';
 
-@WebSocketGateway({
-  cosrs: {
-    origin: '*',
-  },
-})
-export class ChatGateway {
-  constructor(
-    private readonly chatService: ChatService,
-    private readonly userService: UserService,
-    private readonly channelService: ChannelService,
-    ) {console.log("2");}
-    @WebSocketServer()
-    server: Server;
+// @WebSocketGateway({
+//   cosrs: {
+//     origin: '*',
+//   },
+// })
+
+// @WebSocketGateway({
+// 	cors: {
+// 		origin: 'http://localhost:5173/chat',
+// 		credentials: true
+// 	}},)
+// export class ChatGateway {
+//   @WebSocketServer()
+//   server: Server;
+
+//   @SubscribeMessage('test')
+//   handleTestEvent(client: any, data: any) {
+//     console.log(data);
+//   }
+// }
+
+@WebSocketGateway()
+export class ChatGateway implements OnGatewayConnection {
+  @WebSocketServer()
+  server: Server;
+
+  handleConnection(client: Socket) {
+    console.log(`Client connected: ${client.id}`);
+    client.emit('testEvent', 'Hello from server');
   }
+}
+
+// export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+//   @WebSocketServer() server: Server;
+
+//   handleConnection(client: any) {
+//     // Handle connection event
+//   }
+
+//   handleDisconnect(client: any) {
+//     // Handle disconnection event
+//   }
+
+
+//   }
   
   
   /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 

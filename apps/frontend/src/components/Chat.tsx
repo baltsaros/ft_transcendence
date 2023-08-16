@@ -1,9 +1,31 @@
 import ChatBar from "./ChatBar";
+import io from 'socket.io-client';
+import { useEffect } from 'react';
 
 function Chat() {
     /* STATE */
 
     /* BEHAVIOR */
+    useEffect(() => {
+        // alert('alert');
+        const socket = io('http://localhost:5173'); // Replace with your server URL
+    
+        socket.on('connect', () => {
+          console.log('Connected to WebSocket');
+        });
+
+        socket.on('testEvent', (data) => {
+            console.log('Received test event:', data);
+          });
+
+        socket.on('disconnect', () => {
+          console.log('Disconnected from WebSocket');
+        });
+    
+        return () => {
+          socket.disconnect();
+        };
+      }, []);
 
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */

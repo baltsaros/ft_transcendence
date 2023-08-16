@@ -5,7 +5,7 @@ import { instance } from '../api/axios.api'
 // import { RootState } from "../store/store";
 import { IChannel, IGetChannels } from "../types/types"
 import Cookies from "js-cookie";
-import socket from "../services/socket.service"
+import SocketService from "../services/socket.service"
 
 function Channels() {
     // const user = useAppSelector((state: RootState) => state.user.user);
@@ -41,7 +41,8 @@ function Channels() {
             name: user,
             id: channelId,
         }
-        socket.emit("join", data);
+        // console.log("emit event");
+        // SocketService.emit("join", data);
     }
 
     /* RENDER */

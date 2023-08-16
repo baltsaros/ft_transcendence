@@ -14,6 +14,7 @@ import { PassportModule } from "@nestjs/passport";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { ChatModule } from "./chat/chat.module";
+import { ChatGateway } from "./chat/chat.gateway";
 
 @Module({
   imports: [
@@ -42,6 +43,6 @@ import { ChatModule } from "./chat/chat.module";
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, DataStorageService],
+  providers: [AppService, AuthService, JwtService, DataStorageService, ChatGateway],
 })
 export class AppModule {}

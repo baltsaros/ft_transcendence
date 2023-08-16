@@ -5,13 +5,13 @@ class SocketService implements ISocketService {
     socket: Socket;
 
     constructor() {
-        this.socket = io('http://localhost:3000');
+        this.socket = io('http://localhost:5173');
         this.socket.on('connect', () => {
             console.log("Connect to WebSocket server");
         })
     }
 
-    /* Definin method to emit an event to the server */
+    /* Defining method to emit an event to the server */
     emit(event: string, data: any) {
         this.socket.emit(event, data);
     }
