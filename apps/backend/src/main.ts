@@ -1,12 +1,12 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
-import { WsAdapter } from '@nestjs/platform-ws';
+// import { WsAdapter } from '@nestjs/platform-ws';
 import * as session from "express-session";
 import * as passport from "passport";
 
 async function bootstrap() {
+  console.log('Starting NestJS server...');
   const app = await NestFactory.create(AppModule);
-  app.useWebSocketAdapter(new WsAdapter(app));
   app.setGlobalPrefix("/api");
   app.enableCors();
   app.use(

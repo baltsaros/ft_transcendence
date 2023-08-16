@@ -29,7 +29,7 @@ function Channels() {
             const fetchData = async () => {
                 const result = await instance.get('channels', channels);
                 setData(result.data);
-                console.log(result.data);
+                // console.log(result.data);
             }
             fetchData();
         }
