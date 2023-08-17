@@ -1,25 +1,40 @@
-import { Controller, Get, Req, Res, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { randomUUID } from 'crypto';
-import Path = require('path');
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UsePipes,
+  ValidationPipe,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+} from "@nestjs/common";
+import { UserService } from "./user.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import { randomUUID } from "crypto";
+import Path = require("path");
 
 const storage = {
   storage: diskStorage({
-    destination: 'src/uploads/avatars',
+    destination: "src/uploads/avatars",
     filename: (req, file, cb) => {
       const filename: string = "avatar-" + randomUUID();
       const extension: string = Path.parse(file.originalname).ext;
-      cb(null, `${filename}${extension}`)
-    }
-  })
-}
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
-@Controller('user')
+@Controller("user")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -34,34 +49,38 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get(':name')
-  findOne(@Param('name') name: string) {
+  @Get(":name")
+  findOne(@Param("name") name: string) {
     return this.userService.findOne(name);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string) {
+  remove(@Param("id") id: string) {
     return this.userService.remove(+id);
   }
 
-  @Post('upload/:id')
-  @UseInterceptors(FileInterceptor('file', storage))
+  @Post("upload/:id")
+  @UseInterceptors(FileInterceptor("file", storage))
   @UseGuards(JwtAuthGuard)
-  uploadAvatar(@Req() req, @Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
-    console.log('back ' + file.filename);
+  uploadAvatar(
+    @Req() req,
+    @Param("id") id: string,
+    @UploadedFile() file: Express.Multer.File
+  ) {
     return file;
   }
 
-  @Get('avatars/:path')
-  async getAvatar(@Param('path') avatar, @Res() res) {
-    // console.log('getAvatar: ' + avatar);
-    res.sendFile("/avatars/" + avatar, {root: './src/uploads'});
+  @Get("avatars/:path")
+  @UseGuards(JwtAuthGuard)
+  getAvatar(@Param("path") avatar, @Res() res) {
+    console.log("getAvatar");
+    res.sendFile("/avatars/" + avatar, { root: "./src/uploads" });
   }
 }

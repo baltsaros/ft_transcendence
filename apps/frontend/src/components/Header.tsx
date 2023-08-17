@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { RootState } from "../store/store";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
@@ -9,13 +9,31 @@ import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
 import ftLogo from "../assets/42_Logo.svg";
 import Cookies from "js-cookie";
+import { AuthService } from "../services/auth.service";
 
 const Header: FC = () => {
-  // const [username, setUsername] = useState(user?.username);
   const isAuth = useAuth();
+  const user = useAppSelector((state: RootState) => state.user.user);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const avatar = useAppSelector((state: RootState) => state.user.avatar);
+  const username = useAppSelector((state: RootState) => state.user.username);
   
+  // const [avatar, setAvatar] = useState<any>({ source: "" });
+  // const [filename, setFilename] = useState<string>("");
+  
+  // const checkAvatar = async () => {
+  //   console.log('user: ' + user);
+  //   if (user?.avatar) setFilename(user?.avatar);
+  //   console.log('filename: ' + filename);
+  //   if (filename.includes("https")) {
+  //     setAvatar({ source: filename });
+  //     return ;
+  //   }
+  //   const base64 = await AuthService.getAvatar(filename);
+  //   setAvatar({ source: "data:;base64," + base64 });
+  // }
+
   const logoutHandler = () => {
     dispatch(logout());
     removeTokenFromLocalStorage("token");
@@ -24,12 +42,12 @@ const Header: FC = () => {
     Cookies.remove("username")
     navigate("/");
   };
-  const user = useAppSelector((state: RootState) => state.user.user);
 
   // useEffect(() => {
-  // console.log("change");
-  // // const user = useAppSelector((state: RootState) => state.user.user);
-  // }, [user]);
+  //   checkAvatar();
+  //   console.log('ava: ' + user?.avatar);
+  //   console.log('source: ' + avatar.source);
+  // }, []);
 
   // const UserComponent = async () => {
   //   // const [username, setUsername] = useState('');
@@ -56,26 +74,27 @@ const Header: FC = () => {
         <nav className="ml-auto mr-10">
           <ul className="flex items-center gap-5">
             <li>
-              {user?.avatar ? (
+              {avatar.length ? (
                 <img
-                  src={user.avatar}
+                  src={avatar}
                   style={{ width: "70px", height: "70px" }}
-                  alt="AVA"
+                  alt="[AVA]"
                 />
               ) : (
-                "AVATAR"
+                "[AVATAR]"
               )}
             </li>
             <li>
               <NavLink
-                to={"player/" + Cookies.get('username')}
+                // to={"player/" + Cookies.get('username')}
+                to={"player/" + username}
                 className={({ isActive }) =>
                   isActive
                     ? "py-2 text-white hover:text-white/50"
                     : "text-white/50"
                 }
               >
-                {user?.username}
+                {username}
               </NavLink>
             </li>
           </ul>
