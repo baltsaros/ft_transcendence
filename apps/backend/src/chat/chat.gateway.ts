@@ -27,7 +27,11 @@ import { JoinChannelDto } from './dto/join-channel.dto';
 //   }
 // }
 
-@WebSocketGateway()
+@WebSocketGateway({
+    cosrs: {
+      origin: '*',
+    },
+  })
 export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server;
