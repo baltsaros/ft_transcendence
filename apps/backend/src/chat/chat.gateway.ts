@@ -6,43 +6,27 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io'
 import { JoinChannelDto } from './dto/join-channel.dto';
 
-// @WebSocketGateway({
-//   cosrs: {
-//     origin: '*',
-//   },
-// })
-
-// @WebSocketGateway({
-// 	cors: {
-// 		origin: 'http://localhost:5173/chat',
-// 		credentials: true
-// 	}},)
-// export class ChatGateway {
-//   @WebSocketServer()
-//   server: Server;
-
-//   @SubscribeMessage('test')
-//   handleTestEvent(client: any, data: any) {
-//     console.log(data);
-//   }
-// }
-
 @WebSocketGateway({
-    cosrs: {
+    cors: {
       origin: '*',
     },
   })
-export class ChatGateway implements OnGatewayConnection {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server
-  constructor() {console.log('ChatGateway created');}
+  constructor() {}
 
   handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+    // console.log(`Client connected: ${client.id}`);
     // Handle connection event
+  }
+
+  handleDisconnect(client: Socket) {
+    // console.log(`Client disconnected: ${client.id}`);
+    // Handle disconnection event
   }
   
   @SubscribeMessage('test')
-handleTestEvent(client: Socket, data: any) {
+  handleTestEvent(client: Socket, data: any) {
   console.log("event");
   console.log(data);
   
@@ -50,21 +34,6 @@ handleTestEvent(client: Socket, data: any) {
   client.emit('test', { message: 'Received your test event' });
 }
 }
-
-// export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-//   @WebSocketServer() server: Server;
-
-//   handleConnection(client: any) {
-//     // Handle connection event
-//   }
-
-//   handleDisconnect(client: any) {
-//     // Handle disconnection event
-//   }
-
-
-//   }
-  
   
   /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
   ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client

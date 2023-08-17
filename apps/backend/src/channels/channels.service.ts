@@ -18,23 +18,52 @@ export class ChannelService {
     async createChannel(channelData: IChannelsData) {
         /* The create method TypeOrm does not involve any interactions with the database
         ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.*/
+
+
+
+       console.log(channelData.owner);
        const user = await this.userService.findOne(channelData.owner);
-       const newChannel = this.channelRepository.create({
-            name: channelData.name,
-            mode: channelData.mode,
-            owner: user,
-            password: channelData.password,
-        });
+       if (!user) {
+        throw new Error(`Owner with ID not found.`);
+      }
+       const newChannel = new Channel();
+       newChannel.name = channelData.name;
+       newChannel.mode = channelData.mode;
+       newChannel.owner = user;
+       newChannel.password = channelData.password;
+       newChannel.users = user;
+       if (!newChannel.owner) {
+        throw new Error(`Owner with ID not found.`);
+      }
+      const savedChannel = await this.channelRepository.save(newChannel);
+
+
+    //    const newChannel = this.channelRepository.create({
+    //         name: channelData.name,
+    //         mode: channelData.mode,
+    //         owner: user,
+    //         password: channelData.password,
+    //     });
         /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
         ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
-       await this.channelRepository.save(newChannel);
+    //    await this.channelRepository.save(newChannel);
        const response : IResponseChannelData = {
            id: newChannel.id,
        }
     console.log('User:', user);
     console.log('New Channel:', newChannel);
-    user.channel.push(newChannel);
-    await this.channelRepository.save(user);
+    // if (user)
+    // {
+    //     newChannel.users = [user];
+    //     const savedChannel = await this.channelRepository.save(newChannel);
+    //     console.log('Channel created with user:', savedChannel);
+
+    // }
+    // else {
+    //     console.log('User not found');
+    // }
+    // user.channel.push(newChannel);
+    // await this.channelRepository.save(user);
        //    newChannel.users = [user];
     //    const UserChannel = new userChannel();
     //    UserChannel.user = newChannel.owner;
