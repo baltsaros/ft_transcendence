@@ -1,4 +1,4 @@
-import Game from "../components/PongGame"
+import Game from "../components/pong/PongGame"
 
 function GamePage() {
     // state, données dynamiques
