@@ -33,13 +33,22 @@ import { JoinChannelDto } from './dto/join-channel.dto';
     },
   })
 export class ChatGateway implements OnGatewayConnection {
-  @WebSocketServer()
-  server: Server;
+  @WebSocketServer() server: Server
+  constructor() {console.log('ChatGateway created');}
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
-    client.emit('testEvent', 'Hello from server');
+    // Handle connection event
   }
+  
+  @SubscribeMessage('test')
+handleTestEvent(client: Socket, data: any) {
+  console.log("event");
+  console.log(data);
+  
+  // Emit response back to client
+  client.emit('test', { message: 'Received your test event' });
+}
 }
 
 // export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
