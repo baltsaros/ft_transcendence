@@ -7,7 +7,7 @@ function GamePage() {
 
     // render (jsx)
     return (
-    <div>
+	<div>
         <Game />
     </div>
     );
