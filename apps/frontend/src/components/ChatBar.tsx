@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ChatList from "./ChatList";
+import { IMessage } from "../types/types";
 
 type Message = {
     senderId: string;
@@ -13,11 +14,11 @@ function ChatBar() {
 
     /* BEHAVIOR */
     const handleClick = () => {
-        const message = {
-            senderId: "hdony",
-            content: newmessage
-        };
-        setMessageList([...messageList, message]);
+        // const message: IMessage = {
+        //     channelId:
+        //     username:
+        //     message: 
+        // };
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

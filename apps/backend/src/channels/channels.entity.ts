@@ -32,10 +32,7 @@ export class Channel {
     @JoinTable({ name: 'user_channel'})
     users: User[];
 
-    // @OneToMany(()=> Messages, messages => messages.channel,
-    // {
-    //     cascade: true
-    // })
-    // channelMessages: Messages[];
+    @OneToMany(()=> Messages, messages => messages.channel)
+    channelMessages: Messages[];
 
 } 
