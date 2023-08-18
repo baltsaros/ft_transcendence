@@ -17,6 +17,61 @@
 >
 
 ## Setting up environment
+After cloning the repo, you need to:
+* install *NodeJS* (via *Software Manager* on Mac)
+* run *npm install* in the root folder to install all the dependencies 
+* install *Postgresql* (via VM on Mac)
+* create *.env* in the root folder
+* install *ES7+ React/Redux/React-Native snippets* VS Code extension and optionally *Prettier*
+
+## Some commands
+* *npm run dev* - to launch both apps in the develpment mode; to access the NestJS server go to *localhost:3000/api*; to access the React server go to *localhost:5173*
+* *npm run build* - to build apps
+* *npm run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case; also need to have .env in the root directory
+
+
+## Project structure
+* apps - folder for frontend and backend parts
+* node_modules - contains necessary modules for Turborepo, NestJS and React. Should be in .gitignore
+* turbo.json - config for turborepo
+* package.json - contains commands for turborepo
+
+### Backend (src)
+* *auth* - module that is responsible for 42 and local authentication; it also has *getProfile()* function that receives a frontend request, does security checks and, if everything is fine, returns a user data
+* *user* - module that is responsible for manipulation with user data (including creation, update and possible removal)
+* *channels* - module that is responsible for handling a chat
+* *messages* - not currently used?
+* *uploads* - a folder for received files (like user avatars)
+* *helpers* - a folder for helper functions; *data-storage.service.ts* is not used, since it is a not reliable way to store data
+* *types* - a folder for defining interfaces
+* *main.ts* - entry file for the backend
+
+### Frontend (src)
+* *api* - a module that is used to make axios requests to the backend; it creates an axios instance with the stored access token
+* *assets* - a folder for images and similar files used by React
+* *components* - contains frontend components
+* *helpers* - a folder for helper functions; *localstorage.helper.ts* is currently not used, since it does not work perfectly
+* *hooks* - a folder for hooks functions; for example, *useAuth()* checks redux data to determine whether a user is logged in or not
+* *pages* - contains main pages
+* *router* - *router.tsx* contains links to all used pages that is used later by *react-router-dom*; inside it is possible to define a default index page, error page, protect pages
+* *services* - a folder for services; *auth.service.ts* handles authentication and related calls to the backend
+* *store* - a redux folder that is used to store data
+* *types* - a folder for interfaces
+* *main.tsx* - frontend entry file
+* *App.tsx* - out main page; all other pages are injected in it; check authentication
+* *index.css* - file where many tailwind parameters are defined 
+
+
+## NEstJS terms
+* dto is  a sort of schema/model to parse request body
+* entity looks like dto, but it describes/defines database structure
+* strategy defines how authentication is carried out
+* guards check whether access rights and allow/disallow incoming requests
+
+# Setting up the project from zero
+* Below are just some instructions and commands for when you start a new project 
+
+## Setting up the environment
 * Install turborepo. It allows to connect backend with frontend: *npm install -D turbo*
 * Install tailwind. It is a CSS utility: npm install -D tailwindcss postcss autoprefixer
 * Inside *apps* create nestjs project: *npx nest new backend*
@@ -25,20 +80,7 @@
 * Install a package to serve static content for a single page application from the root directory: *npm install --workspace backend --save @nestjs/serve-static*
 * In the root directory create and set up *turbo.json*, set up *package.json*, edit *vite.config.ts* in the frontend, edit *main.ts* and *app.module.ts* in the backend
 
-## Some commands
-* *turbo run build* - to build apps
-* *turbo run start* - to start NestJS server with React build in the production mode; only *localhost:3000* will work in this case; also need to have .env in the root directory
-* *turbo run dev* - to launch both apps in the develpment mode; to access the NestJS server go to *localhost:3000/api*; to access the React server go to *localhost:5173*
-* if the aforementioned commands do not work, replace *turbo* with *npm*
-
-## Project structure
-* apps - folder for frontend and backend parts
-* node_modules - contains necessary modules for Turborepo, NestJS and React. Should be in .gitignore
-* turbo.json - config for turborepo
-* package.json - contains commands for turborepo
-
 ## Setting up a database with PostgreSql on a VM
-
 The database is located on a VM using a debian image. The vm does not contain a graphic interface.
 The databse will listen to the port `5432`.
 
@@ -81,7 +123,7 @@ The databse will listen to the port `5432`.
 ⚠️ The Vm needs to run and the service needs to be active if you want to have access to your database.
 
 
-## DB
+## Installing DB on the backend
 * installing dependancies; typeorm connects nestjs and postgresql: npm install --save @nestjs/config @nestjs/typeorm typeorm pg
 * download and install postgresql: https://www.postgresql.org/download/
 * you can also install db beaver to manage databases
@@ -116,12 +158,6 @@ The databse will listen to the port `5432`.
 * sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
 * sudo npm install --save-dev @types/passport-local
 
-## NEstJS terms
-* dto is  a sort of schema/model to parse request body
-* entity looks like dto, but it describes/defines database structure
-* strategy defines how authentication is carried out
-* guards check whether access rights and allow/disallow incoming requests
-
 ## Pages in frontend
 * npm install --save react-router-dom localforage match-sorter sort-by
 * some design: npm install --save react-icons
@@ -138,4 +174,4 @@ The databse will listen to the port `5432`.
 * Install plugin for prettier: npm install -D prettier prettier-plugin-tailwindcss
 
 ## Cookies for react
-* Install react-cookie : `npm install react-cookie`
+* Install react-cookie : `npm install --save js-cookie @types/js-cookie`

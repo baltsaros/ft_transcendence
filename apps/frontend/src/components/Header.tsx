@@ -1,8 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { RootState } from "../store/store";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
+import { RootState } from "../store/store";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
