@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { Channel } from './channels.entity';
 import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
 import { UserService } from '../user/user.service';
-import { User } from 'src/user/entities/user.entity';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
@@ -12,64 +11,27 @@ export class ChannelService {
         @InjectRepository(Channel) // dependency injection of a TypeORM repository, used to inject a rep. of a specific entity (here channels)
         private readonly channelRepository: Repository<Channel>, // perform CRUD operations on the entity
         private readonly userService: UserService,
-        // private readonly userChannelService: userChannelService
     ) {}
-
+    /* The create method TypeOrm does not involve any interactions with the database
+    ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
+    ** The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
+    ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
+    */
     async createChannel(channelData: IChannelsData) {
-        /* The create method TypeOrm does not involve any interactions with the database
-        ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.*/
-
-
-
-       console.log(channelData.owner);
-       const user = await this.userService.findOne(channelData.owner);
-       if (!user) {
-        throw new Error(`Owner with ID not found.`);
-      }
-       const newChannel = new Channel();
-       newChannel.name = channelData.name;
-       newChannel.mode = channelData.mode;
-       newChannel.owner = user;
-       newChannel.password = channelData.password;
-       newChannel.users = user;
-       if (!newChannel.owner) {
-        throw new Error(`Owner with ID not found.`);
-      }
-      const savedChannel = await this.channelRepository.save(newChannel);
-
-
-    //    const newChannel = this.channelRepository.create({
-    //         name: channelData.name,
-    //         mode: channelData.mode,
-    //         owner: user,
-    //         password: channelData.password,
-    //     });
-        /* The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
-        ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.*/
-    //    await this.channelRepository.save(newChannel);
-       const response : IResponseChannelData = {
-           id: newChannel.id,
-       }
-    console.log('User:', user);
-    console.log('New Channel:', newChannel);
-    // if (user)
-    // {
-    //     newChannel.users = [user];
-    //     const savedChannel = await this.channelRepository.save(newChannel);
-    //     console.log('Channel created with user:', savedChannel);
-
-    // }
-    // else {
-    //     console.log('User not found');
-    // }
-    // user.channel.push(newChannel);
-    // await this.channelRepository.save(user);
-       //    newChannel.users = [user];
-    //    const UserChannel = new userChannel();
-    //    UserChannel.user = newChannel.owner;
-    //    UserChannel.channel = newChannel;
-    //    await this.userChannelService.createUserChannel(UserChannel)
-       
+        const user = await this.userService.findOne(channelData.owner);
+        const newChannel = this.channelRepository.create({
+            name: channelData.name,
+            mode: channelData.mode,
+            owner: user,
+            password: channelData.password,
+        });
+        console.log('new channel id', newChannel.id);
+        console.log('user id', user.id);
+        newChannel.users = [user];
+        await this.channelRepository.save(newChannel);
+        const response : IResponseChannelData = {
+            id: newChannel.id,
+        }
        return (response);
     }
 
