@@ -2,22 +2,23 @@ import { FC, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FaSignOutAlt } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
-import { RootState } from "../store/store";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import { logout } from "../store/user/userSlice";
 import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
 import { toast } from "react-toastify";
 import ftLogo from "../assets/42_Logo.svg";
 import Cookies from "js-cookie";
-import { AuthService } from "../services/auth.service";
+import { getAvatar } from "../hooks/getAvatar";
+import { getUsername } from "../hooks/getUsername";
+import { getUser } from "../hooks/getUser";
 
 const Header: FC = () => {
   const isAuth = useAuth();
-  const user = useAppSelector((state: RootState) => state.user.user);
+  const user = getUser();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const avatar = useAppSelector((state: RootState) => state.user.avatar);
-  const username = useAppSelector((state: RootState) => state.user.username);
+  const avatar = getAvatar();
+  const username = getUsername();
   
   // const [avatar, setAvatar] = useState<any>({ source: "" });
   // const [filename, setFilename] = useState<string>("");
