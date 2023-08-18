@@ -1,13 +1,12 @@
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
 import { ChangeEvent, FC, useState } from "react";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../store/hooks";
 import { NavLink, useNavigate } from "react-router-dom";
+import { getUser } from "../hooks/getUser";
 
 const Profile: FC = () => {
-  const user = useAppSelector((state: RootState) => state.user.user);
+  const user = getUser();
   const [avatar, setAvatar] = useState<string>("");
   const [filename, setFilename] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -111,10 +110,10 @@ const Profile: FC = () => {
           "[AVATAR]"
         )}
         <div className="bg-cyan-300 flex flex-col w-full justify-center p-2 mt-4">
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col items-center object-center" onSubmit={(e) => e.preventDefault()}>
             <input type="file" onChange={getFile} />
-            <button onClick={uploadImage}>Upload avatar</button>
-          </form>
+            <button className="flex justify-center object-center mt-2 btn btn-gray" onClick={uploadImage}>Upload</button>
+          </form> 
         </div>
       </div>
       <div className="flex flex-row items-end justify-between">

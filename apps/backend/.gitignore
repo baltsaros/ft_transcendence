@@ -39,3 +39,4 @@ lerna-debug.log*
 # Other
 .env_back
 .env
+/src/uploads/avatars/
