@@ -1,10 +1,10 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
-import { ChatService } from './chat.service';
+// import { ChatService } from './chat.service';
 import { UserService } from '../user/user.service'
 import { ChannelService } from 'src/channels/channels.service';
-import { CreateMessageDto } from './dto/create-message.dto';
+// import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io'
-import { JoinChannelDto } from './dto/join-channel.dto';
+// import { JoinChannelDto } from './dto/join-channel.dto';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -38,15 +38,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   client.emit('test', { message: 'Received your test event' });
 }
   
-  @SubscribeMessage('join')
-  async handleJoinEvent(@MessageBody() payload: JoinChannelDto) {}
-  // call service to update userChannel entity
-  //   const user = await this.userService.findOne(payload.name);
-  //   const channel = await this.channelService.findOne(payload.channelId);
-  //   await this.chatService.JoinChannel(user, channel);
 }
-  
-  
+
+// @SubscribeMessage('join')
+// async handleJoinEvent(@MessageBody() payload: JoinChannelDto) {}
+// call service to update userChannel entity
+//   const user = await this.userService.findOne(payload.name);
+//   const channel = await this.channelService.findOne(payload.channelId);
+//   await this.chatService.JoinChannel(user, channel);
+
 /* @MessageBody is a decorator that simplifies the process of extracting data from the incoming WebSocket message and ensures that the data matches the expected structure the DTO.*/
 // @SubscribeMessage('createMessage') // event handler w. name of the event
   // async createMessage(@MessageBody() payload: CreateMessageDto, client: Socket) { // payload variable should be conform to the structure of the dto. Socket is an object representing an individual WebSocket client connection
