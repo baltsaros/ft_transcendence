@@ -1,7 +1,26 @@
+import { useEffect } from 'react';
+import { io } from 'socket.io-client';
+
 function PlayersOnServer() {
+    
     // state
 
     // behavior
+    // useEffect(() => {
+    //     const socket = io('http://localhost:3000/api');
+    
+    //     socket.on('connect', () => {
+    //       console.log('Connected to WebSocket');
+    //     });
+    
+    //     socket.on('disconnect', () => {
+    //       console.log('Disconnected from WebSocket');
+    //     });
+    
+    //     return () => {
+    //       socket.disconnect();
+    //     };
+    //   }, []);
 
     // render
     return (
