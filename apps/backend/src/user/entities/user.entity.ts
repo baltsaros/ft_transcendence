@@ -66,13 +66,10 @@ export class User {
   createdAt: Date;
 
   @OneToMany(()=> Channel, channels => channels.owner,
-  {
-    cascade: true
-  })
+  // {
+  //   cascade: true
+  // }
+  )
   channels: Channel[];
-
-  @ManyToMany(() => Channel, channel => channel.users)
-  @JoinTable()
-  channel: Channel[];
 }
 

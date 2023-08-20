@@ -93,5 +93,11 @@ export interface IChannel {
 }
 
 export interface IResponseGetChannels {
-  channels: IChannel[];
+  channels: IChannel[],
+}
+
+export interface IMessage {
+  channelId: number,
+  username: string,
+  message: string,
 }

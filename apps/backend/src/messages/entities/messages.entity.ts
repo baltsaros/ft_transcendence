@@ -14,10 +14,4 @@ export class Messages {
     @ManyToOne(() => Channel, channels => channels.channelMessages)
     channel: Channel;
 
-    // @Column()
-    // content: string;
-
-    // @Column()
-    // user: string;
-
 }
