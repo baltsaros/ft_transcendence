@@ -61,12 +61,21 @@ After cloning the repo, you need to:
 * *App.tsx* - out main page; all other pages are injected in it; check authentication
 * *index.css* - file where many tailwind parameters are defined 
 
-
 ## NEstJS terms
 * dto is  a sort of schema/model to parse request body
 * entity looks like dto, but it describes/defines database structure
 * strategy defines how authentication is carried out
 * guards check whether access rights and allow/disallow incoming requests
+
+## How does authentication work
+* When you try to authorize with 42 API on the frontend, it redirects you to the backend (*3000/api/auth/redir*)
+* This backend's page is protected by the 42 guard (*42.guard.ts*). The guard first connects to the 42 API with the provided UID and secret. If the credentials are correct, the backend receives your data from 42 side
+* Then this data is sent to the special strategy, linked to this guard (*42.strategy.ts*). It calls a function (*validateUser*) that checks whether you are in the database. If not, it creates a new DB entity with your data
+* *validateUser* function returns your user data from the DB and 42 access token. These parameters are used to create a new (jwt) *access token* that is used to authenticate you and grant access to pages on both backend and frontend
+* Some of your data (like username, email, avatar) and access token are saved in the cookies in order to allow the fronted to authenticate you and to make calls to the backend
+* For example, to retrieve a user's data from the db, the frontend makes a call to the backend (*3000/api/auth/profile*). This page is protected by the *jwt guard* that checks *jwt access token* that we created earlier. If the token is correct, it return the requested data
+* You can get more information in the official nestjs documentation [here](https://docs.nestjs.com/security/authentication) and [here](https://docs.nestjs.com/recipes/passport)
+
 
 # Setting up the project from zero
 * Below are just some instructions and commands for when you start a new project 
