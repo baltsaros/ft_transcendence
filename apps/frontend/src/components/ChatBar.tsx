@@ -1,24 +1,37 @@
 import { useState } from "react";
 import ChatList from "./ChatList";
-import { IMessage } from "../types/types";
+import { IChannel, IMessage } from "../types/types";
+import { useAppSelector } from "../store/hooks";
+import { RootState } from "../store/store";
+
+interface ChildProps {
+    selectedChannel: IChannel | null;
+}
 
 type Message = {
     senderId: string;
     content: string;
   };
 
-function ChatBar() {
+const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
+
+    const user = useAppSelector((state: RootState) => state.user.user);
+    
     /* STATE */
     const [newmessage, setMessage] =  useState("");
     const [messageList, setMessageList] =  useState<Message[]>([]);
 
     /* BEHAVIOR */
     const handleClick = () => {
-        // const message: IMessage = {
-        //     channelId:
-        //     username:
-        //     message: 
-        // };
+        const message: IMessage = {
+            channelId: selectedChannel?.id,
+            username: user?.username,
+            message: newmessage,
+        };
+        console.log(message);
+        
+        // 1. create message object
+        // 2. post request to server
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

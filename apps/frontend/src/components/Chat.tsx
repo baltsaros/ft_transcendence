@@ -22,18 +22,21 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                 <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 </div>
-                <div>
+                <div className="text-lg font-bold mb-2 text-gray-600">
                     {
                     selectedChannel &&
                     <p>Selected Channel: {selectedChannel.name}</p>
                     }
                     {
                     !selectedChannel &&
-                    <h2 className="text-lg font-bold mb-2 text-gray-600">Select a channel</h2>
+                    <h2>Select a channel</h2>
                     }
                 </div>
                 <div className="mt-auto">
-                    <ChatBar />
+                    {
+                        selectedChannel &&
+                        <ChatBar selectedChannel={selectedChannel}  />
+                    }
                 </div>
             </div>
         </div>

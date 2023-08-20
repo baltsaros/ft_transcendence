@@ -97,7 +97,7 @@ export interface IResponseGetChannels {
 }
 
 export interface IMessage {
-  channelId: number,
-  username: string,
+  channelId: number | undefined,
+  username: string | undefined,
   message: string,
 }
