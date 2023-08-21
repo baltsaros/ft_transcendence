@@ -1,10 +1,8 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
-// import { ChatService } from './chat.service';
-import { UserService } from '../user/user.service'
-import { ChannelService } from 'src/channel/channel.service';
-// import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io'
-// import { JoinChannelDto } from './dto/join-channel.dto';
+import { newMessageDto } from 'src/channel/message/new-message.dto';
+import { ChatService } from './chat.service';
+
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -17,7 +15,9 @@ import { Server, Socket } from 'socket.io'
   })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server
-  constructor() {}
+  constructor(
+    private readonly chatService: ChatService
+  ) {}
 
   handleConnection(client: Socket) {
     // console.log(`Client connected: ${client.id}`);
@@ -37,6 +37,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Emit response back to client
   client.emit('test', { message: 'Received your test event' });
 }
+
+  @SubscribeMessage('message')
+  async handleMessageEvent(client: Socket, data: newMessageDto) {
+    console.log('message event received from', data.channelId);
+    // 1. Fetch users from user_channel join table w. channel id 
+    await this.chatService.findChannelUser(data.channelId)
+    // 2. Broadcast message to client in the same channel
+    client.emit('message', data);
+
+
+  }
   
 }
 

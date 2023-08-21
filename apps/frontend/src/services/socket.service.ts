@@ -10,10 +10,14 @@ class SocketService implements ISocketService {
             console.log("Connect to WebSocket server");
         })
     }
-
+    
     /* Defining method to emit an event to the server */
     emit(event: string, data: any) {
         this.socket.emit(event, data);
+    }
+
+    on(event: string, data: any) {
+        this.socket.on(event, data);
     }
 }
 

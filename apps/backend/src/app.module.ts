@@ -15,6 +15,7 @@ import { MessageModule } from "./channel/message/message.module";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { ChatGateway } from "./chat/chat.gateway";
+import { ChatModule } from "./chat/chat.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ChatGateway } from "./chat/chat.gateway";
     AuthModule,
     ChannelModule,
     MessageModule,
+    ChatModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({

@@ -1,5 +1,7 @@
-import { IChannel } from "../types/types";
+import { useEffect } from "react";
+import { IChannel, IMessage } from "../types/types";
 import ChatBar from "./ChatBar";
+import socket from "../services/socket.service"
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -9,9 +11,15 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     /* STATE */
 
     /* BEHAVIOR */
-    // useEffect(() => {
-    //     socket.emit('test', { message: 'Hello from client' });
-    // }, []);
+    /* The useEffect() hook is used to perform side effects in component
+    ** Fetching data, listen to events are side effects
+    */
+   useEffect(() => {
+    console.log('useEffect()');
+    socket.on('message', (message: IMessage) => {
+        console.log(message);
+    });
+}); 
   
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */

@@ -24,7 +24,6 @@ export class MessageService {
                 channel: channel,
                 content: messageData.message
             })
-            console.log(newMessage)
             await this.messageRepository.save(newMessage);
     }
 }
