@@ -1,5 +1,5 @@
 import { Controller, Post, Get, Body, Param, Query} from '@nestjs/common';
-import { ChannelService } from './channels.service';
+import { ChannelService } from './channel.service';
 import { IChannelsData, IResponseChannelData, IGetChannels } from 'src/types/types';
 
 

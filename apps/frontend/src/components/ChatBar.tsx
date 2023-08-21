@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { instance } from "../api/axios.api";
 import ChatList from "./ChatList";
 import { IChannel, IMessage } from "../types/types";
 import { useAppSelector } from "../store/hooks";
@@ -22,16 +23,15 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     const [messageList, setMessageList] =  useState<Message[]>([]);
 
     /* BEHAVIOR */
-    const handleClick = () => {
+    /* IMessage type on undefined because useState can be null (TBD)*/
+    const handleClick = async () => {
         const message: IMessage = {
             channelId: selectedChannel?.id,
             username: user?.username,
             message: newmessage,
         };
         console.log(message);
-        
-        // 1. create message object
-        // 2. post request to server
+        await instance.post('message', message);
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

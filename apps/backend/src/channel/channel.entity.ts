@@ -1,4 +1,4 @@
-import { Messages } from 'src/messages/entities/messages.entity';
+import { Message } from 'src/channel/message/messages.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
     Entity,
@@ -14,25 +14,25 @@ import {
 @Entity()
 export class Channel {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: number
 
     @Column({nullable: true})
-    name: string;
+    name: string
     
     @Column()
-    mode: string;
+    mode: string
     
     @ManyToOne(() => User, user =>  user.channels)
-    owner: User;
+    owner: User
 
     @Column({nullable: true})
-    password: string;
+    password: string
 
     @ManyToMany(() => User)
     @JoinTable({ name: 'user_channel'})
-    users: User[];
+    users: User[]
 
-    @OneToMany(()=> Messages, messages => messages.channel)
-    channelMessages: Messages[];
+    @OneToMany(()=> Message, messages => messages.channel)
+    channelMessages: Message[]
 
 } 

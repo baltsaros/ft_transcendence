@@ -1,7 +1,7 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
 // import { ChatService } from './chat.service';
 import { UserService } from '../user/user.service'
-import { ChannelService } from 'src/channels/channels.service';
+import { ChannelService } from 'src/channel/channel.service';
 // import { CreateMessageDto } from './dto/create-message.dto';
 import { Server, Socket } from 'socket.io'
 // import { JoinChannelDto } from './dto/join-channel.dto';

@@ -5,12 +5,13 @@ import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
-import { ChannelModule } from "./channels/channel.module";
+import { ChannelModule } from "./channel/channel.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { AuthService } from "./auth/auth.service";
 import { PassportModule } from "@nestjs/passport";
+import { MessageModule } from "./channel/message/message.module";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { ChatGateway } from "./chat/chat.gateway";
@@ -20,6 +21,7 @@ import { ChatGateway } from "./chat/chat.gateway";
     UserModule,
     AuthModule,
     ChannelModule,
+    MessageModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({

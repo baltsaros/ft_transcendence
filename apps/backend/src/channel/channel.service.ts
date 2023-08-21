@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Channel } from './channels.entity';
+import { Channel } from './channel.entity';
 import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
 import { UserService } from '../user/user.service';
 
