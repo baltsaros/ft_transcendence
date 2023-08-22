@@ -42,13 +42,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleMessageEvent(client: Socket, data: newMessageDto) {
     console.log('message event received from', data.channelId);
     // 1. Fetch users from user_channel join table w. channel id 
-    await this.chatService.findChannelUser(data.channelId)
+    const userInChannel = await this.chatService.findChannelUser(data.channelId);
     // 2. Broadcast message to client in the same channel
-    client.emit('message', data);
-
-
+    // client.emit('message', data);
+    userInChannel.forEach((user) => {
+      
+    });
   }
-  
 }
 
 // @SubscribeMessage('join')

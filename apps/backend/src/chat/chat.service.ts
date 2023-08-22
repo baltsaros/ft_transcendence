@@ -10,11 +10,17 @@ export class ChatService {
         @InjectRepository (Channel)
         private readonly channelRepository: Repository<Channel>
     ) {}
+    /* 'relations' instructs TypeORM to eagerly load associated entites of the channel entity
+    ** so TypeORM will fetch the associated 'user' entities corresponding to the channel entity (array of associated 'user' entities)
+    ** TypeORM automatically generates the necessary SQL query with JOIN operations that involve the join table (user_channel) to fetch the associated user data.
+    ** TypeORM abstracts away the complexities of the join table.
+    */
     async findChannelUser(channelId: number) {
-        const channel = await this.channelRepository.find({
-            where: { id: channelId}, 
+        const channel = await this.channelRepository.findOne({
+            where: {id: channelId}, 
             relations: ['users'] });
-            console.log(channel);
-            // There are no user in the log, owner is not a user per se ?
+            const userInChannel = channel.users
+            console.log(userInChannel);
+            return (userInChannel);
     }
 }
