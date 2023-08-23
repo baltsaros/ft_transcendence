@@ -9,6 +9,9 @@ class SocketService implements ISocketService {
         this.socket.on('connect', () => {
             console.log("Connect to WebSocket server");
         })
+        this.socket.on('disconnect', () => {
+            console.log("Disonnect to WebSocket server");
+        })
     }
     
     /* Defining method to emit an event to the server */
@@ -18,6 +21,10 @@ class SocketService implements ISocketService {
 
     on(event: string, data: any) {
         this.socket.on(event, data);
+    }
+
+    off(event: string, data:any) {
+        this.socket.off(event, data);
     }
 }
 
