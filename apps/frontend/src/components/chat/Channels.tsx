@@ -1,10 +1,10 @@
 import AddChannel from "./AddChannel";
 import { useEffect, useState } from 'react';
-import { instance } from '../api/axios.api'
+import { instance } from '../../api/axios.api'
 // import { useAppSelector } from "../store/hooks";
 // import { RootState } from "../store/store";
 import Cookies from "js-cookie";
-import { IChannel, IGetChannels } from "../types/types";
+import { IChannel, IGetChannels } from "../../types/types";
 
 interface ChildProps {
     onSelectChannel: (channel: IChannel) => void;

@@ -58,6 +58,7 @@ export class ChannelService {
     return channels;
     }
 
+
     /* for the moment this query retrieves all fields fo the channel entity
     ** check w. querybuilder if it can be lighter */
     async getChannelById(channelId: number) {

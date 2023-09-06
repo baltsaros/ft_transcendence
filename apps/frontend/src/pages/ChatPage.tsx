@@ -2,8 +2,8 @@
 ** The arrow function is a functional component (= javascript function) of React 
 ** Components are used to encapsulate part of the UI to be, here a javascript function */
 import { useState } from "react";
-import Chat from "../components/Chat";
-import Channels from "../components/Channels";
+import Chat from "../components/chat/Chat";
+import Channels from "../components/chat/Channels";
 import { IChannel } from "../types/types";
 
 const chatPage: React.FC = () => {

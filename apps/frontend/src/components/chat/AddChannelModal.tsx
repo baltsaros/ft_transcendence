@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { instance } from "../api/axios.api";
-import { IChannelsData} from "../types/types"
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
-import { setChannels } from "../store/channels/channelsSlice";
+import { instance } from "../../api/axios.api";
+import { IChannelsData} from "../../types/types"
+import { useAppSelector } from "../../store/hooks";
+import { RootState } from "../../store/store";
+import { setChannels } from "../../store/channels/channelsSlice";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg

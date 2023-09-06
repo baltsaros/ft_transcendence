@@ -1,7 +1,7 @@
 import { useEffect } from "react";
-import { IChannel, IMessage } from "../types/types";
+import { IChannel, IMessage } from "../../types/types";
 import ChatBar from "./ChatBar";
-import socket from "../services/socket.service"
+import socket from "../../services/socket.service"
 
 interface ChildProps {
     selectedChannel: IChannel | null;

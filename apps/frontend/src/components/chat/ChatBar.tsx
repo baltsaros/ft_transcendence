@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { instance } from "../api/axios.api";
+import { instance } from "../../api/axios.api";
 import ChatList from "./ChatList";
-import { IChannel, IMessage } from "../types/types";
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
-import socket from "../services/socket.service";
+import { IChannel, IMessage } from "../../types/types";
+import { useAppSelector } from "../../store/hooks";
+import { RootState } from "../../store/store";
+import socket from "../../services/socket.service";
 
 interface ChildProps {
     selectedChannel: IChannel | null;
