@@ -2,6 +2,7 @@
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.4",
     "@types/js-cookie": "^3.0.3",
+    "@types/multer": "^1.4.7",
     "@types/passport-local": "^1.0.35",
     "autoprefixer": "^10.4.15",
     "postcss": "^8.4.28",
