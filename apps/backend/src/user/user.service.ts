@@ -89,6 +89,14 @@ export class UserService {
     return data;
   }
 
+  async uploadAvatar(id: number, filename: string) {
+    const user = await this.userRepository.findOne({
+      where: {id: id},
+    });
+    if (!user) throw new NotFoundException("User not found");
+    return user;
+  }
+
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
