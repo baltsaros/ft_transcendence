@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Param, Post, UsePipes } from "@nestjs/common";
 import { CreateMatchDto } from "./dto/create-match.dto";
 import { MatchService } from "./match.service";
 import { UserService } from "src/user/user.service";
@@ -20,9 +20,15 @@ export class MatchController {
         return (match);
     }
 
-    // @Post()
-    // @UsePipes()
-    // createMatch(@Body() createMatchDto: CreateMatchDto) {
-    //     return this.matchService.createMatch(createMatchDto);
-    // }
+    @Post()
+    @UsePipes()
+    createMatch(@Body() createMatchDto: CreateMatchDto) {
+        return this.matchService.createMatch(createMatchDto);
+    }
+
+    //Only for testing needs to be delete
+    @Post(":clear")
+    async clearAllMatches() {
+        await this.matchService.clearAllMatches();
+    }
 }

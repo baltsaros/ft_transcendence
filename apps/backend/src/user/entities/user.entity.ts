@@ -37,7 +37,7 @@ export class User {
   authentication: boolean;
 
   @Column()
-  rank: Number;
+  rank: number;
 
   @Column()
   avatar: string;
@@ -58,10 +58,10 @@ export class User {
   blocked: User[];
 
   @Column()
-  wins: Number;
+  wins: number;
 
   @Column()
-  loses: Number;
+  loses: number;
 
   @CreateDateColumn()
   createdAt: Date;
