@@ -41,21 +41,21 @@ const Home: FC = () => {
           Please, log in with 42 account
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center">
-          <a href="https://profile.intra.42.fr/" target="_blank">
-            <img src={ftLogo} className="logo" alt="42 logo" />
-          </a>
-          <h1>Under construction...</h1>
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p className="read-the-docs">Click on the 42 to be redirected...</p>
-          <div className="flex h-screen items-center justify-center">
-            <Link to="/chat">
-              <button className="flex flex-col px-40 py-20 bg-gray-500 text-black text-4xl">GO TO CHAT</button>
-            </Link>
+          <div className="flex flex-row h-screen justify-center items-center">
+            <div className="grid grid-rows-2 m-auto gap-10">
+              <div>
+                <Link to="/">
+                  <button className="w-96 h-40 bg-gray-500 text-center text-black text-4xl">PLAY</button>
+                </Link>
+              </div>
+
+              <div>
+                <Link to="/chat">
+                  <button className="w-96 h-40 bg-gray-500 text-center text-black text-4xl">GO TO CHAT</button>
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
       )}
     </>
   );
