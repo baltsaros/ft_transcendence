@@ -1,9 +1,6 @@
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { MatchService } from "../services/matches.service";
-import { IMatch } from "../types/types";
 import { toast } from "react-toastify";
-
 export default function MatchForm() {
 
     //state
@@ -14,7 +11,7 @@ export default function MatchForm() {
 
     //behaviour
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        // e.preventDefault();
+        e.preventDefault();
         try {
             const data = await MatchService.addMatch({
                 username,
@@ -24,7 +21,6 @@ export default function MatchForm() {
             });
             if (data) {
               toast.success("User information was successfully updated!");
-              window.location.reload();
             }
         } catch (err: any) {
             const error = err.response?.data.message;
@@ -32,8 +28,10 @@ export default function MatchForm() {
         }
     };
 
+    /* /!\/!\/!\/!\ Need to be deleted /!\/!\/!\*/
     const deleteAllMatches = async () => {
         await MatchService.deleteAllMatches();
+        window.location.reload();
     }
 
     //render
@@ -55,13 +53,13 @@ export default function MatchForm() {
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Score user
-                        <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="scoreUser" type="number"  value={scoreUser} onChange={(e) => setScoreUser(e.target.value)}></input>
+                        <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="scoreUser" type="number" min="0" value={scoreUser} onChange={(e) => setScoreUser(e.target.valueAsNumber)}></input>
                     </label>
                 </div>
                 <div className="mb-6">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
                         Score opponent
-                        <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="scoreOpponent" type="number" value={scoreOpponent} onChange={(e) => setScoreOpponent(e.target.value)}></input>
+                        <input className="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="scoreOpponent" type="number" min="0" value={scoreOpponent} onChange={(e) => setScoreOpponent(e.target.valueAsNumber)}></input>
                     </label>
                 </div>
                 <div className="flex items-center justify-between">

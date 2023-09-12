@@ -15,12 +15,11 @@ export default function Player(){
   const [user, setUser] = useState<IUserPlayerProfileData>({
     username: "default", loses: -1, wins: -1, rank: -1});
   const usernameParam = useParams();
-  const [_loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const getUserProfile = async () => {
     try {
-      setLoading(true);
       const data = await PlayerService.getProfile(usernameParam.username!)
       if (data)
       {
@@ -49,7 +48,12 @@ export default function Player(){
   }, [user]) 
 
   //render
-    return (
+  if (_loading)
+  {
+    return (<div>Loading...</div>);
+  }
+  
+  return (
       <div className="flex flex-col text-black space-y-20 flex justify-center items-center">
         
         <PlayerNameBox

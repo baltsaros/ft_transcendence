@@ -17,8 +17,32 @@ export class MatchService {
         private readonly userService: UserService
       ) {}
     
+      async addMatchesToDatabase(user: User, opponent: User, match: CreateMatchDto) {
+        const newMatch = await this.matchRepository.save({
+            user: user, 
+            opponent: opponent,
+            scoreUser: match.scoreUser,
+            scoreOpponent: match.scoreOpponent
+        });
+        if (!newMatch) throw new BadGatewayException("Something went wrong when the match was added.");
+        //Add the reversed match for the opponent to hahe the match in his history.
+        const newMatchReverse = await this.matchRepository.save({
+            user: opponent,
+            opponent: user,
+            scoreUser: match.scoreOpponent,
+            scoreOpponent: match.scoreUser
+        })
+        if (!newMatch) throw new BadGatewayException("Something went wrong when the match was added.");
+        
+      }
 
-   async createMatch(createMatchDto: CreateMatchDto) {
+      async createMatch(createMatchDto: CreateMatchDto) {
+        
+        //Check if the score are different
+        if (createMatchDto.scoreUser === createMatchDto.scoreOpponent) throw new UnprocessableEntityException("score cannot be equal");
+        
+        //Check if username are different
+        if (createMatchDto.opponent === createMatchDto.username) throw new UnprocessableEntityException("Usernames cannot be the same");
 
         //Check if the user exists.
        const user = await this.userService.findOne(createMatchDto.username);
@@ -28,14 +52,7 @@ export class MatchService {
        const opponent = await this.userService.findOne(createMatchDto.opponent);
        if (!opponent) throw new NotFoundException("Opponent doesn't exist");
    
-        const newMatch = await this.matchRepository.save({
-            user: user, 
-            opponent: opponent,
-            scoreUser: createMatchDto.scoreUser,
-            scoreOpponent: createMatchDto.scoreOpponent
-        });
-        if (!newMatch) throw new BadGatewayException("Something went wrong when the match was added.");
-        if (createMatchDto.scoreUser === createMatchDto.scoreOpponent) throw new UnprocessableEntityException("score cannot be equal");
+        this.addMatchesToDatabase(user, opponent, createMatchDto);
         
         //Increment win and loss for user and opponent.
         if (createMatchDto.scoreUser > createMatchDto.scoreOpponent) {
@@ -46,15 +63,6 @@ export class MatchService {
             await this.userService.incrementLoss(user.id);
             await this.userService.incrementWin(opponent.id);
         }
-
-        //Add the reversed match for the opponent to hahe the match in his history.
-        const newMatchReverse = await this.matchRepository.save({
-            user: opponent,
-            opponent: user,
-            scoreUser: createMatchDto.scoreOpponent,
-            scoreOpponent: createMatchDto.scoreUser
-        })
-        if (!newMatch) throw new BadGatewayException("Something went wrong when the match was added.");
     }
 
     async findAllMatchForUser(id: number)
