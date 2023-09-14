@@ -16,6 +16,9 @@ import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { ChatGateway } from "./chat/chat.gateway";
 import { ChatModule } from "./chat/chat.module";
+import { MatchService } from "./matches/match.service";
+import { MatchModule } from "./matches/match.module";
+import { MatchController } from "./matches/match.controller";
 
 @Module({
   imports: [
@@ -24,6 +27,7 @@ import { ChatModule } from "./chat/chat.module";
     ChannelModule,
     MessageModule,
     ChatModule,
+    MatchModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({

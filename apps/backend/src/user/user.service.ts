@@ -56,8 +56,8 @@ export class UserService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    return await this.userRepository.find();
   }
 
   async findOne(username: string) {
@@ -99,5 +99,27 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  async incrementWin(id: number)
+  {
+    const user = await this.userRepository.findOne({
+      where: {id: id},
+    });
+    if (!user) throw new NotFoundException("User not found");
+    user.wins++;
+    const userModified = await this.userRepository.save(user);
+    if (!userModified) throw new NotFoundException("User not found");
+  }
+
+  async incrementLoss(id: number)
+  {
+    const user = await this.userRepository.findOne({
+      where: {id: id},
+    });
+    if (!user) throw new NotFoundException("User not found");
+    user.loses++;
+    const userModified = await this.userRepository.save(user);
+    if (!userModified) throw new NotFoundException("User not found");
   }
 }
