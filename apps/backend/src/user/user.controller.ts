@@ -83,4 +83,10 @@ export class UserController {
     console.log("getAvatar");
     res.sendFile("/avatars/" + avatar, { root: "./src/uploads" });
   }
+
+  @Post("getFriends/:id")
+  @UseGuards(JwtAuthGuard)
+  getAllFriendsForUser(@Param("id") id: string) {
+    return (this.userService.findAllFriends(id));
+  }
 }

@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
+import FriendList from "../components/FriendList";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -55,6 +56,9 @@ const Home: FC = () => {
                 </Link>
               </div>
             </div>
+            <FriendList 
+            // {...user}
+            />
           </div>
       )}
     </>

@@ -11,7 +11,6 @@ export class MatchController {
 
     @Get(':username')
     async findAllMatchForUser(@Param('username') username: string) {
-        console.log(" username :" + username);
         const user = await this.userService.findOne(username);
         if (!user)
             throw new BadRequestException("User doens't exist")

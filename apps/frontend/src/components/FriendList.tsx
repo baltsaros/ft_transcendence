@@ -1,19 +1,46 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineCaretDown, AiOutlineCaretUp} from "react-icons/ai";
+import { PlayerService } from "../services/player.service";
+import { IUserUsername } from "../types/types";
 
-function FriendList() {
+function FriendList(id: string) {
 
     //state
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState("");
-    const [friends] = useState(
-        [
-        { name: 'Juan', active: true },
-        { name: 'Tyler', active: true },
-        { name: 'Michael', active: false },
-        { name: 'Charles', active: true }
-        ]
-    )
+    // const [friends] = useState(
+    //     [
+    //     { name: 'Juan', active: true },
+    //     { name: 'Tyler', active: true },
+    //     { name: 'Michael', active: false },
+    //     { name: 'Charles', active: true }
+    //     ]
+    // )
+
+    const [friends, setFriends] = useState<IUserUsername[] | undefined>(
+      [
+            { username: 'Juan'},
+            { username: 'Tyler' },
+            { username: 'Michael' },
+            { username: 'Charles' }
+      ]
+    );
+
+    // console.log("username MatchHistory = " + userData.username);
+  
+    const getAllFriendsForUser = async () => {
+      try {
+        const data =  await PlayerService.getAllFriends(id);
+        setFriends(data);
+        console.log(data);
+      } catch (err: any) {
+    }
+
+    useEffect(() => {
+      getAllFriendsForUser();
+    }, [id])
+
+  }
     //behaviour
 
     //render

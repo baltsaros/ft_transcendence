@@ -60,6 +60,22 @@ export class UserService {
     return await this.userRepository.find();
   }
 
+  async findAllFriends(id: string)
+  {
+    return await this.userRepository.query(
+      ` SELECT *
+        FROM user U
+        WHERE U.id <> $1
+          AND EXISTS(
+            SELECT 1
+            FROM user_friends_user F
+            WHERE (F."userId_1" = $1 AND F."userId_2 = U.id )
+            OR (F."userId_2" = $1 AND F."userId_1 = U.id )
+            ); `,
+        [id],
+    );
+  }
+
   async findOne(username: string) {
     return await this.userRepository.findOne({
       where: { username: username },
