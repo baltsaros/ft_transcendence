@@ -48,7 +48,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
                 owner: user.username,
                 password: channelPassword,
             }
-            const response = await instance.post('channels', channelData);
+            const response = await instance.post('channel', channelData);
             const channelId = response.data.id;
             dispatch(setChannels([channelId]));
             console.log(response.data.id);

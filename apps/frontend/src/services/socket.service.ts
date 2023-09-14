@@ -23,8 +23,8 @@ class SocketService implements ISocketService {
         this.socket.on(event, data);
     }
 
-    off(event: string, data:any) {
-        this.socket.off(event, data);
+    off(event: string) {
+        this.socket.off(event);
     }
 }
 

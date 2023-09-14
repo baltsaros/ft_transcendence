@@ -72,7 +72,7 @@ export interface IMatch {
   opponent: string;
 }
 
-export interface IChannelsData {
+export interface IChannelData {
   name: string;
   mode: string;
   owner: string;
@@ -100,4 +100,10 @@ export interface IMessage {
   channelId: number | undefined,
   username: string | undefined,
   message: string,
+}
+
+export interface IResponseMessage {
+  id: number,
+  user: IUser,
+  content: string,
 }

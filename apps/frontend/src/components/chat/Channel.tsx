@@ -29,7 +29,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                 username: username,
             }
             const fetchData = async () => {
-                const result = await instance.get('channels', channels);
+                const result = await instance.get('channel', channels);
                 setData(result.data);
             }
             fetchData();

@@ -62,11 +62,11 @@ export class ChannelService {
     /* for the moment this query retrieves all fields fo the channel entity
     ** check w. querybuilder if it can be lighter */
     async getChannelById(channelId: number) {
-        const channelMessages = await this.channelRepository.find
+        const channel = await this.channelRepository.findOne
         (
             {where: { id: channelId },
-            relations: ['channelMessages'],
+            relations: ['channelMessages', 'channelMessages.user'],
         })
-        return channelMessages;
+        return channel;
     }
 }

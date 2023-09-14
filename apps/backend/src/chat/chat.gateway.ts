@@ -1,4 +1,4 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, MessageBody, ConnectedSocket} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io'
 import { newMessageDto } from 'src/channel/message/new-message.dto';
 import { ChatService } from './chat.service';
@@ -16,17 +16,25 @@ import { ChatService } from './chat.service';
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server
   constructor(
-    private readonly chatService: ChatService
+    private readonly chatService: ChatService,
   ) {}
 
+ /* In the handleConnection and handleDisconnect methods, you can define the logic
+ ** to handle new client connections and disconnections.*/
   handleConnection(client: Socket) {
-    // console.log(`Client connected: ${client.id}`);
-    // Handle connection event
+    console.log('new incoming connection');
+    console.log(client.id);
+    client.emit('connected');
   }
 
   handleDisconnect(client: Socket) {
     // console.log(`Client disconnected: ${client.id}`);
     // Handle disconnection event
+  }
+
+  @SubscribeMessage('join')
+  joinRoom(@MessageBody('name') name: string, @ConnectedSocket() client: Socket) {
+    return this.chatService.join(name, client.id);
   }
   
   @SubscribeMessage('test')
@@ -40,14 +48,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   async handleMessageEvent(client: Socket, data: newMessageDto) {
-    console.log('message event received from', data.channelId);
+    console.log('message event', data);
+    this.server.emit('message', data);
     // 1. Fetch users from user_channel join table w. channel id 
-    const userInChannel = await this.chatService.findChannelUser(data.channelId);
+    // const userInChannel = await this.chatService.findChannelUser(data.channelId);
     // 2. Broadcast message to client in the same channel
     // client.emit('message', data);
-    userInChannel.forEach((user) => {
+    // userInChannel.forEach((user) => {
       
-    });
+    // }); 
+  }
+
+  // 1. Identify the client w. a channel id for ex.
+  // 2. Get a reference to the client's WS connection (store client connections in a Map using unique identifiers (client id + WS connection))
+  @SubscribeMessage('send_message')
+  async handleSendMessageEvent() {
+
+
   }
 }
 
