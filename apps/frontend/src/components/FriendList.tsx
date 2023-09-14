@@ -26,22 +26,27 @@ function FriendList(id: string) {
       ]
     );
 
-    // console.log("username MatchHistory = " + userData.username);
+    // console.log("username MatchHistory = ");
   
-    const getAllFriendsForUser = async () => {
-      try {
-        const data =  await PlayerService.getAllFriends(id);
-        setFriends(data);
-        console.log(data);
-      } catch (err: any) {
-    }
+    // const getAllFriendsForUser = async () => {
+    //   try {
+    //     const data =  await PlayerService.getAllFriends("2");
+    //     setFriends(data);
+    //     console.log('friendlist' + data);
+    //   } catch (err: any) {
+    // }
 
-    useEffect(() => {
-      getAllFriendsForUser();
-    }, [id])
-
-  }
-    //behaviour
+      useEffect(() =>  {
+        // console.log("hahaha");
+        const getAllFriendsForUser = async () => {
+          try {
+            const data =  await PlayerService.getAllFriends("2");
+            setFriends(data);
+            console.log('friendlist' + data);
+          } catch (err: any) {}}
+          getAllFriendsForUser();
+        }, [])
+        //behaviour
 
     //render
     return (
@@ -60,8 +65,8 @@ function FriendList(id: string) {
           {isOpen && (
             <div className="bg-gray-500 h-40 text-black overflow-auto absolute top-full flex flex-col items-start p-2 w-full">
               {friends.map((friend) => (
-                <div>
-                  {friend.name}
+                <div key={friend.username}>
+                  {friend.username}
                 </div>
               ))}
             </div>

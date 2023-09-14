@@ -9,6 +9,7 @@ import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import FriendList from "../components/FriendList";
+import userSlice from "../store/user/userSlice";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -57,7 +58,6 @@ const Home: FC = () => {
               </div>
             </div>
             <FriendList 
-            // {...user}
             />
           </div>
       )}

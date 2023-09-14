@@ -9,7 +9,8 @@ export const PlayerService = {
   },
 
   async getAllFriends(id: string): Promise<IUserUsername[] | undefined> {
-    const { data } = await instance.post<IUserUsername>("getFriends/" + id);
+    console.log("prout");
+    const { data } = await instance.post<IUserUsername>("user/getFriends/" + id);
     if (data) return (data);
   },
 };
