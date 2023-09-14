@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IResponseUser, IUserPlayerProfileData } from "../types/types";
+import {  IResponseUser, IUserPlayerProfileData, IUserWithStatus } from "../types/types";
 
 export const PlayerService = {
 
@@ -8,8 +8,8 @@ export const PlayerService = {
     if (data) return data;
   },
 
-  async getAllUsers(): Promise<IResponseUser | undefined> {
-    const { data } = await instance.get<IResponseUser>("user/");
+  async getAllUsers(): Promise<IUserWithStatus[] | undefined> {
+    const { data } = await instance.get<IUserWithStatus[]>("user/");
     if (data) return data;
   }
 };

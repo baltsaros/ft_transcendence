@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
+import { IUserWithStatus } from '../../types/types';
 
 function PlayersOnServer() {
     
     // state
-    const [usagers, setUsagers] = useState([
-        { name: 'hdony', id: 1 },
-        { name: 'jvander', id: 2 },
-        { name: 'abuzdin', id: 3 }
+    const [usagers, setUsagers] = useState<IUserWithStatus[] | undefined>([
+        { username: 'hdony', id: 1, status: 'online' }
       ])
     
     // behavior
@@ -18,7 +17,7 @@ function PlayersOnServer() {
         const getAllUsers = async () => {
           try {
             const data =  await PlayerService.getAllUsers();
-            // setFriends(data);
+            setUsagers(data);
             console.log(data);
           } catch (err: any) {}}
           getAllUsers();
