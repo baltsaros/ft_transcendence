@@ -4,6 +4,7 @@
 import { useState } from "react";
 import Chat from "../components/chat/Chat";
 import Channels from "../components/chat/Channels";
+import PlayersOnServer from "../components/chat/PlayersOnServer";
 import { IChannel } from "../types/types";
 
 const chatPage: React.FC = () => {
@@ -19,7 +20,7 @@ const chatPage: React.FC = () => {
     <div className="flex items-stretch justify-center">
         <Channels onSelectChannel={handleSelectedChannel} />
         <Chat selectedChannel={selectedChannel} />
-        {/* <PlayersOnServer /> */}
+        { <PlayersOnServer /> }
     </div>
     );
 }
