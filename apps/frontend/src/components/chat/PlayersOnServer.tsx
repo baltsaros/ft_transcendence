@@ -1,11 +1,29 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
+import { PlayerService } from '../../services/player.service';
 
 function PlayersOnServer() {
     
     // state
-
+    const [usagers, setUsagers] = useState([
+        { name: 'hdony', id: 1 },
+        { name: 'jvander', id: 2 },
+        { name: 'abuzdin', id: 3 }
+      ])
+    
     // behavior
+    
+    useEffect(() =>  {
+        // console.log("hahaha");
+        const getAllUsers = async () => {
+          try {
+            const data =  await PlayerService.getAllUsers();
+            // setFriends(data);
+            console.log(data);
+          } catch (err: any) {}}
+          getAllUsers();
+        }, [])
+
     // useEffect(() => {
     //     const socket = io('http://localhost:3000/api');
     
@@ -23,12 +41,6 @@ function PlayersOnServer() {
     //   }, []);
 
     // render
-
-    const [usagers, setUsagers] = useState([
-        { name: 'hdony', id: 1 },
-        { name: 'jvander', id: 2 },
-        { name: 'abuzdin', id: 3 }
-      ])
     
     return (
         <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
