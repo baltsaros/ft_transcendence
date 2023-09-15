@@ -16,6 +16,7 @@ export interface IUserData {
 
 export interface IUserUsername {
   username: string;
+  status: string;
 }
 
 export interface IResponseUser {

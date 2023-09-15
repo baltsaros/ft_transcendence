@@ -12,7 +12,7 @@ function FriendList(id: string) {
 
     const [friends, setFriends] = useState<IUserUsername[]>(
       [
-            { username: 'Juan'}
+            { username: 'Juan', status: 'online'}
       ]
     );
 
@@ -44,13 +44,21 @@ function FriendList(id: string) {
           </button>
 
           {isOpen && (
-            <div className="bg-gray-500 h-40 text-black overflow-auto absolute top-full flex flex-col items-start p-2 w-full">
+            <div className="bg-gray-500 h-40 text-black overflow-auto absolute text-left top-full flex flex-col  p-2 w-full">
+              <div className="text-lg divide-y text-center">Online</div>
               {friends.map((friend) => (
-                <div key={friend.username}>
+                friend.status == "online" && <div key={friend.username}>
                   {friend.username}
-                </div>
+              </div>
+              ))}
+            <div className="text-lg divide-y text-center">Offline</div>
+              {friends.map((friend) => (
+                friend.status == "offline" && <div key={friend.username}>
+                  {friend.username}
+              </div>
               ))}
             </div>
+            
           )}
         </div>
        

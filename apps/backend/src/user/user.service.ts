@@ -82,6 +82,18 @@ export class UserService {
     });
   }
 
+  async findAllOnlineUsers() {
+    return await this.userRepository.find({
+      where: { status: "online"},
+    });
+  }
+
+  async findAllOfflineUsers() {
+    return await this.userRepository.find({
+      where: { status: "offline"}
+    });
+  }
+
   async findOneById(id: number) {
     const user = await this.userRepository.findOne({
       where: { id: id },

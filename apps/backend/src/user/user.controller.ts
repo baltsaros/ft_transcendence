@@ -8,6 +8,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
   UsePipes,
   ValidationPipe,
   UseGuards,
@@ -87,5 +88,17 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   getAllFriendsForUser(@Param("id") id: string) {
     return (this.userService.findAllFriends(id));
+  }
+
+  @Post("online")
+  @UseGuards(JwtAuthGuard)
+  getAllOnlineUsers(@Request() req) {
+    return (this.userService.findAllOnlineUsers());
+  }
+
+  @Post("offline")
+  @UseGuards(JwtAuthGuard)
+  getAllOfflineUsers() {
+    return (this.userService.findAllOfflineUsers());
   }
 }

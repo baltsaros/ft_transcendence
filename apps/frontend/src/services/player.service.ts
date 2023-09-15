@@ -18,5 +18,17 @@ export const PlayerService = {
     const { data } = await instance.get<IUser>("user/" + username);
     if (data) return (data.id);
     return (0);
-  }
+  },
+
+  async getAllOnlineUsers(): Promise<IUserUsername[]> {
+    const { data } = await instance.post<IUserUsername[]>("user/online");
+    if (data) return (data);
+    return ([]);
+  },
+
+  async getAllOfflineUsers(): Promise<IUserUsername[]> {
+    const { data } = await instance.post<IUserUsername[]>("user/offline");
+    if (data) return (data);
+    return ([]);
+  },
 };
