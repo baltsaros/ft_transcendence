@@ -3,7 +3,6 @@ import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import socket from "../../services/socket.service";
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -32,7 +31,7 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
         };
         console.log(message);
         await instance.post('message', message);
-        await socket.emit('message', message);
+        // await socket.emit('message', message);
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

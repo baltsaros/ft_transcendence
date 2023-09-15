@@ -18,12 +18,16 @@ export class MessageService {
     async createMessage(messageData: newMessageDto) {
         const user = await this.userService.findOne(messageData.username);
         const channel = await this.channelService.findOne(messageData.channelId);
+        console.log('user', user);
+        console.log('channel', channel);
+        console.log('message', messageData);
         const newMessage = this.messageRepository.create(
             {
                 user: user,
                 channel: channel,
-                content: messageData.message
+                content: messageData.content
             })
             await this.messageRepository.save(newMessage);
+            return newMessage;
     }
 }

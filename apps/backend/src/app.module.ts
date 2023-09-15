@@ -16,10 +16,12 @@ import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { ChatGateway } from "./chat/chat.gateway";
 import { ChatModule } from "./chat/chat.module";
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     UserModule,
+    EventEmitterModule.forRoot(),
     AuthModule,
     ChannelModule,
     MessageModule,

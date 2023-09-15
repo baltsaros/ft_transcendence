@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IMessage, IResponseMessage } from "../../types/types";
 import ChatBar from "./ChatBar";
-import socket from "../../services/socket.service"
 
 /* WebSocket Chat Implementation for documentation */
 
@@ -31,18 +30,6 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
         fetchData();
     }
    }, [selectedChannel]);
-
-//    useEffect(() => {
-//     socket.on('message', (message: IMessage) => {
-//         console.log('event receveived:', message);
-//         // setMessage((prevMessages) => [...prevMessages, message]);
-
-//     });
-    
-//     return () => {
-//         socket.off('message');
-//     }
-// }, []);
   
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */

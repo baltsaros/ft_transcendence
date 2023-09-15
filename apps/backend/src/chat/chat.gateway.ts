@@ -2,6 +2,7 @@ import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnectio
 import { Server, Socket } from 'socket.io'
 import { newMessageDto } from 'src/channel/message/new-message.dto';
 import { ChatService } from './chat.service';
+import { OnEvent } from '@nestjs/event-emitter';
 
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
@@ -10,9 +11,17 @@ import { ChatService } from './chat.service';
 */
 @WebSocketGateway({
     cors: {
-      origin: '*',
+      origin: ['http://localhost:5173'],
     },
   })
+
+  // @WebSocketGateway({
+  //   cors: {
+  //     origin: ['http://localhost:5173', 'chrome-extension://cbcbkhdmedgianpaifchdaddpnmgnknn'],
+  //   },
+  // })
+  
+
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server
   constructor(
@@ -22,14 +31,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
  /* In the handleConnection and handleDisconnect methods, you can define the logic
  ** to handle new client connections and disconnections.*/
   handleConnection(client: Socket) {
-    console.log('new incoming connection');
-    console.log(client.id);
-    client.emit('connected');
+    console.log(`Client connected: ${client.id}`);
   }
 
   handleDisconnect(client: Socket) {
-    // console.log(`Client disconnected: ${client.id}`);
+    console.log(`Client disconnected: ${client.id}`);
     // Handle disconnection event
+  }
+
+  @OnEvent('message.created')
+  handleMessage(payload: any) {
+    console.log('handleMessage:', payload);
+    this.server.emit('onMessage', payload);
   }
 
   @SubscribeMessage('join')
@@ -46,10 +59,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   client.emit('test', { message: 'Received your test event' });
 }
 
-  @SubscribeMessage('message')
+  @SubscribeMessage('onMessage')
   async handleMessageEvent(client: Socket, data: newMessageDto) {
-    console.log('message event', data);
-    this.server.emit('message', data);
+    console.log('onMessage event');
+    // this.server.emit('message', data);
     // 1. Fetch users from user_channel join table w. channel id 
     // const userInChannel = await this.chatService.findChannelUser(data.channelId);
     // 2. Broadcast message to client in the same channel
@@ -61,11 +74,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   // 1. Identify the client w. a channel id for ex.
   // 2. Get a reference to the client's WS connection (store client connections in a Map using unique identifiers (client id + WS connection))
-  @SubscribeMessage('send_message')
-  async handleSendMessageEvent() {
-
-
-  }
 }
 
 // @SubscribeMessage('join')

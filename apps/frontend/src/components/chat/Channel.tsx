@@ -36,15 +36,6 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
         }
     }, []);
 
-    // const handleJoinChannel = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, channelId: number) => {
-    //     event.preventDefault();
-    //     const data: IChannel = {
-    //         name: user,
-    //         id: channelId,
-    //     }
-    //     socket.emit("join", data);
-    // }
-
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
     return (   
