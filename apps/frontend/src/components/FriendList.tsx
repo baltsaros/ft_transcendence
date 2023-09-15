@@ -2,51 +2,32 @@ import { useEffect, useState } from "react";
 import { AiOutlineCaretDown, AiOutlineCaretUp} from "react-icons/ai";
 import { PlayerService } from "../services/player.service";
 import { IUserUsername } from "../types/types";
+import Cookies from "js-cookie";
 
 function FriendList(id: string) {
 
     //state
     const [isOpen, setIsOpen] = useState(false);
     const [selected, setSelected] = useState("");
-    // const [friends] = useState(
-    //     [
-    //     { name: 'Juan', active: true },
-    //     { name: 'Tyler', active: true },
-    //     { name: 'Michael', active: false },
-    //     { name: 'Charles', active: true }
-    //     ]
-    // )
 
-    const [friends, setFriends] = useState<IUserUsername[] | undefined>(
+    const [friends, setFriends] = useState<IUserUsername[]>(
       [
-            { username: 'Juan'},
-            { username: 'Tyler' },
-            { username: 'Michael' },
-            { username: 'Charles' }
+            { username: 'Juan'}
       ]
     );
 
-    // console.log("username MatchHistory = ");
-  
-    // const getAllFriendsForUser = async () => {
-    //   try {
-    //     const data =  await PlayerService.getAllFriends("2");
-    //     setFriends(data);
-    //     console.log('friendlist' + data);
-    //   } catch (err: any) {
-    // }
-
       useEffect(() =>  {
-        // console.log("hahaha");
         const getAllFriendsForUser = async () => {
           try {
-            const data =  await PlayerService.getAllFriends("2");
-            setFriends(data);
-            console.log('friendlist' + data);
+            const username = Cookies.get("username");
+            if (username) {
+              const id = await PlayerService.getInfoUser(username);
+              const data =  await PlayerService.getAllFriends(id.toString());
+              setFriends(data);
+            }
           } catch (err: any) {}}
           getAllFriendsForUser();
         }, [])
-        //behaviour
 
     //render
     return (

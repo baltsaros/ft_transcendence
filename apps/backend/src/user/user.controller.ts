@@ -86,7 +86,6 @@ export class UserController {
   @Post("getFriends/:id")
   @UseGuards(JwtAuthGuard)
   getAllFriendsForUser(@Param("id") id: string) {
-    console.log(id);
     return (this.userService.findAllFriends(id));
   }
 }

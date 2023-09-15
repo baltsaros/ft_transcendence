@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IUserPlayerProfileData, IUserUsername } from "../types/types";
+import {  IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
 
 export const PlayerService = {
 
@@ -8,9 +8,15 @@ export const PlayerService = {
     if (data) return data;
   },
 
-  async getAllFriends(id: string): Promise<IUserUsername[] | undefined> {
-    console.log("prout");
-    const { data } = await instance.post<IUserUsername>("user/getFriends/" + id);
+  async getAllFriends(id: string): Promise<IUserUsername[]> {
+    const { data } = await instance.post<IUserUsername[]>("user/getFriends/" + id);
     if (data) return (data);
+    return ([]);
   },
+
+  async getInfoUser(username: string): Promise<number>{
+    const { data } = await instance.get<IUser>("user/" + username);
+    if (data) return (data.id);
+    return (0);
+  }
 };

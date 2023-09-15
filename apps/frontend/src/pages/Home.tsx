@@ -57,8 +57,7 @@ const Home: FC = () => {
                 </Link>
               </div>
             </div>
-            <FriendList 
-            />
+            <FriendList />
           </div>
       )}
     </>
