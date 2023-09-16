@@ -103,7 +103,7 @@ export interface IMessage {
 }
 
 export interface IResponseMessage {
-  id: number,
-  user: IUser,
   content: string,
+  user: IUser,
+  id: number,
 }

@@ -36,72 +36,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
-    // Handle disconnection event
   }
 
   @OnEvent('message.created')
   handleMessage(payload: any) {
-    console.log('handleMessage:', payload);
+    // console.log('handleMessage:', payload);
     this.server.emit('onMessage', payload);
   }
 
-  @SubscribeMessage('join')
-  joinRoom(@MessageBody('name') name: string, @ConnectedSocket() client: Socket) {
-    return this.chatService.join(name, client.id);
-  }
-  
-  @SubscribeMessage('test')
-  handleTestEvent(client: Socket, data: any) {
-  console.log("event");
-  console.log(data);
-  
-  // Emit response back to client
-  client.emit('test', { message: 'Received your test event' });
+  // @SubscribeMessage('join')
+  // joinRoom(@MessageBody('name') name: string, @ConnectedSocket() client: Socket) {
+  //   return this.chatService.join(name, client.id);
+  // }
 }
-
-  @SubscribeMessage('onMessage')
-  async handleMessageEvent(client: Socket, data: newMessageDto) {
-    console.log('onMessage event');
-    // this.server.emit('message', data);
-    // 1. Fetch users from user_channel join table w. channel id 
-    // const userInChannel = await this.chatService.findChannelUser(data.channelId);
-    // 2. Broadcast message to client in the same channel
-    // client.emit('message', data);
-    // userInChannel.forEach((user) => {
-      
-    // }); 
-  }
-
-  // 1. Identify the client w. a channel id for ex.
-  // 2. Get a reference to the client's WS connection (store client connections in a Map using unique identifiers (client id + WS connection))
-}
-
-// @SubscribeMessage('join')
-// async handleJoinEvent(@MessageBody() payload: JoinChannelDto) {}
-// call service to update userChannel entity
-//   const user = await this.userService.findOne(payload.name);
-//   const channel = await this.channelService.findOne(payload.channelId);
-//   await this.chatService.JoinChannel(user, channel);
 
 /* @MessageBody is a decorator that simplifies the process of extracting data from the incoming WebSocket message and ensures that the data matches the expected structure the DTO.*/
 // @SubscribeMessage('createMessage') // event handler w. name of the event
   // async createMessage(@MessageBody() payload: CreateMessageDto, client: Socket) { // payload variable should be conform to the structure of the dto. Socket is an object representing an individual WebSocket client connection
-    
-    
-    // Broadcast the message to the clients that are on the same channel
-    // Need to fetch all user id of the same channel except sender's id ?
-    // Persists the message to the db (through service)
-
-    /* Sample code */
-
-    // handleMessage(@MessageBody() payload: CreateMessageDto, client: Socket): void {
-    // // Validate the incoming message
-    // // ...
-
-    // // Broadcast the message to other clients
-    // const message = { user: client.id, text: payload.text };
-    // this.server.emit('message', message);
-
-    // // Persist the message to the database (optional)
-    // this.chatService.saveMessageToDatabase(message);
-  // }

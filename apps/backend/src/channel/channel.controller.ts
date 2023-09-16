@@ -21,7 +21,7 @@ export class ChannelController {
 
     @Get(':channelId')
     async getChannelById(@Param('channelId') channelId: number) {
-        console.log('channelId BE:', channelId)
+        // console.log('channelId BE:', channelId)
         // return await this.ChannelService.getChannelById(channelId);
         return await this.ChannelService.getChannelById(channelId);
     }
