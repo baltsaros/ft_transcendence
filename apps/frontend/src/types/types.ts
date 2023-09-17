@@ -75,12 +75,12 @@ export interface IMatch {
 export interface IChannelData {
   name: string;
   mode: string;
-  owner: string;
+  owner: IUser;
   password: string;
 }
 
 export interface IResponseChannelData {
-  id: number;
+  channel: IChannelData
 }
 
 export interface IGetChannels {
@@ -105,5 +105,6 @@ export interface IMessage {
 export interface IResponseMessage {
   content: string,
   user: IUser,
-  id: number,
+  channel: IResponseChannelData,
+  id: number
 }

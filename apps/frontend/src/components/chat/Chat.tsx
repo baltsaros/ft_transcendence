@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
-import { IChannel, IMessage, IResponseMessage } from "../../types/types";
+import { IChannel, IResponseMessage } from "../../types/types";
 import { useWebSocket } from "../../context/WebSocketContext";
 import ChatBar from "./ChatBar";
 
@@ -21,6 +21,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     {
         const fetchData = async () => {
             const response = await instance.get('channel/' + selectedChannel?.id);
+            console.log('response: ', response);
             setMessage(response.data.channelMessages);
         };
         fetchData();
@@ -31,10 +32,14 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
         console.log('frontend message array: ', message);
         console.log('frontend payload :', payload);
-        setMessage((prevMessages) => [...prevMessages, message] as IResponseMessage[]);
+        setMessage((prevMessages) => [...prevMessages, payload]);
         // setMessage((prev) => [...prev, payload]);
-    }) 
-   }, [webSocketService]);
+    });
+    
+    return () => {
+        webSocketService.off('onMessage');
+      };
+   }, []);
 
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */
@@ -48,9 +53,9 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                 <div className="text-lg font-bold mb-2 text-gray-600">
                     {
                     selectedChannel &&
-                    message.map(idx => (
+                    message.map((idx, index) => (
                     <div
-                    key={idx.id}
+                    key={index}
                     className={`${
                         idx.user.username === 'User1' ? 'self-start' : 'self-end'
                       } p-2 rounded-lg mb-2`}

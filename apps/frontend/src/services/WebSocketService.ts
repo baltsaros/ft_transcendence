@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 class WebSocketService {
     private socket: Socket;
   constructor() {
-    this.socket = io('ws://localhost:3000'); // Replace with your backend URL
+    this.socket = io('ws://localhost:3000');
   }
 
   emit(event: string, data: any) {

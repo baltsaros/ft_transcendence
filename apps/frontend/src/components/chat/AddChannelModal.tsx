@@ -45,7 +45,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             const channelData: IChannelsData = {
                 name: channelName,
                 mode: channelMode,
-                owner: user.username,
+                owner: user,
                 password: channelPassword,
             }
             const response = await instance.post('channel', channelData);

@@ -15,12 +15,12 @@ export type Done = (err: Error, profile: Profile) => void;
 export interface IChannelsData {
   name: string;
   mode: string;
-  owner: string;
+  owner: IUser;
   password: string,
 }
 
 export interface IResponseChannelData {
-  id: number;
+  channel: IChannelsData
 }
 
 export interface IGetChannels {

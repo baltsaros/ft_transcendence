@@ -18,7 +18,7 @@ export class ChannelService {
     ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
     */
     async createChannel(channelData: IChannelsData) {
-        const user = await this.userService.findOne(channelData.owner);
+        const user = await this.userService.findOne(channelData.owner.username);
         const newChannel = this.channelRepository.create({
             name: channelData.name,
             mode: channelData.mode,
@@ -30,7 +30,7 @@ export class ChannelService {
         newChannel.users = [user];
         await this.channelRepository.save(newChannel);
         const response : IResponseChannelData = {
-            id: newChannel.id,
+            channel: newChannel
         }
        return (response);
     }

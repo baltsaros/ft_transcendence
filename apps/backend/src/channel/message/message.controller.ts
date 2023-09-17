@@ -10,6 +10,7 @@ export class MessageController {
         ) {}
     @Post()
     async newMessage(@Body() messageData: newMessageDto) {
+        console.log('message controller: ', messageData);
         const newMessage = await this.messageService.createMessage(messageData);
         this.eventEmitter.emit('message.created', newMessage);
     }
