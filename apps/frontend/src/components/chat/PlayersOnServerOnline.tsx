@@ -19,7 +19,7 @@ const DropdownButton = ({ username }) => {
         onClick={toggleDropdown}
         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
       >
-        {username}'s Menu
+        {username}
       </button>
       {isDropdownOpen && (
         <div className="origin-top-left absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
