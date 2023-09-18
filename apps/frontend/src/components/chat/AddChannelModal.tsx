@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { instance } from "../../api/axios.api";
-import { IChannelsData} from "../../types/types"
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import { setChannels } from "../../store/channels/channelsSlice";
+import { setChannels } from "../../store/channel/channelSlice";
+import { IChannelData, IResponseChannelData } from "../../types/types";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -16,6 +16,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
     const [isProtected, setIsProtected] = useState(false);
+    const [newChannel, setChannel] = useState<IResponseChannelData | undefined>(undefined);
     const [channelPassword, setChannelPassword] = useState('');
     const user = useAppSelector((state: RootState) => state.user.user);
     const dispatch = useDispatch();
@@ -39,19 +40,20 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
         onClose();
     }
 
+    /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
     const handleOk = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
             event.preventDefault();
-            const channelData: IChannelsData = {
+            const channelData: IChannelData = {
                 name: channelName,
                 mode: channelMode,
-                owner: user,
+                owner: user!,
                 password: channelPassword,
             }
-            const response = await instance.post('channel', channelData);
-            const channelId = response.data.id;
-            dispatch(setChannels([channelId]));
-            console.log(response.data.id);
+            const newChannel = await instance.post('channel', channelData);
+            // setChannel(newChannel.data);
+            // const newChannelId = newChannel.data.id;
+            // dispatch(setChannels([newChannelId]));
         } catch (error) {
             console.log("Error adding channel:", error);
         }

@@ -12,27 +12,39 @@ import { OnModuleInit } from '@nestjs/common';
 */
 @WebSocketGateway({
     cors: {
-      origin: ['http://localhost:5173'],
+      // origin: ['http://localhost:5173'],
+      origin: '*',
     },
   })
 
 export class ChatGateway {
-  // @WebSocketServer()
-  // server: Server
-  // constructor(
-  //   private readonly chatService: ChatService,
-  // ) {}
+  @WebSocketServer()
+  server: Server
+  constructor(
+    private readonly chatService: ChatService,
+  ) {}
 
-  // onModuleInit() {
-  //   this.server.on('connection', (socket) => {
-  //     console.log(socket.id);
-  //     console.log('connected');
-  //   })
-  // }
+  onModuleInit() {
+    this.server.on('connection', (socket) => {
+      console.log(socket.id);
+      console.log('connected');
+    })
+  }
   
   @SubscribeMessage('test')
     onTest(@MessageBody() body: any) {
       console.log(body);
+    }
+
+    @OnEvent('message.created')
+    handleMessage(payload: any) {
+      console.log('onMessage event emitted');
+      this.server.emit('onMessage', {
+        content: payload.content,
+        user: payload.user,
+        id: payload.id,
+        channel: payload.channel
+      });
     }
 }
 
@@ -48,16 +60,6 @@ export class ChatGateway {
   //   console.log(`Client disconnected: ${client.id}`);
   // }
 
-  // @OnEvent('message.created')
-  // handleMessage(payload: any) {
-  //   console.log('onMessage event emitted');
-  //   this.server.emit('onMessage', {
-  //     content: payload.content,
-  //     user: payload.user,
-  //     id: payload.id,
-  //     channel: payload.channel
-  //   });
-  // }
 
 
 /* @MessageBody is a decorator that simplifies the process of extracting data from the incoming WebSocket message and ensures that the data matches the expected structure the DTO.*/

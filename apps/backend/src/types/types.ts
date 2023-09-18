@@ -19,9 +19,9 @@ export interface IChannelsData {
   password: string,
 }
 
-export interface IResponseChannelData {
-  channel: IChannelsData
-}
+// export interface IResponseChannelData {
+//   channel: IChannelsData
+// }
 
 export interface IGetChannels {
   username: string;

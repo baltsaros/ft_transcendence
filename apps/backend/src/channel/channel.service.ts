@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
-import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
+import { IChannelsData } from 'src/types/types';
 import { UserService } from '../user/user.service';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
@@ -25,14 +25,9 @@ export class ChannelService {
             owner: user,
             password: channelData.password,
         });
-        console.log('new channel id', newChannel.id);
-        console.log('user id', user.id);
         newChannel.users = [user];
-        await this.channelRepository.save(newChannel);
-        const response : IResponseChannelData = {
-            channel: newChannel
-        }
-       return (response);
+        const channel = await this.channelRepository.save(newChannel);
+       return (channel);
     }
 
     async findOne(channelId: number)

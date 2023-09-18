@@ -80,7 +80,11 @@ export interface IChannelData {
 }
 
 export interface IResponseChannelData {
-  channel: IChannelData
+  name: string;
+  mode: string;
+  owner: IUser;
+  password: string;
+  id: number;
 }
 
 export interface IGetChannels {
@@ -99,7 +103,7 @@ export interface IResponseGetChannels {
 export interface IMessage {
   channelId: number | undefined,
   username: string | undefined,
-  message: string,
+  content: string,
 }
 
 export interface IResponseMessage {
