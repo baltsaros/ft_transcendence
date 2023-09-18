@@ -22,7 +22,7 @@ const DropdownButton = ({ username }) => {
         {username}
       </button>
       {isDropdownOpen && (
-        <div className="origin-top-left absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
           {/* Dropdown menu items */}
           <div className="py-1">
             <button
