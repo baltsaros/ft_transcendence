@@ -43,7 +43,7 @@ const Home: FC = () => {
           Please, log in with 42 account
         </div>
       ) : (
-          <div className="flex flex-row h-screen justify-center items-center">
+          <div className="flex flex-row grid justify-center items-center">
             <div className="grid grid-rows-2 m-auto gap-10">
               <div>
                 <Link to="/">
