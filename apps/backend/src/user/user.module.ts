@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AddChannelModule } from '../channels/channel.module'
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';

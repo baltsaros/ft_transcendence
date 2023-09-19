@@ -1,3 +1,9 @@
+import { Socket } from 'socket.io-client'
+
+export interface ISocketService {
+  socket: Socket
+}
+
 export interface IUser {
   id: number;
   intraId: number;
@@ -80,19 +86,47 @@ export interface IMatchData {
   scoreOpponent: number
 }
 
-export interface IAddChannelsData {
+export interface IChannelData {
   name: string;
   mode: string;
-  owner: string;
-  password: string,
+  owner: IUser;
+  password: string;
 }
 
-export interface IResponseAddChannelData {
-  status: boolean;
-  message: string;
+export interface IResponseChannelData {
+  name: string;
+  mode: string;
+  owner: IUser;
+  password: string;
+  id: number;
+}
+
+export interface IGetChannels {
+  username: string;
+}
+
+export interface IChannel {
+  name: string,
+  id: number,
+}
+
+export interface IResponseGetChannels {
+  channels: IChannel[],
+}
+
+export interface IMessage {
+  channelId: number | undefined,
+  username: string | undefined,
+  content: string,
 }
 
 export interface IFriendRelation {
   iduser: number;
   idFriend: number;
+}
+export interface IResponseMessage {
+  content: string,
+  user: IUser,
+  channel: IResponseChannelData,
+  id: number
 }

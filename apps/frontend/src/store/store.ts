@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./user/userSlice";
+import channelReducer from "./channel/channelSlice"
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    channel: channelReducer,
   },
 });
 

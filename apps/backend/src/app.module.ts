@@ -5,24 +5,31 @@ import { join } from "path";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "./user/user.module";
-import { AddChannelModule } from "./channels/channel.module";
+import { ChannelModule } from "./channel/channel.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { AuthService } from "./auth/auth.service";
 import { PassportModule } from "@nestjs/passport";
+import { MessageModule } from "./channel/message/message.module";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
 import { MatchService } from "./matches/match.service";
 import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
+import { ChatGateway } from "./chat/chat.gateway";
+import { ChatModule } from "./chat/chat.module";
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     UserModule,
+    EventEmitterModule.forRoot(),
     AuthModule,
     MatchModule,
-    AddChannelModule,
+    ChannelModule,
+    MessageModule,
+    ChatModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
@@ -44,6 +51,6 @@ import { MatchController } from "./matches/match.controller";
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, DataStorageService],
+  providers: [AppService, AuthService, JwtService, DataStorageService, ChatGateway],
 })
 export class AppModule {}

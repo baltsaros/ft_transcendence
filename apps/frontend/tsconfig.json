@@ -7,7 +7,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
@@ -16,9 +16,10 @@
 
     /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noUnusedLocals": false, // to be changed to true 
+    "noUnusedParameters": false, // to be changed to true 
+    "noFallthroughCasesInSwitch": true, 
+    "allowSyntheticDefaultImports": true, // to be changed
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
