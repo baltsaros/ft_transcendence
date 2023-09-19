@@ -32,6 +32,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "express-session": "^1.17.3",
+    "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^3.1.2",
     "localforage": "^1.10.0",

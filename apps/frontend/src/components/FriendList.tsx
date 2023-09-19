@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import ToggleMenuFriendList from "./ToggleMenuFriendList";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
-import { Menu, MenuButton, MenuDivider, MenuHeader } from '@szhsin/react-menu';
+import { Menu, MenuButton, MenuHeader } from '@szhsin/react-menu';
 
 
 function FriendList() {
