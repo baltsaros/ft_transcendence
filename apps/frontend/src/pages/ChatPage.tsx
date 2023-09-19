@@ -3,12 +3,8 @@
 ** Components are used to encapsulate part of the UI to be, here a javascript function */
 import { useState } from "react";
 import Chat from "../components/chat/Chat";
-<<<<<<< HEAD
-import Channels from "../components/chat/Channels";
 import PlayersOnServer from "../components/chat/PlayersOnServer";
-=======
 import Channels from "../components/chat/Channel";
->>>>>>> main
 import { IChannel } from "../types/types";
 
 const chatPage: React.FC = () => {
