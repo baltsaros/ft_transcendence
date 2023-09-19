@@ -55,18 +55,35 @@ const DropdownButton = ({ username }) => {
           {/* Dropdown menu items */}
           <div className="py-1">
             <button
-              onClick={() => handleItemClick(`Action 1 for ${username}`)}
+              onClick={() => handleItemClick(`View Profile for ${username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
-              Action 1
+              View Profile
             </button>
             <button
-              onClick={() => handleItemClick(`Action 2 for ${username}`)}
+              onClick={() => handleItemClick(`Direct message for ${username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
-              Action 2
+              Direct message
             </button>
-            {/* Add more menu items as needed */}
+            <button
+              onClick={() => handleItemClick(`Invite to game for ${username}`)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            >
+              Invite to game
+            </button>
+            <button
+              onClick={() => handleItemClick(`Invite as friend for ${username}`)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            >
+              Invite as friend
+            </button>
+            <button
+              onClick={() => handleItemClick(`Block user for ${username}`)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            >
+              Block user
+            </button>
           </div>
         </div>
       )}
