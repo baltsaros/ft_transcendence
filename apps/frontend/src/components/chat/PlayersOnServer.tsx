@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
 import { IUserWithStatus } from '../../types/types';
-import DropdownButton from './PlayersOnServerOnline';
+import DropdownButtonOnLine from './PlayersOnServerOnline';
+import DropdownButtonOffLine from './PlayersOnServerOffline';
 
 function PlayersOnServer() {
     
@@ -53,7 +54,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {players.map(player => (
                             player.status === 'online' && <div key={player.id} >
-                                <DropdownButton username={ player.username } />
+                                <DropdownButtonOnLine username={ player.username } />
                             </div>
                         ))}
                     </div>
@@ -63,7 +64,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {players.map(player => (
                             player.status === 'offline' && <div key={player.id} >
-                                <DropdownButton username={ player.username } />
+                                <DropdownButtonOffLine username={ player.username } />
                             </div>
                         ))}
                     </div>

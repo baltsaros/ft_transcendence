@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-const DropdownButtonOnLine = ({ username }) => {
+const DropdownButtonOffLine = ({ username }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef(null);
   const dropdownMenuRef = useRef(null);
@@ -12,7 +12,6 @@ const DropdownButtonOnLine = ({ username }) => {
   const handleItemClick = (itemText) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
-    // You can add more logic here based on the clicked item
   };
 
   useEffect(() => {
@@ -67,12 +66,6 @@ const DropdownButtonOnLine = ({ username }) => {
               Direct message
             </button>
             <button
-              onClick={() => handleItemClick(`Invite to game for ${username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-              Invite to game
-            </button>
-            <button
               onClick={() => handleItemClick(`Invite as friend for ${username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
@@ -91,4 +84,4 @@ const DropdownButtonOnLine = ({ username }) => {
   );
 };
 
-export default DropdownButtonOnLine;
+export default DropdownButtonOffLine;
