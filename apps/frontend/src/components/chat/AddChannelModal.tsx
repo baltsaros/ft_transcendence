@@ -5,6 +5,7 @@ import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
 import { setChannels } from "../../store/channel/channelSlice";
 import { IChannelData, IResponseChannelData } from "../../types/types";
+import { store } from "../../store/store"
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -37,7 +38,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     }
 
     const handleCancel = () => {
-        onClose();
+      console.log('store state:', store.getState());
+      onClose();
     }
 
     /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
@@ -51,8 +53,10 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
                 password: channelPassword,
             }
             const newChannel = await instance.post('channel', channelData);
-            // setChannel(newChannel.data);
-            // const newChannelId = newChannel.data.id;
+            setChannel(newChannel.data);
+            const newChannelId = newChannel.data.id;
+            store.dispatch(setChannels(newChannel.data));
+            console.log('store state:', store.getState());
             // dispatch(setChannels([newChannelId]));
         } catch (error) {
             console.log("Error adding channel:", error);
