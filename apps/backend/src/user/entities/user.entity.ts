@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 
 import { Channel } from "src/channel/channel.entity";
+import { Match } from "src/matches/entities/matches.entity";
 import { Message } from "src/channel/message/messages.entity";
 
 @Entity()
@@ -37,7 +38,7 @@ export class User {
   authentication: boolean;
 
   @Column()
-  rank: Number;
+  rank: number;
 
   @Column()
   avatar: string;
@@ -50,18 +51,18 @@ export class User {
   status: string;
 
   // Change later
-  // @OneToMany()
-  // history: History[];
+  // @OneToMany(() => Match, (match) => match.user)
+  // matches: Match[];
 
   @ManyToMany(() => User)
   @JoinTable()
   blocked: User[];
 
   @Column()
-  wins: Number;
+  wins: number;
 
   @Column()
-  loses: Number;
+  loses: number;
 
   @CreateDateColumn()
   createdAt: Date;

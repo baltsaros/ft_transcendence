@@ -20,6 +20,10 @@ export interface IUserData {
   intraToken: string;
 }
 
+export interface IUserUsername {
+  username: string;
+}
+
 export interface IResponseUser {
   id: number;
   intraId: number;
@@ -64,12 +68,21 @@ export interface IResponseUserData {
 
 export interface IMatch {
   id: number;
-  score: number;
+
+  scoreUser: number;
   scoreOpponent: number;
  // @OneToOne(() => User)
   // @JoinTable()
   // opponent: User;
-  opponent: string;
+  opponent: IUserUsername;
+  user: IUserUsername;
+}
+
+export interface IMatchData {
+  username: string,
+  opponent: string,
+  scoreUser: number,
+  scoreOpponent: number
 }
 
 export interface IChannelData {

@@ -14,6 +14,9 @@ import { PassportModule } from "@nestjs/passport";
 import { MessageModule } from "./channel/message/message.module";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
+import { MatchService } from "./matches/match.service";
+import { MatchModule } from "./matches/match.module";
+import { MatchController } from "./matches/match.controller";
 import { ChatGateway } from "./chat/chat.gateway";
 import { ChatModule } from "./chat/chat.module";
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -23,6 +26,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     UserModule,
     EventEmitterModule.forRoot(),
     AuthModule,
+    MatchModule,
     ChannelModule,
     MessageModule,
     ChatModule,
