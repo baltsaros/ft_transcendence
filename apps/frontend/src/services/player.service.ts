@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
+import {  IFriendRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
 
 export const PlayerService = {
 
@@ -31,4 +31,10 @@ export const PlayerService = {
     if (data) return (data);
     return ([]);
   },
+
+  async removeFriend(friendRealtion: IFriendRelation) {
+    const { data } = await instance.post("user/removeFriend", friendRealtion);
+    if (data) return (true);
+    return (false);
+  }
 };

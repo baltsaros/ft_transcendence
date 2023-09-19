@@ -91,3 +91,8 @@ export interface IResponseAddChannelData {
   status: boolean;
   message: string;
 }
+
+export interface IFriendRelation {
+  iduser: number;
+  idFriend: number;
+}

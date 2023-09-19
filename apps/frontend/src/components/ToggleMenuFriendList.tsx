@@ -1,5 +1,6 @@
 import { MenuItem, SubMenu } from "@szhsin/react-menu";
 import { IUserUsername } from "../types/types";
+import { NavLink } from "react-router-dom";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 
@@ -17,7 +18,9 @@ function ToggleMenuFriendList(user: IUserUsername) {
         <div className="bg-gray-500">
             <SubMenu direction={"left"} label={user.username}>
             <div className="bg-gray-500">
-                <MenuItem>View Profile</MenuItem>
+                <MenuItem>
+                    <NavLink to={"player/" + user.username}>View Profile</NavLink>
+                </MenuItem>
             </div>
             <div className="bg-gray-500">
                 <MenuItem>Direct message</MenuItem>
