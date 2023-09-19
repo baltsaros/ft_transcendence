@@ -8,5 +8,5 @@ export class newMessageDto {
     username: string | undefined;
     
     @IsNotEmpty()
-    message: string;
+    content: string;
 }

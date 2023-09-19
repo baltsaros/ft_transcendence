@@ -14,20 +14,37 @@ import { PassportModule } from "@nestjs/passport";
 import { MessageModule } from "./channel/message/message.module";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "./helpers/data-storage.service";
+<<<<<<< HEAD
 import { ChatGateway } from "./chat/chat.gateway";
 import { ChatModule } from "./chat/chat.module";
 import { MatchService } from "./matches/match.service";
 import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
+=======
+import { MatchService } from "./matches/match.service";
+import { MatchModule } from "./matches/match.module";
+import { MatchController } from "./matches/match.controller";
+import { ChatGateway } from "./chat/chat.gateway";
+import { ChatModule } from "./chat/chat.module";
+import { EventEmitterModule } from '@nestjs/event-emitter';
+>>>>>>> main
 
 @Module({
   imports: [
     UserModule,
+    EventEmitterModule.forRoot(),
     AuthModule,
+<<<<<<< HEAD
     ChannelModule,
     MessageModule,
     ChatModule,
     MatchModule,
+=======
+    MatchModule,
+    ChannelModule,
+    MessageModule,
+    ChatModule,
+>>>>>>> main
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({

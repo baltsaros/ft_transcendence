@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
-import { IChannelsData, IResponseChannelData ,IGetChannels } from 'src/types/types';
+import { IChannelsData } from 'src/types/types';
 import { UserService } from '../user/user.service';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
@@ -18,21 +18,16 @@ export class ChannelService {
     ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
     */
     async createChannel(channelData: IChannelsData) {
-        const user = await this.userService.findOne(channelData.owner);
+        const user = await this.userService.findOne(channelData.owner.username);
         const newChannel = this.channelRepository.create({
             name: channelData.name,
             mode: channelData.mode,
             owner: user,
             password: channelData.password,
         });
-        console.log('new channel id', newChannel.id);
-        console.log('user id', user.id);
         newChannel.users = [user];
-        await this.channelRepository.save(newChannel);
-        const response : IResponseChannelData = {
-            id: newChannel.id,
-        }
-       return (response);
+        const channel = await this.channelRepository.save(newChannel);
+       return (channel);
     }
 
     async findOne(channelId: number)
@@ -62,11 +57,11 @@ export class ChannelService {
     /* for the moment this query retrieves all fields fo the channel entity
     ** check w. querybuilder if it can be lighter */
     async getChannelById(channelId: number) {
-        const channelMessages = await this.channelRepository.find
+        const channel = await this.channelRepository.findOne
         (
             {where: { id: channelId },
-            relations: ['channelMessages'],
+            relations: ['channelMessages', 'channelMessages.user'],
         })
-        return channelMessages;
+        return channel;
     }
 }

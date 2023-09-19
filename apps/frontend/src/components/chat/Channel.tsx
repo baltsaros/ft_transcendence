@@ -29,21 +29,12 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                 username: username,
             }
             const fetchData = async () => {
-                const result = await instance.get('channels', channels);
+                const result = await instance.get('channel/', {params: {channels}});
                 setData(result.data);
             }
             fetchData();
         }
     }, []);
-
-    // const handleJoinChannel = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>, channelId: number) => {
-    //     event.preventDefault();
-    //     const data: IChannel = {
-    //         name: user,
-    //         id: channelId,
-    //     }
-    //     socket.emit("join", data);
-    // }
 
     /* RENDER */
     /* Destructuring of the data array is used with the map method */

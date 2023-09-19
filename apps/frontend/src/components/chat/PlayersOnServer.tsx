@@ -1,9 +1,12 @@
+<<<<<<< HEAD
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
 import { IUserWithStatus } from '../../types/types';
 import DropdownButtonOnLine from './PlayersOnServerOnline';
 import DropdownButtonOffLine from './PlayersOnServerOffline';
+=======
+>>>>>>> main
 
 function PlayersOnServer() {
     
@@ -13,6 +16,7 @@ function PlayersOnServer() {
       ])
     
     // behavior
+<<<<<<< HEAD
     useEffect(() =>  {
         const getAllUsers = async () => {
           try {
@@ -38,6 +42,8 @@ function PlayersOnServer() {
     //       socket.disconnect();
     //     };
     //   }, []);
+=======
+>>>>>>> main
 
     // render
     

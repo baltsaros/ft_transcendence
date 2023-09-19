@@ -23,4 +23,12 @@ export class ChatService {
             console.log(userInChannel);
             return (userInChannel);
     }
+
+    clientToUser = {}
+
+    join(name: string, clientId: string) {
+        this.clientToUser[clientId] = name;
+
+        return Object.values(this.clientToUser); 
+    }
 }

@@ -1,26 +1,46 @@
-import { useEffect } from "react";
-import { IChannel, IMessage } from "../../types/types";
+import { useEffect, useState } from "react";
+import { instance } from "../../api/axios.api";
+import { IChannel, IResponseMessage } from "../../types/types";
+import { useWebSocket } from "../../context/WebSocketContext";
 import ChatBar from "./ChatBar";
-import socket from "../../services/socket.service"
 
 interface ChildProps {
     selectedChannel: IChannel | null;
 }
 
 const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
+    const webSocketService = useWebSocket();
+
     /* STATE */
+    const [message, setMessage] = useState<IResponseMessage[]>([]);
 
     /* BEHAVIOR */
-    /* The useEffect() hook is used to perform side effects in component
-    ** Fetching data, listen to events are side effects
-    */
    useEffect(() => {
-    console.log('useEffect()');
-    socket.on('message', (message: IMessage) => {
-        console.log(message);
-    });
-}); 
+    // console.log('selected channel', selectedChannel?.id);
+    if (selectedChannel)
+    {
+        const fetchData = async () => {
+            const response = await instance.get('channel/' + selectedChannel?.id);
+            console.log('response: ', response);
+            setMessage(response.data.channelMessages);
+        };
+        fetchData();
+    }
+   }, [selectedChannel]);
   
+   useEffect(() => {
+    webSocketService.on('onMessage', (payload: IResponseMessage) => {
+        console.log('frontend message array: ', message);
+        console.log('frontend payload :', payload);
+        setMessage((prevMessages) => [...prevMessages, payload]);
+        // setMessage((prev) => [...prev, payload]);
+    });
+    
+    return () => {
+        webSocketService.off('onMessage');
+      };
+   }, []);
+
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */
     return (   
@@ -33,8 +53,21 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                 <div className="text-lg font-bold mb-2 text-gray-600">
                     {
                     selectedChannel &&
-                    <p>Selected Channel: {selectedChannel.name}</p>
-                    }
+                    message.map((idx, index) => (
+                    <div
+                    key={index}
+                    className={`${
+                        idx.user.username === 'User1' ? 'self-start' : 'self-end'
+                      } p-2 rounded-lg mb-2`}
+                    >
+                        <div className="text-sm font-semibold">
+                        {idx.user.username}
+                        </div>
+                        <div className="bg-white p-2 rounded-lg shadow-md">
+                        {idx.content}
+                        </div>
+                        </div>
+                        ))}
                     {
                     !selectedChannel &&
                     <h2>Select a channel</h2>

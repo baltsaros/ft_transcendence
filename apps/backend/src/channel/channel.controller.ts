@@ -1,14 +1,14 @@
 import { Controller, Post, Get, Body, Param, Query} from '@nestjs/common';
 import { ChannelService } from './channel.service';
-import { IChannelsData, IResponseChannelData, IGetChannels } from 'src/types/types';
+import { IChannelsData, IGetChannels } from 'src/types/types';
 
 
-@Controller('channels')
+@Controller('channel')
 export class ChannelController {
     constructor(private readonly ChannelService: ChannelService) {}
 
     @Post()
-    async addChannel(@Body() channelData: IChannelsData): Promise<IResponseChannelData> {
+    async addChannel(@Body() channelData: IChannelsData) {
         return await this.ChannelService.createChannel(channelData);
     }
 
@@ -21,9 +21,9 @@ export class ChannelController {
 
     @Get(':channelId')
     async getChannelById(@Param('channelId') channelId: number) {
-        console.log('channelId BE:', channelId)
+        // console.log('channelId BE:', channelId)
+        // return await this.ChannelService.getChannelById(channelId);
         return await this.ChannelService.getChannelById(channelId);
-
     }
 
 }

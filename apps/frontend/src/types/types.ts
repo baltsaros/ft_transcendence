@@ -91,14 +91,18 @@ export interface IMatchData {
   scoreOpponent: number
 }
 
-export interface IChannelsData {
+export interface IChannelData {
   name: string;
   mode: string;
-  owner: string;
+  owner: IUser;
   password: string;
 }
 
 export interface IResponseChannelData {
+  name: string;
+  mode: string;
+  owner: IUser;
+  password: string;
   id: number;
 }
 
@@ -118,5 +122,12 @@ export interface IResponseGetChannels {
 export interface IMessage {
   channelId: number | undefined,
   username: string | undefined,
-  message: string,
+  content: string,
+}
+
+export interface IResponseMessage {
+  content: string,
+  user: IUser,
+  channel: IResponseChannelData,
+  id: number
 }
