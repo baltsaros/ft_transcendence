@@ -16,7 +16,7 @@ export class ChannelController {
     // async getChannel(@Param('username') data: string) {
     async getChannel(@Query() data: IGetChannels ) {
         const name = data.username;
-        return await (this.ChannelService.getChannel(name))
+        return await (this.ChannelService.findAll(name))
     }
 
     @Get(':channelId')

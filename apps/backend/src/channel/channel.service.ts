@@ -40,7 +40,7 @@ export class ChannelService {
         );
     }
 
-    async getChannel(username: string) {
+    async findAll(username: string) {
         const channels = await this.channelRepository.find({
             where: {
                 owner:{
@@ -49,7 +49,6 @@ export class ChannelService {
             },
         select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
     });
-
     return channels;
     }
 

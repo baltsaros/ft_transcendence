@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { instance } from "../../api/axios.api";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import { setChannels } from "../../store/channel/channelSlice";
+import { addChannel } from "../../store/channel/channelSlice";
 import { IChannelData, IResponseChannelData } from "../../types/types";
 import { store } from "../../store/store"
 
@@ -54,13 +54,14 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             }
             const newChannel = await instance.post('channel', channelData);
             setChannel(newChannel.data);
-            const newChannelId = newChannel.data.id;
-            store.dispatch(setChannels(newChannel.data));
+            // const newChannelId = newChannel.data.id;
+            store.dispatch(addChannel(newChannel.data));
             console.log('store state:', store.getState());
             // dispatch(setChannels([newChannelId]));
         } catch (error) {
             console.log("Error adding channel:", error);
         }
+        onClose();
     }
 
     /* RENDERING */
