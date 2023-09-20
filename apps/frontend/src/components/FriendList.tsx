@@ -33,7 +33,7 @@ function FriendList() {
     //render
         return (
           <div className="text-black bg-gray-500">
-            <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton>Friend list</MenuButton>}>
+            <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton className="text-lg">Friend list</MenuButton>}>
               <div className="bg-gray-500 text-lg">
                 <MenuHeader>Online</MenuHeader>
               </div>
