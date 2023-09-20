@@ -1,16 +1,40 @@
 import { MenuItem, SubMenu } from "@szhsin/react-menu";
-import { IUserUsername } from "../types/types";
-import { NavLink } from "react-router-dom";
+import { IFriendRelation, IUserUsername } from "../types/types";
+import { NavLink, Navigate } from "react-router-dom";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
+import { PlayerService } from "../services/player.service";
+import Cookies from "js-cookie";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
 
     //state
-
+    const navigate = useNavigate();
 
     //behaviour
+    const deleteFriend = async () => {
+        try {
+            const idUser = await PlayerService.getInfoUser(Cookies.get('username')!);
+            if (!idUser)
+                return toast.error("User doesn't exists !");
+            const idFriend = await PlayerService.getInfoUser(user.username);
+            if (!idFriend)
+                return toast.error("Friend to remove doesn't exist !");
+            const data =  await PlayerService.removeFriend({idUser, idFriend});
+            if (data)
+            {
+                Cookies.set("DelFriend", "true");
+                navigate(0);
+            }
+            toast.error("Friend not deleted");
+
+        } catch (err: any) {
+          const error = err.response?.data.message;
+        }
+      }
 
 
     //render
@@ -29,7 +53,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
                 <MenuItem>Invite to game</MenuItem>
             </div>
             <div className="bg-gray-500">
-                <MenuItem>Remove friend</MenuItem>
+                <MenuItem onClick={() => deleteFriend()}>Remove friend</MenuItem>
             </div>
             </SubMenu>
         </div> 

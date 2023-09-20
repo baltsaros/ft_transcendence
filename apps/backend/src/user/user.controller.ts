@@ -23,6 +23,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import Path = require("path");
+import { FriendRelationDto } from "./dto/friend-relation.dto";
 
 const storage = {
   storage: diskStorage({
@@ -101,4 +102,11 @@ export class UserController {
   getAllOfflineUsers() {
     return (this.userService.findAllOfflineUsers());
   }
+
+  @Post("removeFriend")
+  @UseGuards(JwtAuthGuard)
+  removeFriend(@Body() friendRelation: FriendRelationDto) {
+    return (this.userService.removeFriendRelation(friendRelation));
+  }
+
 }

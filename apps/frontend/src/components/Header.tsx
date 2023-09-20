@@ -40,7 +40,7 @@ const Header: FC = () => {
     removeTokenFromLocalStorage("token");
     toast.success("Bye!");
     Cookies.remove("jwt_token");
-    Cookies.remove("username")
+    Cookies.remove("username");
     navigate("/");
   };
 

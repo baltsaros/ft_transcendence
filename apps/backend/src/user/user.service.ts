@@ -13,6 +13,7 @@ import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { Profile } from "passport-42";
+import { FriendRelationDto } from "./dto/friend-relation.dto";
 
 @Injectable()
 export class UserService {
@@ -149,5 +150,22 @@ export class UserService {
     user.loses++;
     const userModified = await this.userRepository.save(user);
     if (!userModified) throw new NotFoundException("User not found");
+  }
+
+  async removeFriendRelation(friendRelation: FriendRelationDto)
+  {
+    const question = await this.userRepository.findOne({
+      relations: {
+        friends: true,
+      },
+      where: { id: friendRelation.idUser}
+    });
+
+    question.friends = question.friends.filter((user) => {
+      return (user.id !== friendRelation.idFriend)
+    })
+    const user = await this.userRepository.save(question);
+    if (user) return true;
+    return false;
   }
 }

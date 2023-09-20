@@ -121,7 +121,7 @@ export interface IMessage {
 }
 
 export interface IFriendRelation {
-  iduser: number;
+  idUser: number;
   idFriend: number;
 }
 export interface IResponseMessage {

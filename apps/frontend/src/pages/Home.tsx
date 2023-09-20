@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
+import { toast } from "react-toastify";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -25,7 +26,12 @@ const Home: FC = () => {
       const decoded = jwtDecode<any>(Cookies.get('jwt_token')!)
       if (decoded)
         Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
-    }
+        if (Cookies.get("DelFriend") === "true")
+        {
+          toast.success("Friend successfully deleted");
+          Cookies.remove("DelFriend");
+        }
+      }
   },  [])
 
   return (
