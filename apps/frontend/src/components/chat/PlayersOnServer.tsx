@@ -33,7 +33,6 @@ function PlayersOnServer() {
             console.log(data);
           } catch (err: any) {}}
           getAllOfflineUsers();
-        
         }, [])
 
     // useEffect(() => {
