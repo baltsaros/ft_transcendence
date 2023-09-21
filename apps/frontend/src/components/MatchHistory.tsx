@@ -9,10 +9,9 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
 
     //state
     const [matches, setMatches] = useState<IMatch[] | undefined>([
-        {id: NaN, user: {username: "undefined"}, scoreUser:-1, scoreOpponent:-1, opponent: {username: "undefined"}},
+        {id: NaN, user: {username: "undefined", status: "offline"}, scoreUser:-1, scoreOpponent:-1, opponent: {username: "undefined", status: "offline"}},
       ])
-      // console.log("username MatchHistory = " + userData.username);
-    
+
       const getAllMatchForUser = async () => {
       try {
         const data =  await MatchService.getAllMatchForPlayer(userData.username!);

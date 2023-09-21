@@ -45,7 +45,7 @@ export default function Player(){
 
   useEffect(() => {
     getUserProfile();
-  }, [user]) 
+  }, [user.username, usernameParam]) 
 
   //render
   if (_loading)

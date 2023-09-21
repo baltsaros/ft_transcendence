@@ -22,6 +22,7 @@ export interface IUserData {
 
 export interface IUserUsername {
   username: string;
+  status: string;
 }
 
 export interface IResponseUser {
@@ -125,6 +126,10 @@ export interface IMessage {
   content: string,
 }
 
+export interface IFriendRelation {
+  idUser: number;
+  idFriend: number;
+}
 export interface IResponseMessage {
   content: string,
   user: IUser,
