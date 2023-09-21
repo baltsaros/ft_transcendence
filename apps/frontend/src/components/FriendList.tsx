@@ -17,6 +17,12 @@ function FriendList() {
       ]
     );
 
+    const [invitations, setInvitations] = useState<IUserUsername[]>(
+      [
+        { username: 'Juan', status: 'online'}
+      ]
+    );
+
       useEffect(() =>  {
         const getAllFriendsForUser = async () => {
           try {
@@ -24,6 +30,9 @@ function FriendList() {
             if (username) {
               const id = await PlayerService.getInfoUser(username);
               const data =  await PlayerService.getAllFriends(id.toString());
+              const invit = await PlayerService.getAllInvitations(id.toString());
+              setInvitations(invit!);
+              console.log(invit);
               setFriends(data);
             }
           } catch (err: any) {}}

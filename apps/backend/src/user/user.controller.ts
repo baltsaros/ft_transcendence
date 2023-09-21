@@ -108,5 +108,10 @@ export class UserController {
   removeFriend(@Body() friendRelation: FriendRelationDto) {
     return (this.userService.removeFriendRelation(friendRelation));
   }
+  @Post("getInvitations/:id")
+  @UseGuards(JwtAuthGuard)
+  getAllInvitations(@Param("id") id: string) {
+    return (this.userService.getAllInvitations(id));
+  }
 
 }

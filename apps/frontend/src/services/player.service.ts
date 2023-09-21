@@ -36,5 +36,10 @@ export const PlayerService = {
     const { data } = await instance.post("user/removeFriend", friendRealtion);
     if (data) return (true);
     return (false);
+  },
+
+  async getAllInvitations(id: string): Promise<IUserUsername[] | undefined> {
+    const { data } = await instance.post<IUserUsername[]>("user/getInvitations/" + id);
+    if (data) return (data);
   }
 };
