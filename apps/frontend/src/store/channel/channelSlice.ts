@@ -6,7 +6,7 @@ import { createSlice } from "@reduxjs/toolkit";
 ** Flow: dispatch an action to a reducer, reducer checks what to do, store gets updated */
 const channelSlice = createSlice({
   name: "channel",
-  initialState: [] as any, // temporary, should be refined
+  initialState: [] as any, // temporary, should be refined to channel w. only username and channelId same for the action parameter
   reducers: {
     setChannel: (state, action) => {
       console.log('current state:', state);

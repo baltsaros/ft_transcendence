@@ -3,7 +3,7 @@ import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-// import { useWebSocket } from "../../context/WebSocketContext";
+import { useWebSocket } from "../../context/WebSocketContext";
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -17,10 +17,10 @@ type Message = {
 const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
 
     const user = useAppSelector((state: RootState) => state.user.user);
-    // const webSocketService = useWebSocket();
+    const webSocketService = useWebSocket();
     
     /* STATE */
-    const [value, setValue] =  useState("");
+    const [newMessage, setMessage] =  useState("");
 
     /* BEHAVIOR */
     /* IMessage type on undefined because useState can be null (TBD)*/
@@ -28,23 +28,23 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
         const message: IMessage = {
             channelId: selectedChannel?.id,
             username: user?.username,
-            content: value,
+            content: newMessage,
         };
         console.log('frontend ChatBar:', message);
         await instance.post('message', message);
-        // await webSocketService.emit('message', message);
+        webSocketService.emit('message', message);
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value);
-        setValue(event.target.value);
+        setMessage(event.target.value);
     }
 
     /* RENDER */
     return (
         <div className="flex text-black items-center bg-gray-200 p-2">
             <input
-            value={value}
+            value={newMessage}
             type="text" 
             placeholder="Type your message..."
             onChange={handleChange}

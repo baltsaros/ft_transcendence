@@ -56,6 +56,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                             <div className="flex flex-col text-black space-y-4">
                                 {/* {data.map(({name, id}) => ( */}
                                 {channels.map((channel: IChannel) => (
+                                // console.log(cha)
                                 <button
                                 key={channel.id}
                                 onClick={() => onSelectChannel(channel)} 
