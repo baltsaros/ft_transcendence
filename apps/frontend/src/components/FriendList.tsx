@@ -31,42 +31,6 @@ function FriendList() {
         }, [])
 
     //render
-<<<<<<< HEAD
-    return (
-        <div className="absolute bottom-0 right-0 w-[340px] h-[340px]">
-          <button
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="bg-gray-500 text-black absolute bottom-0 p-4 w-full flex justify-between font-bold text-lg tracking-wider border-2 border-transparent active:border-white duration-100 active:text-white">
-            Friend List
-            {!isOpen ? (
-              <AiOutlineCaretUp className="h-8" />
-            ) : (
-              <AiOutlineCaretDown className="h-8" />
-            )}
-          </button>
-
-          {isOpen && (
-            <div className="bg-gray-500 h-40 text-black overflow-auto absolute text-left top-full flex flex-col  p-2 w-full">
-              <div className="text-lg divide-y text-center">Online</div>
-              {friends.map((friend) => (
-                friend.status ==="online" && <div key={friend.username}>
-                  {friend.username}
-              </div>
-              ))}
-            <div className="text-lg divide-y text-center">Offline</div>
-              {friends.map((friend) => (
-                friend.status === "offline" && <div key={friend.username}>
-                  {friend.username}
-              </div>
-              ))}
-            </div>
-            
-          )}
-        </div>
-       
-    );
-
-=======
         return (
           <div className="text-black bg-gray-500">
             <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton className="text-lg">Friend list</MenuButton>}>
@@ -89,6 +53,5 @@ function FriendList() {
             </Menu>
           </div>
         )
->>>>>>> main
 }
 export default FriendList;

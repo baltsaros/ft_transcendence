@@ -1,26 +1,39 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
-import { IUserWithStatus } from '../../types/types';
+import { IUserUsername } from '../../types/types';
 import DropdownButtonOnLine from './PlayersOnServerOnline';
 import DropdownButtonOffLine from './PlayersOnServerOffline';
 
 function PlayersOnServer() {
     
     // state
-    const [players, setPlayers] = useState<IUserWithStatus[] | undefined>([
-        { username: 'hdony', id: 1, status: 'online' }
+    const [onlinePlayers, setOnlinePlayers] = useState<IUserUsername[] | undefined>([
+        { username: 'hdony', status: 'online' }
+      ])
+    const [offlinePlayers, setOfflinePlayers] = useState<IUserUsername[] | undefined>([
+        { username: 'hdony', status: 'offline' }
       ])
     
     // behavior
     useEffect(() =>  {
-        const getAllUsers = async () => {
+        const getAllOnlineUsers = async () => {
           try {
-            const data =  await PlayerService.getAllUsers();
-            setPlayers(data);
+            const data =  await PlayerService.getAllOnlineUsers();
+            if (data)
+             setOnlinePlayers(data);
             console.log(data);
           } catch (err: any) {}}
-          getAllUsers();
+          getAllOnlineUsers();
+        const getAllOfflineUsers = async () => {
+          try {
+            const data =  await PlayerService.getAllOfflineUsers();
+            if (data)
+             setOfflinePlayers(data);
+            console.log(data);
+          } catch (err: any) {}}
+          getAllOfflineUsers();
+        
         }, [])
 
     // useEffect(() => {
@@ -52,9 +65,9 @@ function PlayersOnServer() {
                         <p className="text-base mb-1 text-gray-600">Online</p>
                     </div>
                     <div className="flex flex-col text-black space-y-4">
-                        {players.map(player => (
-                            player.status === 'online' && <div key={player.id} >
-                                <DropdownButtonOnLine username={ player.username } />
+                        {onlinePlayers!.map(onlinePlayer => (
+                            onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
+                                <DropdownButtonOnLine username={ onlinePlayer.username } />
                             </div>
                         ))}
                     </div>
@@ -62,9 +75,9 @@ function PlayersOnServer() {
                         <p className="text-base mb-1 text-gray-600">Offline</p>
                     </div>
                     <div className="flex flex-col text-black space-y-4">
-                        {players.map(player => (
-                            player.status === 'offline' && <div key={player.id} >
-                                <DropdownButtonOffLine username={ player.username } />
+                        {offlinePlayers!.map(offlinePlayer => (
+                            offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
+                                <DropdownButtonOffLine username={ offlinePlayer.username } />
                             </div>
                         ))}
                     </div>
