@@ -32,7 +32,6 @@ function FriendList() {
               const data =  await PlayerService.getAllFriends(id.toString());
               const invit = await PlayerService.getAllInvitations(id.toString());
               setInvitations(invit!);
-              console.log(invit);
               setFriends(data);
             }
           } catch (err: any) {}}

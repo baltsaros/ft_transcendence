@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
+import FriendInvitations from "../components/FriendInvitations";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -66,6 +67,9 @@ const Home: FC = () => {
             <div className="grid grid-rows-6">
               <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
                 <FriendList />
+              </div>
+              <div>
+                <FriendInvitations />
               </div>
             </div>
           </div>

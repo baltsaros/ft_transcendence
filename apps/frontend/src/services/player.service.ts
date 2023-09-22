@@ -9,7 +9,7 @@ export const PlayerService = {
   },
 
   async getAllFriends(id: string): Promise<IUserUsername[]> {
-    const { data } = await instance.post<IUserUsername[]>("user/getFriends/" + id);
+    const { data } = await instance.post<IUserUsername[]>("user/getFriends", {id});
     if (data) return (data);
     return ([]);
   },
@@ -39,7 +39,22 @@ export const PlayerService = {
   },
 
   async getAllInvitations(id: string): Promise<IUserUsername[] | undefined> {
-    const { data } = await instance.post<IUserUsername[]>("user/getInvitations/" + id);
+    const { data } = await instance.post<IUserUsername[]>("user/getInvitations/", {id});
     if (data) return (data);
+  },
+
+  async acceptInvitation(friendRelation: IFriendRelation)
+  {
+    const { data } = await instance.post("user/acceptInvitation", friendRelation);
+    if (data) return (true);
+    return (false);
+  },
+
+
+  async refuseInvitation(friendRelation: IFriendRelation)
+  {
+    const { data} = await instance.post("user/refuseInvitation", friendRelation);
+    if (data) return (true);
+    return (false);
   }
 };

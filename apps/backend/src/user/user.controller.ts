@@ -24,6 +24,8 @@ import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import Path = require("path");
 import { FriendRelationDto } from "./dto/friend-relation.dto";
+import { IdUserDto } from "./dto/id-user.dto";
+import { User } from "./entities/user.entity";
 
 const storage = {
   storage: diskStorage({
@@ -85,15 +87,15 @@ export class UserController {
     console.log("getAvatar");
     res.sendFile("/avatars/" + avatar, { root: "./src/uploads" });
   }
-  @Post("getFriends/:id")
+  @Post("getFriends")
   @UseGuards(JwtAuthGuard)
-  getAllFriendsForUser(@Param("id") id: string) {
-    return (this.userService.findAllFriends(id));
+  getAllFriendsForUser(@Body() user: IdUserDto) {
+    return (this.userService.findAllFriends(user.id));
   }
 
   @Post("online")
   @UseGuards(JwtAuthGuard)
-  getAllOnlineUsers(@Request() req) {
+  getAllOnlineUsers() {
     return (this.userService.findAllOnlineUsers());
   }
 
@@ -108,10 +110,22 @@ export class UserController {
   removeFriend(@Body() friendRelation: FriendRelationDto) {
     return (this.userService.removeFriendRelation(friendRelation));
   }
-  @Post("getInvitations/:id")
+  @Post("getInvitations")
   @UseGuards(JwtAuthGuard)
-  getAllInvitations(@Param("id") id: string) {
-    return (this.userService.getAllInvitations(id));
+  getAllInvitations(@Body() user: IdUserDto) {
+    return (this.userService.getAllInvitations(user.id));
+  }
+
+  @Post("acceptInvitation")
+  @UseGuards(JwtAuthGuard)
+  acceptInvitation(@Body() invitation: FriendRelationDto) {
+    return (this.userService.acceptInvitation(invitation));
+  }
+
+  @Post("refuseInvitation")
+  @UseGuards(JwtAuthGuard)
+  refuseInvitation(@Body() invitation: FriendRelationDto) {
+    return (this.userService.removeInvitation(invitation));
   }
 
 }
