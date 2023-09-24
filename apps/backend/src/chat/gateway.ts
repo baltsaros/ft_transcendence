@@ -17,35 +17,34 @@ import { OnModuleInit } from '@nestjs/common';
     },
   })
 
-export class ChatGateway {
+export class ChatGateway implements OnGatewayConnection {
   @WebSocketServer()
   server: Server
   constructor(
     private readonly chatService: ChatService,
   ) {}
 
-  onModuleInit() {
-    this.server.on('connection', (socket) => {
-      console.log(socket.id);
-      console.log('connected');
-    })
-  }
-  
-  @SubscribeMessage('test')
-    onTest(@MessageBody() body: any) {
-      console.log(body);
-    }
+  private userMapping =  new Map<string, string>();
 
-    @OnEvent('message.created')
-    handleMessage(payload: any) {
-      console.log('onMessage event emitted');
-      this.server.emit('onMessage', {
-        content: payload.content,
-        user: payload.user,
-        id: payload.id,
-        channel: payload.channel
-      });
-    }
+  handleConnection(client: Socket){
+    console.log('client ws id:', client.id);
+    console.log('client username:', client.handshake.query.username);
+    const username = client.handshake.query.username;
+    this.userMapping.set(client.handshake.query.username.toString(), client.id);
+    // console.log(this.userMapping);
+
+  }
+  @OnEvent('message.created')
+  handleMessage(payload: any) {
+    console.log('Message received from:', payload.us);
+    // console.log('onMessage event emitted');
+    this.server.emit('onMessage', {
+      content: payload.content,
+      user: payload.user,
+      id: payload.id,
+      channel: payload.channel
+    });
+  }
 }
 
 

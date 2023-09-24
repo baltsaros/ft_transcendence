@@ -30,9 +30,9 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             username: user?.username,
             content: newMessage,
         };
-        console.log('frontend ChatBar:', message);
         await instance.post('message', message);
         webSocketService.emit('message', message);
+        setMessage('');
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
