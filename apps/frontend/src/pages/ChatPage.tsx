@@ -3,6 +3,7 @@
 ** Components are used to encapsulate part of the UI to be, here a javascript function */
 import { useState } from "react";
 import Chat from "../components/chat/Chat";
+import PlayersOnServer from "../components/chat/PlayersOnServer";
 import Channels from "../components/chat/Channel";
 import { IChannel } from "../types/types";
 
@@ -20,7 +21,7 @@ const chatPage: React.FC = () => {
     <div className="flex items-stretch justify-center">
         <Channels onSelectChannel={handleSelectedChannel} />
         <Chat selectedChannel={selectedChannel} />
-        {/* <PlayersOnServer /> */}
+        { <PlayersOnServer /> }
     </div>
     );
 }

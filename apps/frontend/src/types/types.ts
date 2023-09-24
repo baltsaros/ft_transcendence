@@ -22,6 +22,7 @@ export interface IUserData {
 
 export interface IUserUsername {
   username: string;
+  status: string;
 }
 
 export interface IResponseUser {
@@ -49,7 +50,13 @@ export interface IResponseUser {
   loses: number;
   createdAt: Date;
 }
-
+/*
+export interface IUserWithStatus {
+  username: string;
+  id: number;
+  status: string;
+}
+*/
 //Interface for the playerProfile
 export interface IUserPlayerProfileData {
   username: string | undefined;
@@ -119,6 +126,10 @@ export interface IMessage {
   content: string,
 }
 
+export interface IFriendRelation {
+  idUser: number;
+  idFriend: number;
+}
 export interface IResponseMessage {
   content: string,
   user: IUser,

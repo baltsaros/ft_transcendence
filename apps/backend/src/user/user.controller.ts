@@ -8,6 +8,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
   UsePipes,
   ValidationPipe,
   UseGuards,
@@ -22,6 +23,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import Path = require("path");
+import { FriendRelationDto } from "./dto/friend-relation.dto";
 
 const storage = {
   storage: diskStorage({
@@ -83,4 +85,28 @@ export class UserController {
     console.log("getAvatar");
     res.sendFile("/avatars/" + avatar, { root: "./src/uploads" });
   }
+  @Post("getFriends/:id")
+  @UseGuards(JwtAuthGuard)
+  getAllFriendsForUser(@Param("id") id: string) {
+    return (this.userService.findAllFriends(id));
+  }
+
+  @Post("online")
+  @UseGuards(JwtAuthGuard)
+  getAllOnlineUsers(@Request() req) {
+    return (this.userService.findAllOnlineUsers());
+  }
+
+  @Post("offline")
+  @UseGuards(JwtAuthGuard)
+  getAllOfflineUsers() {
+    return (this.userService.findAllOfflineUsers());
+  }
+
+  @Post("removeFriend")
+  @UseGuards(JwtAuthGuard)
+  removeFriend(@Body() friendRelation: FriendRelationDto) {
+    return (this.userService.removeFriendRelation(friendRelation));
+  }
+
 }

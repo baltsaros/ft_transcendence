@@ -8,6 +8,9 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
+import FriendList from "../components/FriendList";
+import userSlice from "../store/user/userSlice";
+import { toast } from "react-toastify";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -23,7 +26,12 @@ const Home: FC = () => {
       const decoded = jwtDecode<any>(Cookies.get('jwt_token')!)
       if (decoded)
         Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
-    }
+        if (Cookies.get("DelFriend") === "true")
+        {
+          toast.success("Friend successfully deleted");
+          Cookies.remove("DelFriend");
+        }
+      }
   },  [])
 
   return (
@@ -41,18 +49,23 @@ const Home: FC = () => {
           Please, log in with 42 account
         </div>
       ) : (
-          <div className="flex flex-row h-screen justify-center items-center">
-            <div className="grid grid-rows-2 m-auto gap-10">
+          <div className=" grid grid-cols-3 gap-28">
+            <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
+              <div/>
               <div>
                 <Link to="/">
-                  <button className="w-96 h-40 bg-gray-500 text-center text-black text-4xl">PLAY</button>
+                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
                 </Link>
               </div>
-
               <div>
                 <Link to="/chat">
-                  <button className="w-96 h-40 bg-gray-500 text-center text-black text-4xl">GO TO CHAT</button>
+                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">CHAT</button>
                 </Link>
+              </div>
+            </div>
+            <div className="grid grid-rows-6">
+              <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
+                <FriendList />
               </div>
             </div>
           </div>

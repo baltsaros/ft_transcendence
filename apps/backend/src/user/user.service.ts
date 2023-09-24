@@ -13,6 +13,7 @@ import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { Profile } from "passport-42";
+import { FriendRelationDto } from "./dto/friend-relation.dto";
 
 @Injectable()
 export class UserService {
@@ -60,9 +61,37 @@ export class UserService {
     return await this.userRepository.find();
   }
 
+  async findAllFriends(id: string)
+  {
+    return await this.userRepository.query(
+      ` SELECT * 
+        FROM public.user U
+        WHERE U.id <> $1
+          AND EXISTS(
+            SELECT 1
+            FROM public.user_friends_user F
+            WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
+            OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+            );  `,
+      [id],
+    );
+  }
+
   async findOne(username: string) {
     return await this.userRepository.findOne({
       where: { username: username },
+    });
+  }
+
+  async findAllOnlineUsers() {
+    return await this.userRepository.find({
+      where: { status: "online"},
+    });
+  }
+
+  async findAllOfflineUsers() {
+    return await this.userRepository.find({
+      where: { status: "offline"}
     });
   }
 
@@ -121,5 +150,22 @@ export class UserService {
     user.loses++;
     const userModified = await this.userRepository.save(user);
     if (!userModified) throw new NotFoundException("User not found");
+  }
+
+  async removeFriendRelation(friendRelation: FriendRelationDto)
+  {
+    const question = await this.userRepository.findOne({
+      relations: {
+        friends: true,
+      },
+      where: { id: friendRelation.idUser}
+    });
+
+    question.friends = question.friends.filter((user) => {
+      return (user.id !== friendRelation.idFriend)
+    })
+    const user = await this.userRepository.save(question);
+    if (user) return true;
+    return false;
   }
 }
