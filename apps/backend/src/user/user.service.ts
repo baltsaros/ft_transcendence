@@ -46,7 +46,8 @@ export class UserService {
       intraId: createUserDto.intraId,
       intraToken: createUserDto.intraToken,
       avatar: createUserDto.avatar,
-      authentication: true,
+      twoFactorAuth: false,
+      secret: "",
       rank: 0,
       wins: 0,
       loses: 0,
@@ -167,5 +168,12 @@ export class UserService {
     const user = await this.userRepository.save(question);
     if (user) return true;
     return false;
+  }
+
+  async setSecret(secret: string, intraId: number) {
+    const user = await this.findOneByIntraId(intraId);
+    user.secret = secret;
+    const userModified = await this.update(user.id, user);
+    return userModified;
   }
 }

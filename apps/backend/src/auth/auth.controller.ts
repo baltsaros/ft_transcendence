@@ -34,6 +34,10 @@ export class AuthController {
       sameSite: "none",
       secure: true,
     });
+    console.log("auth: " + user.twoFactorAuth);
+    console.log("secret: " + user.secret);
+    if (user.twoFactorAuth)
+      return res.redirect("http://localhost:5173/auth");
     // return res.redirect("http://localhost:5173/profile");
     return res.redirect("http://localhost:5173");
   }
@@ -52,5 +56,23 @@ export class AuthController {
     if (!intraId) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
     const user = await this.authService.getProfile(intraId);
     return user;
+  }
+  
+  @Get("QrCode-generate")
+  @UseGuards(JwtAuthGuard)
+  async generateQrCode(@Request() req) {
+    const user = req.user;
+    // console.log("user: " + user);
+    // console.log("secret: " + user.sercet);
+    const otpauthUrl = await this.authService.generateQrCodeUrl(user);
+    return otpauthUrl;
+  }
+
+  @Get("2fa-generate")
+  @UseGuards(JwtAuthGuard)
+  generateTwoFactorAuthenticationSecret(@Request() req) {
+    const secret = this.authService.generateSecret();
+    console.log("secret: " + secret);
+    return secret;
   }
 }

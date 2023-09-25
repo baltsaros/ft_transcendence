@@ -31,7 +31,8 @@ export interface IResponseUser {
   username: string;
   email: string;
   intraToken: string;
-  authentication: boolean;
+  twoFactorAuth: boolean;
+  secret: string;
   rank: number;
   avatar: string;
 

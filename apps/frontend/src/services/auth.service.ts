@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import { IResponseUserData, IUserData, IUser } from "../types/types";
+import { IResponseUserData, IUserData, IUser, IResponseUser } from "../types/types";
 
 export const AuthService = {
   async registration(
@@ -12,12 +12,12 @@ export const AuthService = {
     const { data } = await instance.post<IUser>("auth/login", userData);
     return data;
   },
-  async getProfile(): Promise<IUser | undefined> {
-    const { data } = await instance.get<IUser>("auth/profile");
+  async getProfile(): Promise<IResponseUser | undefined> {
+    const { data } = await instance.get<IResponseUser>("auth/profile");
     if (data) return data;
   },
-  async update(userData: IUser): Promise<IUser | undefined> {
-    const { data } = await instance.patch<IUser>(
+  async update(userData: IResponseUser): Promise<IResponseUser | undefined> {
+    const { data } = await instance.patch<IResponseUser>(
       "user/" + userData["id"].toString(),
       userData
     );
@@ -42,5 +42,14 @@ export const AuthService = {
       )
     );
     return base64;
+  },
+  async generateSecret(): Promise<string> {
+    const secret = await instance.get("auth/2fa-generate");
+    return secret.data;
+  },
+  async generateQrCode(): Promise<any> {
+    const otpauthUrl  = await instance.get("auth/QrCode-generate");
+    // console.log(otpauthUrl.data);
+    return otpauthUrl.data;
   },
 };

@@ -1,10 +1,16 @@
-import { Injectable, NotImplementedException, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  NotImplementedException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { JwtService } from "@nestjs/jwt";
-import { IUser } from "src/types/types";
+import { IResponseUser, IUser } from "src/types/types";
 import { Profile } from "passport-42";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
+import { authenticator } from "otplib";
+import { toDataURL } from "qrcode";
 
 @Injectable()
 export class AuthService {
@@ -34,7 +40,7 @@ export class AuthService {
   async login(user: IUser) {
     const { id, username, avatar, intraId, email, intraToken } = user;
     return {
-      id, 
+      id,
       intraId,
       intraToken,
       username,
@@ -50,9 +56,53 @@ export class AuthService {
     };
   }
 
+  async loginWithTwoFA(user: IResponseUser, code: string) {
+    const { id, username, avatar, intraId, email, intraToken, secret } = user;
+    const isSecretValid = this.isTwoFactorAuthSecretValid(code, user);
+    if (!isSecretValid)
+      throw new UnauthorizedException("Wrong authentication code");
+    return {
+      id,
+      intraId,
+      intraToken,
+      username,
+      email,
+      avatar,
+      access_token: this.jwtService.sign({
+        username: user.username,
+        avatar: user.avatar,
+        intraId: user.intraId,
+        email: user.email,
+        intraToken: user.intraToken,
+        secret: user.secret,
+      }),
+    };
+  }
+
   async getProfile(intraId: number) {
     const user = await this.usersService.findOneByIntraId(intraId);
-    if (!user) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
+    if (!user)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in getProfile()"
+      );
     return user;
+  }
+
+  generateSecret() {
+    const secret = authenticator.generateSecret();
+    return secret;
+  }
+  
+  async generateQrCodeUrl(user: IResponseUser) {
+    const otpauthUrl = authenticator.keyuri(user.email, "Ponger", user.secret);
+    await this.usersService.setSecret(user.secret, user.intraId);
+    return toDataURL(otpauthUrl);
+  }
+
+  isTwoFactorAuthSecretValid(code: string, user: IResponseUser) {
+    return authenticator.verify({
+      token: code,
+      secret: user.secret,
+    });
   }
 }

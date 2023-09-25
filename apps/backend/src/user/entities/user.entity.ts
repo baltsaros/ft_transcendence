@@ -35,7 +35,10 @@ export class User {
   intraToken: string;
 
   @Column()
-  authentication: boolean;
+  twoFactorAuth: boolean;
+
+  @Column()
+  secret: string;
 
   @Column()
   rank: number;

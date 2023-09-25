@@ -167,6 +167,10 @@ The databse will listen to the port `5432`.
 * sudo npm install --save passport @nestjs/passport passport-local @nestjs/jwt passport-jwt
 * sudo npm install --save-dev @types/passport-local
 
+## 2FA authentication
+* install otplib to work with Google Authenticator: npm install --save otplib
+* install qrcode to generate qrcode: npm install --save qrcode
+
 ## Pages in frontend
 * npm install --save react-router-dom localforage match-sorter sort-by
 * some design: npm install --save react-icons
