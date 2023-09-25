@@ -17,7 +17,7 @@ import { DataStorageService } from "./helpers/data-storage.service";
 import { MatchService } from "./matches/match.service";
 import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
-import { ChatGateway } from "./chat/chat.gateway";
+import { ChatGateway } from "./chat/gateway";
 import { ChatModule } from "./chat/chat.module";
 import { EventEmitterModule } from '@nestjs/event-emitter';
 

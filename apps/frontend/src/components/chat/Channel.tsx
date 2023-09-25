@@ -4,7 +4,11 @@ import { instance } from '../../api/axios.api'
 // import { useAppSelector } from "../store/hooks";
 // import { RootState } from "../store/store";
 import Cookies from "js-cookie";
-import { IChannel, IGetChannels } from "../../types/types";
+import { IChannel, IGetChannels, IResponseChannelData } from "../../types/types";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { store } from "../../store/store";
+import { setChannel } from "../../store/channel/channelSlice";
 
 interface ChildProps {
     onSelectChannel: (channel: IChannel) => void;
@@ -13,9 +17,12 @@ interface ChildProps {
 
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     // const user = useAppSelector((state: RootState) => state.user.user);
-
+    /* Use useSelector() hook to access the channel state in the Redux store */
+    const channels: IResponseChannelData[] = useSelector((state: RootState) => state.channel);
+    console.log('channels', channels);
+    
     /* STATE */
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
     
     /* BEHAVIOR */
     /* useEffect() hook: 2nd arg. is [] so that useEffect is executed only once, when the React component is mounted
@@ -30,12 +37,14 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
             }
             const fetchData = async () => {
                 const result = await instance.get('channel/', {params: {channels}});
-                setData(result.data);
+                console.log('result.data', result.data);
+                store.dispatch(setChannel(result.data));
             }
             fetchData();
         }
     }, []);
-
+    
+    console.log('channels', channels);
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
     return (   
@@ -46,7 +55,8 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="flex flex-col text-black space-y-4">
                                 {/* {data.map(({name, id}) => ( */}
-                                {data.map((channel: IChannel) => (
+                                {channels.map((channel: IChannel) => (
+                                // console.log(cha)
                                 <button
                                 key={channel.id}
                                 onClick={() => onSelectChannel(channel)} 

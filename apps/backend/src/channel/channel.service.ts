@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
@@ -19,6 +19,9 @@ export class ChannelService {
     */
     async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
+        const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
+        console.log('existing channel ?:', existingChannel);
+        if (existingChannel) throw new BadRequestException("Channel already exists");
         const newChannel = this.channelRepository.create({
             name: channelData.name,
             mode: channelData.mode,
@@ -40,7 +43,7 @@ export class ChannelService {
         );
     }
 
-    async getChannel(username: string) {
+    async findAll(username: string) {
         const channels = await this.channelRepository.find({
             where: {
                 owner:{
@@ -49,7 +52,6 @@ export class ChannelService {
             },
         select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
     });
-
     return channels;
     }
 
