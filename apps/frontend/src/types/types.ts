@@ -54,7 +54,13 @@ export interface IResponseUser {
   loses: number;
   createdAt: Date;
 }
-
+/*
+export interface IUserWithStatus {
+  username: string;
+  id: number;
+  status: string;
+}
+*/
 //Interface for the playerProfile
 export interface IUserPlayerProfileData {
   username: string | undefined;
