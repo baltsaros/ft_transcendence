@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { PlayerService } from "../services/player.service";
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { toast } from "react-toastify";
+import { FaUserFriends } from "react-icons/fa";
 
 export default function FriendInvitations() {
 
@@ -63,11 +64,13 @@ export default function FriendInvitations() {
                 }
             } catch (err: any) {}}
             getAllFriendsInvitations();
-        }, [])
+        }, [invitations])
   
       //render
-        return (
-        <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton className="bg-gray-500 text-black">Friend invitation</MenuButton>}>
+
+        if (invitations.length)
+            return (
+                <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}>
                 {invitations.map((invitation) => (
                     <MenuItem key={invitation.username} disabled className="text-black" >
                         <div className="grid grid-cols-4 gap-4">
@@ -88,10 +91,15 @@ export default function FriendInvitations() {
                             </div>
                         </div> 
                     </MenuItem>
-          
-            ))}
-
-        </Menu>
         
+                ))}
+                </Menu>
+            )
+        return (
+            <div>
+                <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}>
+                    <MenuItem disabled >No pending invitations</MenuItem>
+                </Menu>
+            </div>
         )
 }

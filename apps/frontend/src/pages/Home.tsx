@@ -68,9 +68,6 @@ const Home: FC = () => {
               <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
                 <FriendList />
               </div>
-              <div>
-                <FriendInvitations />
-              </div>
             </div>
           </div>
       )}
