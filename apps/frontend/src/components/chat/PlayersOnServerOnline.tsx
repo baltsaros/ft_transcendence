@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import ButtonWithModal from './ButtonWithModal';
 
 const DropdownButtonOnLine = ({ username }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -72,18 +73,24 @@ const DropdownButtonOnLine = ({ username }) => {
             >
               Invite to game
             </button>
+            {/*
             <button
               onClick={() => handleItemClick(`Invite as friend for ${username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Invite as friend
             </button>
+            */}
+            <ButtonWithModal text="Invite as Friend" />
+            {/*
             <button
-              onClick={() => handleItemClick(`Block user for ${username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            onClick={() => handleItemClick(`Block user for ${username}`)}
+            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
-              Block user
+            Block user
             </button>
+            */}
+            <ButtonWithModal text="Block User" />
           </div>
         </div>
       )}
