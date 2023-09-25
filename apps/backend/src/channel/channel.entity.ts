@@ -1,5 +1,6 @@
 import { Message } from 'src/channel/message/messages.entity';
 import { User } from 'src/user/entities/user.entity';
+import { Expose } from 'class-transformer'
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -34,5 +35,15 @@ export class Channel {
 
     @OneToMany(()=> Message, messages => messages.channel)
     channelMessages: Message[]
+
+    @Expose()
+    getId(): number {
+        return this.id;
+    }
+    
+    @Expose()
+    getName(): string {
+        return this.name;
+    }
 
 } 

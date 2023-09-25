@@ -1,23 +1,46 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { IChannel } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice
 ** An action is a function that returns an object, it is an event
 ** Flow: dispatch an action to a reducer, reducer checks what to do, store gets updated */
+
+// const initialState: IChannel[] = [];
+
+interface Channel {
+  id: number;
+  name: string;
+}
+
+interface ChannelState {
+  channel: Channel[];
+}
+
+const initialState: ChannelState = {
+  channel: [],
+}
+
 const channelSlice = createSlice({
-  name: "channel",
-  initialState: [] as any, // temporary, should be refined to channel w. only username and channelId same for the action parameter
+  name:'channel',
+  // initialState: [] as IChannel[], // temporary, should be refined to channel w. only username and channelId same for the action parameter
+  initialState,
   reducers: {
     setChannel: (state, action) => {
-      console.log('current state:', state);
-      console.log('next state:', action.payload);
+      // console.log('setChannel current state:', state);
+      // console.log('setChanel next state:', action.payload);
       // state = action.payload;
-      state.push(...action.payload);
+      // return [...state, action.payload];
+      // return action.payload;
+      state.channel = action.payload; 
     },
     addChannel: (state, action) => {
-      // console.log('current state:', state);
       // console.log('next state:', action.payload);
-      return [...state, action.payload];
+      console.log('addChannel current state:', state);
+      console.log('addChanel next state:', action.payload);
+      // state.push(...action.payload);
+      // return [...state, ...action.payload];
+      state.channel.push(action.payload);
     }
   },
 });
