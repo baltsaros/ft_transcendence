@@ -24,13 +24,13 @@ export class ChatGateway implements OnGatewayConnection {
     private readonly chatService: ChatService,
   ) {}
 
-  private userMapping =  new Map<string, string>();
+  private userMapping =  new Map<string, Socket>();
+  private channelMapping = new Map<number, Set<string>>();
 
   handleConnection(client: Socket){
-    console.log('client ws id:', client.id);
-    console.log('client username:', client.handshake.query.username);
-    const username = client.handshake.query.username;
-    this.userMapping.set(client.handshake.query.username.toString(), client.id);
+    // console.log('client ws id:', client.id);
+    // console.log('client username:', client.handshake.query.username);
+    this.userMapping.set(client.handshake.query.username.toString(), client);
     // console.log(this.userMapping);
 
   }
@@ -44,6 +44,16 @@ export class ChatGateway implements OnGatewayConnection {
       id: payload.id,
       channel: payload.channel
     });
+  }
+
+  @OnEvent('channel.created')
+  handleNewChannel(payload: any) {
+    console.log('channel created event:', payload);
+    this.channelMapping.set(payload.id, payload.owner.username);
+    console.log('channelMapping:', this.channelMapping);
+    this.server.emit('newChannel', payload); // payload is not in line w. state of Redux slice
+    // Update the channel - user mapping
+    // Emit event to all users
   }
 }
 

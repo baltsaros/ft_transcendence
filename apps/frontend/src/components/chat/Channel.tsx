@@ -8,18 +8,20 @@ import { IChannel, IGetChannels, IResponseChannelData } from "../../types/types"
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { store } from "../../store/store";
-import { setChannel } from "../../store/channel/channelSlice";
+import { addChannel, setChannel } from "../../store/channel/channelSlice";
+import WebSocketService from "../../services/WebSocketService";
+import { useWebSocket } from "../../context/WebSocketContext";
 
 interface ChildProps {
     onSelectChannel: (channel: IChannel) => void;
 }
 
-
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     // const user = useAppSelector((state: RootState) => state.user.user);
     /* Use useSelector() hook to access the channel state in the Redux store */
-    const channels: IResponseChannelData[] = useSelector((state: RootState) => state.channel);
-    console.log('channels', channels);
+    const channels = useSelector((state: RootState) => state.channel.channel);
+    const webSocketService = useWebSocket();
+    // console.log('Channel: useSelector():', channels);
     
     /* STATE */
     // const [data, setData] = useState([]);
@@ -37,14 +39,23 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
             }
             const fetchData = async () => {
                 const result = await instance.get('channel/', {params: {channels}});
-                console.log('result.data', result.data);
+                // console.log('Channel: channels fetched:', result.data);
                 store.dispatch(setChannel(result.data));
             }
             fetchData();
         }
     }, []);
+
+    useEffect(() => {
+        webSocketService.on('newChannel', (payload: any) => {
+            console.log('newChannel event', payload);
+            store.dispatch(addChannel(payload));
+        })
+        return () => {
+            webSocketService.off('newChannel');
+        };
+    }, []);
     
-    console.log('channels', channels);
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
     return (   
