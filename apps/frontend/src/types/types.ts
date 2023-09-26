@@ -25,6 +25,10 @@ export interface IUserUsername {
   status: string;
 }
 
+export interface IUserId {
+  id: string;
+}
+
 export interface IResponseUser {
   id: number;
   intraId: number;

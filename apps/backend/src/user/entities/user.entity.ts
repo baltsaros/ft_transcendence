@@ -50,6 +50,10 @@ export class User {
   @JoinTable()
   friends: User[];
 
+  @ManyToMany(() => User)
+  @JoinTable()
+  invitations: User[];
+
   @Column()
   status: string;
 

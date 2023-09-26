@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt, FaUserFriends } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
 import { useAppDispatch } from "../store/hooks";
 import { logout } from "../store/user/userSlice";
@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { getAvatar } from "../hooks/getAvatar";
 import { getUsername } from "../hooks/getUsername";
 import { getUser } from "../hooks/getUser";
+import FriendInvitations from "./FriendInvitations";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -97,6 +98,9 @@ const Header: FC = () => {
               >
                 {username}
               </NavLink>
+            </li>
+            <li>
+              <FriendInvitations />
             </li>
           </ul>
         </nav>
