@@ -56,21 +56,3 @@ export class ChatGateway implements OnGatewayConnection {
     // Emit event to all users
   }
 }
-
-
- /* In the handleConnection and handleDisconnect methods, you can define the logic
- ** to handle new client connections and disconnections.*/
-  // handleConnection(client: Socket) {
-  //   console.log(`Client connected: ${client.id}`);
-
-  // }
-
-  // handleDisconnect(client: Socket) {
-  //   console.log(`Client disconnected: ${client.id}`);
-  // }
-
-
-
-/* @MessageBody is a decorator that simplifies the process of extracting data from the incoming WebSocket message and ensures that the data matches the expected structure the DTO.*/
-// @SubscribeMessage('createMessage') // event handler w. name of the event
-  // async createMessage(@MessageBody() payload: CreateMessageDto, client: Socket) { // payload variable should be conform to the structure of the dto. Socket is an object representing an individual WebSocket client connection

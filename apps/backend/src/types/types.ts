@@ -1,4 +1,5 @@
 
+import { Socket } from "socket.io"
 import { Profile } from "passport-42"
 
 export interface IUser {
@@ -19,10 +20,6 @@ export interface IChannelsData {
   password: string,
 }
 
-// export interface IResponseChannelData {
-//   channel: IChannelsData
-// }
-
 export interface IGetChannels {
   username: string;
 }
@@ -34,5 +31,9 @@ export interface IChannel {
 
 export interface IResponseGetChannels {
   channels: IChannel[];
+}
+
+export interface IUserSocket extends Socket {
+  userId?: number
 }
 
