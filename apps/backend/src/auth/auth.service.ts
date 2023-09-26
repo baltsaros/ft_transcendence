@@ -24,7 +24,6 @@ export class AuthService {
     console.log("validateIntraUser");
     const user = await this.usersService.findOneByIntraId(profile.id);
     if (!user) {
-      this.dataStorage.setData(accessToken, profile);
       const data = new CreateUserDto();
       data["username"] = profile.username;
       data["email"] = profile._json.email;
@@ -33,11 +32,10 @@ export class AuthService {
       data["intraToken"] = accessToken;
       return await this.usersService.create(data);
     }
-    // console.log(user);
     return user;
   }
 
-  async login(user: IUser) {
+  async login(user: IResponseUser) {
     const { id, username, avatar, intraId, email, intraToken } = user;
     return {
       id,
@@ -47,6 +45,7 @@ export class AuthService {
       email,
       avatar,
       access_token: this.jwtService.sign({
+        id: user.id,
         username: user.username,
         avatar: user.avatar,
         intraId: user.intraId,
@@ -56,11 +55,8 @@ export class AuthService {
     };
   }
 
-  async loginWithTwoFA(user: IResponseUser, code: string) {
-    const { id, username, avatar, intraId, email, intraToken, secret } = user;
-    const isSecretValid = this.isTwoFactorAuthSecretValid(code, user);
-    if (!isSecretValid)
-      throw new UnauthorizedException("Wrong authentication code");
+  async loginWithTwoFA(user: IResponseUser) {
+    const { id, username, avatar, intraId, email, intraToken } = user;
     return {
       id,
       intraId,
@@ -69,12 +65,12 @@ export class AuthService {
       email,
       avatar,
       access_token: this.jwtService.sign({
+        id: user.id,
         username: user.username,
         avatar: user.avatar,
         intraId: user.intraId,
         email: user.email,
         intraToken: user.intraToken,
-        secret: user.secret,
       }),
     };
   }
@@ -92,17 +88,17 @@ export class AuthService {
     const secret = authenticator.generateSecret();
     return secret;
   }
-  
+
   async generateQrCodeUrl(user: IResponseUser) {
     const otpauthUrl = authenticator.keyuri(user.email, "Ponger", user.secret);
     await this.usersService.setSecret(user.secret, user.intraId);
     return toDataURL(otpauthUrl);
   }
 
-  isTwoFactorAuthSecretValid(code: string, user: IResponseUser) {
+  isTwoFactorAuthSecretValid(code: string, secret: string) {
     return authenticator.verify({
       token: code,
-      secret: user.secret,
+      secret: secret,
     });
   }
 }

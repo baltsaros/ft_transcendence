@@ -61,7 +61,7 @@ const Header: FC = () => {
   // };
 
   return (
-    <header className="flex items-center p-4 shadow-sm bg-gray-500 backdrop-blur-sm">
+    <header className="flex items-center p-4 pr-10 shadow-sm bg-gray-500 backdrop-blur-sm">
       <img
         src={ftLogo}
         className="logo"

@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Param,
   HttpCode,
   HttpStatus,
   Request,
@@ -10,6 +11,7 @@ import {
   UseGuards,
   Inject,
   NotImplementedException,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
@@ -29,16 +31,18 @@ export class AuthController {
   async fortyTwoAPI(@Request() req, @Response() res) {
     // console.log('redir')
     const user = req.user.user;
+    if (user.twoFactorAuth) {
+      res.cookie("intraId", user.intraId, {
+        sameSite: "none",
+        secure: true,
+      });
+      return res.redirect("http://localhost:5173/auth");
+    }
     const jwt = await this.authService.login(user);
     res.cookie("jwt_token", jwt.access_token, {
       sameSite: "none",
       secure: true,
     });
-    console.log("auth: " + user.twoFactorAuth);
-    console.log("secret: " + user.secret);
-    if (user.twoFactorAuth)
-      return res.redirect("http://localhost:5173/auth");
-    // return res.redirect("http://localhost:5173/profile");
     return res.redirect("http://localhost:5173");
   }
 
@@ -53,17 +57,21 @@ export class AuthController {
   async getProfile(@Request() req) {
     // console.log('getProfile');
     const intraId = req.user.intraId;
-    if (!intraId) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
+    if (!intraId)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in getProfile()"
+      );
     const user = await this.authService.getProfile(intraId);
     return user;
   }
-  
-  @Get("QrCode-generate")
-  @UseGuards(JwtAuthGuard)
-  async generateQrCode(@Request() req) {
-    const user = req.user;
-    // console.log("user: " + user);
-    // console.log("secret: " + user.sercet);
+
+  @Get("QrCode-generate/:intraId")
+  async generateQrCode(@Param("intraId") intraId: string, @Request() req) {
+    if (!intraId)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in getProfile()"
+      );
+    const user = await this.authService.getProfile(parseInt(intraId));
     const otpauthUrl = await this.authService.generateQrCodeUrl(user);
     return otpauthUrl;
   }
@@ -72,7 +80,28 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   generateTwoFactorAuthenticationSecret(@Request() req) {
     const secret = this.authService.generateSecret();
-    console.log("secret: " + secret);
+    if (!secret)
+      throw new NotImplementedException(
+        "Cannot generate a secret!"
+      );
     return secret;
+  }
+
+  @Post("2fa")
+  async authenticate(@Request() req, @Body() body) {
+    const intraId = parseInt(body.intraId);
+    if (!intraId)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in getProfile()"
+      );
+    const user = await this.authService.getProfile(intraId);
+    const isCodeValid = this.authService.isTwoFactorAuthSecretValid(
+      body.code,
+      user.secret
+    );
+    if (!isCodeValid)
+      throw new UnauthorizedException("Wrong authentication code");
+    const jwt = await this.authService.loginWithTwoFA(user);
+    return { jwt: jwt.access_token, valid: isCodeValid };
   }
 }

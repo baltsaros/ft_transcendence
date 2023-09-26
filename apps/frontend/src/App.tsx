@@ -3,7 +3,10 @@ import "./App.css";
 import { RouterProvider, useNavigate } from "react-router-dom";
 import { router } from "./router/router";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
-import { getTokenFromLocalStorage, setTokenToLocalStorage } from "./helpers/localstorage.helper";
+import {
+  getTokenFromLocalStorage,
+  setTokenToLocalStorage,
+} from "./helpers/localstorage.helper";
 import { AuthService } from "./services/auth.service";
 import { login, logout, setAvatar, setUsername } from "./store/user/userSlice";
 import { useEffect, useState } from "react";
@@ -15,24 +18,21 @@ import { IUser } from "./types/types";
 function App() {
   const dispatch = useAppDispatch();
   // const user = useAppSelector((state: RootState) => state.user.user);
-  
+
   const checkAvatar = async (avatar: string): Promise<string> => {
-    // console.log('avatar: ' + avatar);
     if (avatar.includes("https")) {
       return avatar;
     }
     const base64 = await AuthService.getAvatar(avatar);
-    return ("data:;base64," + base64);
-  }
+    return "data:;base64," + base64;
+  };
 
   const checkAuth = async () => {
     const token = getTokenFromLocalStorage();
-    // console.log('token: ' + token);
     try {
       if (token.length > 0) {
         const data = await AuthService.getProfile();
         if (data) {
-          // console.log(data);
           dispatch(login(data));
           dispatch(setUsername(data.username));
           const ava = await checkAvatar(data.avatar);
