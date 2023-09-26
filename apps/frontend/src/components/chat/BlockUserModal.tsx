@@ -2,7 +2,7 @@ interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const InviteFriendModal: React.FC<ModalProp> = ({onClose}) =>  {
+const BlockUserModal: React.FC<ModalProp> = ({onClose}) =>  {
 
 	/* BEHAVIOR */
 	
@@ -16,7 +16,7 @@ const InviteFriendModal: React.FC<ModalProp> = ({onClose}) =>  {
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black">
         <div className="bg-white p-8 rounded-lg shadow-lg flex flex-col">
           {/* Modal content */}
-		  <p>Do you really want to invite this user as a friend?</p>
+		  <p>Do you really want to block this user?</p>
 		  {/* Buttons */}
           <div className="flex justify-end">
             <button
@@ -30,4 +30,4 @@ const InviteFriendModal: React.FC<ModalProp> = ({onClose}) =>  {
 	)
 }
 
-export default InviteFriendModal;
+export default BlockUserModal;

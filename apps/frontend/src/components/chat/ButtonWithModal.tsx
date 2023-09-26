@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import InviteFriendModal from './InviteFriendModal';
+import BlockUserModal from './BlockUserModal';
 
 function ButtonWithModal ({ text }) {
 
@@ -22,8 +23,11 @@ const handleCloseModal = () => {
       onClick={handleOpenModal}>
         { text }
       </button>
-      {modalView &&
+      {modalView && text === "Invite as Friend" &&
         <InviteFriendModal onClose={handleCloseModal} />
+      }
+      {modalView && text === "Block User" &&
+        <BlockUserModal onClose={handleCloseModal} />
       }
     </div>
   );
