@@ -21,10 +21,10 @@ const Profile: FC = () => {
       // if (username == "") {
       //   toast.error("Username field cannot be empty");
       //   return;
-      // } else if (username == user?.username) {
-      //   toast.error("Username cannot be the same");
-      //   return;
-      // }
+      if (username == user?.username) {
+        toast.error("Username cannot be the same");
+        return;
+      }
       const tmp = {
         username: username == "" ? (user ? user.username : "") : username,
         avatar: filename.length > 0 ? filename : user ? user.avatar : "",
