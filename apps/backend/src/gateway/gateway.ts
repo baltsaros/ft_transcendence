@@ -36,23 +36,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   handleConnection(client: Socket){
     console.log(client.id);
-    this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client)
+    // this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client)
   }
 
   handleDisconnect(client: any) {
-    this.gatewaySessionManager.removeSocket(client.handshake.query.username.toString())
+    // this.gatewaySessionManager.removeSocket(client.handshake.query.username.toString())
   }
 
   @OnEvent('message.created')
   handleMessage(payload: any) {
-    console.log('Message received from:', payload.us);
-    // console.log('onMessage event emitted');
-    this.server.emit('onMessage', {
+    console.log('Message received from:', payload.user);
+    console.log('Message received from:', payload.channel);
+    this.server.to(payload.channel.id).emit('onMessage', {
       content: payload.content,
       user: payload.user,
       id: payload.id,
       channel: payload.channel
     });
+    // this.server.emit('onMessage', {
+    //   content: payload.content,
+    //   user: payload.user,
+    //   id: payload.id,
+    //   channel: payload.channel
+    // });
   }
 
   @OnEvent('channel.created')
@@ -69,14 +75,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('client', client.id);
     console.log('payload', payload);
     try{
-      const channel = await this.channelService.findOne(payload.channelId);
+      const channel = await this.channelRepository.findOne({
+        where: {
+          id: payload.channelId,
+        },
+        relations: {
+          users: true,
+        },
+      })
       const user = await this.userService.findOne(payload.username);
-      console.log('channel fetched:' , channel);
-      console.log('user fetched:' , user);
+      // console.log('channel fetched:' , channel);
+      // console.log('user fetched:' , user);
       channel.users.push(user);
       await this.channelRepository.save(channel);
+      // console.log('channel after push:' , channel);
       client.join(payload.channelId);
-      client.to(payload.channelId).emit('userJoined', payload);
+      this.server.to(payload.channelId).emit('userJoined', payload);
+      // client.emit('userJoined', payload);
 
     }catch (error){
       console.log("error");

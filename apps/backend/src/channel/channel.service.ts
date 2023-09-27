@@ -29,8 +29,8 @@ export class ChannelService {
             owner: user,
             password: channelData.password,
         });
-        // newChannel.users = [user];
-        newChannel.users.push(user)
+        newChannel.users = [user];
+        // newChannel.users.push(user)
         const channel = await this.channelRepository.save(newChannel);
         this.eventEmmiter.emit('channel.created', channel);
         const returnedChannel: IChannel = {

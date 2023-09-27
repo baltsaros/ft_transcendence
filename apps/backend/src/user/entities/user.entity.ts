@@ -34,7 +34,7 @@ export class User {
   @Column({nullable: true})
   intraToken: string;
 
-  @Column()
+  @Column({default: false})
   authentication: boolean;
 
   @Column()

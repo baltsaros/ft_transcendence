@@ -71,7 +71,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            console.log('user', payload.user, 'joined', payload.channelId);
+            console.log('user', payload.username, 'joined', payload.channelId);
         })
         return () => {
             webSocketService.off('userJoined');
