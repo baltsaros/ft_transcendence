@@ -17,19 +17,31 @@ interface ChildProps {
 }
 
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
-    // const user = useAppSelector((state: RootState) => state.user.user);
     /* Use useSelector() hook to access the channel state in the Redux store */
     const channels = useSelector((state: RootState) => state.channel.channel);
+    const user = useSelector((state: RootState) => state.user.username);
     const webSocketService = useWebSocket();
-    // console.log('Channel: useSelector():', channels);
     
     /* STATE */
-    // const [data, setData] = useState([]);
     
     /* BEHAVIOR */
+
+    // const handleJoinChannel = async (id: number) => {
+    //     try{
+    //         const payload = {
+    //             channelId: id,
+    //             username: user,
+    //         }
+    //         console.log('channelId:', id);
+    //         console.log(user);
+    //         webSocketService.emit('onChannelJoin', payload);
+
+    //     } catch(err: any) {
+    //         console.log('join channel failed');
+    //     }
+    // }
     /* useEffect() hook: 2nd arg. is [] so that useEffect is executed only once, when the React component is mounted
-    ** later it should be changed as the useEffect should be called when a new channel is added 
-    ** setData set the fetched data into the local state */
+    ** later it should be changed as the useEffect should be called when a new channel is added */
     useEffect(() => {
         const user = Cookies.get('username');
         if (user) {
@@ -56,6 +68,15 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
         };
     }, []);
     
+    useEffect(() => {
+        webSocketService.on('userJoined', (payload: any) => {
+            console.log('user', payload.user, 'joined', payload.channelId);
+        })
+        return () => {
+            webSocketService.off('userJoined');
+        };
+    }, []);
+    
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
     return (   
@@ -72,7 +93,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                                 key={channel.id}
                                 onClick={() => onSelectChannel(channel)} 
                                 /* use arrow function to pass parameter + explicitly passing event to the function */
-                                // onClick={event => handleJoinChannel(event, id)} 
+                                // onClick={event => handleJoinChannel(channel.id)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
                                 </button>))}
                             </div>

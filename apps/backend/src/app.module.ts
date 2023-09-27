@@ -17,8 +17,8 @@ import { DataStorageService } from "./helpers/data-storage.service";
 import { MatchService } from "./matches/match.service";
 import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
-import { ChatGateway } from "./chat/gateway";
-import { ChatModule } from "./chat/chat.module";
+// import { ChatGateway } from "./gateway/gateway";
+// import { GatewayModule } from "./gateway/gateway.module";
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
@@ -29,7 +29,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     MatchModule,
     ChannelModule,
     MessageModule,
-    ChatModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
@@ -51,6 +50,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, DataStorageService, ChatGateway],
+  providers: [AppService, AuthService, JwtService, DataStorageService],
 })
 export class AppModule {}

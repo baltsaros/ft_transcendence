@@ -10,6 +10,7 @@ export class GatewaySessionManager {
 
     setSocket(username: string, socket: IUserSocket){
         this.userMapping.set(username, socket);
+        console.log('userMapping:', this.userMapping);
     }
 
     removeSocket(username: string){
