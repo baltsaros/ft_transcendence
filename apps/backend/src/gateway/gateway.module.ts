@@ -14,7 +14,7 @@ import { ChannelModule } from "src/channel/channel.module";
     ],
     controllers: [],
     providers: [GatewayService, GatewaySessionManager],
-    exports: [GatewayService, GatewaySessionManager],
+    exports: [GatewayService],
 })
 
 export class GatewayModule {}

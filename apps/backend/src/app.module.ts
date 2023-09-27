@@ -17,9 +17,11 @@ import { DataStorageService } from "./helpers/data-storage.service";
 import { MatchService } from "./matches/match.service";
 import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
-// import { ChatGateway } from "./gateway/gateway";
-// import { GatewayModule } from "./gateway/gateway.module";
+import { GatewayModule } from "./gateway/gateway.module";
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ChatGateway } from "./gateway/gateway";
+import { GatewaySessionManager } from "./gateway/gateway.session";
+import { Channel } from "./channel/channel.entity";
 
 @Module({
   imports: [
@@ -29,6 +31,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     MatchModule,
     ChannelModule,
     MessageModule,
+    GatewayModule,
     ConfigModule.forRoot({ isGlobal: true }),
     PassportModule.register({ session: true }),
     TypeOrmModule.forRootAsync({
@@ -45,11 +48,19 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Channel]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),
   ],
   controllers: [AppController],
-  providers: [AppService, AuthService, JwtService, DataStorageService],
+  providers: [
+    AppService,
+    AuthService,
+    JwtService,
+    DataStorageService,
+    ChatGateway,
+    GatewaySessionManager,
+  ],
 })
 export class AppModule {}

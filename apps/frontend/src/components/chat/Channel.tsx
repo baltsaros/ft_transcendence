@@ -26,20 +26,21 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     
     /* BEHAVIOR */
 
-    // const handleJoinChannel = async (id: number) => {
-    //     try{
-    //         const payload = {
-    //             channelId: id,
-    //             username: user,
-    //         }
-    //         console.log('channelId:', id);
-    //         console.log(user);
-    //         webSocketService.emit('onChannelJoin', payload);
+    const handleJoinChannel = async (id: number) => {
+        try{
+            const payload = {
+                channelId: id,
+                username: user,
+            }
+            console.log('channelId:', id);
+            console.log(user);
+            webSocketService.emit('onChannelJoin', payload);
 
-    //     } catch(err: any) {
-    //         console.log('join channel failed');
-    //     }
-    // }
+        } catch(err: any) {
+            console.log('join channel failed');
+        }
+    }
+    
     /* useEffect() hook: 2nd arg. is [] so that useEffect is executed only once, when the React component is mounted
     ** later it should be changed as the useEffect should be called when a new channel is added */
     useEffect(() => {
@@ -91,9 +92,9 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                                 // console.log(cha)
                                 <button
                                 key={channel.id}
-                                onClick={() => onSelectChannel(channel)} 
+                                // onClick={() => onSelectChannel(channel)} 
                                 /* use arrow function to pass parameter + explicitly passing event to the function */
-                                // onClick={event => handleJoinChannel(channel.id)} 
+                                onClick={event => handleJoinChannel(channel.id)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
                                 </button>))}
                             </div>

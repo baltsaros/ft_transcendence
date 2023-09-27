@@ -23,17 +23,15 @@ import { InjectRepository } from '@nestjs/typeorm';
     },
   })
 
-/* Why userService not in gateway.module and still works ? */
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server
   constructor(
     // private readonly chatService: ChatService,
-    @InjectRepository(Channel)
+    @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>,
     private readonly gatewaySessionManager: GatewaySessionManager,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
-    private readonly channelRepository: Repository<Channel>,
   ) {}
 
   handleConnection(client: Socket){
@@ -70,11 +68,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async onChannelJoin(client: Socket, payload: any) {
     console.log('client', client.id);
     console.log('payload', payload);
-    const channel = await this.channelService.findOne(payload.channelId);
-    const user = await this.userService.findOne(payload.username);
-    channel.users.push(user);
-    await this.channelRepository.save(channel);
-    client.join(payload.channelId);
-    client.to(payload.channelId).emit('userJoined', payload);
+    try{
+      const channel = await this.channelService.findOne(payload.channelId);
+      const user = await this.userService.findOne(payload.username);
+      console.log('channel fetched:' , channel);
+      console.log('user fetched:' , user);
+      channel.users.push(user);
+      await this.channelRepository.save(channel);
+      client.join(payload.channelId);
+      client.to(payload.channelId).emit('userJoined', payload);
+
+    }catch (error){
+      console.log("error");
+    }
   }
 }
