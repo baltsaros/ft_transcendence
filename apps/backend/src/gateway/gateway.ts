@@ -45,13 +45,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent('message.created')
   handleMessage(payload: any) {
+    console.log('event emitted to', payload.channel.id);
     this.server.to(payload.channel.id).emit('onMessage', {
       content: payload.content,
       user: payload.user,
       id: payload.id,
       channel: payload.channel
     });
-    console.log('message event created');
     // this.server.emit('onMessage', {
     //   content: payload.content,
     //   user: payload.user,

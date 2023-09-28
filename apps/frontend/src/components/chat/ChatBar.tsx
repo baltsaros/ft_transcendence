@@ -31,7 +31,6 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             content: newMessage,
         };
         await instance.post('message', message);
-        webSocketService.emit('message', message);
         setMessage('');
     }
 
