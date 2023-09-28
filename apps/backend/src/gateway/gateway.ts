@@ -45,8 +45,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent('message.created')
   handleMessage(payload: any) {
-    console.log('Message received from:', payload.user);
-    console.log('Message received from:', payload.channel);
+    // console.log('Message received from:', payload.user);
+    // console.log('Message received from:', payload.channel);
     this.server.to(payload.channel.id).emit('onMessage', {
       content: payload.content,
       user: payload.user,
@@ -94,7 +94,29 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // client.emit('userJoined', payload);
 
     }catch (error){
-      console.log("error");
+      console.log("error joining channel");
+    }
+  }
+
+  @SubscribeMessage('onChannelLeave')
+  async onChannelLeave(client: Socket, payload: any) {
+    try{
+      const channel = await this.channelRepository.findOne({
+        where: {
+          id: payload.channelId,
+        },
+        relations: {
+          users: true,
+        },
+      })
+      const user = await this.userService.findOne(payload.username);
+      channel.users = channel.users.filter((u) => u.id !== user.id);
+      await this.channelRepository.save(channel);
+      console.log('channel user:', channel.users);
+      client.leave(payload.channelId);
+      client.to(payload.channelId).emit('userLeft', payload);
+    }catch (error) {
+      console.log('error leaving channel')
     }
   }
 }

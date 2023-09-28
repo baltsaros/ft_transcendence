@@ -78,6 +78,15 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
         };
     }, []);
     
+    useEffect(() => {
+        webSocketService.on('userLeft', (payload: any) => {
+            console.log('user', payload.username, 'left', payload.channelId);
+        })
+        return () => {
+            webSocketService.off('userLeft');
+        };
+    }, []);
+    
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
     return (   
