@@ -25,13 +25,18 @@ export interface IUserUsername {
   status: string;
 }
 
+export interface IUserId {
+  id: string;
+}
+
 export interface IResponseUser {
   id: number;
   intraId: number;
   username: string;
   email: string;
   intraToken: string;
-  authentication: boolean;
+  twoFactorAuth: boolean;
+  secret: string;
   rank: number;
   avatar: string;
 

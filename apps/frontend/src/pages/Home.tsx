@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
+import FriendInvitations from "../components/FriendInvitations";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);

@@ -28,7 +28,7 @@ function FriendList() {
             }
           } catch (err: any) {}}
           getAllFriendsForUser();
-        }, [])
+        }, [friends])
 
     //render
         return (

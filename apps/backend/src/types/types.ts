@@ -11,6 +11,33 @@ export interface IUser {
   intraToken: string;
 }
 
+export interface IResponseUser {
+  id: number;
+  intraId: number;
+  username: string;
+  email: string;
+  intraToken: string;
+  twoFactorAuth: boolean;
+  secret: string;
+  rank: number;
+  avatar: string;
+
+  // @ManyToMany(() => User)
+  // @JoinTable()
+  // friends: User[];
+  status: string;
+  // Change later
+  // @OneToMany()
+  // history: History[];
+
+  // @ManyToMany(() => User)
+  // @JoinTable()
+  // blocked: User[];
+  wins: number;
+  loses: number;
+  createdAt: Date;
+}
+
 export type Done = (err: Error, profile: Profile) => void;
 
 export interface IChannelsData {

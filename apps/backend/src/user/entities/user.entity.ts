@@ -34,8 +34,11 @@ export class User {
   @Column({nullable: true})
   intraToken: string;
 
-  @Column({default: false})
-  authentication: boolean;
+  @Column()
+  twoFactorAuth: boolean;
+
+  @Column()
+  secret: string;
 
   @Column()
   rank: number;
@@ -46,6 +49,10 @@ export class User {
   @ManyToMany(() => User)
   @JoinTable()
   friends: User[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  invitations: User[];
 
   @Column()
   status: string;

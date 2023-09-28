@@ -1,10 +1,16 @@
-import { Injectable, NotImplementedException, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  NotImplementedException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { JwtService } from "@nestjs/jwt";
-import { IUser } from "src/types/types";
+import { IResponseUser, IUser } from "src/types/types";
 import { Profile } from "passport-42";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
+import { authenticator } from "otplib";
+import { toDataURL } from "qrcode";
 
 @Injectable()
 export class AuthService {
@@ -18,7 +24,6 @@ export class AuthService {
     console.log("validateIntraUser");
     const user = await this.usersService.findOneByIntraId(profile.id);
     if (!user) {
-      this.dataStorage.setData(accessToken, profile);
       const data = new CreateUserDto();
       data["username"] = profile.username;
       data["email"] = profile._json.email;
@@ -27,20 +32,40 @@ export class AuthService {
       data["intraToken"] = accessToken;
       return await this.usersService.create(data);
     }
-    // console.log(user);
     return user;
   }
 
-  async login(user: IUser) {
+  async login(user: IResponseUser) {
     const { id, username, avatar, intraId, email, intraToken } = user;
     return {
-      id, 
+      id,
       intraId,
       intraToken,
       username,
       email,
       avatar,
       access_token: this.jwtService.sign({
+        id: user.id,
+        username: user.username,
+        avatar: user.avatar,
+        intraId: user.intraId,
+        email: user.email,
+        intraToken: user.intraToken,
+      }),
+    };
+  }
+
+  async loginWithTwoFA(user: IResponseUser) {
+    const { id, username, avatar, intraId, email, intraToken } = user;
+    return {
+      id,
+      intraId,
+      intraToken,
+      username,
+      email,
+      avatar,
+      access_token: this.jwtService.sign({
+        id: user.id,
         username: user.username,
         avatar: user.avatar,
         intraId: user.intraId,
@@ -52,7 +77,28 @@ export class AuthService {
 
   async getProfile(intraId: number) {
     const user = await this.usersService.findOneByIntraId(intraId);
-    if (!user) throw new NotImplementedException('Cannot retrieve intraId in getProfile()');
+    if (!user)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in getProfile()"
+      );
     return user;
+  }
+
+  generateSecret() {
+    const secret = authenticator.generateSecret();
+    return secret;
+  }
+
+  async generateQrCodeUrl(user: IResponseUser) {
+    const otpauthUrl = authenticator.keyuri(user.email, "Ponger", user.secret);
+    await this.usersService.setSecret(user.secret, user.intraId);
+    return toDataURL(otpauthUrl);
+  }
+
+  isTwoFactorAuthSecretValid(code: string, secret: string) {
+    return authenticator.verify({
+      token: code,
+      secret: secret,
+    });
   }
 }
