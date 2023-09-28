@@ -2,8 +2,13 @@ import { io, Socket } from 'socket.io-client';
 
 class WebSocketService {
     private socket: Socket;
-  constructor() {
-    this.socket = io('ws://localhost:3000');
+  constructor(username: string) {
+    // this.socket = io('ws://localhost:3000');
+    this.socket = io('ws://localhost:3000', {
+      query: {
+        username: username,
+      },
+    });
   }
 
   emit(event: string, data: any) {
