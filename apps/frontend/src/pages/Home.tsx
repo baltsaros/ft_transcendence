@@ -12,6 +12,8 @@ import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
+import { ChannelService } from "../services/channels.service";
+import { IChannelRelation } from "../types/types";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -19,8 +21,6 @@ const Home: FC = () => {
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);
   const token = Cookies.get('jwt_token');
- 
-
 
   useEffect(() => {
     if (token){
@@ -34,6 +34,13 @@ const Home: FC = () => {
         }
       }
   },  [])
+  // const kickUser = async (relation: IChannelRelation) => {
+  //   try {
+  //       const ownerOfChannel = await ChannelService.getOwnerOfChannel(relation.idChannel);
+  //       console.log('id owner = ', ownerOfChannel);
+  //       const ok = await ChannelService.kickMemberOfChannel({idChannel: 1, idUser: 1});
+  //       console.log(ok);     
+  //    } catch (err: any) {}}
 
   return (
     <>
@@ -69,6 +76,9 @@ const Home: FC = () => {
                 <FriendList />
               </div>
             </div>
+            {/* <div>
+              <button onClick={() => kickUser({idChannel: 1, idUser: 1})}>Kick USer</button>
+            </div> */}
           </div>
       )}
     </>

@@ -141,3 +141,8 @@ export interface IResponseMessage {
   channel: IResponseChannelData,
   id: number
 }
+
+export interface IChannelRelation {
+  idChannel: number,
+  idUser: number,
+}
