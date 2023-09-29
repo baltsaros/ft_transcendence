@@ -71,8 +71,8 @@ export class UserService {
           AND EXISTS(
             SELECT 1
             FROM public.user_friends_user F
-            WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
-            OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+            WHERE (F."receiver" = $1 AND F."sender" = U.id )
+            OR (F."sender" = $1 AND F."receiver" = U.id )
             );  `,
       [id],
     );
@@ -87,8 +87,8 @@ export class UserService {
           AND EXISTS(
             SELECT 1
             FROM public.user_invitations_user F
-            WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
-            OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+            WHERE (F."receiver" = $1 AND F."sender" = U.id )
+            OR (F."sender" = $1 AND F."receiver" = U.id )
             );  `,
       [id],
     );
