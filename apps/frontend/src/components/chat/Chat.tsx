@@ -1,3 +1,4 @@
+import { Scrollbar } from 'react-scrollbars-custom';
 import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IResponseMessage } from "../../types/types";
@@ -51,15 +52,16 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 </div>
                 <div className="text-lg font-bold mb-2 text-gray-600">
+                    <Scrollbar style={{ width: 300, height: 700 }}>
                     {
-                    selectedChannel &&
-                    message.map((idx, index) => (
-                    <div
-                    key={index}
-                    className={`${
-                        idx.user.username === 'User1' ? 'self-start' : 'self-end'
-                      } p-2 rounded-lg mb-2`}
-                    >
+                        selectedChannel &&
+                        message.map((idx, index) => (
+                            <div
+                            key={index}
+                            className={`${
+                                idx.user.username === 'User1' ? 'self-start' : 'self-end'
+                            } p-2 rounded-lg mb-2`}
+                            >
                         <div className="text-sm font-semibold">
                         {idx.user.username}
                         </div>
@@ -68,6 +70,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                         </div>
                         </div>
                         ))}
+                    </Scrollbar>
                     {
                     !selectedChannel &&
                     <h2>Select a channel</h2>
