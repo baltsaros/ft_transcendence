@@ -214,7 +214,6 @@ export class UserService {
     const source = await this.userRepository.findOne({
       where: { id: friendRequest.idUser, },
       relations: {
-        invitations: true,
         friends: true,
       },
     })

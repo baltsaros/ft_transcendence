@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
 import { IChannelsData, IChannel } from 'src/types/types';
 import { UserService } from '../user/user.service';
+import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
@@ -72,5 +73,22 @@ export class ChannelService {
             relations: ['channelMessages', 'channelMessages.user'],
         })
         return channel;
+    }
+
+    async kickMemberOfChannel(relation: ChannelUserDto)
+    {
+        const request = await this.channelRepository.findOne({
+            relations: {
+              users: true,
+            },
+            where: { id: relation.idChannel}
+          });
+      
+          request.users = request.users.filter((user) => {
+            return (user.id !== relation.idUser)
+          })
+          const channel = await this.channelRepository.save(request);
+          if (channel) return true;
+          return false;
     }
 }

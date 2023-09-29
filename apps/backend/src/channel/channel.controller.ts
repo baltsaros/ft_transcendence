@@ -1,6 +1,8 @@
-import { Controller, Post, Get, Body, Param, Query} from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query, UseGuards} from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { IChannelsData, IGetChannels } from 'src/types/types';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 
@@ -31,4 +33,9 @@ export class ChannelController {
         return await this.ChannelService.getChannelById(channelId);
     }
 
+    @Post('kickMemberOfChannel')
+    @UseGuards(JwtAuthGuard)
+    async kickMemberOfChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.kickMemberOfChannel(relation));
+    }
 }
