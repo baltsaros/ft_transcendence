@@ -11,6 +11,8 @@ import { store } from "../../store/store";
 import { addChannel, setChannel } from "../../store/channel/channelSlice";
 import WebSocketService from "../../services/WebSocketService";
 import { useWebSocket } from "../../context/WebSocketContext";
+import ChatBar from "./ChatBar";
+import SearchBar from "./SearchBar";
 
 
 interface ChildProps {
@@ -97,16 +99,17 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                         <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="flex flex-col text-black space-y-4">
-                                {/* {data.map(({name, id}) => ( */}
+                                {/* {data.map(({name, id}) => (
                                 {channels.map((channel: IChannel) => (
                                 // console.log(cha)
                                 <button
                                 key={channel.id}
                                 onClick={() => onSelectChannel(channel)} 
-                                /* use arrow function to pass parameter + explicitly passing event to the function */
+                                /* use arrow function to pass parameter + explicitly passing event to the function 
                                 // onClick={event => handleJoinChannel(channel.id)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
-                                </button>))}
+                                </button>))} */}
+                                <SearchBar />
                             </div>
                         </div>
                         <div className="mt-auto">
