@@ -39,6 +39,13 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
         setMessage(event.target.value);
     }
 
+    const handleKeyDown = (event: any) => {
+        if (event.key == "Enter")
+        {
+            handleClick();
+        }
+    }
+
     /* RENDER */
     return (
         <div className="flex text-black items-center bg-gray-200 p-2">
@@ -47,6 +54,7 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             type="text" 
             placeholder="Type your message..."
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className="flex-grow p-2 border rounded-l-lg"
             />
         <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleClick}>Send</button>
