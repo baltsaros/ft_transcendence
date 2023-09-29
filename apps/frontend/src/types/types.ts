@@ -147,4 +147,7 @@ export interface IChannelRelation {
   idUser: number,
 }
 
-
+export interface IChannelPassword {
+  idChannel: number,
+  password: string,
+}
