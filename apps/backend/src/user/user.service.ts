@@ -13,7 +13,7 @@ import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { Profile } from "passport-42";
-import { FriendRelationDto } from "./dto/friend-relation.dto";
+import { UserRelationDto } from "./dto/user-relation.dto";
 
 @Injectable()
 export class UserService {
@@ -169,17 +169,17 @@ export class UserService {
     if (!userModified) throw new NotFoundException("User not found");
   }
 
-  async removeFriendRelation(friendRelation: FriendRelationDto)
+  async removeFriendRelation(friendRelation: UserRelationDto)
   {
     const request = await this.userRepository.findOne({
       relations: {
         friends: true,
       },
-      where: { id: friendRelation.idUser}
+      where: { id: friendRelation.receiverId}
     });
 
     request.friends = request.friends.filter((user) => {
-      return (user.id !== friendRelation.idFriend)
+      return (user.id !== friendRelation.senderId)
     })
     const user = await this.userRepository.save(request);
     if (user) return true;
@@ -193,37 +193,37 @@ export class UserService {
     return userModified;
   }
   
-  async removeInvitation(invitation: FriendRelationDto) {
+  async removeInvitation(invitation: UserRelationDto) {
     const request = await this.userRepository.findOne({
       relations: {
         invitations: true,
       },
-      where: { id: invitation.idUser}
+      where: { id: invitation.receiverId}
     });
 
     request.invitations = request.invitations.filter((user) => {
-      return (user.id !== invitation.idFriend)
+      return (user.id !== invitation.senderId)
     })
     const user = await this.userRepository.save(request);
     if (user) return true;
     return false;
   }
 
-  async addFriend(friendRequest: FriendRelationDto)
+  async addFriend(friendRequest: UserRelationDto)
   {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.idUser, },
+      where: { id: friendRequest.receiverId, },
       relations: {
         friends: true,
       },
     })
-    const friend = await this.findOneById(friendRequest.idFriend);
+    const friend = await this.findOneById(friendRequest.senderId);
     source.friends.push(friend);
 
     await this.userRepository.save(source);
   }
   
-  async acceptInvitation(invitation: FriendRelationDto) {
+  async acceptInvitation(invitation: UserRelationDto) {
     this.addFriend(invitation);
     this.removeInvitation(invitation);
   }

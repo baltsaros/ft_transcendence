@@ -14,4 +14,6 @@ export const ChannelService = {
         if (data) return (data.owner.id);
         return (0);
     }
+
+    
 };

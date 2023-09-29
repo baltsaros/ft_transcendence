@@ -131,9 +131,9 @@ export interface IMessage {
   content: string,
 }
 
-export interface IFriendRelation {
-  idUser: number;
-  idFriend: number;
+export interface IUserRelation {
+  receiverId: number;
+  senderId: number;
 }
 export interface IResponseMessage {
   content: string,
@@ -146,3 +146,5 @@ export interface IChannelRelation {
   idChannel: number,
   idUser: number,
 }
+
+
