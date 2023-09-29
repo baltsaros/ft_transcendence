@@ -1,6 +1,7 @@
 import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { Scrollbar } from 'react-scrollbars-custom';
 
 export default function SearchBar() {
     
@@ -27,11 +28,14 @@ export default function SearchBar() {
                 aria-describedby="button-addon1"
                 onChange={(e) => setInput(e.target.value.toLocaleLowerCase())}
             />
-            <ul>
+            <Scrollbar style={{width: 250, height: 250}}>
+
+                <ul>
                 {(input !== "") && filteredData.map((item) => (
                     <li key={item.id}>{item.name}</li>
                 ))}
             </ul>
+            </Scrollbar>
         </div>
     );
 }  
