@@ -142,7 +142,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
           {/* Buttons */}
           <div className="flex justify-end">
             <button
-              onClick={handleOk}
+              onClick={() => handleOk}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">Ok
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleCancel}>Cancel</button>

@@ -82,14 +82,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           users: true,
         },
       })
-      const user = await this.userService.findOne(payload.username);
-      // console.log('channel fetched:' , channel);
-      // console.log('user fetched:' , user);
+      const user = await this.userService.findOne(payload.username); 
       channel.users.push(user);
       await this.channelRepository.save(channel);
+      const channelId = channel.id;
+      const value = {
+        channelId,
+        user,
+      };
       // console.log('channel after push:' , channel);
       client.join(payload.channelId);
-      this.server.to(payload.channelId).emit('userJoined', payload);
+      this.server.to(payload.channelId).emit('userJoined', value);
       // client.emit('userJoined', payload);
 
     }catch (error){

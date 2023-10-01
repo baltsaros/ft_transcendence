@@ -22,7 +22,7 @@ function PlayersOnServer() {
             const data =  await PlayerService.getAllOnlineUsers();
             if (data)
              setOnlinePlayers(data);
-            console.log(data);
+            // console.log(data);
           } catch (err: any) {}}
           getAllOnlineUsers();
         const getAllOfflineUsers = async () => {
@@ -30,7 +30,7 @@ function PlayersOnServer() {
             const data =  await PlayerService.getAllOfflineUsers();
             if (data)
              setOfflinePlayers(data);
-            console.log(data);
+            // console.log(data);
           } catch (err: any) {}}
           getAllOfflineUsers();
         }, [])

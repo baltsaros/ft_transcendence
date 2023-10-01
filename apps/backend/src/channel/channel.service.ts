@@ -6,6 +6,7 @@ import { IChannelsData, IChannel } from 'src/types/types';
 import { UserService } from '../user/user.service';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { channel } from 'diagnostics_channel';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
@@ -51,17 +52,28 @@ export class ChannelService {
         );
     }
 
-    async findAll(username: string) {
-        const channels = await this.channelRepository.find({
-            where: {
-                owner:{
-                    username
+    async findAll() {
+        const channel = await this.channelRepository.find(
+            {
+                relations: {
+                    users: true,
                 }
-            },
-        select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
-    });
-    return channels;
+            }
+        );
+        return channel;
     }
+    
+    // async findAll(username: string) {
+    //     const channels = await this.channelRepository.find({
+    //         where: {
+    //             owner:{
+    //                 username
+    //             }
+    //         },
+    //     select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
+    // });
+    // return channels;
+    // }
 
 
     /* for the moment this query retrieves all fields fo the channel entity

@@ -20,11 +20,14 @@ export class ChannelController {
     }
 
     @Get()
-    // async getChannel(@Param('username') data: string) {
-    async getChannel(@Query() data: IGetChannels ) {
-        const name = data.username;
-        return await (this.ChannelService.findAll(name))
+    async getChannel() {
+        return await (this.ChannelService.findAll());
     }
+    // async getChannel(@Param('username') data: string) {
+    // async getChannel(@Query() data: IGetChannels ) {
+    //     const name = data.username;
+    //     return await (this.ChannelService.findAll(name))
+    // }
 
     @Get(':channelId')
     async getChannelById(@Param('channelId') channelId: number) {

@@ -1,11 +1,18 @@
-import { JSXElementConstructor, ReactElement, ReactNode, ReactPortal, useState } from "react";
+import { useState, useEffect } from "react";
+
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { useWebSocket } from "../../context/WebSocketContext";
+import { store } from "../../store/store";
+import { addNewUser } from "../../store/channel/channelSlice";
 
 export default function SearchBar() {
     
-    //state
-    const [ input, setInput ] =useState<string>("");
+    const webSocketService = useWebSocket();
+    const user = useSelector((state: RootState) => state.user.username);
+    
+    /* state */
+    const [ input, setInput ] = useState<string>("");
     const channels = useSelector((state: RootState) => state.channel.channel);
 
     const filteredData = channels.filter((el) => {
@@ -16,6 +23,31 @@ export default function SearchBar() {
     })
     
     //behaviour
+
+    const handleJoinChannel = async (id: number) => {
+        try{
+            const payload = {
+                channelId: id,
+                username: user,
+            }
+            webSocketService.emit('onChannelJoin', payload);
+            // store.dispatch(addNewUser());
+
+        } catch(err: any) {
+            console.log('join channel failed');
+        }
+    }
+
+    useEffect(() => {
+        webSocketService.on('userJoined', (payload: any) => {
+            console.log('user', payload.username, 'joined', payload.channelId);
+            store.dispatch(addNewUser(payload));
+        })
+        return () => {
+            webSocketService.off('userJoined');
+        };
+    }, []);
+
     //render
     return (
         <div>
@@ -29,7 +61,12 @@ export default function SearchBar() {
             />
             <ul>
                 {(input !== "") && filteredData.map((item) => (
-                    <li key={item.id}>{item.name}</li>
+                    <li key={item.id}>{item.name}
+                    <button 
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
+                    onClick={e=>handleJoinChannel(item.id)}>Join
+                    </button>
+                    </li>
                 ))}
             </ul>
         </div>
