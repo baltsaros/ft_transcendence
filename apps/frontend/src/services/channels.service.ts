@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import { IChannelPassword, IChannelRelation, IResponseChannelData } from "../types/types";
+import { IChannelPassword, IChannelRelation, IResponseChannelData, IUser } from "../types/types";
 
 export const ChannelService = {
 
@@ -15,19 +15,38 @@ export const ChannelService = {
         return (0);
     },
 
-    async setPasswordToChannel(data: IChannelPassword) {
+    async setPasswordToChannel(channelPassword: IChannelPassword) {
+        const { data } = await instance.post<Boolean>("channel/setPassword/", channelPassword);
+        return (data);
     },
 
-    async changePasswordOfChannel(data: IChannelPassword) {
+    async removePasswordOfChannel(idChannel: number) {
+        const channelPassword = {
+            idChannel,
+            password: "",
+        }
+        return (this.setPasswordToChannel(channelPassword));
     },
 
-    async removePasswordOfChannel(data: IChannelPassword) {
+    async addUserAsAdmin(channelRelation: IChannelRelation) {
+        const { data } = await instance.post<Boolean>("channel/addUserAsAdmin/", channelRelation);
+        return (data);
     },
 
-    async setUserAsAdmin(data: IChannelRelation) {
+    async removeUserAsAdmin(channelRelation: IChannelRelation) {
+        const { data } = await instance.post<Boolean>("channel/removeUserAsAdmin/", channelRelation);
+        return (data);
     },
 
     async getAllAdminsOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllAdminsOfChannel/", {channelId});
+        if (data) return data;
+        return ([]);
+    },
+
+    async checkIfSamePassword(channelPassword: IChannelPassword) {
+        const { data } = await instance.post<Boolean>("channel/checkIfSamePassword/", channelPassword);
+        return (data);
     }
     
 };

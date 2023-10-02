@@ -6,6 +6,8 @@ import { IChannelsData, IChannel } from 'src/types/types';
 import { UserService } from '../user/user.service';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ChannelPasswordDto } from './dto/channelPassword.dto';
+import { ChannelIdDto } from './dto/channelIdDto.dto';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
@@ -91,4 +93,67 @@ export class ChannelService {
           if (channel) return true;
           return false;
     }
+
+    async setPasswordToChannel(channelPassword: ChannelPasswordDto)
+    {
+        const channel = await this.findOne(channelPassword.idChannel);
+        if (!channel) return (false);
+       await this.channelRepository.update({
+            id: channelPassword.idChannel},
+            {
+                password: channelPassword.password
+        });
+        const newChannel = await this.findOne(channelPassword.idChannel);
+        if (channel.password === newChannel.password) return (false);
+        return (true);
+    }
+
+    async addUserAsAdmin(channelRelation: ChannelUserDto)
+    {
+        const channel = await this.channelRepository.findOne({
+        where: { id: channelRelation.idUser, },
+        relations: {
+            adminUsers: true,
+        },
+        })
+        const admin = await this.userService.findOneById(channelRelation.idUser);
+        if (!admin) return (false);
+        channel.adminUsers.push(admin);
+
+        await this.channelRepository.save(channel);
+        return (true);
+    }
+
+    async removeUserAsAdmin(channelRelation: ChannelUserDto) {
+        const request = await this.channelRepository.findOne({
+          relations: {
+            adminUsers: true,
+          },
+          where: { id: channelRelation.idUser}
+        });
+    
+        request.adminUsers = request.adminUsers.filter((user) => {
+          return (user.id !== channelRelation.idUser)
+        })
+        const isOk = await this.channelRepository.save(request);
+        return (isOk);
+      }
+    
+      async getAllAdminsOfChannel(channelId: ChannelIdDto) {
+        const request = await this.channelRepository.findOne({
+          relations: {
+            adminUsers: true,
+          },
+          where: { id: channelId.idChannel}
+        });
+    
+        return (request.adminUsers);
+      }
+
+      async checkIfSamePassword(relation: ChannelPasswordDto) {
+        const channel = await this.findOne(relation.idChannel);
+        if (channel.password === relation.password) return (true);
+        return (false);
+      }
+
 }
