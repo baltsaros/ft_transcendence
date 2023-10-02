@@ -12,7 +12,7 @@ function PlayersOnServer() {
         { username: 'hdony', status: 'online' }
       ])
     const [offlinePlayers, setOfflinePlayers] = useState<IUserUsername[] | undefined>([
-        { username: 'hdony', status: 'offline' }
+        { username: 'jvander', status: 'offline' }
       ])
     
     // behavior

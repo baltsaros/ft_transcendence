@@ -2,7 +2,7 @@ import { useState } from 'react';
 import InviteFriendModal from './InviteFriendModal';
 import BlockUserModal from './BlockUserModal';
 
-function ButtonWithModal ({ text }) {
+function ButtonWithModal ({ username, text }) {
 
   // state
   const [modalView, setModalView] = useState(false);
@@ -24,10 +24,10 @@ const handleCloseModal = () => {
         { text }
       </button>
       {modalView && text === "Invite as Friend" &&
-        <InviteFriendModal onClose={handleCloseModal} />
+        <InviteFriendModal onClose={handleCloseModal} username={username} />
       }
       {modalView && text === "Block User" &&
-        <BlockUserModal onClose={handleCloseModal} />
+        <BlockUserModal onClose={handleCloseModal} username={username} />
       }
     </div>
   );

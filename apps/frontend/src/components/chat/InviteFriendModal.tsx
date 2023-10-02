@@ -2,7 +2,7 @@ interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const InviteFriendModal: React.FC<ModalProp> = ({onClose}) =>  {
+const InviteFriendModal: React.FC<ModalProp> = ({onClose, username}) =>  {
 
 	/* BEHAVIOR */
 	

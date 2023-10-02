@@ -81,7 +81,7 @@ const DropdownButtonOnLine = ({ username }) => {
               Invite as friend
             </button>
             */}
-            <ButtonWithModal text="Invite as Friend" />
+            <ButtonWithModal username={username} text="Invite as Friend" />
             {/*
             <button
             onClick={() => handleItemClick(`Block user for ${username}`)}
@@ -90,7 +90,7 @@ const DropdownButtonOnLine = ({ username }) => {
             Block user
             </button>
             */}
-            <ButtonWithModal text="Block User" />
+            <ButtonWithModal username={username} text="Block User" />
           </div>
         </div>
       )}
