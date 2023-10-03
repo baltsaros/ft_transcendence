@@ -1,27 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 
-const DropdownButtonOffLine = ({ username }) => {
+const DropdownButtonOffLine = (username: string) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownButtonRef = useRef(null);
-  const dropdownMenuRef = useRef(null);
+  const dropdownButtonRef = useRef<HTMLElement>(null);
+  const dropdownMenuRef = useRef<HTMLElement>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleItemClick = (itemText) => {
+  const handleItemClick = (itemText: string) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
   };
 
   useEffect(() => {
-    const closeDropdownOnOutsideClick = (event) => {
+    const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       // Check if the click occurred outside the button and the dropdown menu
       if (
         dropdownButtonRef.current &&
-        !dropdownButtonRef.current.contains(event.target) &&
+        !dropdownButtonRef.current.contains(event.target as Node) &&
         dropdownMenuRef.current &&
-        !dropdownMenuRef.current.contains(event.target)
+        !dropdownMenuRef.current.contains(event.target as Node)
       ) {
         // Click occurred outside, so close the dropdown
         setIsDropdownOpen(false);

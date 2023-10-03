@@ -220,4 +220,18 @@ export class UserService {
     this.addFriend(invitation);
     this.removeInvitation(invitation);
   }
+
+  async sendInvitation(friendRequest: FriendRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: friendRequest.idUser, },
+      relations: {
+        invitations: true,
+      },
+    })
+    const friend = await this.findOneById(friendRequest.idFriend);
+    source.invitations.push(friend);
+
+    await this.userRepository.save(source);
+  }
 }

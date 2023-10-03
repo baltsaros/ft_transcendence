@@ -1,3 +1,6 @@
+import Cookies from "js-cookie";
+import { PlayerService } from "../../services/player.service";
+
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
@@ -10,6 +13,23 @@ const InviteFriendModal: React.FC<ModalProp> = ({onClose, username}) =>  {
 		// console.log('store state:', store.getState());
 		onClose();
 	  }
+  
+  const sendInvitation = async (username: string) => {
+    try {
+         const sender = Cookies.get("username");
+         if (sender) {
+             const idSender = await PlayerService.getInfoUser(sender);
+             if (idSender)
+               {
+                  const idReceiver = await PlayerService.getInfoUser(username);
+                  if (idReceiver)
+                  {
+                      const ret = await PlayerService.sendInvitation({idReceiver, idSender});
+                  }
+              }
+          }
+          
+      } catch (err: any) {}}
 	
 	/* RENDERING */
     return (

@@ -33,7 +33,7 @@ export const PlayerService = {
   },
 
   async removeFriend(friendRealtion: IFriendRelation) {
-    const { data } = await instance.post("user/removeFriend", friendRealtion);
+    const { data } = await instance.post("user/removeFriend", friendRelation);
     if (data) return (true);
     return (false);
   },
@@ -56,5 +56,14 @@ export const PlayerService = {
     const { data} = await instance.post("user/refuseInvitation", friendRelation);
     if (data) return (true);
     return (false);
+  },
+
+  async sendInvitation(friendRelation: IFriendRelation)
+  {
+    const { data } = await instance.post("user/sendInvitation", friendRelation);
+    if (data) return (true);
+    return (false);
   }
+
 };
+
