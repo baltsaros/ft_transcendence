@@ -1,8 +1,10 @@
+import { IPlayersOnServerModalProps } from "../../types/types";
+
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const BlockUserModal: React.FC<ModalProp> = ({onClose}) =>  {
+const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
 
 	/* BEHAVIOR */
 	
