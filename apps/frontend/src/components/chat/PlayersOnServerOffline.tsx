@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { IGetChannels, IUserUsername } from '../../types/types';
+import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import ButtonWithModal from './ButtonWithModal';
 
 const DropdownButtonOffLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -66,18 +67,8 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
             >
               Direct message
             </button>
-            <button
-              onClick={() => handleItemClick(`Invite as friend for ${player.username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-              Invite as friend
-            </button>
-            <button
-              onClick={() => handleItemClick(`Block user for ${player.username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-              Block user
-            </button>
+            <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />
+            <ButtonWithModal { ...{username: player.username, text: "Block User"} } />
           </div>
         </div>
       )}
