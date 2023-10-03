@@ -1,7 +1,7 @@
 import { useAppSelector } from "../store/hooks";
-import { IUser } from "../types/types";
+import { IResponseUser } from "../types/types";
 
-export const getUser = (): IUser | null => {
+export const getUser = (): IResponseUser | null => {
   const user = useAppSelector((state) => state.user.user);
 
   return user;

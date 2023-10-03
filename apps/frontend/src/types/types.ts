@@ -35,7 +35,8 @@ export interface IResponseUser {
   username: string;
   email: string;
   intraToken: string;
-  authentication: boolean;
+  twoFactorAuth: boolean;
+  secret: string;
   rank: number;
   avatar: string;
 
@@ -130,13 +131,23 @@ export interface IMessage {
   content: string,
 }
 
-export interface IFriendRelation {
-  idUser: number;
-  idFriend: number;
+export interface IUserRelation {
+  receiverId: number;
+  senderId: number;
 }
 export interface IResponseMessage {
   content: string,
   user: IUser,
   channel: IResponseChannelData,
   id: number
+}
+
+export interface IChannelRelation {
+  idChannel: number,
+  idUser: number,
+}
+
+export interface IChannelPassword {
+  idChannel: number,
+  password: string,
 }

@@ -10,6 +10,7 @@ const Profile: FC = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [filename, setFilename] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+  const [twoFA, setTwoFA] = useState<boolean>(user ? user.twoFactorAuth : false);
   const [file, setFile] = useState<any>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -17,21 +18,31 @@ const Profile: FC = () => {
   const updateHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      if (username == "") {
-        toast.error("Username field cannot be empty");
-        return;
-      } else if (username == user?.username) {
+      // if (username == "") {
+      //   toast.error("Username field cannot be empty");
+      //   return;
+      if (username == user?.username) {
         toast.error("Username cannot be the same");
         return;
       }
       const tmp = {
-        username: username,
+        username: username == "" ? (user ? user.username : "") : username,
         avatar: filename.length > 0 ? filename : user ? user.avatar : "",
         id: user ? user.id : 0,
         intraId: user ? user.intraId : 0,
         intraToken: user ? user.intraToken : "",
         email: user ? user.email : "",
+        twoFactorAuth: twoFA,
+        secret: user ? user.secret : "",
+        rank: user ? user.rank : 0,
+        status: user ? user.status : "",
+        wins: user ? user.wins : 0,
+        loses: user ? user.loses : 0,
+        createdAt: user ? user.createdAt : new Date(),
       };
+      if (twoFA && !(user?.twoFactorAuth)) {
+        tmp.secret = await AuthService.generateSecret();
+      }
       // console.log(tmp);
       // console.log("filename: " + filename);
       const data = await AuthService.update(tmp);
@@ -82,13 +93,17 @@ const Profile: FC = () => {
     }
   };
 
+  const handleCheckBox = () => {
+    setTwoFA(!twoFA);
+  };
+
   return (
     <div className="mt-8 w-3/5 mx-auto bg-gray-500 text-black uppercase">
       <h2 className="bg-cyan-300 w-full mb-2 p-5 tracking-wider text-lg">
         Profile creation
       </h2>
       <h2 className="bg-gray-500 w-full mb-4 p-5 tracking-wider"></h2>
-      <div className="bg-cyan-300 flex justify-start mb-2 p-5 space-x-4 items-center">
+      <div className="bg-cyan-300 flex justify-start p-5 space-x-4 items-center">
         <h3 className="pl-2 pr-6">Enter username:</h3>
         <form className="">
           <input
@@ -96,6 +111,17 @@ const Profile: FC = () => {
             className="input"
             // placeholder="Username"
             onChange={(e) => setUsername(e.target.value)}
+          />
+        </form>
+      </div>
+      <div className="bg-cyan-300 flex justify-start mb-2 p-5 space-x-4 items-center">
+        <h3 className="pl-2 pr-6">Two-factor authentication:</h3>
+        <form className="">
+            <input
+            type="checkbox"
+            className="input"
+            checked={twoFA}
+            onChange={handleCheckBox}
           />
         </form>
       </div>

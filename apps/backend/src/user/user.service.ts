@@ -13,7 +13,7 @@ import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { Profile } from "passport-42";
-import { FriendRelationDto } from "./dto/friend-relation.dto";
+import { UserRelationDto } from "./dto/user-relation.dto";
 
 @Injectable()
 export class UserService {
@@ -46,7 +46,8 @@ export class UserService {
       intraId: createUserDto.intraId,
       intraToken: createUserDto.intraToken,
       avatar: createUserDto.avatar,
-      authentication: true,
+      twoFactorAuth: false,
+      secret: "",
       rank: 0,
       wins: 0,
       loses: 0,
@@ -70,8 +71,8 @@ export class UserService {
           AND EXISTS(
             SELECT 1
             FROM public.user_friends_user F
-            WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
-            OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+            WHERE (F."receiver" = $1 AND F."sender" = U.id )
+            OR (F."sender" = $1 AND F."receiver" = U.id )
             );  `,
       [id],
     );
@@ -86,8 +87,8 @@ export class UserService {
           AND EXISTS(
             SELECT 1
             FROM public.user_invitations_user F
-            WHERE (F."userId_1" = $1 AND F."userId_2" = U.id )
-            OR (F."userId_2" = $1 AND F."userId_1" = U.id )
+            WHERE (F."receiver" = $1 AND F."sender" = U.id )
+            OR (F."sender" = $1 AND F."receiver" = U.id )
             );  `,
       [id],
     );
@@ -168,55 +169,61 @@ export class UserService {
     if (!userModified) throw new NotFoundException("User not found");
   }
 
-  async removeFriendRelation(friendRelation: FriendRelationDto)
+  async removeFriendRelation(friendRelation: UserRelationDto)
   {
     const request = await this.userRepository.findOne({
       relations: {
         friends: true,
       },
-      where: { id: friendRelation.idUser}
+      where: { id: friendRelation.receiverId}
     });
 
     request.friends = request.friends.filter((user) => {
-      return (user.id !== friendRelation.idFriend)
+      return (user.id !== friendRelation.senderId)
     })
     const user = await this.userRepository.save(request);
     if (user) return true;
     return false;
   }
 
-  async removeInvitation(invitation: FriendRelationDto) {
+  async setSecret(secret: string, intraId: number) {
+    const user = await this.findOneByIntraId(intraId);
+    user.secret = secret;
+    const userModified = await this.update(user.id, user);
+    return userModified;
+  }
+  
+  async removeInvitation(invitation: UserRelationDto) {
     const request = await this.userRepository.findOne({
       relations: {
         invitations: true,
       },
-      where: { id: invitation.idUser}
+      where: { id: invitation.receiverId}
     });
 
     request.invitations = request.invitations.filter((user) => {
-      return (user.id !== invitation.idFriend)
+      return (user.id !== invitation.senderId)
     })
     const user = await this.userRepository.save(request);
     if (user) return true;
     return false;
   }
 
-  async addFriend(friendRequest: FriendRelationDto)
+  async addFriend(friendRequest: UserRelationDto)
   {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.idUser, },
+      where: { id: friendRequest.receiverId, },
       relations: {
-        invitations: true,
         friends: true,
       },
     })
-    const friend = await this.findOneById(friendRequest.idFriend);
+    const friend = await this.findOneById(friendRequest.senderId);
     source.friends.push(friend);
 
     await this.userRepository.save(source);
   }
   
-  async acceptInvitation(invitation: FriendRelationDto) {
+  async acceptInvitation(invitation: UserRelationDto) {
     this.addFriend(invitation);
     this.removeInvitation(invitation);
   }

@@ -5,7 +5,7 @@ import { Channel } from "src/channel/channel.entity";
 
 
 @Injectable()
-export class ChatService {
+export class GatewayService {
     constructor(
         @InjectRepository (Channel)
         private readonly channelRepository: Repository<Channel>

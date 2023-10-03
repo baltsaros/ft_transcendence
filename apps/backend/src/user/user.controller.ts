@@ -24,7 +24,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import Path = require("path");
-import { FriendRelationDto } from "./dto/friend-relation.dto";
+import { UserRelationDto } from "./dto/user-relation.dto";
 import { IdUserDto } from "./dto/id-user.dto";
 import { User } from "./entities/user.entity";
 
@@ -108,7 +108,7 @@ export class UserController {
 
   @Post("removeFriend")
   @UseGuards(JwtAuthGuard)
-  removeFriend(@Body() friendRelation: FriendRelationDto) {
+  removeFriend(@Body() friendRelation: UserRelationDto) {
     return (this.userService.removeFriendRelation(friendRelation));
   }
   @Post("getInvitations")
@@ -119,13 +119,13 @@ export class UserController {
 
   @Post("acceptInvitation")
   @UseGuards(JwtAuthGuard)
-  acceptInvitation(@Body() invitation: FriendRelationDto) {
+  acceptInvitation(@Body() invitation: UserRelationDto) {
     return (this.userService.acceptInvitation(invitation));
   }
 
   @Post("refuseInvitation")
   @UseGuards(JwtAuthGuard)
-  refuseInvitation(@Body() invitation: FriendRelationDto) {
+  refuseInvitation(@Body() invitation: UserRelationDto) {
     return (this.userService.removeInvitation(invitation));
   }
 

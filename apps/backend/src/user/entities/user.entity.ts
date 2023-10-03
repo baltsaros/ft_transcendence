@@ -35,7 +35,10 @@ export class User {
   intraToken: string;
 
   @Column()
-  authentication: boolean;
+  twoFactorAuth: boolean;
+
+  @Column()
+  secret: string;
 
   @Column()
   rank: number;
@@ -44,11 +47,31 @@ export class User {
   avatar: string;
 
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({
+    name: "user_friends_user",
+    joinColumn: {
+      name: "receiver",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "sender",
+      referencedColumnName: "id"
+    }
+  })
   friends: User[];
 
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({
+    name: "user_invitations_user",
+    joinColumn: {
+      name: "receiver",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "sender",
+      referencedColumnName: "id"
+    }
+  })
   invitations: User[];
 
   @Column()

@@ -1,11 +1,8 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState } from "react";
 import { instance } from "../../api/axios.api";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import { addChannel } from "../../store/channel/channelSlice";
 import { IChannelData, IResponseChannelData } from "../../types/types";
-import { store } from "../../store/store"
 import { toast } from "react-toastify"
 
 interface ModalProp {

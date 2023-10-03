@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IFriendRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
+import {  IUserRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
 
 export const PlayerService = {
 
@@ -32,8 +32,8 @@ export const PlayerService = {
     return ([]);
   },
 
-  async removeFriend(friendRealtion: IFriendRelation) {
-    const { data } = await instance.post("user/removeFriend", friendRelation);
+  async removeFriend(friendRealtion: IUserRelation) {
+    const { data } = await instance.post("user/removeFriend", friendRealtion);
     if (data) return (true);
     return (false);
   },
@@ -43,17 +43,17 @@ export const PlayerService = {
     if (data) return (data);
   },
 
-  async acceptInvitation(friendRelation: IFriendRelation)
+  async acceptInvitation(invitation: IUserRelation)
   {
-    const { data } = await instance.post("user/acceptInvitation", friendRelation);
+    const { data } = await instance.post("user/acceptInvitation", invitation);
     if (data) return (true);
     return (false);
   },
 
 
-  async refuseInvitation(friendRelation: IFriendRelation)
+  async refuseInvitation(invitation: IUserRelation)
   {
-    const { data} = await instance.post("user/refuseInvitation", friendRelation);
+    const { data} = await instance.post("user/refuseInvitation", invitation);
     if (data) return (true);
     return (false);
   },

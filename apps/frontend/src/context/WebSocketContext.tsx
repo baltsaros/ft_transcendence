@@ -5,21 +5,16 @@ import Cookies from 'js-cookie';
 
 const WebSocketContext = createContext<WebSocketService | undefined>(undefined);
 
-/* IUser let the username be undefined ? Added check on username value but not solid
- Also when the Redux state, the user comes as undefined at some point
-wrap everyting into useEffect() to avoid 'undefined'*/
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [webSocketService, setWebSocketService] = useState<WebSocketService | undefined>(
-    () => {
-      const user = Cookies.get('username');
+
+  const [webSocketService, setWebSocketService] = useState<WebSocketService | undefined>();
+  useEffect(() => {
+    const user = Cookies.get('username');
       console.log('user', user);
       if (user) {
-        return new WebSocketService(user);
+        setWebSocketService(new WebSocketService(user));
       }
-      return undefined;
-    }
-  );
-  useEffect(() => {
+      // return undefined;
     return () => {
       if (webSocketService) {
         webSocketService.disconnect();

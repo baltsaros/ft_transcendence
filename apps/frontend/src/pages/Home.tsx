@@ -12,6 +12,8 @@ import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
+import { ChannelService } from "../services/channels.service";
+import { IChannelPassword, IChannelRelation } from "../types/types";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -19,8 +21,6 @@ const Home: FC = () => {
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);
   const token = Cookies.get('jwt_token');
- 
-
 
   useEffect(() => {
     if (token){
@@ -34,6 +34,13 @@ const Home: FC = () => {
         }
       }
   },  [])
+  // const updateChannel = async (relation: IChannelPassword) => {
+  //   try {
+  //       if (await ChannelService.checkIfSamePassword(relation))
+  //         toast.success("Same password");
+  //       else
+  //         toast.error("HUH HUH not the same");
+  //    } catch (err: any) {}}
 
   return (
     <>
@@ -69,6 +76,9 @@ const Home: FC = () => {
                 <FriendList />
               </div>
             </div>
+            {/* <div>
+              <button onClick={() => updateChannel({idChannel: 1, password: "fuck"})}>Kick USer</button>
+            </div> */}
           </div>
       )}
     </>

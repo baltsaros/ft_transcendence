@@ -15,35 +15,76 @@ import {
 @Entity()
 export class Channel {
     @PrimaryGeneratedColumn()
-    id: number
+    id: number;
 
     @Column({nullable: true})
-    name: string
+    name: string;
     
     @Column()
-    mode: string
+    mode: string;
     
     @ManyToOne(() => User, user =>  user.channels)
-    owner: User
+    owner: User;
 
     @Column({nullable: true})
-    password: string
+    password: string;
 
     @ManyToMany(() => User)
     @JoinTable({ name: 'user_channel'})
-    users: User[]
+    users: User[];
 
     @OneToMany(()=> Message, messages => messages.channel)
-    channelMessages: Message[]
+    channelMessages: Message[];
 
-    @Expose()
-    getId(): number {
-        return this.id;
-    }
+    @ManyToMany(() => User)
+    @JoinTable({
+        name: "channel_muted_user",
+        joinColumn: {
+            name: "channelId",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "mutedUser",
+            referencedColumnName: "id"
+        }
+    })
+    blockedUsers: User[];
+
+    @ManyToMany(() => User)
+    @JoinTable({
+        name: "channel_admins",
+        joinColumn: {
+            name: "channelId",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "adminId",
+            referencedColumnName: "id"
+        }
+    })
+    adminUsers: User[];
+
+    @ManyToMany(() => User)
+    @JoinTable({
+        name: "channel_banned_users",
+        joinColumn: {
+            name: "channelId",
+            referencedColumnName: "id"
+        },
+        inverseJoinColumn: {
+            name: "bannedUserId",
+            referencedColumnName: "id"
+        }
+    })
+    bannedUsers: User[];
+
+    // @Expose()
+    // getId(): number {
+    //     return this.id;
+    // }
     
-    @Expose()
-    getName(): string {
-        return this.name;
-    }
-
+    // @Expose()
+    // getName(): string {
+    //     return this.name;
+    // }
 } 
