@@ -58,7 +58,7 @@ export const PlayerService = {
     return (false);
   },
 
-  async sendInvitation(friendRelation: IFriendRelation)
+  async sendInvitation(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/sendInvitation", friendRelation);
     if (data) return (true);

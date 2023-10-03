@@ -66,7 +66,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {onlinePlayers!.map(onlinePlayer => (
                             onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
-                                <DropdownButtonOnLine username={ onlinePlayer.username } />
+                                <DropdownButtonOnLine { ...onlinePlayer } />
                             </div>
                         ))}
                     </div>
@@ -76,7 +76,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {offlinePlayers!.map(offlinePlayer => (
                             offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
-                                <DropdownButtonOffLine username={ offlinePlayer.username } />
+                                <DropdownButtonOffLine { ...offlinePlayer } />
                             </div>
                         ))}
                     </div>

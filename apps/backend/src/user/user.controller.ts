@@ -131,7 +131,7 @@ export class UserController {
 
   @Post("sendInvitation")
   @UseGuards(JwtAuthGuard)
-  sendInvitation(@Body() invitation: FriendRelationDto) {
+  sendInvitation(@Body() invitation: UserRelationDto) {
     return (this.userService.sendInvitation(invitation));
   }
 }

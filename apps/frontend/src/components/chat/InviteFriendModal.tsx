@@ -5,7 +5,7 @@ interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const InviteFriendModal: React.FC<ModalProp> = ({onClose, username}) =>  {
+const InviteFriendModal: React.FC<ModalProp> = ({onClose}) =>  {
 
 	/* BEHAVIOR */
 	
@@ -13,24 +13,24 @@ const InviteFriendModal: React.FC<ModalProp> = ({onClose, username}) =>  {
 		// console.log('store state:', store.getState());
 		onClose();
 	  }
-  
+  /*
   const sendInvitation = async (username: string) => {
     try {
          const sender = Cookies.get("username");
          if (sender) {
-             const idSender = await PlayerService.getInfoUser(sender);
-             if (idSender)
+             const senderId = await PlayerService.getInfoUser(sender);
+             if (senderId)
                {
-                  const idReceiver = await PlayerService.getInfoUser(username);
-                  if (idReceiver)
+                  const receiverId = await PlayerService.getInfoUser(username);
+                  if (receiverId)
                   {
-                      const ret = await PlayerService.sendInvitation({idReceiver, idSender});
+                      const ret = await PlayerService.sendInvitation({receiverId, senderId});
                   }
               }
           }
           
       } catch (err: any) {}}
-	
+	*/
 	/* RENDERING */
     return (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black">

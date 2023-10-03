@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
+import { IGetChannels, IUserUsername } from '../../types/types';
 
-const DropdownButtonOffLine = (username: string) => {
+const DropdownButtonOffLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownButtonRef = useRef<HTMLElement>(null);
-  const dropdownMenuRef = useRef<HTMLElement>(null);
+  const dropdownButtonRef = useRef<any>(null);
+  const dropdownMenuRef = useRef<any>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -29,11 +30,11 @@ const DropdownButtonOffLine = (username: string) => {
     };
 
     // Add the global click event listener
-    document.addEventListener('click', closeDropdownOnOutsideClick);
+    document.addEventListener('click', () => closeDropdownOnOutsideClick);
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('click', closeDropdownOnOutsideClick);
+      document.removeEventListener('click', () => closeDropdownOnOutsideClick);
     };
   }, []);
 
@@ -41,10 +42,10 @@ const DropdownButtonOffLine = (username: string) => {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleDropdown}
-		ref={dropdownButtonRef}
+		    ref={dropdownButtonRef}
         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
       >
-        {username}
+        {player.username}
       </button>
       {isDropdownOpen && (
         <div 
@@ -54,25 +55,25 @@ const DropdownButtonOffLine = (username: string) => {
           {/* Dropdown menu items */}
           <div className="py-1">
             <button
-              onClick={() => handleItemClick(`View Profile for ${username}`)}
+              onClick={() => handleItemClick(`View Profile for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               View Profile
             </button>
             <button
-              onClick={() => handleItemClick(`Direct message for ${username}`)}
+              onClick={() => handleItemClick(`Direct message for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Direct message
             </button>
             <button
-              onClick={() => handleItemClick(`Invite as friend for ${username}`)}
+              onClick={() => handleItemClick(`Invite as friend for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Invite as friend
             </button>
             <button
-              onClick={() => handleItemClick(`Block user for ${username}`)}
+              onClick={() => handleItemClick(`Block user for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Block user
