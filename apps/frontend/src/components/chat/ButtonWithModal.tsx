@@ -16,7 +16,8 @@ function ButtonWithModal ( userWithText: IPlayersOnServerModalProps ) {
 const handleCloseModal = () => {
     setModalView(false);
   }
-
+  
+  {console.log(userWithText.username)}
   //render
   return (
     <div>
@@ -25,11 +26,10 @@ const handleCloseModal = () => {
         { userWithText.text }
       </button>
       {modalView && userWithText.text === "Invite as Friend" &&
-        <InviteFriendModal onClose={handleCloseModal} 
-        {... userWithText} />
+        <InviteFriendModal onClose={handleCloseModal} userWithText={userWithText} />
       }
       {modalView && userWithText.text === "Block User" &&
-        <BlockUserModal onClose={handleCloseModal} {... userWithText} />
+        <BlockUserModal onClose={handleCloseModal} userWithText={userWithText} />
       }
     </div>
   );
