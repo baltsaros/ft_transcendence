@@ -31,16 +31,16 @@ export default function SearchBar() {
                 username: user,
             }
             webSocketService.emit('onChannelJoin', payload);
-            // store.dispatch(addNewUser());
 
         } catch(err: any) {
             console.log('join channel failed');
         }
     }
 
+    /* Can't be the same for channel creation because add whole object to the state so return value is different */
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            console.log('user', payload.username, 'joined', payload.channelId);
+            console.log('user', payload.user.username, 'joined', payload.channelId);
             store.dispatch(addNewUser(payload));
         })
         return () => {

@@ -117,8 +117,11 @@ export interface IGetChannels {
 }
 
 export interface IChannel {
-  name: string,
   id: number,
+  mode: string,
+  name: string,
+  password: string,
+  users: IUser[],
 }
 
 export interface IResponseGetChannels {

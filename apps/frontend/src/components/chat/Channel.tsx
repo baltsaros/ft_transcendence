@@ -1,15 +1,11 @@
 import AddChannel from "./AddChannel";
-import { useEffect, useState } from 'react';
-import { instance } from '../../api/axios.api'
-import Cookies from "js-cookie";
-import { IChannel, IGetChannels, IResponseChannelData } from "../../types/types";
+import { useEffect } from 'react';
+import { IChannel } from "../../types/types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { store } from "../../store/store";
-import { addChannel, setChannel, fetchChannel } from "../../store/channel/channelSlice";
-import WebSocketService from "../../services/WebSocketService";
+import { addChannel, fetchChannel, removeUser } from "../../store/channel/channelSlice";
 import { useWebSocket } from "../../context/WebSocketContext";
-import ChatBar from "./ChatBar";
 import SearchBar from "./SearchBar";
 
 
@@ -19,16 +15,17 @@ interface ChildProps {
 
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     /* Use useSelector() hook to access the channel state in the Redux store */
+    const webSocketService = useWebSocket();
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user.username);
+
     console.log('channels:', channels);
-    console.log('userLogged:', userLogged);
     const filteredChannels = channels.filter((channel) => 
         channel.users.some((user) =>
             user.username === userLogged
         )
     )
-    const webSocketService = useWebSocket();
+    console.log('filtered channels:', filteredChannels);
     
     /* STATE */
     
@@ -67,19 +64,17 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     //     }
     // }, []);
 
+    const handleLeaveChannel = async(id: number) => {
+        const payload = {
+            channelId: id,
+            username: userLogged,
+        }
+        webSocketService.emit('onChannelLeave', payload);
+    }
     useEffect(() => {
         store.dispatch(fetchChannel());
     }, []);
 
-    useEffect(() => {
-        webSocketService.on('newChannel', (payload: any) => {
-            console.log('newChannel event', payload);
-            store.dispatch(addChannel(payload));
-        })
-        return () => {
-            webSocketService.off('newChannel');
-        };
-    }, []);
     
     // useEffect(() => {
     //     webSocketService.on('userJoined', (payload: any) => {
@@ -93,6 +88,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     useEffect(() => {
         webSocketService.on('userLeft', (payload: any) => {
             console.log('user', payload.username, 'left', payload.channelId);
+            store.dispatch(removeUser(payload));
         })
         return () => {
             webSocketService.off('userLeft');
@@ -110,28 +106,28 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                             <div className="flex flex-col text-black space-y-4">
                                 <SearchBar />
                                 {filteredChannels.map((channel: IChannel) => (
+                                <div key={channel.id}>
                                 <button
-                                key={channel.id}
-                                onClick={() => onSelectChannel(channel)} 
                                 /* use arrow function to pass parameter + explicitly passing event to the function*/
-                                // onClick={event => handleJoinChannel(channel.id)} 
+                                onClick={() => onSelectChannel(channel)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
-                                </button>))}
+                                </button>
+                                <button 
+                                className="bg-red-300 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded"
+                                onClick={() => handleLeaveChannel(channel.id)}
+                                >leave
+                                </button>
+                                </div>
+                                ))}
                             </div>
                         </div>
                         <div className="mt-auto">
                             <AddChannel/>
                         </div>
-                        <div className="mt-auto">
-                        {/* <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={event => handleJoinChannel(82)}> */}
-                            {/* Join */}
-                        {/* </button> */}
-                        </div>
                     </div>
                 </div>
             </div>
     );
-
 }
 
 export default Channels;

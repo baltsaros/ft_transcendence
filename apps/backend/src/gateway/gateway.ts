@@ -60,12 +60,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // });
   }
 
-  @OnEvent('channel.created')
-  handleNewChannel(payload: any) {
-    console.log('channel created event:', payload);
-    this.server.emit('newChannel', payload); // payload is not in line w. state of Redux slice
-    // Update the channel - user mapping
-    // Emit event to all users
+  // @OnEvent('channel.created')
+  // handleNewChannel(payload: any) {
+  //   console.log('channel created event:', payload);
+
+  //   this.server.emit('newChannel', payload); // payload is not in line w. state of Redux slice
+  // }
+
+  @SubscribeMessage('onNewChannel')
+  async onNewChannel(client: Socket, payload: any) {
+    console.log('channelId:', payload.channelId)
+    console.log('id:', payload.id)
+    client.join(payload.id);
+    this.server.to(payload.id).emit('channelCreated', payload);
   }
 
   /* any should be specified */
@@ -90,9 +97,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         channelId,
         user,
       };
-      // console.log('channel after push:' , channel);
       client.join(payload.channelId);
       this.server.to(payload.channelId).emit('userJoined', value);
+      console.log(client.rooms);
       // client.emit('userJoined', payload);
 
     }catch (error){
@@ -112,11 +119,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         },
       })
       const user = await this.userService.findOne(payload.username);
-      channel.users = channel.users.filter((u) => u.id !== user.id);
+      channel.users = channel.users.filter((usr) => usr.id !== user.id);
       await this.channelRepository.save(channel);
-      console.log('channel user:', channel.users);
+      console.log('channel users after table update:', channel.users);
+      // this.server.emit('userLeft', payload);
+      this.server.to(payload.channelId).emit('userLeft', payload);
       client.leave(payload.channelId);
-      client.to(payload.channelId).emit('userLeft', payload);
     }catch (error) {
       console.log('error leaving channel')
     }

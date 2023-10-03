@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
+import { IUser, IChannel } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice
@@ -11,23 +12,8 @@ const fetchChannel = createAsyncThunk('get/fetchChannel', async() => {
   return channel.data
 })
 
-interface User {
-  id: number;
-  intraId: number;
-  username: string;
-  email: string;
-  avatar: string;
-  intraToken: string;
-}
-
-interface Channel {
-  id: number;
-  name: string;
-  users: User[];
-}
-
 interface ChannelState {
-  channel: Channel[];
+  channel: IChannel[];
   status: string;
 }
 
@@ -38,7 +24,6 @@ const initialState: ChannelState = {
 
 const channelSlice = createSlice({
   name:'channel',
-  // initialState: [] as IChannel[], // temporary, should be refined to channel w. only username and channelId same for the action parameter
   initialState,
   reducers: {
     addNewUser: (state, action) => {
@@ -49,39 +34,48 @@ const channelSlice = createSlice({
         if (channel.id === channelId) {
           console.log('match on:', channel.id);
           return {
-            ...channel,
-            users: [...channel.users, user],
+            ...channel, // clone the channel obj
+            users: [...channel.users, user], // copy user in the channel.users array
           }
         }
         return channel;
       })
       console.log(state.channel);
     },
+    removeUser: (state, action) => {
+      const { channelId, username } = action.payload;
+      state.channel = state.channel.map((channel) => {
+        if (channel.id === channelId) {
+          return {
+            ...channel,
+            users: channel.users.filter((u) => u.username !== username),
+          }
+        }
+        return channel;
+      })
+    },
     addChannel: (state, action) => {
-      // console.log('next state:', action.payload);
-      console.log('addChannel current state:', state);
-      console.log('addChanel next state:', action.payload);
-      // state.push(...action.payload);
-      // return [...state, ...action.payload];
-      state.channel.push(action.payload);
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchChannel.fulfilled, (state, action) => {
-      state.channel = action.payload;
-    })
-    builder.addCase(fetchChannel.pending, (state) => {
-      state.status = 'loading'
-    })
-    builder.addCase(fetchChannel.rejected, (state) => {
-      state.status = 'rejected'
-    })
-  },
-});
+        // return [...state, ...action.payload];
+        state.channel.push(action.payload);
+      }
+    },
+    extraReducers: (builder) => {
+      builder.addCase(fetchChannel.fulfilled, (state, action) => {
+        state.channel = action.payload;
+      })
+      builder.addCase(fetchChannel.pending, (state) => {
+        state.status = 'loading'
+      })
+      builder.addCase(fetchChannel.rejected, (state) => {
+        state.status = 'rejected'
+      })
+    },
+  });
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
 export const { addNewUser } = channelSlice.actions;
+export const { removeUser} = channelSlice.actions;
 export const { addChannel } = channelSlice.actions;
 export {fetchChannel};
 export default channelSlice.reducer;

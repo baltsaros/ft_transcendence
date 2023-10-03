@@ -21,7 +21,7 @@ export class ChannelService {
     ** The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
     ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
     */
-    async createChannel(channelData: IChannelsData): Promise<IChannel> {
+    async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
         const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
         if (existingChannel) throw new BadRequestException("Channel already exists");
@@ -32,14 +32,8 @@ export class ChannelService {
             password: channelData.password,
         });
         newChannel.users = [user];
-        // newChannel.users.push(user)
         const channel = await this.channelRepository.save(newChannel);
-        this.eventEmmiter.emit('channel.created', channel);
-        const returnedChannel: IChannel = {
-            id: channel.id,
-            name: channel.name,
-        }
-        return (returnedChannel);
+        return channel;
     }
 
     async findOne(channelId: number)

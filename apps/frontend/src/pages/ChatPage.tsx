@@ -21,7 +21,7 @@ const chatPage: React.FC = () => {
     <div className="flex items-stretch justify-center">
         <Channels onSelectChannel={handleSelectedChannel} />
         <Chat selectedChannel={selectedChannel} />
-        { <PlayersOnServer /> }
+        {/* { <PlayersOnServer /> } */}
     </div>
     );
 }
