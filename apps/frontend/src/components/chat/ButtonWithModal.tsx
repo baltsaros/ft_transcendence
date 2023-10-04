@@ -17,7 +17,7 @@ const handleCloseModal = () => {
     setModalView(false);
   }
   
-  {console.log(userWithText.username)}
+  //{console.log(userWithText.username)}
   //render
   return (
     <div>
