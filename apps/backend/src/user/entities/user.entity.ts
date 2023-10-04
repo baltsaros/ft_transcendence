@@ -34,10 +34,10 @@ export class User {
   @Column({nullable: true})
   intraToken: string;
 
-  @Column()
+  @Column({default: false})
   twoFactorAuth: boolean;
 
-  @Column()
+  @Column({default: false})
   secret: string;
 
   @Column()
@@ -82,7 +82,17 @@ export class User {
   // matches: Match[];
 
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({
+    name: "user_block_user",
+    joinColumn: {
+      name: "blocked",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "blocker",
+      referencedColumnName: "id"
+    }
+  })
   blocked: User[];
 
   @Column()
