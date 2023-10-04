@@ -62,37 +62,59 @@ export class UserService {
     return await this.userRepository.find();
   }
 
-  async findAllFriends(id: string)
-  {
-    return await this.userRepository.query(
-      ` SELECT * 
-        FROM public.user U
-        WHERE U.id <> $1
-          AND EXISTS(
-            SELECT 1
-            FROM public.user_friends_user F
-            WHERE (F."receiver" = $1 AND F."sender" = U.id )
-            OR (F."sender" = $1 AND F."receiver" = U.id )
-            );  `,
-      [id],
-    );
+  // async findAllFriends(id: string)
+  // {
+  //   return await this.userRepository.query(
+  //     ` SELECT * 
+  //       FROM public.user U
+  //       WHERE U.id <> $1
+  //         AND EXISTS(
+  //           SELECT 1
+  //           FROM public.user_friends_user F
+  //           WHERE (F."receiver" = $1 AND F."sender" = U.id )
+  //           OR (F."sender" = $1 AND F."receiver" = U.id )
+  //           );  `,
+  //     [id],
+  //   );
+  // }
+
+  async findAllFriends(idUser: number) {
+    const request = await this.userRepository.findOne({
+      relations: {
+        friends: true,
+      },
+      where: { id: idUser}
+    });
+
+    return (request.friends);
   }
 
-  async getAllInvitations(id: string)
-  {
-    return await this.userRepository.query(
-      ` SELECT * 
-        FROM public.user U
-        WHERE U.id <> $1
-          AND EXISTS(
-            SELECT 1
-            FROM public.user_invitations_user F
-            WHERE (F."receiver" = $1 AND F."sender" = U.id )
-            OR (F."sender" = $1 AND F."receiver" = U.id )
-            );  `,
-      [id],
-    );
+  async getAllInvitations(idUser: number) {
+    const request = await this.userRepository.findOne({
+      relations: {
+        invitations: true,
+      },
+      where: { id: idUser}
+    });
+
+    return (request.invitations);
   }
+
+  // async getAllInvitations(id: string)
+  // {
+  //   return await this.userRepository.query(
+  //     ` SELECT * 
+  //       FROM public.user U
+  //       WHERE U.id <> $1
+  //         AND EXISTS(
+  //           SELECT 1
+  //           FROM public.user_invitations_user F
+  //           WHERE (F."receiver" = $1 AND F."sender" = U.id )
+  //           OR (F."sender" = $1 AND F."receiver" = U.id )
+  //           );  `,
+  //     [id],
+  //   );
+  // }
 
   async findOne(username: string) {
     return await this.userRepository.findOne({
