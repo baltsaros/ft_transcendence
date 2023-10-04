@@ -58,7 +58,7 @@ export default function FriendInvitations() {
                     const id = await PlayerService.getInfoUser(username);
                     if (id)
                     {
-                        const invit = await PlayerService.getAllInvitations(id.toString());
+                        const invit = await PlayerService.getAllInvitations(id);
                         if (invit) setInvitations(invit);
                     }
                 }
