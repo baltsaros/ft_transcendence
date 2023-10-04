@@ -215,7 +215,7 @@ export class UserService {
     friendUser.friends = friendUser.friends.filter((friend) => {
       return (friend.id !== friendRelation.receiverId)
     })
-    const friendOk = await this.userRepository.save(request);
+    const friendOk = await this.userRepository.save(friendUser);
     if (!friendOk) return false;
     return true;
   }
