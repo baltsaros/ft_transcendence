@@ -24,9 +24,10 @@ const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModal
              const blockerId = await PlayerService.getInfoUser(blocker);
              if (blockerId)
                {
-                  const blockedId = await PlayerService.getInfoUser(username);
-                  if (blockedId)
-                  {
+                 const blockedId = await PlayerService.getInfoUser(username);
+                 if (blockedId)
+                 {
+                    console.log(await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId}))
                       const ret = await PlayerService.blockUser({receiverId: blockedId, senderId: blockerId});
                   }
               }

@@ -280,14 +280,33 @@ export class UserService {
   async blockUser(friendRequest: UserRelationDto)
   {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.receiverId, },
+      where: { id: friendRequest.senderId, },
       relations: {
         blocked: true,
       },
     })
-    const friend = await this.findOneById(friendRequest.senderId);
+    const friend = await this.findOneById(friendRequest.receiverId);
     source.blocked.push(friend);
+    //console.log(source.blocked);
 
     await this.userRepository.save(source);
+  }
+
+  async getBlocked(relationBlocked: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: relationBlocked.senderId, },
+      relations: {
+        blocked: true,
+      },
+    })
+    //console.log(source);
+    const blocked = source.blocked.filter((user) => {
+      return(user.id === relationBlocked.receiverId)
+    })
+    //console.log(blocked);
+    if (blocked.length > 0)
+      return (true);
+    return (false);
   }
 }
