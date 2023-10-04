@@ -134,4 +134,10 @@ export class UserController {
   sendInvitation(@Body() invitation: UserRelationDto) {
     return (this.userService.sendInvitation(invitation));
   }
+
+  @Post("blockUser")
+  @UseGuards(JwtAuthGuard)
+  blockUser(@Body() invitation: UserRelationDto) {
+    return (this.userService.blockUser(invitation));
+  }
 }

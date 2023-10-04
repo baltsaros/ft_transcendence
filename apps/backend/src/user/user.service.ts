@@ -276,4 +276,18 @@ export class UserService {
 
     await this.userRepository.save(source);
   }
+
+  async blockUser(friendRequest: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: friendRequest.receiverId, },
+      relations: {
+        blocked: true,
+      },
+    })
+    const friend = await this.findOneById(friendRequest.senderId);
+    source.blocked.push(friend);
+
+    await this.userRepository.save(source);
+  }
 }

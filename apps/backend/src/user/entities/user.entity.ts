@@ -82,7 +82,17 @@ export class User {
   // matches: Match[];
 
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({
+    name: "user_block_user",
+    joinColumn: {
+      name: "blocked",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "blocker",
+      referencedColumnName: "id"
+    }
+  })
   blocked: User[];
 
   @Column()

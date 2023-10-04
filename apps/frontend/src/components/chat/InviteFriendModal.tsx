@@ -10,7 +10,7 @@ interface ModalProp {
 const InviteFriendModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
 
 	/* BEHAVIOR */
-  console.log('hello', userWithText.username);
+  //console.log('hello', userWithText.username);
 	
 	const handleCancel = () => {
 		// console.log('store state:', store.getState());

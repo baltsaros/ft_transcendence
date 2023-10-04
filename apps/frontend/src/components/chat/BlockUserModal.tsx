@@ -1,4 +1,6 @@
+import Cookies from "js-cookie";
 import { IPlayersOnServerModalProps } from "../../types/types";
+import { PlayerService } from "../../services/player.service";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -7,11 +9,30 @@ interface ModalProp {
 const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
 
 	/* BEHAVIOR */
+  //console.log('hello', userWithText.username);
 	
 	const handleCancel = () => {
 		// console.log('store state:', store.getState());
 		onClose();
 	  }
+  
+  const blockUser = async (username: string) => {
+    //console.log(username);
+    try {
+         const blocker = Cookies.get("username");
+         if (blocker) {
+             const blockerId = await PlayerService.getInfoUser(blocker);
+             if (blockerId)
+               {
+                  const blockedId = await PlayerService.getInfoUser(username);
+                  if (blockedId)
+                  {
+                      const ret = await PlayerService.blockUser({receiverId: blockedId, senderId: blockerId});
+                  }
+              }
+          }
+          onClose();
+      } catch (err: any) {}}
 	
 	/* RENDERING */
     return (
@@ -22,7 +43,7 @@ const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModal
 		  {/* Buttons */}
           <div className="flex justify-end">
             <button
-              //onClick={handleOk}
+              onClick={() => blockUser(userWithText.username)}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2 mt-4">Ok
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4" onClick={handleCancel}>Cancel</button>

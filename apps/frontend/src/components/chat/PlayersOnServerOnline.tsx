@@ -44,7 +44,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleDropdown}
-		ref={dropdownButtonRef}
+		    ref={dropdownButtonRef}
         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
       >
         {player.username}
