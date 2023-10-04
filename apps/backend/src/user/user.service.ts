@@ -251,15 +251,19 @@ export class UserService {
         friends: true,
       },
     })
+     if(!source) return (false);
     const friend = await this.findOneById(friendRequest.senderId);
+    if (! friend) return (false);
     source.friends.push(friend);
 
     await this.userRepository.save(source);
+    return (true);
   }
   
   async acceptInvitation(invitation: UserRelationDto) {
-    this.addFriend(invitation);
-    this.addFriend({receiverId: invitation.senderId, senderId: invitation.receiverId})
-    this.removeInvitation(invitation);
+    return (
+      this.addFriend(invitation) &&
+      this.addFriend({receiverId: invitation.senderId, senderId: invitation.receiverId}) &&
+      this.removeInvitation(invitation))
   }
 }
