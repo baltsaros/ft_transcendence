@@ -247,6 +247,7 @@ export class UserService {
   
   async acceptInvitation(invitation: UserRelationDto) {
     this.addFriend(invitation);
+    this.addFriend({receiverId: invitation.senderId, senderId: invitation.receiverId})
     this.removeInvitation(invitation);
   }
 
