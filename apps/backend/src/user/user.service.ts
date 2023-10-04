@@ -204,8 +204,20 @@ export class UserService {
       return (user.id !== friendRelation.senderId)
     })
     const user = await this.userRepository.save(request);
-    if (user) return true;
-    return false;
+    if (!user) return false;
+
+    const friendUser = await this.userRepository.findOne({
+      relations: {
+        friends: true,
+      },
+      where: { id: friendRelation.senderId}
+    });
+    friendUser.friends = request.friends.filter((friend) => {
+      return (friend.id !== friendRelation.receiverId)
+    })
+    const friendOk = await this.userRepository.save(request);
+    if (!friendOk) return false;
+    return true;
   }
 
   async setSecret(secret: string, intraId: number) {
