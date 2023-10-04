@@ -1,16 +1,16 @@
-import Game from "../components/pong/PongGame"
+// src/pages/GamePage.tsx
+import React from "react";
+import Field from "../components/pong/Field";
 
-function GamePage() {
-    // state, données dynamiques
-
-    // behavior
-
-    // render (jsx)
-    return (
-	<div>
-        <Game />
-    </div>
-    );
-}
+const GamePage: React.FC = () => {
+	return (
+		<div className="game-container">
+			<h1>Welcome to the Game!</h1>
+			<div className="flex justify-center items-center h-screen">
+				<Field />
+			</div>
+		</div>
+	);
+};
 
 export default GamePage;

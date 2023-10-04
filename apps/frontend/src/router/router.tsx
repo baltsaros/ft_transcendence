@@ -7,6 +7,7 @@ import Profile from "../pages/Profile";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
+import GamePage from "../pages/GamePage";
 
 export const router = createBrowserRouter([
   {
@@ -46,6 +47,14 @@ export const router = createBrowserRouter([
         path: "auth",
         element: <Auth />
       },
+	  {
+		path: "game",
+		element: (
+		  <ProtectedRoute>
+			<GamePage />
+		  </ProtectedRoute>
+		),
+	  },
     ],
   },
 ]);
