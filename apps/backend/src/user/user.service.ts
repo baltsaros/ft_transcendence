@@ -212,7 +212,7 @@ export class UserService {
       },
       where: { id: friendRelation.senderId}
     });
-    friendUser.friends = request.friends.filter((friend) => {
+    friendUser.friends = friendUser.friends.filter((friend) => {
       return (friend.id !== friendRelation.receiverId)
     })
     const friendOk = await this.userRepository.save(request);
