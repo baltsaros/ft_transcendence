@@ -34,10 +34,10 @@ export class User {
   @Column({nullable: true})
   intraToken: string;
 
-  @Column()
+  @Column({default: false})
   twoFactorAuth: boolean;
 
-  @Column()
+  @Column({default: false})
   secret: string;
 
   @Column()
