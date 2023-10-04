@@ -1,23 +1,29 @@
 /* The variable Chat gets assigned the value of an arrow function
 ** The arrow function is a functional component (= javascript function) of React 
 ** Components are used to encapsulate part of the UI to be, here a javascript function */
-import Chat from "../components/Chat";
-import Channels from "../components/Channels";
-import PlayersOnServer from "../components/PlayersOnServer";
+import { useState } from "react";
+import Chat from "../components/chat/Chat";
+import PlayersOnServer from "../components/chat/PlayersOnServer";
+import Channels from "../components/chat/Channel";
+import { IChannel } from "../types/types";
 
-function SimpleChat() {
-    // state, données dynamiques
+const chatPage: React.FC = () => {
+    
+    /* STATE */
+    const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
 
-    // behavior
+    /* BEHAVIOR */
+    const handleSelectedChannel = (channel: IChannel) => {
+        setSelectedChannel(channel);}
 
-    // render (jsx)
+    /* RENDER */
     return (
     <div className="flex items-stretch justify-center">
-        <Channels />
-        <Chat />
-        <PlayersOnServer />
+        <Channels onSelectChannel={handleSelectedChannel} />
+        <Chat selectedChannel={selectedChannel} />
+        { <PlayersOnServer /> }
     </div>
     );
 }
 
-export default SimpleChat;
+export default chatPage;

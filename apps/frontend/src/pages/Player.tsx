@@ -6,6 +6,7 @@ import MatchHistory from "../components/MatchHistory";
 import { PlayerService } from "../services/player.service";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import MatchForm from "../components/AddMatch";
 
 export default function Player(){
   
@@ -13,14 +14,13 @@ export default function Player(){
 
   const [user, setUser] = useState<IUserPlayerProfileData>({
     username: "default", loses: -1, wins: -1, rank: -1});
-  const username = useParams();
-  const [_loading, setLoading] = useState(false);
+  const usernameParam = useParams();
+  const [_loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const getUserProfile = async () => {
     try {
-      setLoading(true);
-      const data = await PlayerService.getProfile(username.username!)
+      const data = await PlayerService.getProfile(usernameParam.username!)
       if (data)
       {
         const temp = user;
@@ -32,7 +32,6 @@ export default function Player(){
         setLoading(false);
       }
       else {
-        setLoading(false);
         navigate("/")
         toast("User doesn't exists !")
       }
@@ -46,10 +45,15 @@ export default function Player(){
 
   useEffect(() => {
     getUserProfile();
-  }, []) 
+  }, [user.username, usernameParam]) 
 
   //render
-    return (
+  if (_loading)
+  {
+    return (<div>Loading...</div>);
+  }
+  
+  return (
       <div className="flex flex-col text-black space-y-20 flex justify-center items-center">
         
         <PlayerNameBox
@@ -60,8 +64,11 @@ export default function Player(){
           {...user}
         />
 
-        <MatchHistory />
+        <MatchHistory
+          {...user}
+        />
 
+        <MatchForm />
       </div>
     );
 };

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { instance } from "../api/axios.api";
-import { IAddChannelsData} from "../types/types"
-import { useAppSelector } from "../store/hooks";
-import { RootState } from "../store/store";
+import { instance } from "../../api/axios.api";
+import { useAppSelector } from "../../store/hooks";
+import { RootState } from "../../store/store";
+import { IChannelData, IResponseChannelData } from "../../types/types";
+import { toast } from "react-toastify"
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -14,6 +15,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
     const [isProtected, setIsProtected] = useState(false);
+    const [newChannel, setChannel] = useState<IResponseChannelData | undefined>(undefined);
     const [channelPassword, setChannelPassword] = useState('');
     const user = useAppSelector((state: RootState) => state.user.user);
 
@@ -33,24 +35,35 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     }
 
     const handleCancel = () => {
-        onClose();
+      // console.log('store state:', store.getState());
+      onClose();
     }
 
+    /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
     const handleOk = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
             event.preventDefault();
-            const channelData: IAddChannelsData = {
+            const channelData: IChannelData = {
                 name: channelName,
                 mode: channelMode,
-                owner: user.username,
+                owner: user!,
                 password: channelPassword,
             }
-            console.log(channelData.name);
-            const response = await instance.post('channels', channelData);
-            console.log(response.data.message);
-        } catch (error) {
-            console.log("Error adding channel:", error);
+            const newChannel = await instance.post('channel', channelData);
+            setChannel(newChannel.data);
+            console.log('AddChannel:', newChannel);
+            console.log('AddChannel:', newChannel.data);
+            // const result = store.dispatch(addChannel(newChannel.data));
+            // console.log('AddChannel: store state:', store.getState());
+            // console.log('AddChannel dispatch action result: ', result);
+            if (newChannel) {
+              toast.success("Channel successfully added!");
+            }
+        } catch (error: any) {
+            const err = error.response?.data.message;
+            toast.error(err.toString());
         }
+        onClose();
     }
 
     /* RENDERING */

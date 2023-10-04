@@ -1,95 +1,77 @@
-import { FC, useState } from "react";
+import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { setTokenToLocalStorage } from "../helpers/localstorage.helper";
 import { useAppDispatch } from "../store/hooks";
 import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import { getUser } from "../hooks/getUser";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const Auth: FC = () => {
-  // const [username, setUsername] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
-  // const [email, setEmail] = useState<string>("");
-  // const [isLogin, setIsLogin] = useState<boolean>(true);
-  // const dispatch = useAppDispatch();
-  // const navigate = useNavigate();
+  const [QrDataUrl, setQrDataUrl] = useState("");
+  const [Code, setCode] = useState("");
+  const navigate = useNavigate();
 
-  // const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   try {
-  //     e.preventDefault();
-  //     const data = await AuthService.registration({
-  //       username,
-  //       email,
-  //       password,
-  //     });
-  //     if (data) {
-  //       toast.success("Account was successfully created!");
-  //       setIsLogin(!isLogin);
-  //       navigate("/");
-  //     }
-  //   } catch (err: any) {
-  //     const error = err.response?.data.message;
-  //     toast.error(error.toString());
-  //   }
-  // };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const intraId = Cookies.get("intraId");
+        const QrCode = await AuthService.generateQrCode(
+          intraId ? intraId.toString() : ""
+        );
+        setQrDataUrl(QrCode);
+      } catch (error) {
+        console.error("Fetch error: ", error);
+      }
+    };
+    fetchData();
+  }, []);
 
-  // const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   try {
-  //     e.preventDefault();
-  //     const data = await AuthService.login({ username, email, password });
-  //     if (data) {
-  //       setTokenToLocalStorage("token", data.access_token);
-  //       dispatch(login(data));
-  //       toast.success("Access granted ;)");
-  //       navigate("/");
-  //     }
-  //   } catch (err: any) {
-  //     const error = err.response?.data.message;
-  //     toast.error(error.toString());
-  //   }
-  // };
+  const handleCode = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    const intraId = Cookies.get("intraId");
+    try {
+      const response = await axios.post("http://localhost:3000/api/auth/2fa", {
+        code: Code,
+        intraId: intraId,
+      });
+      if (response.data.valid) {
+        toast.success("Your code was accepted!");
+        Cookies.set("jwt_token", response.data.jwt, {
+          secure: true,
+          sameSite: "none",
+        });
+        navigate("/");
+        window.location.reload();
+      } else toast.error("Your code was not accepted. Try again.");
+    } catch (error) {
+      toast.error("Your code was not accepted. Try again.");
+      console.error("Post request error");
+    }
+  };
 
   return (
-    <div>
-      {/* <h1>{isLogin ? "Login" : "Registration"}</h1>
+    <div className="flex flex-col mt-8 justify-items-center">
+      <p className="text-lg">
+        Scan the QR code in your Google Authenticator app
+      </p>
+      <div className="flex justify-center mb-4 mt-4">
+        <img src={QrDataUrl} alt="QR Code" />
+      </div>
 
-      <form onSubmit={isLogin ? loginHandler : registrationHandler}>
+      <form className="flex justify-center" onSubmit={handleCode}>
         <input
           type="text"
-          className="input"
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
+          className="text-black"
+          value={Code}
+          onChange={(e) => setCode(e.target.value)}
         />
-        {!isLogin && (
-          <input
-            type="text"
-            className="input"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        )}
-        <input
-          type="password"
-          className="input"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button className="btn btn-green mx-auto">Submit</button>
+        <button className="p-2 btn-gray text-black" type="submit">
+          Confirm
+        </button>
       </form>
-      <div>
-        {isLogin ? (
-          <button onClick={() => setIsLogin(!isLogin)}>
-            {" "}
-            You don't have an account?
-          </button>
-        ) : (
-          <button onClick={() => setIsLogin(!isLogin)}>
-            {" "}
-            Already have an account?
-          </button>
-        )}
-      </div> */}
     </div>
   );
 };

@@ -10,7 +10,9 @@ import {
   JoinTable,
 } from "typeorm";
 
-import { Channels } from "src/channels/channels.entity";
+import { Channel } from "src/channel/channel.entity";
+import { Match } from "src/matches/entities/matches.entity";
+import { Message } from "src/channel/message/messages.entity";
 
 @Entity()
 export class User {
@@ -33,41 +35,73 @@ export class User {
   intraToken: string;
 
   @Column()
-  authentication: boolean;
+  twoFactorAuth: boolean;
 
   @Column()
-  rank: Number;
+  secret: string;
+
+  @Column()
+  rank: number;
 
   @Column()
   avatar: string;
 
   @ManyToMany(() => User)
-  @JoinTable()
+  @JoinTable({
+    name: "user_friends_user",
+    joinColumn: {
+      name: "receiver",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "sender",
+      referencedColumnName: "id"
+    }
+  })
   friends: User[];
+
+  @ManyToMany(() => User)
+  @JoinTable({
+    name: "user_invitations_user",
+    joinColumn: {
+      name: "receiver",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "sender",
+      referencedColumnName: "id"
+    }
+  })
+  invitations: User[];
 
   @Column()
   status: string;
 
   // Change later
-  // @OneToMany()
-  // history: History[];
+  // @OneToMany(() => Match, (match) => match.user)
+  // matches: Match[];
 
   @ManyToMany(() => User)
   @JoinTable()
   blocked: User[];
 
   @Column()
-  wins: Number;
+  wins: number;
 
   @Column()
-  loses: Number;
+  loses: number;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(()=> Channels, channels => channels.owner,
-  {
-    cascade: true
-  })
-  channel_owned: Channels[];
+  @OneToMany(() => Channel, channels => channels.owner)
+  // {
+  //   cascade: true
+  // }
+  channels: Channel[]
+
+  @OneToMany(() => Message, (message) => message.user)
+  messages: Message[]
+
 }
+
