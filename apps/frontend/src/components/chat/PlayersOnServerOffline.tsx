@@ -19,7 +19,7 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
     console.log(`Clicked on: ${itemText}`);
   };
 
-  const isBlocked = async (username: string): Promise<boolean> => {
+  const isBlocked = async (username: string) => {
     //console.log(username);
     try {
          const blocker = Cookies.get("username");
@@ -32,12 +32,10 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
                   {
                     const ret = await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId});
                     setIsUserBlocked(ret);
-                    return !!ret;
                   }
                 }
           }
-          return false;
-        } catch (err: any) {return false}};
+        } catch (err: any) {}};
   
   async function logBlockedStatus() {
     const result = await isBlocked(player.username);
@@ -59,21 +57,7 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
         setIsDropdownOpen(false);
       }
     };
-/*
-  useEffect(() => {
-    async function checkBlockedStatus() {
-      try {
-        const blockedStatus = await isBlocked(player.username);
-        setIsUserBlocked(blockedStatus);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    checkBlockedStatus();
-  }, [player.username]);
 
-  console.log(isUserBlocked);
-*/
     // Add the global click event listener
     document.addEventListener('click', () => closeDropdownOnOutsideClick);
 

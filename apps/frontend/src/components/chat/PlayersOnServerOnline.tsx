@@ -8,6 +8,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
+  const [isUserBlocked, setIsUserBlocked] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -18,6 +19,30 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     console.log(`Clicked on: ${itemText}`);
     // You can add more logic here based on the clicked item
   };
+
+  const isBlocked = async (username: string) => {
+    //console.log(username);
+    try {
+         const blocker = Cookies.get("username");
+         if (blocker) {
+             const blockerId = await PlayerService.getInfoUser(blocker);
+             if (blockerId)
+                {
+                 const blockedId = await PlayerService.getInfoUser(username);
+                 if (blockedId)
+                  {
+                    const ret = await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId});
+                    setIsUserBlocked(ret);
+                  }
+                }
+          }
+        } catch (err: any) {}};
+      
+  async function logBlockedStatus() {
+    const result = await isBlocked(player.username);
+    //console.log(result);
+  }
+  logBlockedStatus(); // Call the function to log the result
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -76,24 +101,10 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
             >
               Invite to game
             </button>
-            {/*
-            <button
-              onClick={() => handleItemClick(`Invite as friend for ${username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-              Invite as friend
-            </button>
-            */}
             <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />
-            {/*
-            <button
-            onClick={() => handleItemClick(`Block user for ${username}`)}
-            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-            Block user
-            </button>
-            */}
-            <ButtonWithModal { ...{username: player.username, text: "Block User"} } />
+            { isUserBlocked ? (
+              <ButtonWithModal { ...{username: player.username, text: "Unblock User"} } />
+              ) : (<ButtonWithModal { ...{username: player.username, text: "Block User"} } />)}
           </div>
         </div>
       )}
