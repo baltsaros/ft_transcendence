@@ -151,3 +151,8 @@ export interface IChannelPassword {
   idChannel: number,
   password: string,
 }
+
+export interface IPlayersOnServerModalProps {
+  username: string,
+  text: string,
+}

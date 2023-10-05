@@ -6,6 +6,7 @@ import ToggleMenuFriendList from "./ToggleMenuFriendList";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { Menu, MenuButton, MenuHeader } from '@szhsin/react-menu';
+import { toast } from "react-toastify";
 
 
 function FriendList() {
@@ -23,7 +24,11 @@ function FriendList() {
             const username = Cookies.get("username");
             if (username) {
               const id = await PlayerService.getInfoUser(username);
-              const data =  await PlayerService.getAllFriends(id.toString());
+              if (!id)
+                return (toast.error("User doesn't exists !"));
+              const data =  await PlayerService.getAllFriends(id);
+              if (!data)
+                return (toast.error("Erro!"));
               setFriends(data);
             }
           } catch (err: any) {}}

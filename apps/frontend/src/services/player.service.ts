@@ -8,7 +8,7 @@ export const PlayerService = {
     if (data) return data;
   },
 
-  async getAllFriends(id: string): Promise<IUserUsername[]> {
+  async getAllFriends(id: number): Promise<IUserUsername[]> {
     const { data } = await instance.post<IUserUsername[]>("user/getFriends", {id});
     if (data) return (data);
     return ([]);
@@ -38,7 +38,7 @@ export const PlayerService = {
     return (false);
   },
 
-  async getAllInvitations(id: string): Promise<IUserUsername[] | undefined> {
+  async getAllInvitations(id: number): Promise<IUserUsername[] | undefined> {
     const { data } = await instance.post<IUserUsername[]>("user/getInvitations/", {id});
     if (data) return (data);
   },
@@ -56,5 +56,20 @@ export const PlayerService = {
     const { data} = await instance.post("user/refuseInvitation", invitation);
     if (data) return (true);
     return (false);
+  },
+
+  async sendInvitation(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/sendInvitation", friendRelation);
+    if (data) return (true);
+    return (false);
+  },
+
+  async blockUser(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/blockUser", friendRelation);
+    if (data) return (true);
+    return (false);
   }
 };
+
