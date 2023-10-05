@@ -14,9 +14,9 @@ RUN apt update \
 
 
 # plan B
-# RUN npm install react-router-dom localforage match-sorter sort-by
+# RUN npm install react-router-dom localforage match-sorter sort-by react-toastify react-dom
 # WORKDIR /ft_transcendence/apps/frontend
-# RUN npm install react-router-dom localforage match-sorter sort-by
+# RUN npm install react-router-dom localforage match-sorter sort-by react-toastify react-dom
 # WORKDIR /ft_transcendence
 
 EXPOSE 5173 3000 5432
