@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { Scrollbar } from 'react-scrollbars-custom';
 import { useWebSocket } from "../../context/WebSocketContext";
 import { store } from "../../store/store";
 import { addNewUser } from "../../store/channel/channelSlice";
@@ -59,7 +60,9 @@ export default function SearchBar() {
                 aria-describedby="button-addon1"
                 onChange={(e) => setInput(e.target.value.toLocaleLowerCase())}
             />
-            <ul>
+            <Scrollbar style={{width: 250, height: 250}}>
+
+                <ul>
                 {(input !== "") && filteredData.map((item) => (
                     <li key={item.id}>{item.name}
                     <button 
@@ -69,6 +72,7 @@ export default function SearchBar() {
                     </li>
                 ))}
             </ul>
+            </Scrollbar>
         </div>
     );
 }  

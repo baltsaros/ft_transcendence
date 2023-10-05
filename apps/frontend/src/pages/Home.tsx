@@ -13,7 +13,7 @@ import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
 import { ChannelService } from "../services/channels.service";
-import { IChannelRelation } from "../types/types";
+import { IChannelPassword, IChannelRelation } from "../types/types";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -34,12 +34,12 @@ const Home: FC = () => {
         }
       }
   },  [])
-  // const kickUser = async (relation: IChannelRelation) => {
+  // const updateChannel = async (relation: IChannelPassword) => {
   //   try {
-  //       const ownerOfChannel = await ChannelService.getOwnerOfChannel(relation.idChannel);
-  //       console.log('id owner = ', ownerOfChannel);
-  //       const ok = await ChannelService.kickMemberOfChannel({idChannel: 1, idUser: 1});
-  //       console.log(ok);     
+  //       if (await ChannelService.checkIfSamePassword(relation))
+  //         toast.success("Same password");
+  //       else
+  //         toast.error("HUH HUH not the same");
   //    } catch (err: any) {}}
 
   return (
@@ -77,7 +77,7 @@ const Home: FC = () => {
               </div>
             </div>
             {/* <div>
-              <button onClick={() => kickUser({idChannel: 1, idUser: 1})}>Kick USer</button>
+              <button onClick={() => updateChannel({idChannel: 1, password: "fuck"})}>Kick USer</button>
             </div> */}
           </div>
       )}

@@ -18,15 +18,14 @@ export default function FriendInvitations() {
        try {
             const username = Cookies.get("username");
             if (username) {
-                const idUser = await PlayerService.getInfoUser(username);
-                if (idUser)
-                {
-                    const idFriend = await PlayerService.getInfoUser(invitation);
-                    if (idFriend)
-                    {
-                        const ret = await PlayerService.acceptInvitation({idUser, idFriend});
-                    }
-                }
+                const receiverId = await PlayerService.getInfoUser(username);
+                if (!receiverId)
+                    return toast.error("User doesn't exists !");
+                const senderId = await PlayerService.getInfoUser(invitation);
+                if (!senderId)
+                    return toast.error("User doesn't exists !");
+                if (await PlayerService.acceptInvitation({receiverId, senderId}))
+                    toast.success("player added as friend")
             }
             
         } catch (err: any) {}}
@@ -36,13 +35,13 @@ export default function FriendInvitations() {
             const username = Cookies.get("username");
             if (username)
             {
-                const idUser = await PlayerService.getInfoUser(username);
-                if (!idUser)
+                const receiverId = await PlayerService.getInfoUser(username);
+                if (!receiverId)
                     return toast.error("User doesn't exists !");
-                const idFriend = await PlayerService.getInfoUser(invitation);
-                if (!idFriend)
+                const senderId = await PlayerService.getInfoUser(invitation);
+                if (!senderId)
                     return toast.error("Friend to remove doesn't exist !");
-                const data =  await PlayerService.refuseInvitation({idUser, idFriend});
+                await PlayerService.refuseInvitation({receiverId, senderId});
             }
         } catch (err: any) {
           const error = err.response?.data.message;
@@ -56,11 +55,12 @@ export default function FriendInvitations() {
                 const username = Cookies.get("username");
                 if (username) {
                     const id = await PlayerService.getInfoUser(username);
-                    if (id)
-                    {
-                        const invit = await PlayerService.getAllInvitations(id.toString());
-                        if (invit) setInvitations(invit);
-                    }
+                    if (!id)
+                        return toast.error("User doesn't exists !");
+                    const invit = await PlayerService.getAllInvitations(id);
+                    if (!invit)
+                        return toast.error("User doesn't exists !");
+                    setInvitations(invit);
                 }
             } catch (err: any) {}}
             getAllFriendsInvitations();

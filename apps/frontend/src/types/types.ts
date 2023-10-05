@@ -134,9 +134,9 @@ export interface IMessage {
   content: string,
 }
 
-export interface IFriendRelation {
-  idUser: number;
-  idFriend: number;
+export interface IUserRelation {
+  receiverId: number;
+  senderId: number;
 }
 export interface IResponseMessage {
   content: string,
@@ -148,4 +148,14 @@ export interface IResponseMessage {
 export interface IChannelRelation {
   idChannel: number,
   idUser: number,
+}
+
+export interface IChannelPassword {
+  idChannel: number,
+  password: string,
+}
+
+export interface IPlayersOnServerModalProps {
+  username: string,
+  text: string,
 }

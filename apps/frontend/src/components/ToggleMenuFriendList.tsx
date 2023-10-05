@@ -1,5 +1,5 @@
 import { MenuItem, SubMenu } from "@szhsin/react-menu";
-import { IFriendRelation, IUserUsername } from "../types/types";
+import { IUserRelation, IUserUsername } from "../types/types";
 import { NavLink, Navigate } from "react-router-dom";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
@@ -15,22 +15,21 @@ function ToggleMenuFriendList(user: IUserUsername) {
     const navigate = useNavigate();
 
     //behaviour
+    
     const deleteFriend = async () => {
         try {
-            const idUser = await PlayerService.getInfoUser(Cookies.get('username')!);
-            if (!idUser)
+            const receiverId = await PlayerService.getInfoUser(Cookies.get('username')!);
+            if (!receiverId)
                 return toast.error("User doesn't exists !");
-            const idFriend = await PlayerService.getInfoUser(user.username);
-            if (!idFriend)
+            const senderId = await PlayerService.getInfoUser(user.username);
+            if (!senderId)
                 return toast.error("Friend to remove doesn't exist !");
-            const data =  await PlayerService.removeFriend({idUser, idFriend});
+            const data =  await PlayerService.removeFriend({receiverId, senderId});
             if (data)
             {
                 Cookies.set("DelFriend", "true");
                 navigate(0);
             }
-            toast.error("Friend not deleted");
-
         } catch (err: any) {
           const error = err.response?.data.message;
         }
