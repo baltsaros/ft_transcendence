@@ -4,7 +4,7 @@ import { IChannel } from "../../types/types";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { store } from "../../store/store";
-import { addChannel, fetchChannel, removeUser } from "../../store/channel/channelSlice";
+import { fetchChannel, removeUser } from "../../store/channel/channelSlice";
 import { useWebSocket } from "../../context/WebSocketContext";
 import SearchBar from "./SearchBar";
 
@@ -30,40 +30,6 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     /* STATE */
     
     /* BEHAVIOR */
-
-    // const handleJoinChannel = async (id: number) => {
-    //     try{
-    //         const payload = {
-    //             channelId: id,
-    //             username: user,
-    //         }
-    //         console.log('channelId:', id);
-    //         console.log(user);
-    //         webSocketService.emit('onChannelJoin', payload);
-
-    //     } catch(err: any) {
-    //         console.log('join channel failed');
-    //     }
-    // }
-
-    /* useEffect() hook: 2nd arg. is [] so that useEffect is executed only once, when the React component is mounted
-    ** later it should be changed as the useEffect should be called when a new channel is added */
-    // useEffect(() => {
-    //     const user = Cookies.get('username');
-    //     if (user) {
-    //         const username: string = user;
-    //         const channels: IGetChannels = {
-    //             username: username,
-    //         }
-    //         const fetchData = async () => {
-    //             const result = await instance.get('channel/', {params: {channels}});
-    //             // console.log('Channel: channels fetched:', result.data);
-    //             store.dispatch(setChannel(result.data));
-    //         }
-    //         fetchData();
-    //     }
-    // }, []);
-
     const handleLeaveChannel = async(id: number) => {
         const payload = {
             channelId: id,
@@ -74,16 +40,6 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     useEffect(() => {
         store.dispatch(fetchChannel());
     }, []);
-
-    
-    // useEffect(() => {
-    //     webSocketService.on('userJoined', (payload: any) => {
-    //         console.log('user', payload.username, 'joined', payload.channelId);
-    //     })
-    //     return () => {
-    //         webSocketService.off('userJoined');
-    //     };
-    // }, []);
     
     useEffect(() => {
         webSocketService.on('userLeft', (payload: any) => {
