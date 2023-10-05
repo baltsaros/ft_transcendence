@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { IPlayersOnServerModalProps } from "../../types/types";
 import { PlayerService } from "../../services/player.service";
+import { useEffect, useState } from "react";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -8,14 +9,16 @@ interface ModalProp {
 
 const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
 
-	/* BEHAVIOR */
+
+  
+  /* BEHAVIOR */
   //console.log('hello', userWithText.username);
 	
 	const handleCancel = () => {
 		// console.log('store state:', store.getState());
 		onClose();
 	  }
-  
+        
   const blockUser = async (username: string) => {
     //console.log(username);
     try {
@@ -26,8 +29,7 @@ const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModal
                {
                  const blockedId = await PlayerService.getInfoUser(username);
                  if (blockedId)
-                 {
-                    console.log(await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId}))
+                  {
                     const ret = await PlayerService.blockUser({receiverId: blockedId, senderId: blockerId});
                   }
               }

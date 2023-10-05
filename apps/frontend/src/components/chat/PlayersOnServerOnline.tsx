@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ButtonWithModal from './ButtonWithModal';
 import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import Cookies from 'js-cookie';
+import { PlayerService } from '../../services/player.service';
 
 const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

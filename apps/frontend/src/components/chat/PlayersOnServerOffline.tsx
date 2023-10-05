@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
 import ButtonWithModal from './ButtonWithModal';
+import Cookies from 'js-cookie';
+import { PlayerService } from '../../services/player.service';
 
 const DropdownButtonOffLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
+  const [isUserBlocked, setIsUserBlocked] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -15,6 +18,33 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
   };
+
+  const isBlocked = async (username: string): Promise<boolean> => {
+    //console.log(username);
+    try {
+         const blocker = Cookies.get("username");
+         if (blocker) {
+             const blockerId = await PlayerService.getInfoUser(blocker);
+             if (blockerId)
+                {
+                 const blockedId = await PlayerService.getInfoUser(username);
+                 if (blockedId)
+                  {
+                    const ret = await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId});
+                    setIsUserBlocked(ret);
+                    return !!ret;
+                  }
+                }
+          }
+          return false;
+        } catch (err: any) {return false}};
+  
+  async function logBlockedStatus() {
+    const result = await isBlocked(player.username);
+    //console.log(result);
+  }
+  logBlockedStatus(); // Call the function to log the result
+  
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -29,7 +59,21 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
         setIsDropdownOpen(false);
       }
     };
+/*
+  useEffect(() => {
+    async function checkBlockedStatus() {
+      try {
+        const blockedStatus = await isBlocked(player.username);
+        setIsUserBlocked(blockedStatus);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    checkBlockedStatus();
+  }, [player.username]);
 
+  console.log(isUserBlocked);
+*/
     // Add the global click event listener
     document.addEventListener('click', () => closeDropdownOnOutsideClick);
 
@@ -68,7 +112,9 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
               Direct message
             </button>
             <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />
-            <ButtonWithModal { ...{username: player.username, text: "Block User"} } />
+            { isUserBlocked ? (
+              <ButtonWithModal { ...{username: player.username, text: "Unblock User"} } />
+              ) : (<ButtonWithModal { ...{username: player.username, text: "Block User"} } />)}
           </div>
         </div>
       )}
