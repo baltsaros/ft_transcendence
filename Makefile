@@ -1,20 +1,23 @@
 all:	build
 
 build:
-	sudo docker-compose --env-file=./.env up --build
+	docker-compose --env-file=./.env up --build
 
 silent:
-	sudo docker-compose --env-file=./.env up -d --build
+	docker-compose --env-file=./.env up -d --build
+
+start:
+	docker-compose start
 
 stop:
-	sudo docker-compose stop
+	docker-compose stop
 
 down:
-	sudo docker-compose down
+	docker-compose down
 
 clean: down
-	sudo docker system prune
+	docker system prune
 
 fclean: stop clean
-	sudo docker system prune -a -f
-	sudo docker volume prune -f
+	docker system prune -a -f
+	docker volume prune -f

@@ -196,3 +196,12 @@ The databse will listen to the port `5432`.
 * sudo docker exec -it CONTAINER_NAME /bin/bash - launch bash in CONTAINER_NAME
 * sudo docker-compose up --build - run dockers-compose
 * stop all the containers - sudo docker stop $(sudo docker ps -q)
+
+## Makefile rules
+* build - normal build
+* silent - installation with less messages and silent launch (without logs)
+* start - start containers
+* stop - stop containers
+* down - stop containers and removes containers, networks, volumes, and images created by up
+* clean - remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes
+* fclean - force clean
