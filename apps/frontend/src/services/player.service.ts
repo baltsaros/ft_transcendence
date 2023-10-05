@@ -75,8 +75,9 @@ export const PlayerService = {
   async getBlocked(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/getBlocked", friendRelation);
-    if (data) return (true);
-    return (false);
+    //console.log(data);
+    //if (data) return (true);
+    return (data);
   }
 };
 
