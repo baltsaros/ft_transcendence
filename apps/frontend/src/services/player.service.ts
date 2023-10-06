@@ -85,6 +85,14 @@ export const PlayerService = {
     const { data } = await instance.post("user/getFriend", friendRelation);
     //console.log(data);
     return (data);
+  },
+
+  async unblockUser(blockRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/unBlockUser", blockRelation);
+    if (data)
+      return (true);
+    return (false);
   }
 };
 
