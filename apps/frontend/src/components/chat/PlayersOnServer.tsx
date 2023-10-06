@@ -4,6 +4,7 @@ import { PlayerService } from '../../services/player.service';
 import { IUserUsername } from '../../types/types';
 import DropdownButtonOnLine from './PlayersOnServerOnline';
 import DropdownButtonOffLine from './PlayersOnServerOffline';
+import Cookies from 'js-cookie';
 
 function PlayersOnServer() {
     
@@ -14,6 +15,8 @@ function PlayersOnServer() {
     const [offlinePlayers, setOfflinePlayers] = useState<IUserUsername[] | undefined>([
         { username: 'jvander', status: 'offline' }
       ])
+
+    const loggedInUser = Cookies.get("username");
     
     // behavior
     useEffect(() =>  {
@@ -65,7 +68,7 @@ function PlayersOnServer() {
                     </div>
                     <div className="flex flex-col text-black space-y-4">
                         {onlinePlayers!.map(onlinePlayer => (
-                            onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
+                            onlinePlayer.username !== loggedInUser && onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
                                 <DropdownButtonOnLine { ...onlinePlayer } />
                             </div>
                         ))}
@@ -75,7 +78,7 @@ function PlayersOnServer() {
                     </div>
                     <div className="flex flex-col text-black space-y-4">
                         {offlinePlayers!.map(offlinePlayer => (
-                            offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
+                            offlinePlayer.username !== loggedInUser && offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
                                 <DropdownButtonOffLine { ...offlinePlayer } />
                             </div>
                         ))}
