@@ -6,6 +6,7 @@ import Score from './Score';
 
 const Field: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  let ball: Ball | null = null;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -35,9 +36,12 @@ const Field: React.FC = () => {
       ctx.fillRect(width / 2 - 1, y, 2, segmentLength);
     }
 
-    // Ajout pour dessiner Ball, Paddle, et Score:
-    Ball.draw(ctx, width / 2, height / 2);
-	Paddle.draw(ctx, 10, height / 2, "left");
+    // Créer une instance de Ball avec des valeurs initiales
+
+
+	  // Dessiner la balle à sa position actuelle
+
+		Paddle.draw(ctx, 10, height / 2, "left");
 	Paddle.draw(ctx, width - 10, height / 2, "right");
 	Score.draw(ctx, width / 2, 50, 0, 0);
     // Paddle.draw(ctx, 'left'); // exemple pour dessiner le paddle gauche

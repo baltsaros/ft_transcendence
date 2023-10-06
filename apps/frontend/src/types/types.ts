@@ -151,3 +151,10 @@ export interface IChannelPassword {
   idChannel: number,
   password: string,
 }
+
+export interface IBallProps {
+	x: number;
+	y: number;
+	radius: number;
+	ctx: CanvasRenderingContext2D;
+}
