@@ -1,3 +1,4 @@
+
 import {
   Controller,
   Get,
@@ -128,4 +129,15 @@ export class UserController {
     return (this.userService.removeInvitation(invitation));
   }
 
+  @Post("sendInvitation")
+  @UseGuards(JwtAuthGuard)
+  sendInvitation(@Body() invitation: UserRelationDto) {
+    return (this.userService.sendInvitation(invitation));
+  }
+
+  @Post("blockUser")
+  @UseGuards(JwtAuthGuard)
+  blockUser(@Body() invitation: UserRelationDto) {
+    return (this.userService.blockUser(invitation));
+  }
 }

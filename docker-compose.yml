@@ -1,8 +1,46 @@
 version: '3'
 
 services:
-  backend:
-    container_name: "backend"
-    build: "apps/backend/."
+  postgres:
+    container_name: postgresql
+    image: postgres:latest
+    volumes:
+      - ./database:/var/lib/postgresql/data
+      # - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=abuzdin
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=mydb
     ports:
+      - "5432:5432"
+    networks:
+      - turbo
+    restart: always
+
+  turbo:
+    container_name: turbo
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports: 
+      - "5173:5173"
       - "3000:3000"
+    networks:
+      - turbo
+    depends_on:
+      - postgres
+    volumes: 
+      - ./apps/backend:/ft_transcendence/apps/backend
+      - ./apps/frontend:/ft_transcendence/apps/frontend
+      - ./logs/backend:/ft_transcendence/logs/backend/logs
+      - ./logs/frontend:/ft_transcendence/logs/frontend/logs
+    env_file:
+      - .env
+    restart: always
+
+networks:
+  turbo:
+    driver: bridge
+
