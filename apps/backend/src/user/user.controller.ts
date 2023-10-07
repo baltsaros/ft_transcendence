@@ -152,4 +152,10 @@ export class UserController {
   getFriend(@Body() relation: UserRelationDto) {
     return (this.userService.getFriend(relation));
   }
+
+  @Post("unblockUser")
+  @UseGuards(JwtAuthGuard)
+  unblockUser(@Body() relation: UserRelationDto) {
+    return (this.userService.unblockUser(relation));
+  }
 }

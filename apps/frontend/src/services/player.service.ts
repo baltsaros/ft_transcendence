@@ -89,7 +89,7 @@ export const PlayerService = {
 
   async unblockUser(blockRelation: IUserRelation)
   {
-    const { data } = await instance.post("user/unBlockUser", blockRelation);
+    const { data } = await instance.post("user/unblockUser", blockRelation);
     if (data)
       return (true);
     return (false);

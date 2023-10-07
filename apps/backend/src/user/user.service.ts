@@ -327,4 +327,24 @@ export class UserService {
       return (true);
     return (false);
   }
+
+  async unblockUser(relationBlock: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: relationBlock.senderId },
+      relations: {
+        blocked: true,
+      },
+    })
+    //console.log('source is', source);
+    source.blocked = source.blocked.filter((user) => {
+      return (user.id !== relationBlock.receiverId)
+    })
+    //console.log('remainders are', remainders);
+    const user = await this.userRepository.save(source);
+    console.log(user);
+    if (user)
+      return (true);
+    return (false);
+  }
 }
