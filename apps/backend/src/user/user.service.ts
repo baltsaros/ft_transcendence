@@ -342,7 +342,7 @@ export class UserService {
     })
     //console.log('remainders are', remainders);
     const user = await this.userRepository.save(source);
-    console.log(user);
+    //console.log(user);
     if (user)
       return (true);
     return (false);
