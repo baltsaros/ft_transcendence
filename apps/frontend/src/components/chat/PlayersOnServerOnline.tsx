@@ -70,6 +70,8 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
   }
   logFriendStatus(); // Call the function to log the result
 
+  console.log('result is', isUserFriend);
+
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       // Check if the click occurred outside the button and the dropdown menu
@@ -129,7 +131,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
             </button>
             { isUserFriend ? (
               <button
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              className="block w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
               disabled>
                 Invite as Friend
               </button>
