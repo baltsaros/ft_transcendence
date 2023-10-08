@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IFriendRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
+import {  IUserRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
 
 export const PlayerService = {
 
@@ -8,7 +8,7 @@ export const PlayerService = {
     if (data) return data;
   },
 
-  async getAllFriends(id: string): Promise<IUserUsername[]> {
+  async getAllFriends(id: number): Promise<IUserUsername[]> {
     const { data } = await instance.post<IUserUsername[]>("user/getFriends", {id});
     if (data) return (data);
     return ([]);
@@ -32,29 +32,44 @@ export const PlayerService = {
     return ([]);
   },
 
-  async removeFriend(friendRealtion: IFriendRelation) {
+  async removeFriend(friendRealtion: IUserRelation) {
     const { data } = await instance.post("user/removeFriend", friendRealtion);
     if (data) return (true);
     return (false);
   },
 
-  async getAllInvitations(id: string): Promise<IUserUsername[] | undefined> {
+  async getAllInvitations(id: number): Promise<IUserUsername[] | undefined> {
     const { data } = await instance.post<IUserUsername[]>("user/getInvitations/", {id});
     if (data) return (data);
   },
 
-  async acceptInvitation(friendRelation: IFriendRelation)
+  async acceptInvitation(invitation: IUserRelation)
   {
-    const { data } = await instance.post("user/acceptInvitation", friendRelation);
+    const { data } = await instance.post("user/acceptInvitation", invitation);
     if (data) return (true);
     return (false);
   },
 
 
-  async refuseInvitation(friendRelation: IFriendRelation)
+  async refuseInvitation(invitation: IUserRelation)
   {
-    const { data} = await instance.post("user/refuseInvitation", friendRelation);
+    const { data} = await instance.post("user/refuseInvitation", invitation);
+    if (data) return (true);
+    return (false);
+  },
+
+  async sendInvitation(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/sendInvitation", friendRelation);
+    if (data) return (true);
+    return (false);
+  },
+
+  async blockUser(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/blockUser", friendRelation);
     if (data) return (true);
     return (false);
   }
 };
+

@@ -1,16 +1,24 @@
 
-import { createContext, useContext, useEffect } from 'react';
-import WebSocketService from '../services/WebSocketService'; // Import your WebSocket service
+import { useState, createContext, useContext, useEffect } from 'react';
+import WebSocketService from '../services/WebSocketService';
+import Cookies from 'js-cookie';
 
 const WebSocketContext = createContext<WebSocketService | undefined>(undefined);
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const webSocketService = new WebSocketService();
-    
+
+  const [webSocketService, setWebSocketService] = useState<WebSocketService | undefined>();
   useEffect(() => {
+    const user = Cookies.get('username');
+      console.log('user', user);
+      if (user) {
+        setWebSocketService(new WebSocketService(user));
+      }
+      // return undefined;
     return () => {
-      // Clean up the WebSocket connection when unmounting
-      webSocketService.disconnect();
+      if (webSocketService) {
+        webSocketService.disconnect();
+      }
     };
   }, []);
 
@@ -19,7 +27,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       {children}
     </WebSocketContext.Provider>
   );
-};
+}
 
 export const useWebSocket = (): WebSocketService => {
   const context = useContext(WebSocketContext);

@@ -1,28 +1,30 @@
 import { useState, useEffect, useRef } from 'react';
+import ButtonWithModal from './ButtonWithModal';
+import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
 
-const DropdownButtonOnLine = ({ username }) => {
+const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const dropdownButtonRef = useRef(null);
-  const dropdownMenuRef = useRef(null);
+  const dropdownButtonRef = useRef<any>(null);
+  const dropdownMenuRef = useRef<any>(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleItemClick = (itemText) => {
+  const handleItemClick = (itemText: string) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
     // You can add more logic here based on the clicked item
   };
 
   useEffect(() => {
-    const closeDropdownOnOutsideClick = (event) => {
+    const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       // Check if the click occurred outside the button and the dropdown menu
       if (
         dropdownButtonRef.current &&
-        !dropdownButtonRef.current.contains(event.target) &&
+        !dropdownButtonRef.current.contains(event.target as Node) &&
         dropdownMenuRef.current &&
-        !dropdownMenuRef.current.contains(event.target)
+        !dropdownMenuRef.current.contains(event.target as Node)
       ) {
         // Click occurred outside, so close the dropdown
         setIsDropdownOpen(false);
@@ -30,11 +32,11 @@ const DropdownButtonOnLine = ({ username }) => {
     };
 
     // Add the global click event listener
-    document.addEventListener('click', closeDropdownOnOutsideClick);
+    document.addEventListener('click', () => closeDropdownOnOutsideClick);
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('click', closeDropdownOnOutsideClick);
+      document.removeEventListener('click', () => closeDropdownOnOutsideClick);
     };
   }, []);
 
@@ -42,10 +44,10 @@ const DropdownButtonOnLine = ({ username }) => {
     <div className="relative inline-block text-left">
       <button
         onClick={toggleDropdown}
-		ref={dropdownButtonRef}
+		    ref={dropdownButtonRef}
         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
       >
-        {username}
+        {player.username}
       </button>
       {isDropdownOpen && (
         <div 
@@ -55,35 +57,41 @@ const DropdownButtonOnLine = ({ username }) => {
           {/* Dropdown menu items */}
           <div className="py-1">
             <button
-              onClick={() => handleItemClick(`View Profile for ${username}`)}
+              onClick={() => handleItemClick(`View Profile for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               View Profile
             </button>
             <button
-              onClick={() => handleItemClick(`Direct message for ${username}`)}
+              onClick={() => handleItemClick(`Direct message for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Direct message
             </button>
             <button
-              onClick={() => handleItemClick(`Invite to game for ${username}`)}
+              onClick={() => handleItemClick(`Invite to game for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Invite to game
             </button>
+            {/*
             <button
               onClick={() => handleItemClick(`Invite as friend for ${username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Invite as friend
             </button>
+            */}
+            <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />
+            {/*
             <button
-              onClick={() => handleItemClick(`Block user for ${username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            onClick={() => handleItemClick(`Block user for ${username}`)}
+            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
-              Block user
+            Block user
             </button>
+            */}
+            <ButtonWithModal { ...{username: player.username, text: "Block User"} } />
           </div>
         </div>
       )}

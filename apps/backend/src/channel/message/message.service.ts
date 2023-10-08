@@ -16,8 +16,8 @@ export class MessageService {
     ) {}
 
     async createMessage(messageData: newMessageDto) {
-        console.log('message service: ', messageData.channelId);
-        console.log('message service: ', messageData.username);
+        // console.log('message service: ', messageData.channelId);
+        // console.log('message service: ', messageData.username);
         const user = await this.userService.findOne(messageData.username);
         const channel = await this.channelService.findOne(messageData.channelId);
         const newMessage = this.messageRepository.create(

@@ -12,6 +12,7 @@ import { getAvatar } from "../hooks/getAvatar";
 import { getUsername } from "../hooks/getUsername";
 import { getUser } from "../hooks/getUser";
 import FriendInvitations from "./FriendInvitations";
+import FriendList from "./FriendList";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -100,7 +101,7 @@ const Header: FC = () => {
               </NavLink>
             </li>
             <li>
-              <FriendInvitations />
+              <FriendList />
             </li>
           </ul>
         </nav>

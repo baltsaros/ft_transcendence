@@ -12,6 +12,8 @@ import FriendList from "../components/FriendList";
 import userSlice from "../store/user/userSlice";
 import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
+import { ChannelService } from "../services/channels.service";
+import { IChannelPassword, IChannelRelation } from "../types/types";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -19,21 +21,21 @@ const Home: FC = () => {
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);
   const token = Cookies.get('jwt_token');
- 
-
 
   useEffect(() => {
     if (token){
       const decoded = jwtDecode<any>(Cookies.get('jwt_token')!)
       if (decoded)
         Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
-        if (Cookies.get("DelFriend") === "true")
-        {
-          toast.success("Friend successfully deleted");
-          Cookies.remove("DelFriend");
-        }
       }
   },  [])
+  // const updateChannel = async (relation: IChannelPassword) => {
+  //   try {
+  //       if (await ChannelService.checkIfSamePassword(relation))
+  //         toast.success("Same password");
+  //       else
+  //         toast.error("HUH HUH not the same");
+  //    } catch (err: any) {}}
 
   return (
     <>
@@ -64,11 +66,14 @@ const Home: FC = () => {
                 </Link>
               </div>
             </div>
-            <div className="grid grid-rows-6">
+            {/* <div className="grid grid-rows-6">
               <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
                 <FriendList />
               </div>
-            </div>
+            </div> */}
+            {/* <div>
+              <button onClick={() => updateChannel({idChannel: 1, password: "fuck"})}>Kick USer</button>
+            </div> */}
           </div>
       )}
     </>
