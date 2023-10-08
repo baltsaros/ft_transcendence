@@ -3,6 +3,7 @@ import ButtonWithModal from './ButtonWithModal';
 import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
 import Cookies from 'js-cookie';
 import { PlayerService } from '../../services/player.service';
+import { Link, NavLink, Navigate } from "react-router-dom";
 
 const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -108,12 +109,12 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
 		>
           {/* Dropdown menu items */}
           <div className="py-1">
-            <button
-              onClick={() => handleItemClick(`View Profile for ${player.username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            <Link
+              to={"/player/" + player.username}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center justify-center"
             >
               View Profile
-            </button>
+            </Link>
             <button
               onClick={() => handleItemClick(`Direct message for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
