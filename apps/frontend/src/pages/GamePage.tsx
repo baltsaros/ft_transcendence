@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from "react";
 const fieldWidth = 800;
 const fieldHeight = 600;
 const radius = 10;
-const paddleWidth = 5;
+const paddleWidth = 10;
 const paddleHeight = 100;
 const paddleSpeed = 20;
 const ballSpeed = 7;
@@ -148,6 +148,12 @@ const GamePage: React.FC = () => {
 			ctx.fillStyle = "black";
 			ctx.fillRect(0, 0, fieldWidth, fieldHeight);
 
+			ctx.globalAlpha = 0.2;
+			ctx.fillStyle = "white";
+			ctx.font = "200px Arial"
+			ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
+			ctx.globalAlpha = 1;
+
 			// Dessinez la ligne verticale blanche pointillée au milieu du terrain
 			ctx.strokeStyle = "white";
 			ctx.setLineDash([5, 15]); // Motif de ligne pointillée
@@ -158,7 +164,7 @@ const GamePage: React.FC = () => {
 			ctx.setLineDash([]); // Réinitialisez le motif de ligne
 
 			// Dessinez les raquettes
-			ctx.fillStyle = "green";
+			ctx.fillStyle = "white";
 			ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
 			ctx.fillRect(fieldWidth - paddleWidth - 10, rightPaddleY, paddleWidth, paddleHeight);
 
@@ -172,7 +178,6 @@ const GamePage: React.FC = () => {
 			ctx.font = "50px Arial";
 			ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
 			ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
-
 
 			// Appelez la fonction update à la prochaine trame d'animation
 			requestAnimationFrame(update);
