@@ -17,13 +17,13 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
 
     /* BEHAVIOR */
    useEffect(() => {
-    // console.log('selected channel', selectedChannel?.id);
     if (selectedChannel)
     {
         const fetchData = async () => {
-            const response = await instance.get('channel/' + selectedChannel?.id);
-            console.log('response: ', response);
-            setMessage(response.data.channelMessages);
+            const message = await instance.get('channel/' + selectedChannel?.id);
+            console.log('backend response: ', message.data);
+            setMessage(message.data.messages);
+            console.log('message state: ', message.data.messages);
         };
         fetchData();
     }
@@ -52,7 +52,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 </div>
                 <div className="text-lg font-bold mb-2 text-gray-600">
-                    <Scrollbar style={{ width: 300, height: 700 }}>
+                    {<Scrollbar style={{ width: 300, height: 700 }}>
                     {
                         selectedChannel &&
                         message.map((idx, index) => (
@@ -70,7 +70,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                         </div>
                         </div>
                         ))}
-                    </Scrollbar>
+                    </Scrollbar>}
                     {
                     !selectedChannel &&
                     <h2>Select a channel</h2>

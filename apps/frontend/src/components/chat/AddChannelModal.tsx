@@ -56,6 +56,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             webSocketService.emit('onNewChannel', newChannel.data);
             if (newChannel) {
               toast.success("Channel successfully added!");
+              store.dispatch(addChannel(newChannel.data));
             }
         } catch (error: any) {
             const err = error.response?.data.message;
@@ -64,15 +65,14 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
         onClose();
     }
 
-    useEffect(() => {
-      webSocketService.on('channelCreated', (payload: any) => {
-          console.log('channelCreated event payload:', payload);
-          store.dispatch(addChannel(payload));
-      })
-      return () => {
-          webSocketService.off('newChannel');
-      };
-  }, []);
+  //   useEffect(() => {
+  //     webSocketService.on('channelCreated', (payload: any) => {
+  //         console.log('channelCreated event payload:', payload);
+  //     })
+  //     return () => {
+  //         webSocketService.off('newChannel');
+  //     };
+  // }, []);
 
     /* RENDERING */
     return (

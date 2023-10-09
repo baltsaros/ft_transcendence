@@ -1,14 +1,14 @@
 import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, MessageBody, ConnectedSocket} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io'
 import { newMessageDto } from 'src/channel/message/new-message.dto';
-import { GatewayService } from './gateway.service'
 import { OnEvent } from '@nestjs/event-emitter';
 import { GatewaySessionManager } from './gateway.session';
 import { ChannelService } from 'src/channel/channel.service';
 import { UserService } from 'src/user/user.service';
 import { Channel } from 'src/channel/channel.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/user/entities/user.entity';
 
 
 
@@ -29,14 +29,27 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     // private readonly chatService: ChatService,
     @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly gatewaySessionManager: GatewaySessionManager,
     private readonly channelService: ChannelService,
     private readonly userService: UserService,
   ) {}
 
-  handleConnection(client: Socket){
+  async handleConnection(client: Socket){
     console.log(client.id);
-    // this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client)
+    const username = client.handshake.query.username.toString(); 
+    // 1. Retrieve the channels the client is member of
+    const channel = await this.channelService.findAll();
+    // console.log('all:', channel);
+    const filteredChannel = channel.filter((channel) =>
+      channel.users.some((user) => 
+      user.username === username)
+    )
+    // 2. Make him join each room.
+    filteredChannel.forEach((channel) => {
+      client.join(channel.id.toString())
+      console.log("client joined:", channel.name);
+    });
   }
 
   handleDisconnect(client: any) {
@@ -72,7 +85,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('channelId:', payload.channelId)
     console.log('id:', payload.id)
     client.join(payload.id);
-    this.server.to(payload.id).emit('channelCreated', payload);
+    // this.server.to(payload.id).emit('channelCreated', payload);
   }
 
   /* any should be specified */

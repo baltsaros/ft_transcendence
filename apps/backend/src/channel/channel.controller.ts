@@ -25,17 +25,11 @@ export class ChannelController {
     async getChannel() {
         return await (this.ChannelService.findAll());
     }
-    // async getChannel(@Param('username') data: string) {
-    // async getChannel(@Query() data: IGetChannels ) {
-    //     const name = data.username;
-    //     return await (this.ChannelService.findAll(name))
-    // }
 
-    @Get(':channelId')
-    async getChannelById(@Param('channelId') channelId: number) {
-        // console.log('channelId BE:', channelId)
-        // return await this.ChannelService.getChannelById(channelId);
-        return await this.ChannelService.getChannelById(channelId);
+    @Get(":id")
+    async fetchMessage(@Param("id") id: number) {
+        console.log('id', id);
+        return this.ChannelService.fetchMessage(id);
     }
 
     @Post('kickMemberOfChannel')

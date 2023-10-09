@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatGateway } from "./gateway/gateway";
 import { GatewaySessionManager } from "./gateway/gateway.session";
 import { Channel } from "./channel/channel.entity";
+import { User } from "./user/entities/user.entity";
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { Channel } from "./channel/channel.entity";
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Channel]),
+    TypeOrmModule.forFeature([Channel, User]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),

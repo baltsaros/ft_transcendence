@@ -19,7 +19,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user.username);
 
-    console.log('channels:', channels);
+    console.log('Redux call channels:', channels);
     const filteredChannels = channels.filter((channel) => 
         channel.users.some((user) =>
             user.username === userLogged
@@ -36,19 +36,10 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
             username: userLogged,
         }
         webSocketService.emit('onChannelLeave', payload);
+        store.dispatch(removeUser(payload));
     }
     useEffect(() => {
         store.dispatch(fetchChannel());
-    }, []);
-    
-    useEffect(() => {
-        webSocketService.on('userLeft', (payload: any) => {
-            console.log('user', payload.username, 'left', payload.channelId);
-            store.dispatch(removeUser(payload));
-        })
-        return () => {
-            webSocketService.off('userLeft');
-        };
     }, []);
     
     /* RENDER */
