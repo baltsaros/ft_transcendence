@@ -31,7 +31,7 @@ function App() {
     const token = getTokenFromLocalStorage();
     try {
       if (token.length > 0) {
-        const data = await AuthService.getProfile();
+        const data = await AuthService.updateStatus("online");
         if (data) {
           dispatch(login(data));
           dispatch(setUsername(data.username));

@@ -53,8 +53,7 @@ export class UserService {
       loses: 0,
       status: "",
     });
-    if (!user)
-      throw new NotImplementedException("Cannot create this user");
+    if (!user) throw new NotImplementedException("Cannot create this user");
     return user;
   }
 
@@ -65,7 +64,7 @@ export class UserService {
   // async findAllFriends(id: string)
   // {
   //   return await this.userRepository.query(
-  //     ` SELECT * 
+  //     ` SELECT *
   //       FROM public.user U
   //       WHERE U.id <> $1
   //         AND EXISTS(
@@ -83,10 +82,10 @@ export class UserService {
       relations: {
         friends: true,
       },
-      where: { id: idUser}
+      where: { id: idUser },
     });
 
-    return (request.friends);
+    return request.friends;
   }
 
   async getAllInvitations(idUser: number) {
@@ -94,16 +93,16 @@ export class UserService {
       relations: {
         invitations: true,
       },
-      where: { id: idUser}
+      where: { id: idUser },
     });
 
-    return (request.invitations);
+    return request.invitations;
   }
 
   // async getAllInvitations(id: string)
   // {
   //   return await this.userRepository.query(
-  //     ` SELECT * 
+  //     ` SELECT *
   //       FROM public.user U
   //       WHERE U.id <> $1
   //         AND EXISTS(
@@ -124,13 +123,13 @@ export class UserService {
 
   async findAllOnlineUsers() {
     return await this.userRepository.find({
-      where: { status: "online"},
+      where: { status: "online" },
     });
   }
 
   async findAllOfflineUsers() {
     return await this.userRepository.find({
-      where: { status: "offline"}
+      where: { status: "offline" },
     });
   }
 
@@ -154,12 +153,25 @@ export class UserService {
     });
     if (!user) throw new NotFoundException("User not found");
     const data = await this.userRepository.update(id, updateUserDto);
+    if (!data) throw new NotFoundException("Update failed");
+    const userUpd = await this.userRepository.findOne({
+      where: { id: id },
+    });
+    if (!userUpd) throw new NotFoundException("User not found");
+    return userUpd;
+  }
+
+  async updateStatus(intraId: number, status: string) {
+    const user = await this.findOneByIntraId(intraId);
+    if (!user) throw new NotFoundException("User not found");
+    user.status = status;
+    const data = await this.update(user.id, user);
     return data;
   }
 
   async uploadAvatar(id: number, filename: string) {
     const user = await this.userRepository.findOne({
-      where: {id: id},
+      where: { id: id },
     });
     if (!user) throw new NotFoundException("User not found");
     return user;
@@ -169,10 +181,9 @@ export class UserService {
     return `This action removes a #${id} user`;
   }
 
-  async incrementWin(id: number)
-  {
+  async incrementWin(id: number) {
     const user = await this.userRepository.findOne({
-      where: {id: id},
+      where: { id: id },
     });
     if (!user) throw new NotFoundException("User not found");
     user.wins++;
@@ -180,10 +191,9 @@ export class UserService {
     if (!userModified) throw new NotFoundException("User not found");
   }
 
-  async incrementLoss(id: number)
-  {
+  async incrementLoss(id: number) {
     const user = await this.userRepository.findOne({
-      where: {id: id},
+      where: { id: id },
     });
     if (!user) throw new NotFoundException("User not found");
     user.loses++;
@@ -191,18 +201,17 @@ export class UserService {
     if (!userModified) throw new NotFoundException("User not found");
   }
 
-  async removeFriendRelation(friendRelation: UserRelationDto)
-  {
+  async removeFriendRelation(friendRelation: UserRelationDto) {
     const request = await this.userRepository.findOne({
       relations: {
         friends: true,
       },
-      where: { id: friendRelation.receiverId}
+      where: { id: friendRelation.receiverId },
     });
 
     request.friends = request.friends.filter((user) => {
-      return (user.id !== friendRelation.senderId)
-    })
+      return user.id !== friendRelation.senderId;
+    });
     const user = await this.userRepository.save(request);
     if (!user) return false;
 
@@ -210,11 +219,11 @@ export class UserService {
       relations: {
         friends: true,
       },
-      where: { id: friendRelation.senderId}
+      where: { id: friendRelation.senderId },
     });
     friendUser.friends = friendUser.friends.filter((friend) => {
-      return (friend.id !== friendRelation.receiverId)
-    })
+      return friend.id !== friendRelation.receiverId;
+    });
     const friendOk = await this.userRepository.save(friendUser);
     if (!friendOk) return false;
     return true;
@@ -222,73 +231,75 @@ export class UserService {
 
   async setSecret(secret: string, intraId: number) {
     const user = await this.findOneByIntraId(intraId);
+    if (!user) throw new NotFoundException("User not found");
     user.secret = secret;
     const userModified = await this.update(user.id, user);
     return userModified;
   }
-  
+
   async removeInvitation(invitation: UserRelationDto) {
     const request = await this.userRepository.findOne({
       relations: {
         invitations: true,
       },
-      where: { id: invitation.receiverId}
+      where: { id: invitation.receiverId },
     });
 
     request.invitations = request.invitations.filter((user) => {
-      return (user.id !== invitation.senderId)
-    })
+      return user.id !== invitation.senderId;
+    });
     const user = await this.userRepository.save(request);
     if (user) return true;
     return false;
   }
 
-  async addFriend(friendRequest: UserRelationDto)
-  {
+  async addFriend(friendRequest: UserRelationDto) {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.receiverId, },
+      where: { id: friendRequest.receiverId },
       relations: {
         friends: true,
       },
-    })
-     if(!source) return (false);
+    });
+    if (!source) return false;
     const friend = await this.findOneById(friendRequest.senderId);
-    if (! friend) return (false);
+    if (!friend) return false;
     source.friends.push(friend);
 
     await this.userRepository.save(source);
-    return (true);
+    return true;
   }
-  
+
   async acceptInvitation(invitation: UserRelationDto) {
     return (
       this.addFriend(invitation) &&
-      this.addFriend({receiverId: invitation.senderId, senderId: invitation.receiverId}) &&
-      this.removeInvitation(invitation))
+      this.addFriend({
+        receiverId: invitation.senderId,
+        senderId: invitation.receiverId,
+      }) &&
+      this.removeInvitation(invitation)
+    );
   }
 
-  async sendInvitation(friendRequest: UserRelationDto)
-  {
+  async sendInvitation(friendRequest: UserRelationDto) {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.receiverId, },
+      where: { id: friendRequest.receiverId },
       relations: {
         invitations: true,
       },
-    })
+    });
     const friend = await this.findOneById(friendRequest.senderId);
     source.invitations.push(friend);
 
     await this.userRepository.save(source);
   }
 
-  async blockUser(friendRequest: UserRelationDto)
-  {
+  async blockUser(friendRequest: UserRelationDto) {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.receiverId, },
+      where: { id: friendRequest.receiverId },
       relations: {
         blocked: true,
       },
-    })
+    });
     const friend = await this.findOneById(friendRequest.senderId);
     source.blocked.push(friend);
 
