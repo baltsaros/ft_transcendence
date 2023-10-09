@@ -44,7 +44,7 @@ export default function SettingsGame(){
             <input
                 type="range"
                 className="transparent h-[4px] w-full cursor-pointer rounded
-            appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-32"
+            appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-40"
                 min="1"
                 max="5"
                 id="ballSpeed"
@@ -61,7 +61,7 @@ export default function SettingsGame(){
             <input
                 type="range"
                 className="transparent h-[4px] w-full cursor-pointer rounded
-            appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-32"
+            appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-40"
                 min="1"
                 max="17"
                 id="ballSize"
@@ -70,7 +70,27 @@ export default function SettingsGame(){
                 value={size}/>
             </div>
             <div>
-                Color racket : 
+                Color racket :
+                <div className="grid grid-cols-6 gap-2">
+                    <div className="flex items-center mr-4">
+                        <input id="red-radio" type="radio" value="red" name="color" className="w-10 h-10 text-red-600 bg-red-500 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    </div>
+                    <div className="flex items-center mr-4">
+                        <input id="green-radio" type="radio" value="green" name="color" className="w-10 h-10 text-green-600 bg-green-500 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                    </div>
+                    <div className="flex items-center mr-4">
+                        <input id="purple-radio" type="radio" value="purple" name="color" className="w-10 h-10 text-purple-600 bg-purple-500 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    </div>
+                    <div className="flex items-center mr-4">
+                        <input id="teal-radio" type="radio" name="color" value="teal" className="w-10 h-10 text-teal-600 bg-teal-500 border-gray-300 rounded focus:ring-teal-500 dark:focus:ring-teal-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    </div>
+                    <div className="flex items-center mr-4">
+                        <input id="yellow-radio" type="radio" name="color" value="yellow" className="w-10 h-10 text-yellow-400 bg-yellow-500 border-gray-300 rounded focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    </div>
+                    <div className="flex items-center mr-4">
+                        <input id="orange-radio" type="radio" name="color" value="orange" className="w-10 h-10 text-orange-500 bg-orange-500 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                    </div>
+                </div>
             </div>
         </div>
         <div className="bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
