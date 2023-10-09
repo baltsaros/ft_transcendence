@@ -29,8 +29,8 @@ export class AuthController {
   @Get("redir")
   @UseGuards(FortyTwoAuthGuard)
   async fortyTwoAPI(@Request() req, @Response() res) {
-    // console.log('redir')
     const user = req.user.user;
+    const firstEntry = req.user.first;
     if (user.twoFactorAuth) {
       res.cookie("intraId", user.intraId, {
         sameSite: "none",
@@ -43,8 +43,9 @@ export class AuthController {
       sameSite: "none",
       secure: true,
     });
+    if (firstEntry)
+      return res.redirect("http://localhost:5173/profile");
     return res.redirect("http://localhost:5173");
-    // return res.redirect("http://localhost:5173/profile");
   }
 
   @Post("login")

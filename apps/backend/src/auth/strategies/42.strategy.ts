@@ -28,8 +28,8 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, "42") {
     // console.log("token: " + accessToken);
     // const {id, username, _json} = profile;
     // console.log("profile: " + profile._json.image.link + profile._json.id);
-    const user = await this.authService.validateUser(accessToken, profile);
+    const data = await this.authService.validateUser(accessToken, profile);
     // console.log(user);
-    return { user, accessToken };
+    return { user: data.user, accessToken: accessToken, first: data.first };
   }
 }
