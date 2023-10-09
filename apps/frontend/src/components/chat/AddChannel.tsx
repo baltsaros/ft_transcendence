@@ -23,9 +23,7 @@ function AddChannel () {
         <AddChannelModal onClose={handleCloseModal} />
         }
     </div>
-
     )
-
 }
 
 export default AddChannel;

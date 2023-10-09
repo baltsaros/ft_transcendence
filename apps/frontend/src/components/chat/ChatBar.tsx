@@ -31,13 +31,19 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             content: newMessage,
         };
         await instance.post('message', message);
-        webSocketService.emit('message', message);
         setMessage('');
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         console.log(event.target.value);
         setMessage(event.target.value);
+    }
+
+    const handleKeyDown = (event: any) => {
+        if (event.key == "Enter")
+        {
+            handleClick();
+        }
     }
 
     /* RENDER */
@@ -48,6 +54,7 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             type="text" 
             placeholder="Type your message..."
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             className="flex-grow p-2 border rounded-l-lg"
             />
         <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleClick}>Send</button>
