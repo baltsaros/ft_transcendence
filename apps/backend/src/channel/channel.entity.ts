@@ -1,6 +1,5 @@
 import { Message } from 'src/channel/message/messages.entity';
 import { User } from 'src/user/entities/user.entity';
-import { Expose } from 'class-transformer'
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -34,7 +33,7 @@ export class Channel {
     users: User[];
 
     @OneToMany(()=> Message, messages => messages.channel)
-    channelMessages: Message[];
+    messages: Message[];
 
     @ManyToMany(() => User)
     @JoinTable({
@@ -77,14 +76,4 @@ export class Channel {
         }
     })
     bannedUsers: User[];
-
-    // @Expose()
-    // getId(): number {
-    //     return this.id;
-    // }
-    
-    // @Expose()
-    // getName(): string {
-    //     return this.name;
-    // }
-} 
+}

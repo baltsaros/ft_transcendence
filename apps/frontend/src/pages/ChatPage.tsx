@@ -11,6 +11,7 @@ const chatPage: React.FC = () => {
     
     /* STATE */
     const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
+    console.log('selected channel', selectedChannel);
 
     /* BEHAVIOR */
     const handleSelectedChannel = (channel: IChannel) => {
