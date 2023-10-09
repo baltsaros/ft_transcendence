@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { IUserUsername } from "../types/types";
 import Cookies from "js-cookie";
 import { PlayerService } from "../services/player.service";
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
 import { toast } from "react-toastify";
 import { FaUserFriends } from "react-icons/fa";
 
-export default function FriendInvitations() {
+export default function FriendInvitations(invitation: IUserUsername) {
 
     const [invitations, setInvitations] = useState<IUserUsername[]>(
         [
@@ -70,9 +70,7 @@ export default function FriendInvitations() {
 
         if (invitations.length)
             return (
-                <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}>
-                {invitations.map((invitation) => (
-                    <MenuItem key={invitation.username} disabled className="text-black" >
+                <MenuItem key={invitation.username} disabled className="text-black text-sm" >
                         <div className="grid grid-cols-4 gap-4">
                             <div className="text-left py-1 col-span-2">
                                 {invitation.username}
@@ -91,15 +89,12 @@ export default function FriendInvitations() {
                             </div>
                         </div> 
                     </MenuItem>
-        
-                ))}
-                </Menu>
-            )
+                )
         return (
             <div>
-                <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}>
+                {/* <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}> */}
                     <MenuItem disabled >No pending invitations</MenuItem>
-                </Menu>
+                {/* </Menu> */}
             </div>
         )
 }

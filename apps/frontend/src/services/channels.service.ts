@@ -16,7 +16,7 @@ export const ChannelService = {
     },
 
     async setPasswordToChannel(channelPassword: IChannelPassword) {
-        const { data } = await instance.post<Boolean>("channel/setPassword/", channelPassword);
+        const { data } = await instance.patch<Boolean>("channel/setPassword/", channelPassword);
         return (data);
     },
 

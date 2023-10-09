@@ -1,0 +1,8 @@
+./node_modules
+./dist
+
+./apps/frontend/node_modules
+./apps/frontend/dist
+
+./apps/backend/node_modules
+./apps/backend/dist
