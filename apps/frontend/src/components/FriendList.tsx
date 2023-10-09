@@ -47,7 +47,7 @@ function FriendList() {
               setFriendsOnline(friends.filter(isOnline).length)
             }
           } catch (err: any) {}}
-          // getAllFriendsForUser();
+          getAllFriendsForUser();
         }, [friends])
 
         useEffect(() =>  {
@@ -64,7 +64,7 @@ function FriendList() {
                     setInvitations(invit);
                 }
             } catch (err: any) {}}
-            // getAllFriendsInvitations();
+            getAllFriendsInvitations();
           }, [invitations])
 
     //render

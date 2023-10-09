@@ -20,7 +20,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, "42") {
   }
 
   async validate(accessToken: string, refreshToken: string, profile: Profile) {
-    console.log("42 api");
+    // console.log("42 api");
     // console.log(profile);
     // console.log("id: " + profile.id);
     // console.log("login: " + profile.username);
