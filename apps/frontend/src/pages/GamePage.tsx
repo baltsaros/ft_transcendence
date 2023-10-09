@@ -100,6 +100,15 @@ const GamePage: React.FC = () => {
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, fieldWidth, fieldHeight);
 
+      // Dessinez la ligne verticale blanche pointillée au milieu du terrain
+      ctx.strokeStyle = "white";
+      ctx.setLineDash([5, 15]); // Motif de ligne pointillée
+      ctx.beginPath();
+      ctx.moveTo(fieldWidth / 2, 0);
+      ctx.lineTo(fieldWidth / 2, fieldHeight);
+      ctx.stroke();
+      ctx.setLineDash([]); // Réinitialisez le motif de ligne
+
       // Dessinez la raquette gauche
       ctx.fillStyle = "white";
       ctx.fillRect(0, leftPaddleY, paddleWidth, paddleHeight);
