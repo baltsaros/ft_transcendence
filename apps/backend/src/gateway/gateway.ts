@@ -82,11 +82,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('onNewChannel')
   async onNewChannel(client: Socket, payload: any) {
-    console.log('channelId:', payload.channelId)
-    console.log('id:', payload.id)
+    // console.log('channelId:', payload.channelId)
+    // console.log('id:', payload.id)
     client.join(payload.id);
     // this.server.to(payload.id).emit('channelCreated', payload);
   }
+
 
   /* any should be specified */
   @SubscribeMessage('onChannelJoin')

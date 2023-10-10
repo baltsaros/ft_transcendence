@@ -19,13 +19,11 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user.username);
 
-    console.log('Redux call channels:', channels);
     const filteredChannels = channels.filter((channel) => 
         channel.users.some((user) =>
             user.username === userLogged
         )
     )
-    console.log('filtered channels:', filteredChannels);
     
     /* STATE */
     

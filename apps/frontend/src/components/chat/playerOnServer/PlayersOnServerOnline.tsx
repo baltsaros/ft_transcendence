@@ -1,15 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
-import { instance } from '../../api/axios.api';
+import { instance } from '../../../api/axios.api';
+import { toast } from 'react-toastify';
 import ButtonWithModal from './ButtonWithModal';
-import { IUserUsername, IChannelData } from '../../types/types';
+import { IUserUsername, IChannelDmData } from '../../../types/types';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState } from '../../../store/store';
+import { store } from '../../../store/store';
+import { addChannel } from '../../../store/channel/channelSlice';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
   const userLogged = useSelector((state: RootState) => state.user.user);
+  const webSocketService = useWebSocket();
   
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -21,28 +26,30 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     // You can add more logic here based on the clicked item
   };
 
-  const handleDirectMessage = () => {
-    // 1. Handle channel creation for dm here
+  const handleDirectMessage = async () => {
     try{ 
-      const strings = [player.username, userLogged];
+      const strings = [player.username, userLogged?.username];
       strings.sort();
+      console.log('strings:', strings);
       const channelName = strings.join('_');
-      const channelData: IChannelData = {
+      console.log('channelName:', channelName);
+      const channelData: IChannelDmData = {
           name: channelName,
           mode: 'private',
-          owner: userLogged!,
+          sender: userLogged?.id!,
+          receiver: player.username,
           password: '',
       }
-      // const newChannel = await instance.post('channel', channelData);
-  //     console.log('newChannel', newChannel.data);
-  //     webSocketService.emit('onNewChannel', newChannel.data);
-  //     if (newChannel) {
-  //       toast.success("Channel successfully added!");
-  //       store.dispatch(addChannel(newChannel.data));
-  //     }
+      const newDmChannel = await instance.post('channel/dmChannel', channelData);
+      console.log('newDmChannel', newDmChannel.data);
+      webSocketService.emit('onNewChannel', newDmChannel.data);
+      if (newDmChannel) {
+        toast.success("Channel successfully added!");
+        store.dispatch(addChannel(newDmChannel.data));
+      }
   } catch (error: any) {
-      // const err = error.response?.data.message;
-      // toast.error(err.toString());
+      const err = error.response?.data.message;
+      toast.error(err.toString());
   }
   // onClose();
     // 2. Update Redux state, component subscribed will re-render

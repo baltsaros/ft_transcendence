@@ -104,6 +104,14 @@ export interface IChannelData {
   password: string;
 }
 
+export interface IChannelDmData {
+  name: string;
+  mode: string;
+  sender: number;
+  receiver: string;
+  password: string;
+}
+
 export interface IResponseChannelData {
   name: string;
   mode: string;
@@ -135,9 +143,10 @@ export interface IMessage {
 }
 
 export interface IUserRelation {
-  receiverId: number;
   senderId: number;
+  receiverId: number;
 }
+
 export interface IResponseMessage {
   content: string,
   user: IUser,

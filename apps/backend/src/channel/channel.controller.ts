@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Query, UseGuards, Patch} from '@nestjs/common';
 import { ChannelService } from './channel.service';
-import { IChannelsData, IGetChannels } from 'src/types/types';
+import { IChannelDmData, IChannelsData, IGetChannels } from 'src/types/types';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -16,9 +16,15 @@ export class ChannelController {
         ) {}
 
     @Post()
-    async addChannel(@Body() channelData: IChannelsData) {
+    async createChannel(@Body() channelData: IChannelsData) {
         const newChannel = await this.ChannelService.createChannel(channelData);
         return newChannel;
+    }
+
+    @Post('dmChannel')
+    async createDmChannel(@Body() channelDmData: IChannelDmData) {
+        const newDmChannel = await this.ChannelService.createDmChannel(channelDmData);
+        return newDmChannel;
     }
 
     @Get()

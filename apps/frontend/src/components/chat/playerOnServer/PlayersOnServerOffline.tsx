@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../../types/types';
 import ButtonWithModal from './ButtonWithModal';
 
 const DropdownButtonOffLine = (player: IUserUsername) => {

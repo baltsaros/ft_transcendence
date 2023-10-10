@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import { PlayerService } from '../../services/player.service';
-import { IUserUsername } from '../../types/types';
+import { PlayerService } from '../../../services/player.service';
+import { IUserUsername } from '../../../types/types';
 import DropdownButtonOnLine from './PlayersOnServerOnline';
 import DropdownButtonOffLine from './PlayersOnServerOffline';
 

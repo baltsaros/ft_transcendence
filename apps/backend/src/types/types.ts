@@ -47,6 +47,14 @@ export interface IChannelsData {
   password: string,
 }
 
+export interface IChannelDmData {
+  name: string;
+  mode: string;
+  sender: number;
+  receiver: string;
+  password: string;
+}
+
 export interface IGetChannels {
   username: string;
 }

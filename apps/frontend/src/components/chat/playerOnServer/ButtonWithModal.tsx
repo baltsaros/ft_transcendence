@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import InviteFriendModal from './InviteFriendModal';
 import BlockUserModal from './BlockUserModal';
-import { IPlayersOnServerModalProps } from '../../types/types';
+import { IPlayersOnServerModalProps } from '../../../types/types';
 
 function ButtonWithModal ( userWithText: IPlayersOnServerModalProps ) {
 
