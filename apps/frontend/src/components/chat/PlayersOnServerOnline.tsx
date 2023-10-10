@@ -73,7 +73,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
   console.log('result is', isUserFriend);
 
   useEffect(() => {
-    const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const closeDropdownOnOutsideClick = (event: Event) => {
       // Check if the click occurred outside the button and the dropdown menu
       if (
         dropdownButtonRef.current &&
@@ -87,11 +87,11 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     };
 
     // Add the global click event listener
-    document.addEventListener('click', () => closeDropdownOnOutsideClick);
+    document.addEventListener('click', closeDropdownOnOutsideClick);
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('click', () => closeDropdownOnOutsideClick);
+      document.removeEventListener('click', closeDropdownOnOutsideClick);
     };
   }, []);
 
