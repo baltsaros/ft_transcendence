@@ -22,6 +22,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ChatGateway } from "./gateway/gateway";
 import { GatewaySessionManager } from "./gateway/gateway.session";
 import { Channel } from "./channel/channel.entity";
+import { User } from "./user/entities/user.entity";
 
 @Module({
   imports: [
@@ -38,17 +39,17 @@ import { Channel } from "./channel/channel.entity";
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
-        host: configService.get("DB_HOST"),
-        port: configService.get("DB_PORT"),
-        username: configService.get("DB_USERNAME"),
-        password: configService.get("DB_PASSWORD"),
-        database: configService.get("DB_DATABASE"),
+        host: configService.get("POSTGRES_HOST"),
+        port: configService.get("POSTGRES_PORT"),
+        username: configService.get("POSTGRES_USER"),
+        password: configService.get("POSTGRES_PASSWORD"),
+        database: configService.get("POSTGRES_DB"),
         synchronize: true,
         entities: [__dirname + "/**/*.entity{.js, .ts}"],
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Channel]),
+    TypeOrmModule.forFeature([Channel, User]),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, "../..", "frontend", "dist"),
     }),

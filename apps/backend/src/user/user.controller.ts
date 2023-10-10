@@ -15,6 +15,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFile,
+  NotImplementedException,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -61,7 +62,7 @@ export class UserController {
 
   @Patch(":id")
   @UseGuards(JwtAuthGuard)
-  update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param("id") id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
@@ -74,7 +75,7 @@ export class UserController {
   @Post("upload/:id")
   @UseInterceptors(FileInterceptor("file", storage))
   @UseGuards(JwtAuthGuard)
-  uploadAvatar(
+  async uploadAvatar(
     @Req() req,
     @Param("id") id: string,
     @UploadedFile() file: Express.Multer.File
@@ -85,9 +86,22 @@ export class UserController {
   @Get("avatars/:path")
   @UseGuards(JwtAuthGuard)
   getAvatar(@Param("path") avatar, @Res() res) {
-    console.log("getAvatar");
     res.sendFile("/avatars/" + avatar, { root: "./src/uploads" });
   }
+
+  @Post("status")
+  @UseGuards(JwtAuthGuard)
+  async updateStatus(@Req() req, @Body() body) {
+    const intraId = req.user.intraId;
+    if (!intraId)
+      throw new NotImplementedException(
+        "Cannot retrieve intraId in updateStatus()"
+      );
+    const status = body.status;
+    const user = await this.userService.updateStatus(+intraId, status);
+    return user;
+  }
+
   @Post("getFriends")
   @UseGuards(JwtAuthGuard)
   getAllFriendsForUser(@Body() user: IdUserDto) {

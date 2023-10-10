@@ -15,6 +15,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
     const navigate = useNavigate();
 
     //behaviour
+    
     const deleteFriend = async () => {
         try {
             const receiverId = await PlayerService.getInfoUser(Cookies.get('username')!);
@@ -25,12 +26,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
                 return toast.error("Friend to remove doesn't exist !");
             const data =  await PlayerService.removeFriend({receiverId, senderId});
             if (data)
-            {
-                Cookies.set("DelFriend", "true");
-                navigate(0);
-            }
-            toast.error("Friend not deleted");
-
+                toast.success("friend successfully deleted");
         } catch (err: any) {
           const error = err.response?.data.message;
         }

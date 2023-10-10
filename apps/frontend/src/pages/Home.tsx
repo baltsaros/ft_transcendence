@@ -27,11 +27,6 @@ const Home: FC = () => {
       const decoded = jwtDecode<any>(Cookies.get('jwt_token')!)
       if (decoded)
         Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
-        if (Cookies.get("DelFriend") === "true")
-        {
-          toast.success("Friend successfully deleted");
-          Cookies.remove("DelFriend");
-        }
       }
   },  [])
   // const updateChannel = async (relation: IChannelPassword) => {
@@ -61,7 +56,7 @@ const Home: FC = () => {
             <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
               <div/>
               <div>
-                <Link to="/">
+                <Link to="/game">
                   <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
                 </Link>
               </div>
@@ -71,11 +66,11 @@ const Home: FC = () => {
                 </Link>
               </div>
             </div>
-            <div className="grid grid-rows-6">
+            {/* <div className="grid grid-rows-6">
               <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
                 <FriendList />
               </div>
-            </div>
+            </div> */}
             {/* <div>
               <button onClick={() => updateChannel({idChannel: 1, password: "fuck"})}>Kick USer</button>
             </div> */}

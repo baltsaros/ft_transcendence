@@ -1,13 +1,26 @@
 FROM node:18
+WORKDIR /ft_transcendence
+COPY  ./package.json .
+COPY  ./package-lock.json .
+COPY  ./turbo.json  .
+COPY  ./.env  .
+COPY ./apps/backend /ft_transcendence/apps/backend
 
-WORKDIR /home/jvander/trans/
+RUN npm install -g npm && npm install -D turbo
 
-COPY package*.json ./
+RUN apt update && apt upgrade \
+  && apt install -y libssl-dev postgresql-client -y --no-install-recommends \
+  && apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*
 
-RUN npm i -D @types/react
+WORKDIR /ft_transcendence/apps/backend
 
-RUN npm install vite
-RUN npm install -D turbo
-RUN npm run build
+# RUN npm prune --scope=backend --docker
 
-CMD [ "node", "dist/main.js" ]
+# WORKDIR /ft_transcendence
+
+# COPY  ./.env  .
+# COPY apps/backend/package.json ft_transcendence/apps/backend/package.json
+# COPY apps/backend/.env ft_transcendence/apps/backend/.env
+EXPOSE 3000
+WORKDIR /ft_transcendence/apps/backend
+CMD ["npm", "run", "dev"]
