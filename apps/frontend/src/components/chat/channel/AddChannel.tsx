@@ -3,10 +3,10 @@ import AddChannelModal from "./AddChannelModal";
 
 function AddChannel () {
 
-    // state
+    /* STATE */
     const [modalView, setModalView] = useState(false);
 
-    // behavior
+     /* BEHAVIOUR */
     const handleOpenModal = () => {
         setModalView(true);
     }
@@ -15,7 +15,7 @@ function AddChannel () {
         setModalView(false);
     }
 
-    // render
+    /* RENDER */
     return (
     <div>
         <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleOpenModal}>Add channel</button>

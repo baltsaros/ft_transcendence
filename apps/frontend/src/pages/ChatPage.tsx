@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Chat from "../components/chat/Chat";
 import PlayersOnServer from "../components/chat/PlayersOnServer";
-import Channels from "../components/chat/Channel";
+import Channels from "../components/chat/channel/Channel";
 import { IChannel } from "../types/types";
 
 const chatPage: React.FC = () => {

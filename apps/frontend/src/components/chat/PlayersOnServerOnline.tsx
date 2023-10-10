@@ -1,21 +1,54 @@
 import { useState, useEffect, useRef } from 'react';
+import { instance } from '../../api/axios.api';
 import ButtonWithModal from './ButtonWithModal';
-import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import { IUserUsername, IChannelData } from '../../types/types';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
-
+  const userLogged = useSelector((state: RootState) => state.user.user);
+  
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
+  
   const handleItemClick = (itemText: string) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
     // You can add more logic here based on the clicked item
   };
+
+  const handleDirectMessage = () => {
+    // 1. Handle channel creation for dm here
+    try{ 
+      const strings = [player.username, userLogged];
+      strings.sort();
+      const channelName = strings.join('_');
+      const channelData: IChannelData = {
+          name: channelName,
+          mode: 'private',
+          owner: userLogged!,
+          password: '',
+      }
+      // const newChannel = await instance.post('channel', channelData);
+  //     console.log('newChannel', newChannel.data);
+  //     webSocketService.emit('onNewChannel', newChannel.data);
+  //     if (newChannel) {
+  //       toast.success("Channel successfully added!");
+  //       store.dispatch(addChannel(newChannel.data));
+  //     }
+  } catch (error: any) {
+      // const err = error.response?.data.message;
+      // toast.error(err.toString());
+  }
+  // onClose();
+    // 2. Update Redux state, component subscribed will re-render
+    // 3. Update the onSelectChannel state
+    
+  }
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -63,7 +96,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
               View Profile
             </button>
             <button
-              onClick={() => handleItemClick(`Direct message for ${player.username}`)}
+              onClick={() => handleDirectMessage()}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Direct message

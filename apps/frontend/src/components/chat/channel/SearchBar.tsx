@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useWebSocket } from "../../context/WebSocketContext";
-import { store } from "../../store/store";
-import { addNewUser } from "../../store/channel/channelSlice";
+import { useWebSocket } from "../../../context/WebSocketContext";
+import { store } from "../../../store/store";
+import { addNewUser } from "../../../store/channel/channelSlice";
 
 export default function SearchBar() {
     

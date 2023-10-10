@@ -1,11 +1,11 @@
 import AddChannel from "./AddChannel";
 import { useEffect } from 'react';
-import { IChannel } from "../../types/types";
+import { IChannel } from "../../../types/types";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { store } from "../../store/store";
-import { fetchChannel, removeUser } from "../../store/channel/channelSlice";
-import { useWebSocket } from "../../context/WebSocketContext";
+import { RootState } from "../../../store/store";
+import { store } from "../../../store/store";
+import { fetchChannel, removeUser } from "../../../store/channel/channelSlice";
+import { useWebSocket } from "../../../context/WebSocketContext";
 import SearchBar from "./SearchBar";
 
 

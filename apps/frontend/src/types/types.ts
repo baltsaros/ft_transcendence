@@ -100,7 +100,7 @@ export interface IMatchData {
 export interface IChannelData {
   name: string;
   mode: string;
-  owner: IUser;
+  owner: IResponseUser;
   password: string;
 }
 
