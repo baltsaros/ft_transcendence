@@ -56,7 +56,7 @@ const Home: FC = () => {
             <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
               <div/>
               <div>
-                <Link to="/">
+                <Link to="/game">
                   <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
                 </Link>
               </div>

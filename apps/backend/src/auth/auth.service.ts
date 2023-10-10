@@ -30,9 +30,10 @@ export class AuthService {
       data["avatar"] = profile._json.image.link;
       data["intraId"] = profile.id;
       data["intraToken"] = accessToken;
-      return await this.usersService.create(data);
+      const new_user = await this.usersService.create(data);
+      return {user: new_user, first: true};
     }
-    return user;
+    return {user: user, first: false};
   }
 
   async login(user: IResponseUser) {
