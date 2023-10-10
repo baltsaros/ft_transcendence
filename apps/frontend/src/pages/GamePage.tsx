@@ -1,14 +1,19 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useWebSocket, WebSocketProvider } from "../context/WebSocketContext";
 
 const fieldWidth = 800;
 const fieldHeight = 600;
 const radius = 10;
 const paddleWidth = 10;
 const paddleHeight = 100;
+const paddleOffset = 3;
+const leftPaddleX = paddleOffset;
+const rightPaddleX = fieldWidth - paddleWidth - paddleOffset;
 const paddleSpeed = 20;
-const ballSpeed = 7;
+const ballSpeed = 6;
 
 const GamePage: React.FC = () => {
+	const webSocketService = useWebSocket();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ballXRef = useRef(fieldWidth / 2);
 	const ballYRef = useRef(fieldHeight / 2);
@@ -114,7 +119,7 @@ const GamePage: React.FC = () => {
 				player2ScoreRef.current += 1;
 			}
 
-			// Vérifiez les collisions avec les bords verticaux
+			// Vérifiez les collisions avec les bords horizontaux
 			if (newBallY + radius > fieldHeight || newBallY - radius < 0) {
 				// Inverser la direction verticale en cas de collision avec les bords
 				ballSpeedYRef.current = -ballSpeedY;
@@ -122,22 +127,22 @@ const GamePage: React.FC = () => {
 
 			// Vérifiez les collisions avec les raquettes
 			if (
-				newBallX - radius < paddleWidth + 10 &&  // Prend en compte le décalage des raquettes
+				newBallX - radius < paddleWidth + paddleOffset &&  // Prend en compte le décalage des raquettes
 				newBallY + radius > leftPaddleY &&
 				newBallY - radius < leftPaddleY + paddleHeight
 			) {
 				// Collision avec la raquette gauche, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
 			}
+
 			if (
-				newBallX + radius > fieldWidth - paddleWidth - 10 &&  // Prend en compte le décalage des raquettes
+				newBallX + radius > fieldWidth - paddleWidth - paddleOffset &&  // Prend en compte le décalage des raquettes
 				newBallY + radius > rightPaddleY &&
 				newBallY - radius < rightPaddleY + paddleHeight
 			) {
 				// Collision avec la raquette droite, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
 			}
-
 
 			// Mettez à jour les valeurs de position de la balle
 			ballXRef.current = newBallX;
@@ -165,8 +170,8 @@ const GamePage: React.FC = () => {
 
 			// Dessinez les raquettes
 			ctx.fillStyle = "white";
-			ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
-			ctx.fillRect(fieldWidth - paddleWidth - 10, rightPaddleY, paddleWidth, paddleHeight);
+			ctx.fillRect(leftPaddleX, leftPaddleY, paddleWidth, paddleHeight);
+			ctx.fillRect(rightPaddleX, rightPaddleY, paddleWidth, paddleHeight);
 
 			// Dessinez la balle
 			ctx.fillStyle = "white";
@@ -196,6 +201,7 @@ const GamePage: React.FC = () => {
 	}, []);
 
 	return (
+		<WebSocketProvider>
 		<div className="game-container">
 			<h1>Welcome to the Game!</h1>
 			<div className="flex justify-center items-center h-screen">
@@ -207,6 +213,7 @@ const GamePage: React.FC = () => {
 				></canvas>
 			</div>
 		</div>
+		</WebSocketProvider>
 	);
 };
 
