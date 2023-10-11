@@ -131,7 +131,7 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
             </button>
             { isUserFriend ? (
               <button
-              className="block w-full px-4 py-2 text-sm text-gray-300 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              className="block w-full px-4 py-2 text-sm text-gray-300 cursor-pointer"
               disabled>
                 Invite as Friend
               </button>
