@@ -1,13 +1,16 @@
 import { ChangeEvent, useState } from "react";
 
-export default function SettingsGame(){
+interface ModalProp {
+  onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
+}
+
+const GameSettings  = ({onClose}: any) => {
   
   //state
-    //ball speed 5-10
-    // size 3-20
+    //ball speed 5-10 + 4
+    // size 3-20 + 2
     //color
   //behaviour
-  const [showModal, setShowModal] = useState(false);
     const [ speed, setSpeed] = useState<number>(1);
     const [ size, setSize] = useState<number>(1);
   //render
@@ -18,6 +21,10 @@ export default function SettingsGame(){
 
   const handleSize = (e: ChangeEvent<HTMLInputElement>) => {
     setSize(e.target.valueAsNumber);
+  }
+
+  const closeModal = () => {
+    onClose();
   }
   
   return (
@@ -46,7 +53,7 @@ export default function SettingsGame(){
                 className="transparent h-[4px] w-full cursor-pointer rounded
             appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-40"
                 min="1"
-                max="5"
+                max="6"
                 id="ballSpeed"
                 onChange={handleSpeed}
                 defaultValue="1"
@@ -63,7 +70,7 @@ export default function SettingsGame(){
                 className="transparent h-[4px] w-full cursor-pointer rounded
             appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-40"
                 min="1"
-                max="17"
+                max="18"
                 id="ballSize"
                 onChange={handleSize}
                 defaultValue="1"
@@ -95,12 +102,13 @@ export default function SettingsGame(){
         </div>
         <div className="bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
           <button type="button" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</button>
-          <button type="button" className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+          <button type="button" onClick={closeModal} className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
         </div>
       </div>
     </div>
   </div>
 </div>
-    );
+  );
 };
 
+export default GameSettings;
