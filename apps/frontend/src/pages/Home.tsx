@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
 import { ChannelService } from "../services/channels.service";
 import { IChannelPassword, IChannelRelation } from "../types/types";
+import SettingsGame from "./GameSettings";
+import WaitingGame from "../components/WaitingGame";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -29,6 +31,15 @@ const Home: FC = () => {
         Cookies.set('username', decoded.username, {sameSite: "none", secure: true});
       }
   },  [])
+
+  const [modalView, setModalView] = useState<boolean>(false);
+  const handleOpenModal = () => {
+    setModalView(true);
+  }
+
+const handleCloseModal = () => {
+    setModalView(false);
+  }
   // const updateChannel = async (relation: IChannelPassword) => {
   //   try {
   //       if (await ChannelService.checkIfSamePassword(relation))
@@ -56,9 +67,8 @@ const Home: FC = () => {
             <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
               <div/>
               <div>
-                <Link to="/game">
-                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
-                </Link>
+                  <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
+                  {modalView && <WaitingGame onClose={handleCloseModal}/>}
               </div>
               <div>
                 <Link to="/chat">

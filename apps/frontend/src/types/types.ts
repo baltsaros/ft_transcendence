@@ -159,3 +159,10 @@ export interface IPlayersOnServerModalProps {
 	username: string,
 	text: string,
 }
+
+export interface IBallSettings {
+  maxValue: number,
+  minValue: number,
+  detailSetting: string,
+  description: string,
+}
