@@ -156,8 +156,9 @@ export interface IChannelPassword {
 }
 
 export interface IPlayersOnServerModalProps {
-	username: string,
+	player: IUserUsername,
 	text: string,
+  channel : IChannel | null,
 }
 
 export interface IBallSettings {

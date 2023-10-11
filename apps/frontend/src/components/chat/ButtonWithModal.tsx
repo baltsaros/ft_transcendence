@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { IPlayersOnServerModalProps } from '../../types/types';
 import InviteFriendModal from './InviteFriendModal';
 import BlockUserModal from './BlockUserModal';
-import { IPlayersOnServerModalProps } from '../../types/types';
 import UnblockUserModal from './UnblockUserModal';
 
-function ButtonWithModal ( userWithText: IPlayersOnServerModalProps ) {
+function ButtonWithModal ( player: IPlayersOnServerModalProps ) {
 
   // state
   const [modalView, setModalView] = useState(false);
@@ -24,16 +24,16 @@ const handleCloseModal = () => {
     <div>
       <button className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
       onClick={handleOpenModal}>
-        { userWithText.text }
+        { player.text }
       </button>
-      {modalView && userWithText.text === "Invite as Friend" &&
-        <InviteFriendModal onClose={handleCloseModal} userWithText={userWithText} />
+      {modalView && player.text === "Invite as Friend" &&
+        <InviteFriendModal onClose={handleCloseModal} player={player} />
       }
-      {modalView && userWithText.text === "Block User" &&
-        <BlockUserModal onClose={handleCloseModal} userWithText={userWithText} />
+      {modalView && player.text === "Block User" &&
+        <BlockUserModal onClose={handleCloseModal} player={player} />
       }
-      {modalView && userWithText.text === "Unblock User" &&
-        <UnblockUserModal onClose={handleCloseModal} userWithText={userWithText} />
+      {modalView && player.text === "Unblock User" &&
+        <UnblockUserModal onClose={handleCloseModal} player={player} />
       }
     </div>
   );

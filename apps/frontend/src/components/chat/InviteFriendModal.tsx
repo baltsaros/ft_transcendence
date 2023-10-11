@@ -7,7 +7,7 @@ interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const InviteFriendModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
+const InviteFriendModal: React.FC<ModalProp & { player: IPlayersOnServerModalProps }> = ({onClose, player}) =>  {
 
 	/* BEHAVIOR */
   //console.log('hello', userWithText.username);
@@ -44,7 +44,7 @@ const InviteFriendModal: React.FC<ModalProp & { userWithText: IPlayersOnServerMo
 		  {/* Buttons */}
           <div className="flex justify-end">
             <button
-              onClick={() => sendInvitation(userWithText.username)}
+              onClick={() => sendInvitation(player.player.username)}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2 mt-4">Ok
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4" onClick={handleCancel}>Cancel</button>

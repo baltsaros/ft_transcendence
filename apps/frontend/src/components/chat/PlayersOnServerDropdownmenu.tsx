@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 import { PlayerService } from '../../services/player.service';
 import { Link, NavLink, Navigate } from "react-router-dom";
 
-const DropdownButton = (player: IUserUsername) => {
+const DropdownButton = (player: IPlayersOnServerModalProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
@@ -41,7 +41,7 @@ const DropdownButton = (player: IUserUsername) => {
         } catch (err: any) {}};
       
   async function logBlockedStatus() {
-    const result = await isBlocked(player.username);
+    const result = await isBlocked(player.player.username);
     //console.log(result);
   }
   logBlockedStatus(); // Call the function to log the result
@@ -65,7 +65,7 @@ const DropdownButton = (player: IUserUsername) => {
         } catch (err: any) {}};
   
   async function logFriendStatus() {
-    const result = await isFriend(player.username);
+    const result = await isFriend(player.player.username);
     //console.log(result);
   }
   logFriendStatus(); // Call the function to log the result
@@ -102,7 +102,7 @@ const DropdownButton = (player: IUserUsername) => {
 		    ref={dropdownButtonRef}
         className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none"
       >
-        {player.username}
+        {player.player.username}
       </button>
       {isDropdownOpen && (
         <div 
@@ -112,20 +112,20 @@ const DropdownButton = (player: IUserUsername) => {
           {/* Dropdown menu items */}
           <div className="py-1">
             <Link
-              to={"/player/" + player.username}
+              to={"/player/" + player.player.username}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center justify-center"
             >
               View Profile
             </Link>
             <button
-              onClick={() => handleItemClick(`Direct message for ${player.username}`)}
+              onClick={() => handleItemClick(`Direct message for ${player.player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Direct message
             </button>
-            { (player.status === "online") ? (
+            { (player.player.status === "online") ? (
             <button
-              onClick={() => handleItemClick(`Invite to game for ${player.username}`)}
+              onClick={() => handleItemClick(`Invite to game for ${player.player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Invite to game
@@ -146,10 +146,10 @@ const DropdownButton = (player: IUserUsername) => {
                 Invite as Friend
               </button>
               ) : (
-              <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />)}
+              <ButtonWithModal { ...{ player: player.player, text: "Invite as Friend", channel: player.channel } } />)}
             { isUserBlocked ? (
-              <ButtonWithModal { ...{username: player.username, text: "Unblock User"} } />
-              ) : (<ButtonWithModal { ...{username: player.username, text: "Block User"} } />)}
+              <ButtonWithModal { ...{ player: player.player, text: "Unblock User", channel: player.channel } } />
+              ) : (<ButtonWithModal { ...{ player: player.player, text: "Block User", channel: player.channel } } />)}
           </div>
         </div>
       )}

@@ -7,7 +7,7 @@ interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModalProps }> = ({onClose, userWithText}) =>  {
+const BlockUserModal: React.FC<ModalProp & { player: IPlayersOnServerModalProps }> = ({onClose, player}) =>  {
 
 
   
@@ -46,7 +46,7 @@ const BlockUserModal: React.FC<ModalProp & { userWithText: IPlayersOnServerModal
 		  {/* Buttons */}
           <div className="flex justify-end">
             <button
-              onClick={() => blockUser(userWithText.username)}
+              onClick={() => blockUser(player.player.username)}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2 mt-4">Ok
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4" onClick={handleCancel}>Cancel</button>
