@@ -295,14 +295,71 @@ export class UserService {
 
   async blockUser(friendRequest: UserRelationDto) {
     const source = await this.userRepository.findOne({
-      where: { id: friendRequest.receiverId },
+      where: { id: friendRequest.senderId, },
       relations: {
         blocked: true,
       },
-    });
-    const friend = await this.findOneById(friendRequest.senderId);
+    })
+    const friend = await this.findOneById(friendRequest.receiverId);
     source.blocked.push(friend);
+    //console.log(source.blocked);
 
     await this.userRepository.save(source);
+  }
+
+  async getBlocked(relationBlocked: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: relationBlocked.senderId, },
+      relations: {
+        blocked: true,
+      },
+    })
+    //console.log(source);
+    const blocked = source.blocked.filter((user) => {
+      return(user.id === relationBlocked.receiverId)
+    })
+    //console.log(blocked);
+    if (blocked.length > 0)
+      return (true);
+    return (false);
+  }
+
+  async getFriend(relationFriend: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: relationFriend.senderId, },
+      relations: {
+        friends: true,
+      },
+    })
+    //console.log('source is', source);
+    const friend = source.friends.filter((user) => {
+      return(user.id === relationFriend.receiverId)
+    })
+    //console.log('friend is', friend);
+    if (friend.length > 0)
+      return (true);
+    return (false);
+  }
+
+  async unblockUser(relationBlock: UserRelationDto)
+  {
+    const source = await this.userRepository.findOne({
+      where: { id: relationBlock.senderId },
+      relations: {
+        blocked: true,
+      },
+    })
+    //console.log('source is', source);
+    source.blocked = source.blocked.filter((user) => {
+      return (user.id !== relationBlock.receiverId)
+    })
+    //console.log('remainders are', remainders);
+    const user = await this.userRepository.save(source);
+    //console.log(user);
+    if (user)
+      return (true);
+    return (false);
   }
 }

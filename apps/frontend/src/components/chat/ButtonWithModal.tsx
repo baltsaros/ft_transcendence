@@ -2,6 +2,7 @@ import { useState } from 'react';
 import InviteFriendModal from './InviteFriendModal';
 import BlockUserModal from './BlockUserModal';
 import { IPlayersOnServerModalProps } from '../../types/types';
+import UnblockUserModal from './UnblockUserModal';
 
 function ButtonWithModal ( userWithText: IPlayersOnServerModalProps ) {
 
@@ -30,6 +31,9 @@ const handleCloseModal = () => {
       }
       {modalView && userWithText.text === "Block User" &&
         <BlockUserModal onClose={handleCloseModal} userWithText={userWithText} />
+      }
+      {modalView && userWithText.text === "Unblock User" &&
+        <UnblockUserModal onClose={handleCloseModal} userWithText={userWithText} />
       }
     </div>
   );

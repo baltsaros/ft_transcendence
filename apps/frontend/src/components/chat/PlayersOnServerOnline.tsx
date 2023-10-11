@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import ButtonWithModal from './ButtonWithModal';
 import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import Cookies from 'js-cookie';
+import { PlayerService } from '../../services/player.service';
+import { Link, NavLink, Navigate } from "react-router-dom";
 
 const DropdownButtonOnLine = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
+  const [isUserBlocked, setIsUserBlocked] = useState(false);
+  const [isUserFriend, setIsUserFriend] = useState(false);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -17,8 +22,58 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     // You can add more logic here based on the clicked item
   };
 
+  const isBlocked = async (username: string) => {
+    //console.log(username);
+    try {
+         const blocker = Cookies.get("username");
+         if (blocker) {
+             const blockerId = await PlayerService.getInfoUser(blocker);
+             if (blockerId)
+                {
+                 const blockedId = await PlayerService.getInfoUser(username);
+                 if (blockedId)
+                  {
+                    const ret = await PlayerService.getBlocked({receiverId: blockedId, senderId: blockerId});
+                    setIsUserBlocked(ret);
+                  }
+                }
+          }
+        } catch (err: any) {}};
+      
+  async function logBlockedStatus() {
+    const result = await isBlocked(player.username);
+    //console.log(result);
+  }
+  logBlockedStatus(); // Call the function to log the result
+
+  const isFriend = async (username: string) => {
+    //console.log(username);
+    try {
+         const sender = Cookies.get("username");
+         if (sender) {
+             const senderId = await PlayerService.getInfoUser(sender);
+             if (senderId)
+                {
+                 const receiverId = await PlayerService.getInfoUser(username);
+                 if (receiverId)
+                  {
+                    const ret = await PlayerService.getFriend({receiverId: receiverId, senderId: senderId});
+                    setIsUserFriend(ret);
+                  }
+                }
+          }
+        } catch (err: any) {}};
+  
+  async function logFriendStatus() {
+    const result = await isFriend(player.username);
+    //console.log(result);
+  }
+  logFriendStatus(); // Call the function to log the result
+
+  console.log('result is', isUserFriend);
+
   useEffect(() => {
-    const closeDropdownOnOutsideClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const closeDropdownOnOutsideClick = (event: Event) => {
       // Check if the click occurred outside the button and the dropdown menu
       if (
         dropdownButtonRef.current &&
@@ -32,11 +87,11 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
     };
 
     // Add the global click event listener
-    document.addEventListener('click', () => closeDropdownOnOutsideClick);
+    document.addEventListener('click', closeDropdownOnOutsideClick);
 
     // Remove the event listener when the component unmounts
     return () => {
-      document.removeEventListener('click', () => closeDropdownOnOutsideClick);
+      document.removeEventListener('click', closeDropdownOnOutsideClick);
     };
   }, []);
 
@@ -56,12 +111,12 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
 		>
           {/* Dropdown menu items */}
           <div className="py-1">
-            <button
-              onClick={() => handleItemClick(`View Profile for ${player.username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            <Link
+              to={"/player/" + player.username}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer flex items-center justify-center"
             >
               View Profile
-            </button>
+            </Link>
             <button
               onClick={() => handleItemClick(`Direct message for ${player.username}`)}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
@@ -74,24 +129,17 @@ const DropdownButtonOnLine = (player: IUserUsername) => {
             >
               Invite to game
             </button>
-            {/*
-            <button
-              onClick={() => handleItemClick(`Invite as friend for ${username}`)}
-              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-              Invite as friend
-            </button>
-            */}
-            <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />
-            {/*
-            <button
-            onClick={() => handleItemClick(`Block user for ${username}`)}
-            className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-            >
-            Block user
-            </button>
-            */}
-            <ButtonWithModal { ...{username: player.username, text: "Block User"} } />
+            { isUserFriend ? (
+              <button
+              className="block w-full px-4 py-2 text-sm text-gray-300 cursor-pointer"
+              disabled>
+                Invite as Friend
+              </button>
+              ) : (
+              <ButtonWithModal { ...{username: player.username, text: "Invite as Friend"} } />)}
+            { isUserBlocked ? (
+              <ButtonWithModal { ...{username: player.username, text: "Unblock User"} } />
+              ) : (<ButtonWithModal { ...{username: player.username, text: "Block User"} } />)}
           </div>
         </div>
       )}
