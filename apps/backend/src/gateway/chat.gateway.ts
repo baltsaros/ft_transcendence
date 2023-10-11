@@ -119,3 +119,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 }
+
+import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, ConnectedSocket } from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  @WebSocketServer()
+  server: Server;
+
+  // Ajoutez ici les gestionnaires d'événements spécifiques au Pong
+  // Par exemple, les gestionnaires pour la création et la gestion des salles de jeu du Pong
+
+  // handleConnection et handleDisconnect peuvent rester similaires aux implémentations de ChatGateway
+}
