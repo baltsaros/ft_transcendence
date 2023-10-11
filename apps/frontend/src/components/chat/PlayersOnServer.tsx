@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
 import { IChannel, IUserUsername } from '../../types/types';
-import DropdownButtonOnLine from './PlayersOnServerOnline';
-import DropdownButtonOffLine from './PlayersOnServerOffline';
+import DropdownButton from './PlayersOnServerDropdownmenu';
 import Cookies from 'js-cookie';
 
 interface ChildProps {
@@ -73,7 +72,7 @@ const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
                     <div className="flex flex-col text-black space-y-4">
                         {onlinePlayers!.map(onlinePlayer => (
                             onlinePlayer.username !== loggedInUser && onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
-                                <DropdownButtonOnLine { ...onlinePlayer } />
+                                <DropdownButton { ...onlinePlayer } />
                             </div>
                         ))}
                     </div>
@@ -83,7 +82,7 @@ const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
                     <div className="flex flex-col text-black space-y-4">
                         {offlinePlayers!.map(offlinePlayer => (
                             offlinePlayer.username !== loggedInUser && offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
-                                <DropdownButtonOffLine { ...offlinePlayer } />
+                                <DropdownButton { ...offlinePlayer } />
                             </div>
                         ))}
                     </div>

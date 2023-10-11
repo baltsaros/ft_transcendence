@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
 import ButtonWithModal from './ButtonWithModal';
+import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
 import Cookies from 'js-cookie';
 import { PlayerService } from '../../services/player.service';
 import { Link, NavLink, Navigate } from "react-router-dom";
 
-const DropdownButtonOffLine = (player: IUserUsername) => {
+const DropdownButton = (player: IUserUsername) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownButtonRef = useRef<any>(null);
   const dropdownMenuRef = useRef<any>(null);
@@ -19,6 +19,7 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
   const handleItemClick = (itemText: string) => {
     // Perform an action based on the clicked item
     console.log(`Clicked on: ${itemText}`);
+    // You can add more logic here based on the clicked item
   };
 
   const isBlocked = async (username: string) => {
@@ -38,7 +39,7 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
                 }
           }
         } catch (err: any) {}};
-  
+      
   async function logBlockedStatus() {
     const result = await isBlocked(player.username);
     //console.log(result);
@@ -57,7 +58,6 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
                  if (receiverId)
                   {
                     const ret = await PlayerService.getFriend({receiverId: receiverId, senderId: senderId});
-                    //console.log('retour is', ret);
                     setIsUserFriend(ret);
                   }
                 }
@@ -66,7 +66,7 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
   
   async function logFriendStatus() {
     const result = await isFriend(player.username);
-    //console.log('result is', result);
+    //console.log(result);
   }
   logFriendStatus(); // Call the function to log the result
 
@@ -123,6 +123,22 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
             >
               Direct message
             </button>
+            { (player.status === "online") ? (
+            <button
+              onClick={() => handleItemClick(`Invite to game for ${player.username}`)}
+              className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+            >
+              Invite to game
+            </button>
+            ) : (
+              <button
+              className="block w-full px-4 py-2 text-sm text-gray-300 cursor-pointer"
+              disabled
+            >
+              Invite to game
+            </button>
+            )
+            }
             { isUserFriend ? (
               <button
               className="block w-full px-4 py-2 text-sm text-gray-300 cursor-pointer"
@@ -141,4 +157,4 @@ const DropdownButtonOffLine = (player: IUserUsername) => {
   );
 };
 
-export default DropdownButtonOffLine;
+export default DropdownButton;
