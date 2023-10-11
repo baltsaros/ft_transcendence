@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../services/player.service';
-import { IUserUsername } from '../../types/types';
+import { IChannel, IUserUsername } from '../../types/types';
 import DropdownButtonOnLine from './PlayersOnServerOnline';
 import DropdownButtonOffLine from './PlayersOnServerOffline';
 import Cookies from 'js-cookie';
 
-function PlayersOnServer() {
+interface ChildProps {
+    selectedChannel: IChannel | null;
+}
+
+const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
     
     // state
     const [onlinePlayers, setOnlinePlayers] = useState<IUserUsername[] | undefined>([
