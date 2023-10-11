@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
 import { ChannelService } from "../services/channels.service";
 import { IChannelPassword, IChannelRelation } from "../types/types";
+import RoomJoiner from "../components/RoomJoiner";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);

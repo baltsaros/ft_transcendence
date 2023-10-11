@@ -26,6 +26,10 @@ class WebSocketService {
   disconnect() {
     this.socket.close();
   }
+
+  createRoom(roomName: string) {
+    this.emit('createRoom', { roomName });
+  }
 }
 
 export default WebSocketService;

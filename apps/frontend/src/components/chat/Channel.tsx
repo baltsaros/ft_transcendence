@@ -24,9 +24,9 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
     const user = useSelector((state: RootState) => state.user.username);
     const webSocketService = useWebSocket();
-    
+
     /* STATE */
-    
+
     /* BEHAVIOR */
 
     const handleJoinChannel = async (id: number) => {

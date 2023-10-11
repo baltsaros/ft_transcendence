@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { useWebSocket, WebSocketProvider } from "../context/WebSocketContext";
+import RoomJoiner from "../components/RoomJoiner";
 
 const fieldWidth = 800;
 const fieldHeight = 600;
@@ -13,7 +13,6 @@ const paddleSpeed = 20;
 const ballSpeed = 6;
 
 const GamePage: React.FC = () => {
-	const webSocketService = useWebSocket();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ballXRef = useRef(fieldWidth / 2);
 	const ballYRef = useRef(fieldHeight / 2);
@@ -201,9 +200,10 @@ const GamePage: React.FC = () => {
 	}, []);
 
 	return (
-		<WebSocketProvider>
+
 		<div className="game-container">
 			<h1>Welcome to the Game!</h1>
+			<RoomJoiner />
 			<div className="flex justify-center items-center h-screen">
 				<canvas
 					ref={canvasRef}
@@ -213,7 +213,6 @@ const GamePage: React.FC = () => {
 				></canvas>
 			</div>
 		</div>
-		</WebSocketProvider>
 	);
 };
 
