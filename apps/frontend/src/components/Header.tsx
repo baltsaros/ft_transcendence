@@ -12,6 +12,8 @@ import { getAvatar } from "../hooks/getAvatar";
 import { getUsername } from "../hooks/getUsername";
 import { getUser } from "../hooks/getUser";
 import FriendInvitations from "./FriendInvitations";
+import FriendList from "./FriendList";
+import { AuthService } from "../services/auth.service";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -36,8 +38,9 @@ const Header: FC = () => {
   //   setAvatar({ source: "data:;base64," + base64 });
   // }
 
-  const logoutHandler = () => {
+  const logoutHandler = async () => {
     dispatch(logout());
+    await AuthService.updateStatus("offline");
     removeTokenFromLocalStorage("token");
     toast.success("Bye!");
     Cookies.remove("jwt_token");
@@ -100,7 +103,7 @@ const Header: FC = () => {
               </NavLink>
             </li>
             <li>
-              <FriendInvitations />
+              <FriendList />
             </li>
           </ul>
         </nav>

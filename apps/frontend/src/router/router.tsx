@@ -43,10 +43,6 @@ export const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
-      {
-        path: "auth",
-        element: <Auth />
-      },
 	  {
 		path: "game",
 		element: (
@@ -55,6 +51,15 @@ export const router = createBrowserRouter([
 		  </ProtectedRoute>
 		),
 	  },
+      {
+        path: "auth",
+        element: <Auth />
+      },
+      {
+        path: "*",
+        element: <ErrorPage />
+      }
+
     ],
   },
 ]);

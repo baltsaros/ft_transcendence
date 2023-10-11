@@ -105,9 +105,6 @@ export class User {
   createdAt: Date;
 
   @OneToMany(() => Channel, channels => channels.owner)
-  // {
-  //   cascade: true
-  // }
   channels: Channel[]
 
   @OneToMany(() => Message, (message) => message.user)

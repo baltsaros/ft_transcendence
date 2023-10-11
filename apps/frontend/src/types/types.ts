@@ -117,8 +117,11 @@ export interface IGetChannels {
 }
 
 export interface IChannel {
-  name: string,
   id: number,
+  mode: string,
+  name: string,
+  password: string,
+  users: IUser[],
 }
 
 export interface IResponseGetChannels {
@@ -155,11 +158,4 @@ export interface IChannelPassword {
 export interface IPlayersOnServerModalProps {
 	username: string,
 	text: string,
-}
-
-export interface IBallProps {
-	x: number;
-	y: number;
-	radius: number;
-	ctx: CanvasRenderingContext2D;
 }

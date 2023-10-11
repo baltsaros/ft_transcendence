@@ -22,7 +22,7 @@ export class ChannelService {
     ** The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
     ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
     */
-    async createChannel(channelData: IChannelsData): Promise<IChannel> {
+    async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
         const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
         if (existingChannel) throw new BadRequestException("Channel already exists");
@@ -33,14 +33,8 @@ export class ChannelService {
             password: channelData.password,
         });
         newChannel.users = [user];
-        // newChannel.users.push(user)
         const channel = await this.channelRepository.save(newChannel);
-        this.eventEmmiter.emit('channel.created', channel);
-        const returnedChannel: IChannel = {
-            id: channel.id,
-            name: channel.name,
-        }
-        return (returnedChannel);
+        return channel;
     }
 
     async findOne(channelId: number)
@@ -53,30 +47,25 @@ export class ChannelService {
         );
     }
 
-    async findAll(username: string) {
-        const channels = await this.channelRepository.find({
-            where: {
-                owner:{
-                    username
+    async findAll() {
+        const channel = await this.channelRepository.find(
+            {
+                relations: {
+                    users: true,
                 }
-            },
-        select: ['name', 'id'], // tell TypeOrm to only fetch the name column, so find method returns an array of channel objects, where each object contains only the name property
-    });
-    return channels;
-    }
-
-
-    /* for the moment this query retrieves all fields fo the channel entity
-    ** check w. querybuilder if it can be lighter */
-    async getChannelById(channelId: number) {
-        const channel = await this.channelRepository.findOne
-        (
-            {where: { id: channelId },
-            relations: ['channelMessages', 'channelMessages.user'],
-        })
+            }
+        );
         return channel;
     }
 
+    async fetchMessage(id: number) {
+      const channelMessage = await this.channelRepository.findOne({
+        where: {id: id},
+        relations: ["messages", "messages.user"],
+      })
+      return channelMessage;
+    }
+  
     async kickMemberOfChannel(relation: ChannelUserDto)
     {
         const request = await this.channelRepository.findOne({

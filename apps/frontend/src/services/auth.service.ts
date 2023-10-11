@@ -28,6 +28,11 @@ export const AuthService = {
     );
     if (data) return data;
   },
+  async updateStatus(status: string): Promise<IResponseUser | undefined> {
+    const config = { headers: {"Content-Type": "application/json" } };
+    const { data } = await instance.post("user/status", {status: status}, config);
+    if (data) return data;
+  },
   async uploadAvatar(file: File, id: string): Promise<File | any> {
     const formData = new FormData();
     formData.append("file", file);

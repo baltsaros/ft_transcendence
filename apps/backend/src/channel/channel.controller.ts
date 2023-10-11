@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards} from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query, UseGuards, Patch} from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { IChannelsData, IGetChannels } from 'src/types/types';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -22,17 +22,14 @@ export class ChannelController {
     }
 
     @Get()
-    // async getChannel(@Param('username') data: string) {
-    async getChannel(@Query() data: IGetChannels ) {
-        const name = data.username;
-        return await (this.ChannelService.findAll(name))
+    async getChannel() {
+        return await (this.ChannelService.findAll());
     }
 
-    @Get(':channelId')
-    async getChannelById(@Param('channelId') channelId: number) {
-        // console.log('channelId BE:', channelId)
-        // return await this.ChannelService.getChannelById(channelId);
-        return await this.ChannelService.getChannelById(channelId);
+    @Get(":id")
+    async fetchMessage(@Param("id") id: number) {
+        console.log('id', id);
+        return this.ChannelService.fetchMessage(id);
     }
 
     @Post('kickMemberOfChannel')
@@ -41,7 +38,7 @@ export class ChannelController {
         return (this.ChannelService.kickMemberOfChannel(relation));
     }
 
-    @Post('setPassword')
+    @Patch('setPassword')
     @UseGuards(JwtAuthGuard)
     async setPasswordChannel(@Body() channelPassword: ChannelPasswordDto) {
         return (this.ChannelService.setPasswordToChannel(channelPassword));
