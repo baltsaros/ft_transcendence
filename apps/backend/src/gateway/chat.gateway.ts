@@ -42,7 +42,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const channel = await this.channelService.findAll();
     // console.log('all:', channel);
     const filteredChannel = channel.filter((channel) =>
-      channel.users.some((user) => 
+      channel.users.some((user) =>
       user.username === username)
     )
     // 2. Make him join each room.
@@ -102,7 +102,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           users: true,
         },
       })
-      const user = await this.userService.findOne(payload.username); 
+      const user = await this.userService.findOne(payload.username);
       channel.users.push(user);
       await this.channelRepository.save(channel);
       const channelId = channel.id;
@@ -144,20 +144,3 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 }
 
-import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, ConnectedSocket } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-
-@WebSocketGateway({
-  cors: {
-    origin: '*',
-  },
-})
-export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server: Server;
-
-  // Ajoutez ici les gestionnaires d'événements spécifiques au Pong
-  // Par exemple, les gestionnaires pour la création et la gestion des salles de jeu du Pong
-
-  // handleConnection et handleDisconnect peuvent rester similaires aux implémentations de ChatGateway
-}
