@@ -165,6 +165,14 @@ export interface IChannelPassword {
 }
 
 export interface IPlayersOnServerModalProps {
-	username: string,
+	player: IUserUsername,
 	text: string,
+  channel : IChannel | null,
+}
+
+export interface IBallSettings {
+  maxValue: number,
+  minValue: number,
+  detailSetting: string,
+  description: string,
 }

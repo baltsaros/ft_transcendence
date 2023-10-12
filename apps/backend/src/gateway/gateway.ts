@@ -36,8 +36,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    console.log(client.id);
-    this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
+    // console.log(client.id);
     const username = client.handshake.query.username.toString(); 
     // 1. Retrieve the channels the client is member of
     const channel = await this.channelService.findAll();
@@ -49,7 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 2. Make him join each room.
     filteredChannel.forEach((channel) => {
       client.join(channel.id.toString())
-      console.log("client joined:", channel.name);
+      // console.log("client joined:", channel.name);
     });
   }
 

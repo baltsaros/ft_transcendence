@@ -7,12 +7,7 @@ import { toast } from "react-toastify";
 import { FaUserFriends } from "react-icons/fa";
 
 export default function FriendInvitations(invitation: IUserUsername) {
-
-    const [invitations, setInvitations] = useState<IUserUsername[]>(
-        [
-          { username: 'Juan', status: 'online'}
-        ]
-      );
+    
 
     const acceptInvitation = async (invitation: string) => {
        try {
@@ -26,8 +21,7 @@ export default function FriendInvitations(invitation: IUserUsername) {
                     return toast.error("User doesn't exists !");
                 if (await PlayerService.acceptInvitation({receiverId, senderId}))
                     toast.success("player added as friend")
-            }
-            
+            }   
         } catch (err: any) {}}
         
     const refuseInvitation = async (invitation: string) => {
@@ -49,52 +43,28 @@ export default function FriendInvitations(invitation: IUserUsername) {
     }
     
   
-    useEffect(() =>  {
-        const getAllFriendsInvitations = async () => {
-            try {
-                const username = Cookies.get("username");
-                if (username) {
-                    const id = await PlayerService.getInfoUser(username);
-                    if (!id)
-                        return toast.error("User doesn't exists !");
-                    const invit = await PlayerService.getAllInvitations(id);
-                    if (!invit)
-                        return toast.error("User doesn't exists !");
-                    setInvitations(invit);
-                }
-            } catch (err: any) {}}
-            getAllFriendsInvitations();
-        }, [invitations])
   
       //render
 
-        if (invitations.length)
-            return (
-                <MenuItem key={invitation.username} disabled className="text-black text-sm" >
-                        <div className="grid grid-cols-4 gap-4">
-                            <div className="text-left py-1 col-span-2">
-                                {invitation.username}
-                            </div>
-                            <div className="col-start-3">
-                                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 border border-green-700 rounded"
-                                    onClick={() => acceptInvitation(invitation.username)}>
-                                    V
-                                </button>
-                            </div>
-                            <div className="col-start-4">
-                                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 border border-red-700 rounded"
-                                    onClick={() => refuseInvitation(invitation.username)}>
-                                    X
-                                </button>
-                            </div>
-                        </div> 
-                    </MenuItem>
-                )
-        return (
-            <div>
-                {/* <Menu direction={"bottom"} arrow={true} menuButton={<MenuButton ><FaUserFriends /></MenuButton>}> */}
-                    <MenuItem disabled >No pending invitations</MenuItem>
-                {/* </Menu> */}
-            </div>
+    return (
+        <MenuItem key={invitation.username} disabled className="text-black text-sm" >
+                <div className="grid grid-cols-4 gap-4">
+                    <div className="text-left py-1 col-span-2">
+                        {invitation.username}
+                    </div>
+                    <div className="col-start-3">
+                        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 border border-green-700 rounded"
+                            onClick={() => acceptInvitation(invitation.username)}>
+                            V
+                        </button>
+                    </div>
+                    <div className="col-start-4">
+                        <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 border border-red-700 rounded"
+                            onClick={() => refuseInvitation(invitation.username)}>
+                            X
+                        </button>
+                    </div>
+                </div> 
+            </MenuItem>
         )
 }

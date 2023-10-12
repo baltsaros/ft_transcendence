@@ -85,11 +85,11 @@ export class User {
   @JoinTable({
     name: "user_block_user",
     joinColumn: {
-      name: "blocked",
+      name: "blocker",
       referencedColumnName: "id"
     },
     inverseJoinColumn: {
-      name: "blocker",
+      name: "blocked",
       referencedColumnName: "id"
     }
   })
