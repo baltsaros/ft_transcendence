@@ -129,7 +129,8 @@ export interface IChannel {
   mode: string,
   name: string,
   password: string,
-  users: IUser[],
+  owner: IResponseUser,
+  users: IResponseUser[],
 }
 
 export interface IResponseGetChannels {

@@ -9,6 +9,7 @@ import { Channel } from 'src/channel/channel.entity';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
+import { IResponseUser } from 'src/types/types';
 
 
 
@@ -37,6 +38,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket){
     // console.log(client.id);
+    this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
     const username = client.handshake.query.username.toString(); 
     // 1. Retrieve the channels the client is member of
     const channel = await this.channelService.findAll();
@@ -53,7 +55,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: any) {
-    // this.gatewaySessionManager.removeSocket(client.handshake.query.username.toString())
+    this.gatewaySessionManager.removeSocket(client.handshake.query.username.toString())
   }
 
   @OnEvent('message.created')
@@ -87,6 +89,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.join(payload.id);
     // this.server.to(payload.id).emit('channelCreated', payload);
   }
+  
+  @SubscribeMessage('onNewDmChannel')
+  async onNewDmChannel(client: Socket, payload: any) {
+    // console.log('payload:', payload);
+    const test = payload.user[0];
+    // console.log('test 2:', this.gatewaySessionManager.getSocket(test));
+    payload.user.forEach((username) => {
+      const socket = this.gatewaySessionManager.getSocket(username);
+      if (socket) {
+        console.log('username, socketid', username, socket.id);
+        socket.join(payload.id.toString());
+      }
+    });
+}
 
 
   /* any should be specified */

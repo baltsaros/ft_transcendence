@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { IResponseUser } from '../../../types/types';
 import { instance } from '../../../api/axios.api';
 import { toast } from 'react-toastify';
 import ButtonWithModal from './ButtonWithModal';
@@ -85,9 +86,7 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
     try{ 
       const strings = [player.player.username, userLogged?.username];
       strings.sort();
-      console.log('strings:', strings);
       const channelName = strings.join('_');
-      console.log('channelName:', channelName);
       const channelData: IChannelDmData = {
           name: channelName,
           mode: 'private',
@@ -96,8 +95,13 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
           password: '',
       }
       const newDmChannel = await instance.post('channel/dmChannel', channelData);
-      // console.log('newDmChannel', newDmChannel.data);
-      webSocketService.emit('onNewChannel', newDmChannel.data);
+      const usernames = (newDmChannel.data.users as Array<{ username: string }>).map(user => user.username);
+      const payload = {
+        user: usernames,
+        id: newDmChannel.data.id,
+      }
+      console.log('payload:', payload);
+      webSocketService.emit('onNewDmChannel', payload);
       if (newDmChannel) {
         toast.success("Channel successfully added!");
         store.dispatch(addChannel(newDmChannel.data));
@@ -105,12 +109,8 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
   } catch (error: any) {
       const err = error.response?.data.message;
       toast.error(err.toString());
-  }
-  // onClose();
-    // 2. Update Redux state, component subscribed will re-render
-    // 3. Update the onSelectChannel state
-    
-  }
+  } 
+}
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: Event) => {

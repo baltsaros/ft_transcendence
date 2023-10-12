@@ -41,8 +41,8 @@ export class ChannelService {
     async createDmChannel(channelDmData: IChannelDmData) {
       // 1. create new channel
       const sender = await this.userService.findOneById(channelDmData.sender);
-      const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
-        if (existingChannel) throw new BadRequestException("Channel already exists");
+      // const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
+      //   if (existingChannel) throw new BadRequestException("Channel already exists");
       const receiver = await this.userService.findOne(channelDmData.receiver);
       const newDmChannel = this.channelRepository.create({
         name: channelDmData.name,
@@ -56,7 +56,7 @@ export class ChannelService {
       // newDmChannel.users.push(receiver);
       // newDmChannel.users.push(sender);
       const dmChannel = await this.channelRepository.save(newDmChannel);
-      console.log('dmChannel:', dmChannel);
+      // console.log('dmChannel:', dmChannel);
       return(dmChannel);
     }
 
@@ -75,6 +75,7 @@ export class ChannelService {
             {
                 relations: {
                     users: true,
+                    owner: true,
                 }
             }
         );
