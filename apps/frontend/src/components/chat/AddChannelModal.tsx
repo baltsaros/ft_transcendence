@@ -3,7 +3,7 @@ import { instance } from "../../api/axios.api";
 import { useAppSelector } from "../../store/hooks";
 import { RootState, store } from "../../store/store";
 import { addChannel } from "../../store/channel/channelSlice";
-import { useWebSocket } from "../../context/WebSocketContext";
+import { useChatWebSocket } from "../../context/ChatWebSocketContext";
 import { IChannelData, IResponseChannelData } from "../../types/types";
 import { toast } from "react-toastify"
 
@@ -14,7 +14,7 @@ interface ModalProp {
 const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
   
   const user = useAppSelector((state: RootState) => state.user.user);
-  const webSocketService = useWebSocket();
+  const webSocketService = useChatWebSocket();
   
   /* STATE */
     const [channelName, setChannelName] = useState('');

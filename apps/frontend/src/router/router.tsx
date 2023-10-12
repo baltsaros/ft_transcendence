@@ -8,6 +8,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
+import { PongWebSocketProvider } from "../context/PongWebSocketContext";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
         path: "chat",
         element: (
           <ProtectedRoute>
-            <Chat />
+            	<Chat />
           </ProtectedRoute>
         ),
       },
@@ -47,7 +48,9 @@ export const router = createBrowserRouter([
 		path: "game",
 		element: (
 		  <ProtectedRoute>
-			<GamePage />
+			<PongWebSocketProvider>
+				<GamePage />
+			</PongWebSocketProvider>
 		  </ProtectedRoute>
 		),
 	  },

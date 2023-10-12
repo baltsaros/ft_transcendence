@@ -1,10 +1,9 @@
 import { io, Socket } from 'socket.io-client';
 
-class WebSocketService {
-    private socket: Socket;
-  constructor(username: string) {
-    // this.socket = io('ws://localhost:3000');
-    this.socket = io('ws://localhost:3000', {
+class PongWebSocketService {
+	private socket: Socket;
+	constructor(username: string) {
+    this.socket = io('ws://localhost:3000/pong', {
       query: {
         username: username,
       },
@@ -27,10 +26,7 @@ class WebSocketService {
     this.socket.close();
   }
 
-  createRoom(roomName: string) {
-    this.emit('createRoom', { roomName });
-  }
 }
 
-export default WebSocketService;
+export default PongWebSocketService;
 

@@ -3,7 +3,7 @@ import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import { useWebSocket } from "../../context/WebSocketContext";
+import { useChatWebSocket } from "../../context/ChatWebSocketContext";
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -17,7 +17,7 @@ type Message = {
 const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
 
     const user = useAppSelector((state: RootState) => state.user.user);
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
     
     /* STATE */
     const [newMessage, setMessage] =  useState("");

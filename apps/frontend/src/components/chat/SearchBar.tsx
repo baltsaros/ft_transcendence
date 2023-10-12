@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useWebSocket } from "../../context/WebSocketContext";
+import { useChatWebSocket } from "../../context/ChatWebSocketContext";
 import { store } from "../../store/store";
 import { addNewUser } from "../../store/channel/channelSlice";
 
 export default function SearchBar() {
     
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
     const user = useSelector((state: RootState) => state.user.username);
     
     /* state */

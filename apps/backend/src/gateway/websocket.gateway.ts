@@ -16,16 +16,16 @@ import { User } from 'src/user/entities/user.entity';
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
 */
-@WebSocketGateway({
-    cors: {
-      // origin: ['http://localhost:5173'],
-      origin: '*',
-    },
-  })
+// websocket.gateway.ts
 
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
-  server: Server
+@WebSocketGateway({
+  cors: {
+    origin: '*',
+  },
+})
+
+export class MainWebSocketGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  server: Server;
   constructor(
     // private readonly chatService: ChatService,
     @InjectRepository(Channel) private readonly channelRepository: Repository<Channel>,
@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   async handleConnection(client: Socket){
     console.log(client.id);
-    const username = client.handshake.query.username.toString(); 
+    const username = client.handshake.query.username.toString();
     // 1. Retrieve the channels the client is member of
     const channel = await this.channelService.findAll();
     // console.log('all:', channel);

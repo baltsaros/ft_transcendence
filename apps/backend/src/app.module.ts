@@ -19,7 +19,7 @@ import { MatchModule } from "./matches/match.module";
 import { MatchController } from "./matches/match.controller";
 import { GatewayModule } from "./gateway/gateway.module";
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { ChatGateway } from "./gateway/chat.gateway";
+import { MainWebSocketGateway } from "./gateway/websocket.gateway";
 import { GatewaySessionManager } from "./gateway/gateway.session";
 import { Channel } from "./channel/channel.entity";
 import { User } from "./user/entities/user.entity";
@@ -60,7 +60,7 @@ import { User } from "./user/entities/user.entity";
     AuthService,
     JwtService,
     DataStorageService,
-    ChatGateway,
+    MainWebSocketGateway,
     GatewaySessionManager,
   ],
 })

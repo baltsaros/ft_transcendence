@@ -1,27 +1,21 @@
 import React, { useState } from "react";
-import { useWebSocket } from "../context/WebSocketContext";
+import { useChatWebSocket } from "../context/ChatWebSocketContext";
 
 const RoomJoiner = () => {
   const [roomName, setRoomName] = useState("");
-  const webSocketService = useWebSocket();
+  const webSocketService = useChatWebSocket();
 
-  const createRoom = () => {
-    // Envoie une demande de création de salle au serveur via WebSocket
-    if (roomName.trim() !== "") {
-      webSocketService.createRoom(roomName);
-    }
-  };
 
   return (
     <div>
       <h2>Créer une salle de jeu</h2>
-      <input
+      {/* <input
         type="text"
         placeholder="Nom de la salle"
         value={roomName}
         onChange={(e) => setRoomName(e.target.value)}
-      />
-      <button onClick={createRoom}>Créer la salle</button>
+      /> */}
+      {/* <button onClick={createRoom}>Créer la salle</button> */}
     </div>
   );
 };
