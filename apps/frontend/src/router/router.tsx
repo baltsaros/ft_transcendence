@@ -49,9 +49,7 @@ export const router = createBrowserRouter([
 		path: "game",
 		element: (
 		  <ProtectedRoute>
-			<PongWebSocketProvider>
 				<GamePage />
-			</PongWebSocketProvider>
 		  </ProtectedRoute>
 		),
 	  },

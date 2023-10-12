@@ -1,12 +1,49 @@
+import { useEffect } from "react";
+import { usePongWebSocket } from "../context/PongWebSocketContext";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
   }
+
 const WaitingGame = ({onClose}: any) => {
 
-    //state
+    // STATE
 
-    //behaviour
+	// Créez une instance du service WebSocket
+	// Remplacez 'username' par le nom d'utilisateur approprié
+	const webSocket = usePongWebSocket();
+
+
+	// BEHAVIOUR
+
+	useEffect(() => {
+
+		// Lorsque le composant est monté, lancez l'événement "launchMatchmaking"
+		// Le service WebSocket gère la connexion WebSocket et l'événement
+		// "launchMatchmaking" sera intercepté côté serveur pour gérer la logique de matchmaking.
+		webSocket.emit('launchMatchmaking', {}); // Vous pouvez envoyer des données en fonction de vos besoins
+
+		webSocket.on('testMessage', (data: { content: string }) => {
+			console.log(data.content);
+		  });
+		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
+		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local
+		});
+
+		// Gestion des événements du serveur pour la mise en correspondance
+		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
+		  console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
+		});
+
+		webSocket.on('matchmakingError', (data: { message: string }) => {
+		  console.error(`Matchmaking error: ${data.message}`);
+		});
+
+		// N'oubliez pas de nettoyer la connexion WebSocket lorsque le composant est démonté
+		return () => {
+		  webSocket.disconnect();
+		};
+	  }, [webSocket]);
 
     const closeModal = () => {
         onClose();
@@ -15,7 +52,6 @@ const WaitingGame = ({onClose}: any) => {
     return (
         <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div className="fixed inset-0 bg-gray-500 bg-opacity-60 transition-opacity"></div>
-      
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <div className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
@@ -44,7 +80,7 @@ const WaitingGame = ({onClose}: any) => {
       </div>
         );
     }
-    
+
     export default WaitingGame;
     // <div className="items-center grid justify-center bg-gray-500 grid-rows-3 h-36">
     //     <div className="text-black text-3xl">

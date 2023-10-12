@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import RoomJoiner from "../components/RoomJoiner";
 
 const fieldWidth = 800;
 const fieldHeight = 600;
@@ -203,7 +202,6 @@ const GamePage: React.FC = () => {
 
 		<div className="game-container">
 			<h1>Welcome to the Game!</h1>
-			<RoomJoiner />
 			<div className="flex justify-center items-center h-screen">
 				<canvas
 					ref={canvasRef}

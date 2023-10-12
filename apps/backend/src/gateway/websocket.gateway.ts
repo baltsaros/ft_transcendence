@@ -66,20 +66,34 @@ joinPongRoom(client: Socket, roomId: string): void {
 
 // Gestion de l'événement "launchMatchmaking" côté serveur
 @SubscribeMessage('launchMatchmaking')
-handleLaunchMatchmaking(client: Socket) {
-  // Trouver une salle disponible
-  const availableRoom = Array.from(this.pongRooms.values()).find(
-	(room) => room.gameState === GameState.Waiting && room.players.size === 1,
-  );
+async handleLaunchMatchmaking(client: Socket) {
+	try {
+	// Trouver une salle disponible
+	const availableRoom = Array.from(this.pongRooms.values()).find(
+	  (room) => room.gameState === GameState.Waiting && room.players.size === 1,
+	);
 
-  if (availableRoom) {
-	// Rejoindre une salle disponible
-	this.joinPongRoom(client, availableRoom.id);
-  } else {
-	// Créer une nouvelle salle si aucune salle disponible n'a été trouvée
-	const newRoomId = this.createPongRoom(client);
-	// Émettre un événement pour informer le client du nouvel ID de la salle
-	client.emit('createdPongRoom', newRoomId);
+	if (availableRoom) {
+	  // Rejoindre une salle disponible
+	  this.joinPongRoom(client, availableRoom.id);
+
+	  // Émettre un événement pour informer le client du succès de la mise en correspondance
+	  client.emit('matchmakingSuccess', { roomId: availableRoom.id });
+	} else {
+	  // Créer une nouvelle salle si aucune salle disponible n'a été trouvée
+	  const newRoomId = this.createPongRoom(client);
+
+	  // Émettre un événement pour informer le client du nouvel ID de la salle
+	  client.emit('createdPongRoom', { roomId: newRoomId });
+
+	  // Émettre un événement pour informer le client du succès de la mise en correspondance
+	  client.emit('matchmakingSuccess', { roomId: newRoomId });
+	}
+  } catch (error) {
+	console.error(error);
+
+	// Émettre un événement pour informer le client en cas d'erreur
+	client.emit('matchmakingError', { message: 'Une erreur s\'est produite lors de la mise en correspondance.' });
   }
 }
 

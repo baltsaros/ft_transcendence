@@ -16,6 +16,7 @@ import { ChannelService } from "../services/channels.service";
 import { IChannelPassword, IChannelRelation } from "../types/types";
 import SettingsGame from "./GameSettings";
 import WaitingGame from "../components/WaitingGame";
+import { PongWebSocketProvider } from "../context/PongWebSocketContext";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -67,9 +68,11 @@ const handleCloseModal = () => {
             <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
               <div/>
               <div>
+				<PongWebSocketProvider>
                   <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
                   {modalView && <WaitingGame onClose={handleCloseModal}/>}
-              </div>
+				</PongWebSocketProvider>
+			  </div>
               <div>
                 <Link to="/chat">
                   <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">CHAT</button>
