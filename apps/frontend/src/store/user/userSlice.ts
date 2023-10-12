@@ -64,7 +64,7 @@ export const userSlice = createSlice({
     addFriend: (state, action: PayloadAction<string>) => {
       const friend = state.invitations.filter((user) => user.username === action.payload);
       console.log(action.payload);
-      // state.friends.push(friend);
+      state.friends.push(friend[0]);
     },
     removeFriend: (state, action: PayloadAction<string>) => {
       state.friends = state.friends.filter((user) => user.username !== action.payload);
