@@ -10,8 +10,6 @@ import { RootState, store } from "../store/store";
 import { addFriend, removeInvitation } from "../store/user/userSlice";
 
 export default function FriendInvitations(invitation: IUserUsername) {
-    
-    const invitationList = useSelector((state: RootState) => state.user.invitations);
 
     const acceptInvitation = async (invitation: string) => {
        try {
@@ -44,7 +42,7 @@ export default function FriendInvitations(invitation: IUserUsername) {
                     if (!senderId)
                     return toast.error("Friend to remove doesn't exist !");
                     await PlayerService.refuseInvitation({receiverId, senderId});
-                store.dispatch(removeInvitation(invitation));
+                    store.dispatch(removeInvitation(invitation));
             }
         } catch (err: any) {
           const error = err.response?.data.message;

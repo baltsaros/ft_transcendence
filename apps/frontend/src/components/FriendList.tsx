@@ -20,66 +20,60 @@ function FriendList() {
   const invitationList = useSelector((state: RootState) => state.user.invitations);
   const friendList = useSelector((state: RootState) => state.user.friends);
 
-    const [friendsOnline, setFriendsOnline] = useState<Number>(0);
-    const [friendsOffline, setFriendsOffline] = useState<Number>(0);
+  const isOnline = (value: IUserUsername) => value.status === 'online';
+  const isOffline = (value: IUserUsername) => value.status === 'offline';
 
-    const isOnline = (value: IUserUsername) => value.status === 'online';
-    const isOffline = (value: IUserUsername) => value.status === 'offline';
+  useEffect(() => {
+    store.dispatch(fetchInvitation());
+    store.dispatch(fetchFriends());
+      }, []);
 
-    useEffect(() => {
-      store.dispatch(fetchInvitation());
-      store.dispatch(fetchFriends());
-      console.log(friendList.length);
-      // setFriendsOffline(friendList.filter(isOffline).length);
-      // setFriendsOnline(friendList.filter(isOnline).length);
-        }, []);
-
-    //render
-        return (
-          <div className="py-2 ">
-            <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton className="text-lg"><FaUserFriends /></MenuButton>}>
-              <div className="bg-green-500 text-lg">
-                <MenuHeader className="text-white">Online</MenuHeader>
-              </div>
-              {friendList.filter(isOnline).length > 0 && friendList.map((friend) => (
-                friend.status ==="online" && <div className="bg-gray-500" key={friend.username}>
-                   <ToggleMenuFriendList {...friend} />
-                    </div>              
-              ))}
-              {!friendList.filter(isOnline).length && 
-                <div className="bg-gray-500 flex items-center justify-center text-sm">
-                  <MenuItem className="" disabled >No friends online</MenuItem>
-                </div>
-              }
-              <div className="bg-red-500 text-lg">
-              <MenuHeader className="text-white">Offline</MenuHeader>
-              </div>
-              {friendList.filter(isOffline).length > 0 && friendList.map((friend) => (
-                friend.status ==="offline" && 
-                  <div className="bg-gray-500" key={friend.username}>
-                    <ToggleMenuFriendList {...friend} />
-                  </div>              
-              ))}
-              {!friendList.filter(isOffline).length && 
-                <div className="bg-gray-500 flex items-center justify-center text-sm">
-                  <MenuItem className="" disabled >No friends offline</MenuItem>
-                </div>
-              }
-              <div className="bg-blue-500 text-lg">
-                <MenuHeader className="text-white">Invitations : {invitationList.length} </MenuHeader>
-                <div className="bg-gray-500">
-                  {invitationList.length > 0 && invitationList.map((invitation) => (
-                    <FriendInvitations key={invitation.username} {...invitation} />
-                  ))}
-                  </div >
-                  {!invitationList.length &&
-                    <div className=" bg-gray-500 flex items-center justify-center text-sm">
-                      <MenuItem disabled >No pending invitations</MenuItem>
-                    </div>
-                  }
-              </div>
-            </Menu>
+  //render
+  return (
+    <div className="py-2 ">
+      <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton className="text-lg"><FaUserFriends /></MenuButton>}>
+        <div className="bg-green-500 text-lg">
+          <MenuHeader className="text-white">Online</MenuHeader>
+        </div>
+        {friendList.filter(isOnline).length > 0 && friendList.map((friend) => (
+          friend.status ==="online" && <div className="bg-gray-500" key={friend.username}>
+              <ToggleMenuFriendList {...friend} />
+              </div>              
+        ))}
+        {!friendList.filter(isOnline).length && 
+          <div className="bg-gray-500 flex items-center justify-center text-sm">
+            <MenuItem className="" disabled >No friends online</MenuItem>
           </div>
-        )
+        }
+        <div className="bg-red-500 text-lg">
+        <MenuHeader className="text-white">Offline</MenuHeader>
+        </div>
+        {friendList.filter(isOffline).length > 0 && friendList.map((friend) => (
+          friend.status ==="offline" && 
+            <div className="bg-gray-500" key={friend.username}>
+              <ToggleMenuFriendList {...friend} />
+            </div>              
+        ))}
+        {!friendList.filter(isOffline).length && 
+          <div className="bg-gray-500 flex items-center justify-center text-sm">
+            <MenuItem className="" disabled >No friends offline</MenuItem>
+          </div>
+        }
+        <div className="bg-blue-500 text-lg">
+          <MenuHeader className="text-white">Invitations : {invitationList.length} </MenuHeader>
+          <div className="bg-gray-500">
+            {invitationList.length > 0 && invitationList.map((invitation) => (
+              <FriendInvitations key={invitation.username} {...invitation} />
+            ))}
+            </div >
+            {!invitationList.length &&
+              <div className=" bg-gray-500 flex items-center justify-center text-sm">
+                <MenuItem disabled >No pending invitations</MenuItem>
+              </div>
+            }
+        </div>
+      </Menu>
+    </div>
+  )
 }
 export default FriendList;
