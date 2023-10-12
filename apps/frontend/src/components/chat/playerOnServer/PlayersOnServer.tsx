@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { PlayerService } from '../../../services/player.service';
 import { IChannel, IUserUsername, IPlayersOnServerModalProps } from '../../../types/types';
-import DropdownButton from '../PlayersOnServerDropdownmenu';
+import DropdownButton from './PlayersOnServerDropdownmenu';
 import Cookies from 'js-cookie';
 
 interface ChildProps {

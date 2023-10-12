@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import ButtonWithModal from './ButtonWithModal';
-import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../types/types';
+import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../../types/types';
 import Cookies from 'js-cookie';
-import { PlayerService } from '../../services/player.service';
+import { PlayerService } from '../../../services/player.service';
 import { Link, NavLink, Navigate } from "react-router-dom";
 
 const DropdownButton = (player: IPlayersOnServerModalProps) => {

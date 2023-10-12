@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
-import { IPlayersOnServerModalProps } from "../../types/types";
-import { PlayerService } from "../../services/player.service";
+import { IPlayersOnServerModalProps } from "../../../types/types";
+import { PlayerService } from "../../../services/player.service";
 import { useEffect, useState } from "react";
 
 interface ModalProp {
