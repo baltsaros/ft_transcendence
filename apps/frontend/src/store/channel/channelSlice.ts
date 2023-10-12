@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
-import { IUser, IChannel } from "../../types/types";
+import { IChannel } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice

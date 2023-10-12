@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
-import { instance } from "../../api/axios.api";
-import { useAppSelector } from "../../store/hooks";
-import { RootState, store } from "../../store/store";
-import { addChannel } from "../../store/channel/channelSlice";
-import { useWebSocket } from "../../context/WebSocketContext";
-import { IChannelData, IResponseChannelData } from "../../types/types";
+import { useState } from "react";
+import { instance } from "../../../api/axios.api";
+import { useAppSelector } from "../../../store/hooks";
+import { RootState, store } from "../../../store/store";
+import { addChannel } from "../../../store/channel/channelSlice";
+import { useWebSocket } from "../../../context/WebSocketContext";
+import { IChannelData } from "../../../types/types";
 import { toast } from "react-toastify"
 
 interface ModalProp {
@@ -23,6 +23,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const [channelPassword, setChannelPassword] = useState('');
 
     /* BEHAVIOR */
+    // 1. Check if the channel dm exists (user - receiver user_channel search by channel name)
+    // 2. Channel creation method
     const handleChannelName = (event: React.ChangeEvent<HTMLInputElement>) => {
         setChannelName(event.target.value);
     }
@@ -42,7 +44,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     }
 
     /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
-    const handleOk = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleChannelCreation = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
             // event.preventDefault();
             const channelData: IChannelData = {
@@ -64,15 +66,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
         }
         onClose();
     }
-
-  //   useEffect(() => {
-  //     webSocketService.on('channelCreated', (payload: any) => {
-  //         console.log('channelCreated event payload:', payload);
-  //     })
-  //     return () => {
-  //         webSocketService.off('newChannel');
-  //     };
-  // }, []);
 
     /* RENDERING */
     return (
@@ -150,7 +143,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
           {/* Buttons */}
           <div className="flex justify-end">
             <button
-              onClick={handleOk}
+              onClick={handleChannelCreation}
               className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2">Ok
             </button>
             <button className="bg-green-500 text-white px-4 py-2 rounded-lg" onClick={handleCancel}>Cancel</button>

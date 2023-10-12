@@ -36,7 +36,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    console.log(client.id);
+    // console.log(client.id);
     const username = client.handshake.query.username.toString(); 
     // 1. Retrieve the channels the client is member of
     const channel = await this.channelService.findAll();
@@ -48,7 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     // 2. Make him join each room.
     filteredChannel.forEach((channel) => {
       client.join(channel.id.toString())
-      console.log("client joined:", channel.name);
+      // console.log("client joined:", channel.name);
     });
   }
 
@@ -82,11 +82,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('onNewChannel')
   async onNewChannel(client: Socket, payload: any) {
-    console.log('channelId:', payload.channelId)
-    console.log('id:', payload.id)
+    // console.log('channelId:', payload.channelId)
+    // console.log('id:', payload.id)
     client.join(payload.id);
     // this.server.to(payload.id).emit('channelCreated', payload);
   }
+
 
   /* any should be specified */
   @SubscribeMessage('onChannelJoin')
@@ -134,7 +135,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = await this.userService.findOne(payload.username);
       channel.users = channel.users.filter((usr) => usr.id !== user.id);
       await this.channelRepository.save(channel);
-      console.log('channel users after table update:', channel.users);
+      // console.log('channel users after table update:', channel.users);
       // this.server.emit('userLeft', payload);
       this.server.to(payload.channelId).emit('userLeft', payload);
       client.leave(payload.channelId);

@@ -1,5 +1,4 @@
 import { Module } from "@nestjs/common";
-import { GatewayService } from "./gateway.service";
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Channel } from "src/channel/channel.entity";
 import { GatewaySessionManager } from "./gateway.session";
@@ -14,8 +13,8 @@ import { User } from "src/user/entities/user.entity";
         ChannelModule,
     ],
     controllers: [],
-    providers: [GatewayService, GatewaySessionManager],
-    exports: [GatewayService],
+    providers: [GatewaySessionManager],
+    exports: [],
 })
 
 export class GatewayModule {}

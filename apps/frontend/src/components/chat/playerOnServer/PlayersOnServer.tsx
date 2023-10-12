@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-import { PlayerService } from '../../services/player.service';
-import { IUserUsername } from '../../types/types';
-import DropdownButtonOnLine from './PlayersOnServerOnline';
-import DropdownButtonOffLine from './PlayersOnServerOffline';
+import { PlayerService } from '../../../services/player.service';
+import { IChannel, IUserUsername, IPlayersOnServerModalProps } from '../../../types/types';
+import DropdownButton from './PlayersOnServerDropdownmenu';
 import Cookies from 'js-cookie';
 
-function PlayersOnServer() {
+interface ChildProps {
+    selectedChannel: IChannel | null;
+}
+
+const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
     
     // state
     const [onlinePlayers, setOnlinePlayers] = useState<IUserUsername[] | undefined>([
@@ -69,7 +72,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {onlinePlayers!.map(onlinePlayer => (
                             onlinePlayer.username !== loggedInUser && onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
-                                <DropdownButtonOnLine { ...onlinePlayer } />
+                                <DropdownButton { ...{ player: onlinePlayer, text: '', channel: selectedChannel } } />
                             </div>
                         ))}
                     </div>
@@ -79,7 +82,7 @@ function PlayersOnServer() {
                     <div className="flex flex-col text-black space-y-4">
                         {offlinePlayers!.map(offlinePlayer => (
                             offlinePlayer.username !== loggedInUser && offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
-                                <DropdownButtonOffLine { ...offlinePlayer } />
+                                <DropdownButton { ...{ player: offlinePlayer, text: '', channel: selectedChannel } } />
                             </div>
                         ))}
                     </div>
