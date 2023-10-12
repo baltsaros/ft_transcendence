@@ -9,6 +9,7 @@ import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
 import { PongWebSocketProvider } from "../context/PongWebSocketContext";
+import GameSettings from "../pages/GameSettings";
 
 export const router = createBrowserRouter([
   {
@@ -61,8 +62,13 @@ export const router = createBrowserRouter([
       {
         path: "*",
         element: <ErrorPage />
-      }
-
+      },
+      {path: "settings",
+        element: (
+          <ProtectedRoute>
+            <GameSettings />
+          </ProtectedRoute>
+        )},
     ],
   },
 ]);

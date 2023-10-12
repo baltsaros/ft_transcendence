@@ -53,7 +53,7 @@ export const PlayerService = {
 
   async refuseInvitation(invitation: IUserRelation)
   {
-    const { data} = await instance.post("user/refuseInvitation", invitation);
+    const { data } = await instance.post("user/refuseInvitation", invitation);
     if (data) return (true);
     return (false);
   },
@@ -69,6 +69,29 @@ export const PlayerService = {
   {
     const { data } = await instance.post("user/blockUser", friendRelation);
     if (data) return (true);
+    return (false);
+  },
+
+  async getBlocked(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/getBlocked", friendRelation);
+    //console.log(data);
+    //if (data) return (true);
+    return (data);
+  },
+
+  async getFriend(friendRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/getFriend", friendRelation);
+    //console.log(data);
+    return (data);
+  },
+
+  async unblockUser(blockRelation: IUserRelation)
+  {
+    const { data } = await instance.post("user/unblockUser", blockRelation);
+    if (data)
+      return (true);
     return (false);
   }
 };

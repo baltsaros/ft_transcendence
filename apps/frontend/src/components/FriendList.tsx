@@ -48,7 +48,7 @@ function FriendList() {
             }
           } catch (err: any) {}}
           getAllFriendsForUser();
-        }, [friends])
+        }, [])
 
         useEffect(() =>  {
           const getAllFriendsInvitations = async () => {
@@ -65,7 +65,7 @@ function FriendList() {
                 }
             } catch (err: any) {}}
             getAllFriendsInvitations();
-          }, [invitations])
+          }, [])
 
     //render
         return (

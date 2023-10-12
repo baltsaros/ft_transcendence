@@ -154,4 +154,22 @@ export class UserController {
   blockUser(@Body() invitation: UserRelationDto) {
     return (this.userService.blockUser(invitation));
   }
+
+  @Post("getBlocked")
+  @UseGuards(JwtAuthGuard)
+  getBlocked(@Body() relation: UserRelationDto) {
+    return (this.userService.getBlocked(relation));
+  }
+
+  @Post("getFriend")
+  @UseGuards(JwtAuthGuard)
+  getFriend(@Body() relation: UserRelationDto) {
+    return (this.userService.getFriend(relation));
+  }
+
+  @Post("unblockUser")
+  @UseGuards(JwtAuthGuard)
+  unblockUser(@Body() relation: UserRelationDto) {
+    return (this.userService.unblockUser(relation));
+  }
 }
