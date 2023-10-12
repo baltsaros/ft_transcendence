@@ -135,7 +135,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = await this.userService.findOne(payload.username);
       channel.users = channel.users.filter((usr) => usr.id !== user.id);
       await this.channelRepository.save(channel);
-      console.log('channel users after table update:', channel.users);
+      // console.log('channel users after table update:', channel.users);
       // this.server.emit('userLeft', payload);
       this.server.to(payload.channelId).emit('userLeft', payload);
       client.leave(payload.channelId);

@@ -1,9 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
+import { instance } from '../../../api/axios.api';
+import { toast } from 'react-toastify';
 import ButtonWithModal from './ButtonWithModal';
-import { IGetChannels, IUserUsername, IPlayersOnServerModalProps } from '../../../types/types';
+import { IChannelDmData, IPlayersOnServerModalProps } from '../../../types/types';
 import Cookies from 'js-cookie';
 import { PlayerService } from '../../../services/player.service';
 import { Link, NavLink, Navigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/store';
+import { store } from '../../../store/store';
+import { addChannel } from '../../../store/channel/channelSlice';
+import { useWebSocket } from '../../../context/WebSocketContext';
 
 const DropdownButton = (player: IPlayersOnServerModalProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,6 +18,8 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
   const dropdownMenuRef = useRef<any>(null);
   const [isUserBlocked, setIsUserBlocked] = useState(false);
   const [isUserFriend, setIsUserFriend] = useState(false);
+  const userLogged = useSelector((state: RootState) => state.user.user);
+  const webSocketService = useWebSocket();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -70,7 +79,38 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
   }
   logFriendStatus(); // Call the function to log the result
 
-  console.log('result is', isUserFriend);
+  // console.log('result is', isUserFriend);
+
+  const handleDirectMessage = async () => {
+    try{ 
+      const strings = [player.player.username, userLogged?.username];
+      strings.sort();
+      console.log('strings:', strings);
+      const channelName = strings.join('_');
+      console.log('channelName:', channelName);
+      const channelData: IChannelDmData = {
+          name: channelName,
+          mode: 'private',
+          sender: userLogged?.id!,
+          receiver: player.player.username,
+          password: '',
+      }
+      const newDmChannel = await instance.post('channel/dmChannel', channelData);
+      // console.log('newDmChannel', newDmChannel.data);
+      webSocketService.emit('onNewChannel', newDmChannel.data);
+      if (newDmChannel) {
+        toast.success("Channel successfully added!");
+        store.dispatch(addChannel(newDmChannel.data));
+      }
+  } catch (error: any) {
+      const err = error.response?.data.message;
+      toast.error(err.toString());
+  }
+  // onClose();
+    // 2. Update Redux state, component subscribed will re-render
+    // 3. Update the onSelectChannel state
+    
+  }
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: Event) => {
@@ -118,7 +158,7 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
               View Profile
             </Link>
             <button
-              onClick={() => handleItemClick(`Direct message for ${player.player.username}`)}
+              onClick={() => handleDirectMessage()}
               className="block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
             >
               Direct message
