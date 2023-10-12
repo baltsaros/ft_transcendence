@@ -9,7 +9,7 @@ import { Channel } from 'src/channel/channel.entity';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-
+import { GameState, Room } from './entities/room';
 
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
@@ -17,6 +17,8 @@ import { User } from 'src/user/entities/user.entity';
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
 */
 // websocket.gateway.ts
+
+
 
 @WebSocketGateway({
   cors: {
@@ -35,6 +37,53 @@ export class MainWebSocketGateway implements OnGatewayConnection, OnGatewayDisco
     private readonly userService: UserService,
   ) {}
 
+
+//  ************************** PONG MANAGER **************************
+private pongRooms: Map<string, Room> = new Map();
+
+// Crée une nouvelle salle Pong
+createPongRoom(client: Socket): string {
+    const roomId = this.generateRoomId(); // Générer un identifiant unique pour la salle
+    const room = new Room(roomId);
+    room.players.add(client.id);
+    this.pongRooms.set(roomId, room);
+    return roomId;
+  }
+
+  // Génère un identifiant unique pour la salle
+  private generateRoomId(): string {
+	const timestamp = new Date().getTime().toString(36);
+	const randomId = Math.random().toString(36).substring(2, 8);
+	return `${timestamp}_${randomId}`;
+  }
+
+joinPongRoom(client: Socket, roomId: string): void {
+	const room = this.pongRooms.get(roomId);
+
+	room.setGameState(GameState.inGame);
+	room.players.add(client.id);
+}
+
+// Gestion de l'événement "launchMatchmaking" côté serveur
+@SubscribeMessage('launchMatchmaking')
+handleLaunchMatchmaking(client: Socket) {
+  // Trouver une salle disponible
+  const availableRoom = Array.from(this.pongRooms.values()).find(
+	(room) => room.gameState === GameState.Waiting && room.players.size === 1,
+  );
+
+  if (availableRoom) {
+	// Rejoindre une salle disponible
+	this.joinPongRoom(client, availableRoom.id);
+  } else {
+	// Créer une nouvelle salle si aucune salle disponible n'a été trouvée
+	const newRoomId = this.createPongRoom(client);
+	// Émettre un événement pour informer le client du nouvel ID de la salle
+	client.emit('createdPongRoom', newRoomId);
+  }
+}
+
+//  ************************** CHAT MANAGER **************************
   async handleConnection(client: Socket){
     console.log(client.id);
     const username = client.handshake.query.username.toString();
