@@ -28,7 +28,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
         fetchData();
     }
    }, [selectedChannel]);
-  
+
    useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
         console.log('frontend message array: ', message);

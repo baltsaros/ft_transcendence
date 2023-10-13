@@ -6,10 +6,12 @@ import Cookies from 'js-cookie';
 const PongWebSocketContext = createContext<PongWebSocketService | undefined>(undefined);
 
 export const PongWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [pongWebSocketService, setPongWebSocketService] = useState<PongWebSocketService | undefined>();
+
+	const [pongWebSocketService, setPongWebSocketService] = useState<PongWebSocketService | undefined>();
 
   useEffect(() => {
     const user = Cookies.get('username');
+	console.log('user', user);
     if (user) {
       setPongWebSocketService(new PongWebSocketService(user));
     }

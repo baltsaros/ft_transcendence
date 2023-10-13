@@ -12,7 +12,7 @@ import { User } from 'src/user/entities/user.entity';
 import { GameState, Room } from './entities/room';
 
 
-/* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
+/* The handleChatConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
 */
@@ -37,9 +37,24 @@ export class MainWebSocketGateway implements OnGatewayConnection, OnGatewayDisco
     private readonly userService: UserService,
   ) {}
 
+  async handleConnection(client: Socket) {
+    const url = client.handshake.url;
+
+    if (url.startsWith('/chat')) {
+      this.handleChatConnection(client);
+    } else if (url.startsWith('/pong')) {
+      this.handlePongConnection(client);
+    } else {
+      // Gérer d'autres types de connexions si nécessaire
+    }
+  }
 
 //  ************************** PONG MANAGER **************************
 private pongRooms: Map<string, Room> = new Map();
+
+handlePongConnection(client: Socket) {
+	// Logique de gestion de la connexion pour le Pong
+}
 
 // Crée une nouvelle salle Pong
 createPongRoom(client: Socket): string {
@@ -69,6 +84,8 @@ joinPongRoom(client: Socket, roomId: string): void {
 async handleLaunchMatchmaking(client: Socket) {
 	try {
 	// Trouver une salle disponible
+	client.emit('testMessage', { content: 'This is a test message from the server' });
+
 	const availableRoom = Array.from(this.pongRooms.values()).find(
 	  (room) => room.gameState === GameState.Waiting && room.players.size === 1,
 	);
@@ -98,7 +115,7 @@ async handleLaunchMatchmaking(client: Socket) {
 }
 
 //  ************************** CHAT MANAGER **************************
-  async handleConnection(client: Socket){
+   async handleChatConnection(client: Socket){
     console.log(client.id);
     const username = client.handshake.query.username.toString();
     // 1. Retrieve the channels the client is member of
