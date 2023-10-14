@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
@@ -39,7 +38,8 @@ export default function SearchBar() {
 
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            console.log('user', payload.user.username, 'joined', payload.channelId);
+            console.log('userJoined event received');
+            // console.log('user', payload.user.username, 'joined', payload.channelId);
             store.dispatch(addNewUser(payload));
         })
         return () => {

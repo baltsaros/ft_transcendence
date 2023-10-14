@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { IResponseUser } from '../../../types/types';
+import { IChannel, IResponseUser } from '../../../types/types';
 import { instance } from '../../../api/axios.api';
 import { toast } from 'react-toastify';
 import ButtonWithModal from './ButtonWithModal';
@@ -94,13 +94,12 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
           receiver: player.player.username,
           password: '',
       }
+      // 1. The new instance in the channel table could be done directly in the backend when emitting the event
       const newDmChannel = await instance.post('channel/dmChannel', channelData);
-      const usernames = (newDmChannel.data.users as Array<{ username: string }>).map(user => user.username);
       const payload = {
-        user: usernames,
+        user: strings,
         id: newDmChannel.data.id,
       }
-      console.log('payload:', payload);
       webSocketService.emit('onNewDmChannel', payload);
       if (newDmChannel) {
         toast.success("Channel successfully added!");
@@ -111,6 +110,16 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
       toast.error(err.toString());
   } 
 }
+
+useEffect(() => {
+  webSocketService.on('DmChannelJoined', (payload: IChannel) => {
+    console.log('event DmChannelJoined received:', payload);
+    store.dispatch(addChannel(payload));
+  });
+  return () => {
+    webSocketService.off('DmChannelJoined');
+  };
+}, []);
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: Event) => {

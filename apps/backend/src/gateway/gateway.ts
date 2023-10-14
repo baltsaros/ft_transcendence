@@ -1,15 +1,14 @@
 import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayConnection, OnGatewayDisconnect, MessageBody, ConnectedSocket} from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io'
-import { newMessageDto } from 'src/channel/message/new-message.dto';
 import { OnEvent } from '@nestjs/event-emitter';
 import { GatewaySessionManager } from './gateway.session';
 import { ChannelService } from 'src/channel/channel.service';
 import { UserService } from 'src/user/user.service';
 import { Channel } from 'src/channel/channel.entity';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { IResponseUser } from 'src/types/types';
+import { IUserSocket } from 'src/types/types';
 
 
 
@@ -37,21 +36,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    // console.log(client.id);
-    this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
-    const username = client.handshake.query.username.toString(); 
+    // console.log('client id + username:', client.id, client.handshake.query.username.toString());
+    // this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
+    // const username = client.handshake.query.username.toString(); 
     // 1. Retrieve the channels the client is member of
-    const channel = await this.channelService.findAll();
+    // const channel = await this.channelService.findAll();
     // console.log('all:', channel);
-    const filteredChannel = channel.filter((channel) =>
-      channel.users.some((user) => 
-      user.username === username)
-    )
-    // 2. Make him join each room.
-    filteredChannel.forEach((channel) => {
-      client.join(channel.id.toString())
-      // console.log("client joined:", channel.name);
-    });
+    // const filteredChannel = channel.filter((channel) =>
+    //   channel.users.some((user) => 
+    //   user.username === username)
+    // )
+    // // 2. Make him join each room.
+    // filteredChannel.forEach((channel) => {
+    //   client.join(channel.id.toString())
+    //   console.log("client joined:", client.id, channel.name);
+    // });
   }
 
   handleDisconnect(client: any) {
@@ -61,12 +60,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @OnEvent('message.created')
   handleMessage(payload: any) {
     console.log('event emitted to', payload.channel.id);
-    // this.server.to(payload.channel.id).emit('onMessage', {
-    //   content: payload.content,
-    //   user: payload.user,
-    //   id: payload.id,
-    //   channel: payload.channel
-    // });
     this.server.emit('onMessage', {
       content: payload.content,
       user: payload.user,
@@ -75,36 +68,51 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  // @OnEvent('channel.created')
-  // handleNewChannel(payload: any) {
-  //   console.log('channel created event:', payload);
-
-  //   this.server.emit('newChannel', payload); // payload is not in line w. state of Redux slice
-  // }
-
   @SubscribeMessage('onNewChannel')
-  async onNewChannel(client: Socket, payload: any) {
-    // console.log('channelId:', payload.channelId)
-    // console.log('id:', payload.id)
-    client.join(payload.id);
-    // this.server.to(payload.id).emit('channelCreated', payload);
+  async onNewChannel(client: Socket, payload: string) {
+    try {
+      const newChannel = await this.channelRepository.findOne({
+        where: {
+          id: parseInt(payload),
+        },
+        relations: {
+          owner: true,
+          users: true,
+        },
+      });
+      const userMapping: Map<string, IUserSocket> = this.gatewaySessionManager.getUserMapping();
+      userMapping.forEach((socket) => {
+        socket.emit('newChannelCreated', newChannel);
+      } )
+      // console.log("client joined:", client.id, newChannel.name);
+      // this.server.to(payload).emit('newChannelCreated');
+      // this.server.emit('newChannelCreated');
+      // console.log('event emitted');
+    } catch(error) {
+      console.log('error');
+    }
   }
   
   @SubscribeMessage('onNewDmChannel')
   async onNewDmChannel(client: Socket, payload: any) {
-    // console.log('payload:', payload);
-    const test = payload.user[0];
-    // console.log('test 2:', this.gatewaySessionManager.getSocket(test));
+    const dmChannel = await this.channelRepository.findOne({
+      where: {
+        id: payload.id,
+      },
+      relations: {
+        users: true,
+      },
+    });
     payload.user.forEach((username) => {
       const socket = this.gatewaySessionManager.getSocket(username);
       if (socket) {
-        console.log('username, socketid', username, socket.id);
-        socket.join(payload.id.toString());
+        console.log('client:', username, 'joined:', socket.id);
+        socket.join(payload.id);
       }
     });
-}
-
-
+    this.server.to(payload.id).emit('DmChannelJoined', dmChannel);
+  }
+    
   /* any should be specified */
   @SubscribeMessage('onChannelJoin')
   async onChannelJoin(client: Socket, payload: any) {
@@ -129,8 +137,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       };
       client.join(payload.channelId);
       this.server.to(payload.channelId).emit('userJoined', value);
-      console.log(client.rooms);
-      // client.emit('userJoined', payload);
 
     }catch (error){
       console.log("error joining channel");

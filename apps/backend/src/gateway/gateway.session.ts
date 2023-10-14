@@ -5,13 +5,16 @@ import { IUserSocket } from "src/types/types";
 export class GatewaySessionManager {
     private readonly userMapping: Map<string, IUserSocket> = new Map();
     getSocket(username: string){
-        console.log('getSocket:', username);
         return this.userMapping.get(username);
     }
 
     setSocket(username: string, socket: IUserSocket){
         this.userMapping.set(username, socket);
-        console.log('userMapping:', this.userMapping);
+        // console.log('userMapping:', this.userMapping);
+    }
+
+    getUserMapping() {
+        return this.userMapping;
     }
 
     removeSocket(username: string){

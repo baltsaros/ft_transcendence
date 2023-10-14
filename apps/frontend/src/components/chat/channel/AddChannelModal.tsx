@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { instance } from "../../../api/axios.api";
 import { useAppSelector } from "../../../store/hooks";
 import { RootState, store } from "../../../store/store";
 import { addChannel } from "../../../store/channel/channelSlice";
 import { useWebSocket } from "../../../context/WebSocketContext";
-import { IChannelData } from "../../../types/types";
+import { IChannel, IChannelData } from "../../../types/types";
 import { toast } from "react-toastify"
 
 interface ModalProp {
@@ -46,7 +46,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
     const handleChannelCreation = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
-            // event.preventDefault();
             const channelData: IChannelData = {
                 name: channelName,
                 mode: channelMode,
@@ -55,10 +54,10 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             }
             const newChannel = await instance.post('channel', channelData);
             console.log('newChannel', newChannel.data);
-            webSocketService.emit('onNewChannel', newChannel.data);
+            webSocketService.emit('onNewChannel', newChannel.data.id);
             if (newChannel) {
               toast.success("Channel successfully added!");
-              store.dispatch(addChannel(newChannel.data));
+              // store.dispatch(addChannel(newChannel.data));
             }
         } catch (error: any) {
             const err = error.response?.data.message;
@@ -66,6 +65,16 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
         }
         onClose();
     }
+
+    useEffect(() => {
+      webSocketService.on('newChannelCreated', (payload: IChannel) => {
+        console.log('event newChannelCreated received:');
+        store.dispatch(addChannel(payload));
+      });
+      return () => {
+        webSocketService.off('newChannelCreated');
+      };
+    }, []);
 
     /* RENDERING */
     return (
