@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { store } from "../../../store/store";
 import AddChannelModal from "./AddChannelModal";
+import { useWebSocket } from "../../../context/WebSocketContext";
+import { addChannel } from "../../../store/channel/channelSlice";
+import { useAppDispatch } from "../../../store/hooks";
 
 function AddChannel () {
 
+    const webSocketService = useWebSocket();
+    const dispatch = useAppDispatch();
     /* STATE */
     const [modalView, setModalView] = useState(false);
 
@@ -14,6 +20,18 @@ function AddChannel () {
     const handleCloseModal = () => {
         setModalView(false);
     }
+
+    // useEffect(() => {
+    //     webSocketService.on('newChannelCreated', (payload: any) => {
+    //         console.log('here');
+    //         store.dispatch(addChannel(payload));
+    //     });
+        
+    //     return () => {
+    //         webSocketService.off('newChannelCreated');
+    //       };
+    //    }, []);
+    
 
     /* RENDER */
     return (

@@ -4,6 +4,8 @@ import { instance } from "../../api/axios.api";
 import { IChannel, IResponseMessage } from "../../types/types";
 import { useWebSocket } from "../../context/WebSocketContext";
 import ChatBar from "./ChatBar";
+import { store } from '../../store/store';
+import { addChannel } from '../../store/channel/channelSlice';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -42,6 +44,17 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
       };
    }, []);
 
+   useEffect(() => {
+    webSocketService.on('newChannelCreated', (payload: any) => {
+        console.log('here');
+        store.dispatch(addChannel(payload));
+    });
+    
+    return () => {
+        webSocketService.off('newChannelCreated');
+      };
+   }, []);
+
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */
     return (   
@@ -52,7 +65,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 </div>
                 <div className="text-lg font-bold mb-2 text-gray-600">
-                    {/* {<Scrollbar style={{ width: 300, height: 700 }}> */}
+                    {<Scrollbar style={{ width: 300, height: 700 }}>
                     {
                         selectedChannel &&
                         message.map((idx, index) => (
@@ -70,7 +83,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
                         </div>
                         </div>
                         ))}
-                    {/* </Scrollbar>} */}
+                    </Scrollbar>}
                     {
                     !selectedChannel &&
                     <h2>Select a channel</h2>

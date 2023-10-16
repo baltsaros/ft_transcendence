@@ -35,6 +35,7 @@ export class ChannelService {
         });
         newChannel.users = [user];
         const channel = await this.channelRepository.save(newChannel);
+        this.eventEmmiter.emit('newChannel', channel);
         return channel;
     }
 
