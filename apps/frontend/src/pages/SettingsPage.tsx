@@ -1,6 +1,5 @@
 import { useState } from "react";
 import GameSettings from "./GameSettings";
-import GamePage from "./GamePage";
   
 export default function SettingsPage(){
   

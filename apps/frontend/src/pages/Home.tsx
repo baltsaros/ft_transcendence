@@ -3,18 +3,10 @@ import { useState } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import { NavLink } from "react-router-dom";
 import jwtDecode from "jwt-decode";
-import { RootState } from "../store/store";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import FriendList from "../components/FriendList";
-import userSlice from "../store/user/userSlice";
-import { toast } from "react-toastify";
-import FriendInvitations from "../components/FriendInvitations";
-import { ChannelService } from "../services/channels.service";
-import { IChannelPassword, IChannelRelation } from "../types/types";
-import SettingsGame from "./GameSettings";
 import WaitingGame from "../components/WaitingGame";
 
 const Home: FC = () => {

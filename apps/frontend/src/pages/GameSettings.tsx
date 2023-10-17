@@ -1,6 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import GamePage from "./GamePage";
-import { Link, Navigate, generatePath, useNavigate } from "react-router-dom";
+import { Link, generatePath, useNavigate } from "react-router-dom";
 
 interface ModalProp {
   onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg

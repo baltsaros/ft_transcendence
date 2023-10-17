@@ -1,17 +1,14 @@
-import { useEffect, useState } from "react";
-import { PlayerService } from "../services/player.service";
+import { useEffect } from "react";
 import { IUserUsername } from "../types/types";
-import Cookies from "js-cookie";
 import ToggleMenuFriendList from "./ToggleMenuFriendList";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { Menu, MenuButton, MenuHeader, MenuItem } from '@szhsin/react-menu';
-import { toast } from "react-toastify";
 import FriendInvitations from "./FriendInvitations";
 import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
-import { addInvitation, fetchFriends, fetchInvitation } from "../store/user/userSlice";
+import { fetchFriends, fetchInvitation } from "../store/user/userSlice";
 
 
 function FriendList() {

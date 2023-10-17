@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
 import { IUserUsername } from "../types/types";
 import Cookies from "js-cookie";
 import { PlayerService } from "../services/player.service";
-import { Menu, MenuButton, MenuItem, SubMenu } from "@szhsin/react-menu";
+import { MenuItem } from "@szhsin/react-menu";
 import { toast } from "react-toastify";
-import { FaUserFriends } from "react-icons/fa";
-import { useSelector } from "react-redux";
-import { RootState, store } from "../store/store";
+import { store } from "../store/store";
 import { addFriend, removeInvitation } from "../store/user/userSlice";
 
 export default function FriendInvitations(invitation: IUserUsername) {

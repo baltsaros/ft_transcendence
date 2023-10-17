@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { Link } from "react-router-dom";
 import errorMeme from "../assets/what_are_you_trying_to_accomplish.jpg"
 
 const ErrorPage: FC = () => {
