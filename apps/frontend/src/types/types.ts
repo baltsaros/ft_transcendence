@@ -171,9 +171,8 @@ export interface IPlayersOnServerModalProps {
   channel : IChannel | null,
 }
 
-export interface IBallSettings {
-  maxValue: number,
-  minValue: number,
-  detailSetting: string,
-  description: string,
+export interface IGameSettings {
+  radius: number,
+  ballSpeed: number,
+  color: string,
 }
