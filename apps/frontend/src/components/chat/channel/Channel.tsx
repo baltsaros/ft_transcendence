@@ -29,7 +29,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     
     
     /* STATE */
-    
+
     /* BEHAVIOR */
     const handleLeaveChannel = async(id: number) => {
         const payload = {

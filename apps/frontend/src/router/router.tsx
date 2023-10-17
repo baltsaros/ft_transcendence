@@ -8,6 +8,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
+import { PongWebSocketProvider } from "../context/PongWebSocketContext";
 import GameSettings from "../pages/GameSettings";
 import SettingsPage from "../pages/SettingsPage";
 
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
         path: "chat",
         element: (
           <ProtectedRoute>
-            <Chat />
+            	<Chat />
           </ProtectedRoute>
         ),
       },
@@ -49,7 +50,7 @@ export const router = createBrowserRouter([
 		path: "game/:ballSpeed/:radius/:color",
 		element: (
 		  <ProtectedRoute>
-			  <GamePage />
+				<GamePage />
 		  </ProtectedRoute>
 		),
 	  },

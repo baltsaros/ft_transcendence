@@ -7,7 +7,11 @@ const fieldWidth = 800;
 const fieldHeight = 600;
 const paddleWidth = 10;
 const paddleHeight = 100;
+const paddleOffset = 3;
+const leftPaddleX = paddleOffset;
+const rightPaddleX = fieldWidth - paddleWidth - paddleOffset;
 const paddleSpeed = 20;
+const ballSpeed = 6;
 
 const GamePage: React.FC = () => {
 
@@ -150,6 +154,7 @@ const GamePage: React.FC = () => {
 				// Collision avec la raquette gauche, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
 			}
+
 			if (
 				newBallX + radiusNumber > fieldWidth - paddleWidth - 10 &&  // Prend en compte le décalage des raquettes
 				newBallY + radiusNumber > rightPaddleY &&
@@ -158,7 +163,6 @@ const GamePage: React.FC = () => {
 				// Collision avec la raquette droite, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
 			}
-
 
 			// Mettez à jour les valeurs de position de la balle
 			ballXRef.current = newBallX;
@@ -217,6 +221,7 @@ const GamePage: React.FC = () => {
 	}, []);
 
 	return (
+
 		<div className="game-container">
 			<h1>Welcome to the Game!</h1>
 			<div className="flex justify-center items-center h-screen">

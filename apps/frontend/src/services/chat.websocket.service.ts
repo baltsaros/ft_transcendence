@@ -3,7 +3,6 @@ import { io, Socket } from 'socket.io-client';
 class ChatWebSocketService {
     private socket: Socket;
   constructor(username: string) {
-    // this.socket = io('ws://localhost:3000');
     this.socket = io('ws://localhost:3000/chat', {
       query: {
         username: username,
@@ -26,6 +25,7 @@ class ChatWebSocketService {
   disconnect() {
     this.socket.close();
   }
+
 }
 
 export default ChatWebSocketService;
