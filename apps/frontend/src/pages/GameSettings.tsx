@@ -1,20 +1,28 @@
 import { ChangeEvent, useState } from "react";
+import GamePage from "./GamePage";
+import { Link, Navigate, generatePath, useNavigate } from "react-router-dom";
 
 interface ModalProp {
   onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
 }
 
-const GameSettings  = ({onClose}: any) => {
+const GameSettings = ({onClose}: any) => {
   
   //state
     //ball speed 5-10 + 4
     // size 3-20 + 2
     //color
-  //behaviour
-    const [ speed, setSpeed] = useState<number>(3);
+    //behaviour
+    const [ ballSpeed, setSpeed] = useState<number>(3);
     const [ radius, setRadius] = useState<number>(8);
     const [ color, setColor ] = useState<string>("white");
-  //render
+    const navigate = useNavigate();
+    //render
+    
+    const closeModal = () => {
+      onClose();
+      navigate("/");
+    }
 
   const handleSpeed = (e: ChangeEvent<HTMLInputElement>) => {
     setSpeed(e.target.valueAsNumber);
@@ -33,11 +41,14 @@ const GameSettings  = ({onClose}: any) => {
     setRadius(8);
     setSpeed(3);
   }
-
-  const closeModal = () => {
-    onClose();
-  }
   
+  
+  const handleGame = () => {
+    closeModal();
+    
+    // <GamePage {...{ballSpeed, radius, color}}/>
+  }
+
   return (
     <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
   <div className="fixed inset-0 bg-gray-500 bg-opacity-60 transition-opacity"></div>
@@ -56,7 +67,7 @@ const GameSettings  = ({onClose}: any) => {
         <div>
             <div>
                 <label className="mb-2 inline-block">
-                    Ball speed : {speed + 4}
+                    Ball ballSpeed : {ballSpeed}
                 </label>
             </div>
             <input
@@ -67,13 +78,12 @@ const GameSettings  = ({onClose}: any) => {
                 max="6"
                 id="ballSpeed"
                 onChange={handleSpeed}
-                defaultValue={speed}
-                value={speed}/>
+                value={ballSpeed}/>
             </div>
             <div>
             <div>
                 <label className="mb-2 inline-block">
-                    Ball size : {radius + 2}
+                    Ball size : {radius}
                 </label>
             </div>
             <input
@@ -84,7 +94,6 @@ const GameSettings  = ({onClose}: any) => {
                 max="18"
                 id="ballSize"
                 onChange={handleSize}
-                defaultValue={radius}
                 value={radius}/>
             </div>
             <div>
@@ -94,36 +103,37 @@ const GameSettings  = ({onClose}: any) => {
                         <input id="red-radio" type="radio" value="red" name="color"
                         checked={color === "red"}
                         onChange={handleColor}
-                        className="w-10 h-10 text-red-600 bg-red-500 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        className="w-10 h-10 text-red-600 bg-red-500 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2"/>
                     </div>
                     <div className="flex items-center mr-4">
                         <input id="green-radio" type="radio" value="green" name="color"
                         checked={color === "green"}
                         onChange={handleColor}
-                        className="w-10 h-10 text-green-600 bg-green-500 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"/>
+                        className="w-10 h-10 text-green-600 bg-green-500 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2"/>
                     </div>
                     <div className="flex items-center mr-4">
                         <input id="purple-radio" type="radio" value="purple" name="color"
                         checked={color === "purple"}
                         onChange={handleColor}
-                        className="w-10 h-10 text-purple-600 bg-purple-500 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        className="w-10 h-10 text-purple-600 bg-purple-500 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2" />
                     </div>
                     <div className="flex items-center mr-4">
                         <input id="teal-radio" type="radio" name="color" value="teal"
                         checked={color === "teal"}
-                        onChange={handleColor}className="w-10 h-10 text-teal-600 bg-teal-500 border-gray-300 rounded focus:ring-teal-500 dark:focus:ring-teal-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        onChange={handleColor}
+                        className="w-10 h-10 text-teal-600 bg-teal-500 border-gray-300 rounded focus:ring-teal-500 dark:focus:ring-teal-600 dark:ring-offset-gray-800 focus:ring-2" />
                     </div>
                     <div className="flex items-center mr-4">
                         <input id="yellow-radio" type="radio" name="color" value="yellow"
                         checked={color === "yellow"}
                         onChange={handleColor}
-                        className="w-10 h-10 text-yellow-400 bg-yellow-500 border-gray-300 rounded focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        className="w-10 h-10 text-yellow-400 bg-yellow-500 border-gray-300 rounded focus:ring-yellow-500 dark:focus:ring-yellow-600 dark:ring-offset-gray-800 focus:ring-2" />
                     </div>
                     <div className="flex items-center mr-4">
                         <input id="orange-radio" type="radio" name="color" value="orange"
                         checked={color === "orange"}
                         onChange={handleColor}
-                        className="w-10 h-10 text-orange-500 bg-orange-500 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                        className="w-10 h-10 text-orange-500 bg-orange-500 border-gray-300 rounded focus:ring-orange-500 dark:focus:ring-orange-600 dark:ring-offset-gray-800 focus:ring-2" />
                     </div>
                 </div>
             </div>
@@ -131,8 +141,8 @@ const GameSettings  = ({onClose}: any) => {
         <div className="bg-gray-400 px-4 py-3 grid grid-cols-6 gap-4">
             <button type="button" onClick={handleReset} className="col-start-1 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Reset</button>
             <button type="button" onClick={closeModal} className="col-start-5 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
-          <button type="button" className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</button>
-
+            {/* <button onClick={handleGame} className="btn btn-primary inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</button> */}
+            <Link to={generatePath("/game/:ballSpeed/:radius/:color",{ballSpeed: (ballSpeed + 4).toString(), radius: (radius + 2).toString(), color: color})} className="btn btn-primary inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</Link>
         </div>
       </div>
     </div>
