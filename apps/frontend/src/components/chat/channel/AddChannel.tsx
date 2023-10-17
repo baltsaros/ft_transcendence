@@ -21,18 +21,16 @@ function AddChannel () {
         setModalView(false);
     }
 
-    // useEffect(() => {
-    //     webSocketService.on('newChannelCreated', (payload: any) => {
-    //         console.log('here');
-    //         store.dispatch(addChannel(payload));
-    //     });
+    useEffect(() => {
+        webSocketService.on('newChannelCreated', (payload: any) => {
+            store.dispatch(addChannel(payload));
+        });
         
-    //     return () => {
-    //         webSocketService.off('newChannelCreated');
-    //       };
-    //    }, []);
+        return () => {
+            webSocketService.off('newChannelCreated');
+          };
+       }, []);
     
-
     /* RENDER */
     return (
     <div>

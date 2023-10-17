@@ -64,18 +64,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
         onClose();
     }
 
-
-    // useEffect(() => {
-    //   webSocketService.on('newChannelCreated', (data: any) => {
-    //     console.log('newChannelCreated event received on the client:', data);
-    //     store.dispatch(addChannel(data));
-    //   });
-    //   return () => {
-    //     webSocketService.off('newChannelCreated');
-    //   };
-    // }, []);
-
-  
     /* RENDERING */
     return (
         <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black z-50">

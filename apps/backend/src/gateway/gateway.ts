@@ -58,7 +58,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent('newChannel')
   handleNewChannel(payload: any) {
-    console.log('newChannel event received on the server:', payload);
+    // console.log('newChannel event received on the server:', payload);
     const userMapping: Map<string, IUserSocket> = this.gatewaySessionManager.getUserMapping();
       userMapping.forEach((socket) => {
         console.log('Sending newChannelCreated to socket:', socket.id);

@@ -44,17 +44,6 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
       };
    }, []);
 
-   useEffect(() => {
-    webSocketService.on('newChannelCreated', (payload: any) => {
-        console.log('here');
-        store.dispatch(addChannel(payload));
-    });
-    
-    return () => {
-        webSocketService.off('newChannelCreated');
-      };
-   }, []);
-
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */
     return (   

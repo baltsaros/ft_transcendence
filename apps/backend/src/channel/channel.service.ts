@@ -8,7 +8,6 @@ import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
-import passport from 'passport';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
