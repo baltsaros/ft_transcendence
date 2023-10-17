@@ -23,9 +23,9 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     {
         const fetchData = async () => {
             const message = await instance.get('channel/' + selectedChannel?.id);
-            console.log('backend response: ', message.data);
+            // console.log('backend response: ', message.data);
             setMessage(message.data.messages);
-            console.log('message state: ', message.data.messages);
+            // console.log('message state: ', message.data.messages);
         };
         fetchData();
     }
@@ -33,8 +33,8 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
   
    useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        console.log('frontend message array: ', message);
-        console.log('frontend payload :', payload);
+        // console.log('frontend message array: ', message);
+        // console.log('frontend payload :', payload);
         setMessage((prevMessages) => [...prevMessages, payload]);
         // setMessage((prev) => [...prev, payload]);
     });

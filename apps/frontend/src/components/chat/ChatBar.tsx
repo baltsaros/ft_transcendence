@@ -35,7 +35,6 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
         setMessage(event.target.value);
     }
 

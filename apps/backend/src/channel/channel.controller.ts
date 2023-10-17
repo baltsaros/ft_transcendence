@@ -34,7 +34,7 @@ export class ChannelController {
 
     @Get(":id")
     async fetchMessage(@Param("id") id: number) {
-        console.log('id', id);
+        // console.log('id', id);
         return this.ChannelService.fetchMessage(id);
     }
 
