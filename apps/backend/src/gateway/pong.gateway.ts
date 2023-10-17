@@ -68,8 +68,6 @@ import { Server, Socket } from 'socket.io';
 	@SubscribeMessage('launchMatchmaking')
 	async handleLaunchMatchmaking(@ConnectedSocket() client: Socket) {
 	  try {
-		client.emit('testMessage', { content: 'This is a test message from the server' });
-
 		const availableRoom = Array.from(this.pongRooms.values()).find(
 		  (room) => room.gameState === GameState.Waiting && room.players.size === 1
 		);

@@ -23,9 +23,6 @@ const WaitingGame = ({onClose}: any) => {
 		// "launchMatchmaking" sera intercepté côté serveur pour gérer la logique de matchmaking.
 		webSocket.emit('launchMatchmaking', {}); // Vous pouvez envoyer des données en fonction de vos besoins
 
-		webSocket.on('testMessage', (data: { content: string }) => {
-			console.log(data.content);
-		  });
 		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
 		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local
 		});

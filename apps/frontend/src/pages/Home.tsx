@@ -68,10 +68,8 @@ const handleCloseModal = () => {
             <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
               <div/>
               <div>
-				<PongWebSocketProvider>
                   <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
                   {modalView && <WaitingGame onClose={handleCloseModal}/>}
-				</PongWebSocketProvider>
 			  </div>
               <div>
                 <Link to="/chat">
