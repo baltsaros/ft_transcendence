@@ -1,21 +1,42 @@
 import { useState, useEffect } from "react";
+import { instance } from "../../../api/axios.api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
 import { useWebSocket } from "../../../context/WebSocketContext";
 import { store } from "../../../store/store";
 import { addNewUser } from "../../../store/channel/channelSlice";
+import { IChannel, IResponseUser } from "../../../types/types";
 
 export default function SearchBar() {
     
     const webSocketService = useWebSocket();
-    const user = useSelector((state: RootState) => state.user.username);
+    const userLogged = useSelector((state: RootState) => state.user);
     
     /* STATE */
     const [ input, setInput ] = useState<string>("");
     const channels = useSelector((state: RootState) => state.channel.channel);
 
+    const isTrue = (user: IResponseUser) => {
+        // console.log('redux:', userLogged.username);
+        // console.log('channel:', user.username);
+        return user.intraId === userLogged.user?.intraId;
+    }
+
+    const filterFunction = (channel:IChannel) => {
+        console.log('CHANNEL USERS:', channel.users);
+        const isUserInChannel = channel.users.some(isTrue);
+        return !isUserInChannel
+        console.log('result', isUserInChannel);
+    }
+
+    // const AccessibleChannel = channels.filter((channel) => filterFunction(channel));
+    const AccessibleChannel = channels.filter(filterFunction);
+    
+    console.log('Accessible Channels:', AccessibleChannel);
+    
     const filteredData = channels.filter((el) => {
+        filterFunction(el);
         if (input === '')
             return el;
         else
@@ -27,7 +48,7 @@ export default function SearchBar() {
         try{
             const payload = {
                 channelId: id,
-                username: user,
+                username: userLogged.username,
             }
             webSocketService.emit('onChannelJoin', payload);
 
@@ -60,7 +81,7 @@ export default function SearchBar() {
             <Scrollbar style={{width: 250, height: 250}}>
 
                 <ul>
-                {(input !== "") && filteredData.map((item) => (
+                {(input !== "") && AccessibleChannel.map((item) => (
                     <li key={item.id}>{item.name}
                     <button 
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
