@@ -100,7 +100,15 @@ export interface IMatchData {
 export interface IChannelData {
   name: string;
   mode: string;
-  owner: IUser;
+  owner: IResponseUser;
+  password: string;
+}
+
+export interface IChannelDmData {
+  name: string;
+  mode: string;
+  sender: number;
+  receiver: string;
   password: string;
 }
 
@@ -121,7 +129,8 @@ export interface IChannel {
   mode: string,
   name: string,
   password: string,
-  users: IUser[],
+  owner: IResponseUser,
+  users: IResponseUser[],
 }
 
 export interface IResponseGetChannels {
@@ -135,9 +144,10 @@ export interface IMessage {
 }
 
 export interface IUserRelation {
-  receiverId: number;
   senderId: number;
+  receiverId: number;
 }
+
 export interface IResponseMessage {
   content: string,
   user: IUser,
@@ -161,9 +171,8 @@ export interface IPlayersOnServerModalProps {
   channel : IChannel | null,
 }
 
-export interface IBallSettings {
-  maxValue: number,
-  minValue: number,
-  detailSetting: string,
-  description: string,
+export interface IGameSettings {
+  radius: number,
+  ballSpeed: number,
+  color: string,
 }

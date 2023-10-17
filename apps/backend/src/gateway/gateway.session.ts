@@ -13,6 +13,10 @@ export class GatewaySessionManager {
         // console.log('userMapping:', this.userMapping);
     }
 
+    getUserMapping() {
+        return this.userMapping;
+    }
+
     removeSocket(username: string){
         this.userMapping.delete(username);
     }

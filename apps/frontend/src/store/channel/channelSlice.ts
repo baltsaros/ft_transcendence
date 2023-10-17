@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
-import { IUser, IChannel } from "../../types/types";
+import { IChannel } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice
@@ -28,11 +28,11 @@ const channelSlice = createSlice({
   reducers: {
     addNewUser: (state, action) => {
       const { channelId, user } = action.payload;
-      console.log('channelId', channelId);
-      console.log('user', user);
+      // console.log('channelId', channelId);
+      // console.log('user', user);
       state.channel = state.channel.map((channel) => {
         if (channel.id === channelId) {
-          console.log('match on:', channel.id);
+          // console.log('match on:', channel.id);
           return {
             ...channel, // clone the channel obj
             users: [...channel.users, user], // copy user in the channel.users array
@@ -40,7 +40,7 @@ const channelSlice = createSlice({
         }
         return channel;
       })
-      console.log(state.channel);
+      // console.log(state.channel);
     },
     removeUser: (state, action) => {
       const { channelId, username } = action.payload;

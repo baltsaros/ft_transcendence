@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
-import { IChannelsData, IChannel } from 'src/types/types';
+import { IChannelsData, IChannel, IChannelDmData } from 'src/types/types';
 import { UserService } from '../user/user.service';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -34,7 +34,30 @@ export class ChannelService {
         });
         newChannel.users = [user];
         const channel = await this.channelRepository.save(newChannel);
+        this.eventEmmiter.emit('newChannel', channel);
         return channel;
+    }
+
+    async createDmChannel(channelDmData: IChannelDmData) {
+      // 1. create new channel
+      const sender = await this.userService.findOneById(channelDmData.sender);
+      const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
+        if (existingChannel) throw new BadRequestException("Channel already exists");
+      const receiver = await this.userService.findOne(channelDmData.receiver);
+      const newDmChannel = this.channelRepository.create({
+        name: channelDmData.name,
+        mode: channelDmData.mode,
+        owner: sender,
+        password: channelDmData.password,
+        users: [sender, receiver],
+      });
+      // console.log('sender:', sender);
+      // console.log('receiver:', receiver);
+      // newDmChannel.users.push(receiver);
+      // newDmChannel.users.push(sender);
+      const dmChannel = await this.channelRepository.save(newDmChannel);
+      // console.log('dmChannel:', dmChannel);
+      return(dmChannel);
     }
 
     async findOne(channelId: number)
@@ -52,6 +75,7 @@ export class ChannelService {
             {
                 relations: {
                     users: true,
+                    owner: true,
                 }
             }
         );

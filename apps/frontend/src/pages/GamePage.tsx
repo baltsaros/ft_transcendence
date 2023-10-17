@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
+
+const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
 const fieldWidth = 800;
 const fieldHeight = 600;
-const radius = 10;
 const paddleWidth = 10;
 const paddleHeight = 100;
 const paddleOffset = 3;
@@ -12,11 +14,31 @@ const paddleSpeed = 20;
 const ballSpeed = 6;
 
 const GamePage: React.FC = () => {
+
+	//check if radius is good.
+	const {radius="10"} = useParams();
+	let radiusNumber = 10;
+	if (!(isNaN(parseInt(radius)) || parseInt(radius) < 3 || parseInt(radius) > 20)) {
+		radiusNumber = parseInt(radius);
+	}
+
+	//check if speed is good.
+	const {ballSpeed = "7"} = useParams();
+	let ballSpeedNumber = 7;
+	if (!(isNaN(parseInt(ballSpeed)) || parseInt(ballSpeed) < 3 || parseInt(ballSpeed) > 20)) {
+		ballSpeedNumber = parseInt(ballSpeed);
+	}
+
+	//Check for good color.
+	let {color = "white"} = useParams();
+	if (!colors.includes(color))
+		color = "white";
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ballXRef = useRef(fieldWidth / 2);
 	const ballYRef = useRef(fieldHeight / 2);
-	const ballSpeedXRef = useRef(ballSpeed);
-	const ballSpeedYRef = useRef(ballSpeed);
+	const ballSpeedXRef = useRef(ballSpeedNumber);
+	const ballSpeedYRef = useRef(ballSpeedNumber);
 	const leftPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const player1ScoreRef = useRef(0);
@@ -68,7 +90,7 @@ const GamePage: React.FC = () => {
 			let newBallY = ballY + ballSpeedY; // Déplacez la balle verticalement
 
 			// Vérification des bords verticaux
-			if (newBallX + radius > fieldWidth)
+			if (newBallX + radiusNumber > fieldWidth)
 			{
 				// Inverser la direction horizontale en cas de collision avec les bords
 				ballSpeedXRef.current = -ballSpeedX;
@@ -86,14 +108,14 @@ const GamePage: React.FC = () => {
 				const radians = (randomAngle * Math.PI) / 180;
 
 				// Calculer les composantes X et Y en utilisant des fonctions trigonométriques
-				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
-				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
+				ballSpeedXRef.current = ballSpeedNumber * Math.cos(radians);
+				ballSpeedYRef.current = ballSpeedNumber * Math.sin(radians);
 
 				// Augmentez le score du joueur 1 lorsque la balle touche le bord droit
 				player1ScoreRef.current += 1;
 			}
 
-			if (newBallX - radius < 0) {
+			if (newBallX - radiusNumber < 0) {
 				// Inverser la direction horizontale en cas de collision avec les bords
 				ballSpeedXRef.current = -ballSpeedX;
 				newBallX = fieldWidth / 2;
@@ -110,33 +132,33 @@ const GamePage: React.FC = () => {
 				const radians = (randomAngle * Math.PI) / 180;
 
 				// Calculer les composantes X et Y en utilisant des fonctions trigonométriques
-				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
-				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
+				ballSpeedXRef.current = ballSpeedNumber * Math.cos(radians);
+				ballSpeedYRef.current = ballSpeedNumber * Math.sin(radians);
 
 				// Augmentez le score du joueur 2 lorsque la balle touche le bord gauche
 				player2ScoreRef.current += 1;
 			}
 
-			// Vérifiez les collisions avec les bords horizontaux
-			if (newBallY + radius > fieldHeight || newBallY - radius < 0) {
+			// Vérifiez les collisions avec les bords verticaux
+			if (newBallY + radiusNumber > fieldHeight || newBallY - radiusNumber < 0) {
 				// Inverser la direction verticale en cas de collision avec les bords
 				ballSpeedYRef.current = -ballSpeedY;
 			}
 
 			// Vérifiez les collisions avec les raquettes
 			if (
-				newBallX - radius < paddleWidth + paddleOffset &&  // Prend en compte le décalage des raquettes
-				newBallY + radius > leftPaddleY &&
-				newBallY - radius < leftPaddleY + paddleHeight
+				newBallX - radiusNumber < paddleWidth + 10 &&  // Prend en compte le décalage des raquettes
+				newBallY + radiusNumber > leftPaddleY &&
+				newBallY - radiusNumber < leftPaddleY + paddleHeight
 			) {
 				// Collision avec la raquette gauche, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
 			}
 
 			if (
-				newBallX + radius > fieldWidth - paddleWidth - paddleOffset &&  // Prend en compte le décalage des raquettes
-				newBallY + radius > rightPaddleY &&
-				newBallY - radius < rightPaddleY + paddleHeight
+				newBallX + radiusNumber > fieldWidth - paddleWidth - 10 &&  // Prend en compte le décalage des raquettes
+				newBallY + radiusNumber > rightPaddleY &&
+				newBallY - radiusNumber < rightPaddleY + paddleHeight
 			) {
 				// Collision avec la raquette droite, inversez la direction horizontale
 				ballSpeedXRef.current = -ballSpeedX;
@@ -167,14 +189,14 @@ const GamePage: React.FC = () => {
 			ctx.setLineDash([]); // Réinitialisez le motif de ligne
 
 			// Dessinez les raquettes
-			ctx.fillStyle = "white";
-			ctx.fillRect(leftPaddleX, leftPaddleY, paddleWidth, paddleHeight);
-			ctx.fillRect(rightPaddleX, rightPaddleY, paddleWidth, paddleHeight);
+			ctx.fillStyle = color;
+			ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
+			ctx.fillRect(fieldWidth - paddleWidth - 10, rightPaddleY, paddleWidth, paddleHeight);
 
 			// Dessinez la balle
 			ctx.fillStyle = "white";
 			ctx.beginPath();
-			ctx.arc(ballX, ballY, radius, 0, 2 * Math.PI);
+			ctx.arc(ballX, ballY, radiusNumber, 0, 2 * Math.PI);
 			ctx.fill();
 
 			// Dessinez les scores sur le canvas

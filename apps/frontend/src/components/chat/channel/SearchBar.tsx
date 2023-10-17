@@ -1,18 +1,17 @@
 import { useState, useEffect } from "react";
-
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
+import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useChatWebSocket } from "../../context/ChatWebSocketContext";
-import { store } from "../../store/store";
-import { addNewUser } from "../../store/channel/channelSlice";
+import { useWebSocket } from "../../../context/WebSocketContext";
+import { store } from "../../../store/store";
+import { addNewUser } from "../../../store/channel/channelSlice";
 
 export default function SearchBar() {
     
     const webSocketService = useChatWebSocket();
     const user = useSelector((state: RootState) => state.user.username);
     
-    /* state */
+    /* STATE */
     const [ input, setInput ] = useState<string>("");
     const channels = useSelector((state: RootState) => state.channel.channel);
 
@@ -23,8 +22,7 @@ export default function SearchBar() {
             return el.name.toLowerCase().match("^" + input);
     })
     
-    //behaviour
-
+    /* BEHAVIOUR */
     const handleJoinChannel = async (id: number) => {
         try{
             const payload = {
@@ -38,10 +36,9 @@ export default function SearchBar() {
         }
     }
 
-    /* Can't be the same for channel creation because add whole object to the state so return value is different */
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            console.log('user', payload.user.username, 'joined', payload.channelId);
+            // console.log('user', payload.user.username, 'joined', payload.channelId);
             store.dispatch(addNewUser(payload));
         })
         return () => {

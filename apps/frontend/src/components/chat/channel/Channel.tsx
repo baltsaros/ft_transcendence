@@ -1,11 +1,11 @@
 import AddChannel from "./AddChannel";
 import { useEffect } from 'react';
-import { IChannel } from "../../types/types";
+import { IChannel } from "../../../types/types";
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/store";
-import { store } from "../../store/store";
-import { fetchChannel, removeUser } from "../../store/channel/channelSlice";
-import { useChatWebSocket } from "../../context/ChatWebSocketContext";
+import { RootState } from "../../../store/store";
+import { store } from "../../../store/store";
+import { fetchChannel, removeUser } from "../../../store/channel/channelSlice";
+import { useWebSocket } from "../../../context/WebSocketContext";
 import SearchBar from "./SearchBar";
 
 
@@ -19,14 +19,15 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user.username);
 
-    console.log('Redux call channels:', channels);
-    const filteredChannels = channels.filter((channel) =>
+    // console.log('channels:', channels);
+    
+    const filteredChannels = channels.filter((channel) => 
         channel.users.some((user) =>
             user.username === userLogged
         )
     )
-    console.log('filtered channels:', filteredChannels);
-
+    
+    
     /* STATE */
 
     /* BEHAVIOR */

@@ -10,6 +10,7 @@ import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
 import { PongWebSocketProvider } from "../context/PongWebSocketContext";
 import GameSettings from "../pages/GameSettings";
+import SettingsPage from "../pages/SettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -46,7 +47,7 @@ export const router = createBrowserRouter([
         ),
       },
 	  {
-		path: "game",
+		path: "game/:ballSpeed/:radius/:color",
 		element: (
 		  <ProtectedRoute>
 				<GamePage />
@@ -64,7 +65,7 @@ export const router = createBrowserRouter([
       {path: "settings",
         element: (
           <ProtectedRoute>
-            <GameSettings />
+            <SettingsPage />
           </ProtectedRoute>
         )},
     ],

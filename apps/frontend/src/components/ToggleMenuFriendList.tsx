@@ -1,18 +1,22 @@
 import { MenuItem, SubMenu } from "@szhsin/react-menu";
-import { IUserRelation, IUserUsername } from "../types/types";
-import { NavLink, Navigate } from "react-router-dom";
+import {  IUserUsername } from "../types/types";
+import { NavLink } from "react-router-dom";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { PlayerService } from "../services/player.service";
 import Cookies from "js-cookie";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { RootState, store } from "../store/store";
+import { useSelector } from "react-redux";
+import { removeFriend } from "../store/user/userSlice";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
 
     //state
     const navigate = useNavigate();
+    const invitations = useSelector((state: RootState) => state.user.invitations);
 
     //behaviour
     
@@ -26,7 +30,10 @@ function ToggleMenuFriendList(user: IUserUsername) {
                 return toast.error("Friend to remove doesn't exist !");
             const data =  await PlayerService.removeFriend({receiverId, senderId});
             if (data)
+            {
+                store.dispatch(removeFriend(user.username));
                 toast.success("friend successfully deleted");
+            }
         } catch (err: any) {
           const error = err.response?.data.message;
         }
