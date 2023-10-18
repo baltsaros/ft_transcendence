@@ -5,13 +5,16 @@ import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import { Provider } from "react-redux";
 import { store } from "./store/store.ts";
-import { WebSocketProvider } from "./context/WebSocketContext.tsx";
+import { ChatWebSocketProvider } from "./context/chat.websocket.context.tsx";
+import { PongWebSocketProvider } from "./context/pong.websocket.context.tsx";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
-    <WebSocketProvider>
-    <App />
-    </WebSocketProvider>
+    <ChatWebSocketProvider>
+    	<PongWebSocketProvider>
+			<App />
+    	</PongWebSocketProvider>
+     </ChatWebSocketProvider>
     <ToastContainer position="bottom-left" autoClose={2000} />
   </Provider>
 );

@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
 import { store } from '../../../store/store';
 import { addChannel } from '../../../store/channel/channelSlice';
-import { useWebSocket } from '../../../context/WebSocketContext';
+import { useChatWebSocket } from '../../../context/chat.websocket.context';
 
 const DropdownButton = (player: IPlayersOnServerModalProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -20,7 +20,7 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
   const [isUserBlocked, setIsUserBlocked] = useState(false);
   const [isUserFriend, setIsUserFriend] = useState(false);
   const userLogged = useSelector((state: RootState) => state.user.user);
-  const webSocketService = useWebSocket();
+  const webSocketService = useChatWebSocket();
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);

@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { store } from "../../../store/store";
 import AddChannelModal from "./AddChannelModal";
-import { useWebSocket } from "../../../context/WebSocketContext";
+import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { addChannel } from "../../../store/channel/channelSlice";
 import { useAppDispatch } from "../../../store/hooks";
 import { IChannel } from "../../../types/types";
 
 function AddChannel () {
 
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
     const dispatch = useAppDispatch();
     /* STATE */
     const [modalView, setModalView] = useState(false);

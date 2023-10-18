@@ -3,14 +3,14 @@ import { instance } from "../../../api/axios.api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useWebSocket } from "../../../context/WebSocketContext";
+import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
 import { addNewUser } from "../../../store/channel/channelSlice";
 import { IChannel, IResponseUser } from "../../../types/types";
 
 export default function SearchBar() {
     
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
     const userLogged = useSelector((state: RootState) => state.user);
     
     /* STATE */
