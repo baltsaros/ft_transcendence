@@ -51,7 +51,14 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
         <div className="flex flex-grow w-full">
             <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
                 <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
+                {
+                    selectedChannel &&
+                    <h1 className="text-lg font-bold mb-2 text-gray-600">{selectedChannel?.name}</h1>
+                }
+                {
+                    !selectedChannel &&
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
+                }
                 </div>
                 <div className="text-lg font-bold mb-2 text-gray-600">
                     {<Scrollbar style={{ width: 300, height: 700 }}>
