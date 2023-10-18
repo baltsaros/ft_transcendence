@@ -75,6 +75,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   
   @SubscribeMessage('onNewDmChannel')
   async onNewDmChannel(client: Socket, payload: any) {
+    console.log('payload:', payload);
     const dmChannel = await this.channelRepository.findOne({
       where: {
         id: payload.id,
@@ -86,7 +87,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     payload.user.forEach((username) => {
       const socket = this.gatewaySessionManager.getSocket(username);
       if (socket) {
-        console.log('client:', username, 'joined:', socket.id);
+        console.log('client:', username, 'joined:', socket.id, payload.id);
         socket.join(payload.id);
       }
     });

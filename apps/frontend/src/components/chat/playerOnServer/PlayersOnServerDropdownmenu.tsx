@@ -103,7 +103,7 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
       webSocketService.emit('onNewDmChannel', payload);
       if (newDmChannel) {
         toast.success("Channel successfully added!");
-        store.dispatch(addChannel(newDmChannel.data));
+        // store.dispatch(addChannel(newDmChannel.data));
       }
   } catch (error: any) {
       const err = error.response?.data.message;
@@ -111,15 +111,15 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
   } 
 }
 
-useEffect(() => {
-  webSocketService.on('DmChannelJoined', (payload: IChannel) => {
-    console.log('event DmChannelJoined received:', payload);
-    store.dispatch(addChannel(payload));
-  });
-  return () => {
-    webSocketService.off('DmChannelJoined');
-  };
-}, []);
+// useEffect(() => {
+//   webSocketService.on('DmChannelJoined', (payload: IChannel) => {
+//     console.log('event DmChannelJoined received:', payload.users);
+//     store.dispatch(addChannel(payload));
+//   });
+//   return () => {
+//     webSocketService.off('DmChannelJoined');
+//   };
+// }, []);
 
   useEffect(() => {
     const closeDropdownOnOutsideClick = (event: Event) => {

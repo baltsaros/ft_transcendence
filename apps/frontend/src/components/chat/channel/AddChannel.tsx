@@ -4,6 +4,7 @@ import AddChannelModal from "./AddChannelModal";
 import { useWebSocket } from "../../../context/WebSocketContext";
 import { addChannel } from "../../../store/channel/channelSlice";
 import { useAppDispatch } from "../../../store/hooks";
+import { IChannel } from "../../../types/types";
 
 function AddChannel () {
 
@@ -30,6 +31,16 @@ function AddChannel () {
             webSocketService.off('newChannelCreated');
           };
        }, []);
+
+       useEffect(() => {
+        webSocketService.on('DmChannelJoined', (payload: IChannel) => {
+        //   console.log('event DmChannelJoined received:', payload.users);
+          store.dispatch(addChannel(payload));
+        });
+        return () => {
+          webSocketService.off('DmChannelJoined');
+        };
+      }, []);
     
     /* RENDER */
     return (
