@@ -9,7 +9,7 @@ import { IChannel } from "../../../types/types";
 function AddChannel () {
 
     const webSocketService = useChatWebSocket();
-    const dispatch = useAppDispatch();
+
     /* STATE */
     const [modalView, setModalView] = useState(false);
 

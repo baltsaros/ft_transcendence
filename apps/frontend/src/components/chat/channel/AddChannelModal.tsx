@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { instance } from "../../../api/axios.api";
 import { useAppSelector } from "../../../store/hooks";
-import { RootState, store } from "../../../store/store";
-import { addChannel } from "../../../store/channel/channelSlice";
-import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { IChannel, IChannelData } from "../../../types/types";
+import { RootState } from "../../../store/store";
+import { IChannelData } from "../../../types/types";
 import { toast } from "react-toastify"
 
 interface ModalProp {
@@ -14,13 +12,12 @@ interface ModalProp {
 const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
   
   const user = useAppSelector((state: RootState) => state.user.user);
-  const channel = useAppSelector((state: RootState) => state.channel.channel);
-  const webSocketService = useChatWebSocket();
   
   /* STATE */
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
     const [isProtected, setIsProtected] = useState(false);
+    const [isValid, setIsValid] = useState<boolean>(true);
     const [channelPassword, setChannelPassword] = useState('');
 
     /* BEHAVIOR */
@@ -44,9 +41,19 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
       onClose();
     }
 
+    const handleFormCheck = () => {
+      if (channelName.length === 0 || channelMode.length === 0 || (channelMode === 'Protected' && channelPassword.length === 0))
+        return false;
+      return true;
+    }
+
     /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
     const handleChannelCreation = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
+          // handleFormCheck(channelName, channelMode, channelPassword);
+          // console.log('isValid:', isValid);
+          if (handleFormCheck())
+          {
             const channelData: IChannelData = {
                 name: channelName,
                 mode: channelMode,
@@ -57,6 +64,9 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
             if (newChannel) {
               toast.success("Channel successfully added!");
             }
+          }
+          else
+            toast.error("Enter a value");
         } catch (error: any) {
             const err = error.response?.data.message;
             toast.error(err.toString());
