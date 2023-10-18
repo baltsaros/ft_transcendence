@@ -8,7 +8,6 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
-import { PongWebSocketProvider } from "../context/PongWebSocketContext";
 import GameSettings from "../pages/GameSettings";
 import SettingsPage from "../pages/SettingsPage";
 

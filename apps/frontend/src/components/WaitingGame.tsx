@@ -33,13 +33,20 @@ const WaitingGame = ({ onClose, isConnected }: ModalProp) => {
 		  console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
 		});
 
+		webSocket.on('leavePongRoom', (data: { roomId: string }) => {
+			console.log(`Leave the room ${data.roomId}...`);
+		});
+
+		webSocket.on('waitingForMatch', (data: { message: string }) => {
+			console.log(data);
+		});
+
 		webSocket.on('matchmakingError', (data: { message: string }) => {
 		  console.error(`Matchmaking error: ${data.message}`);
 		});
 
 		// N'oubliez pas de nettoyer la connexion WebSocket lorsque le composant est démonté
 		return () => {
-		  webSocket.disconnect();
 		};
 	  }, [webSocket, isConnected]);
 
