@@ -34,20 +34,21 @@ const Home: FC = () => {
   },  [])
 
   const [modalView, setModalView] = useState<boolean>(false);
-  const handleOpenModal = () => {
-    setModalView(true);
-  }
+  const [isWebSocketConnected, setIsWebSocketConnected] = useState<boolean>(false);
 
-const handleCloseModal = () => {
+  const handleOpenModal = () => {
+    // Établir la connexion WebSocket
+    // Mettre à jour isWebSocketConnected à true
+    setIsWebSocketConnected(true);
+    setModalView(true);
+  };
+
+  const handleCloseModal = () => {
+    // Fermer la connexion WebSocket
+    // Mettre à jour isWebSocketConnected à false
+    setIsWebSocketConnected(false);
     setModalView(false);
-  }
-  // const updateChannel = async (relation: IChannelPassword) => {
-  //   try {
-  //       if (await ChannelService.checkIfSamePassword(relation))
-  //         toast.success("Same password");
-  //       else
-  //         toast.error("HUH HUH not the same");
-  //    } catch (err: any) {}}
+  };
 
   return (
     <>
@@ -69,7 +70,7 @@ const handleCloseModal = () => {
               <div/>
               <div>
                   <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
-                  {modalView && <WaitingGame onClose={handleCloseModal}/>}
+                  {modalView && <WaitingGame onClose={handleCloseModal} isConnected={isWebSocketConnected}/>}
 			  </div>
               <div>
                 <Link to="/chat">

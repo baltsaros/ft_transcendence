@@ -3,9 +3,10 @@ import { usePongWebSocket } from "../context/pong.websocket.context";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
-  }
+	isConnected: boolean;
+}
 
-const WaitingGame = ({onClose}: any) => {
+const WaitingGame = ({ onClose, isConnected }: ModalProp) => {
 
     // STATE
 
@@ -18,10 +19,10 @@ const WaitingGame = ({onClose}: any) => {
 
 	useEffect(() => {
 
-		// Lorsque le composant est monté, lancez l'événement "launchMatchmaking"
-		// Le service WebSocket gère la connexion WebSocket et l'événement
-		// "launchMatchmaking" sera intercepté côté serveur pour gérer la logique de matchmaking.
-		webSocket.emit('launchMatchmaking', {}); // Vous pouvez envoyer des données en fonction de vos besoins
+		if (isConnected) {
+			// Établir la connexion WebSocket
+			webSocket.emit('launchMatchmaking', {});
+		  }
 
 		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
 		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local
@@ -40,7 +41,7 @@ const WaitingGame = ({onClose}: any) => {
 		return () => {
 		  webSocket.disconnect();
 		};
-	  }, [webSocket]);
+	  }, [webSocket, isConnected]);
 
     const closeModal = () => {
         onClose();

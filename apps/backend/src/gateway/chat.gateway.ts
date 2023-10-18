@@ -8,11 +8,11 @@ import { Channel } from 'src/channel/channel.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { GameState, Room } from './entities/room';
 import { IUserSocket } from 'src/types/types';
 
 
-/* The handleChatConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
+
+/* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
 */
@@ -36,89 +36,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userService: UserService,
   ) {}
 
-  async handleConnection(client: Socket) {
-    const url = client.handshake.url;
-
-    if (url.startsWith('/chat')) {
-      this.handleChatConnection(client);
-    } else if (url.startsWith('/pong')) {
-      this.handlePongConnection(client);
-    } else {
-      // Gérer d'autres types de connexions si nécessaire
-    }
-  }
-
-//  ************************** PONG MANAGER **************************
-private pongRooms: Map<string, Room> = new Map();
-
-handlePongConnection(client: Socket) {
-	// Logique de gestion de la connexion pour le Pong
-}
-
-// Crée une nouvelle salle Pong
-createPongRoom(client: Socket): string {
-    const roomId = this.generateRoomId(); // Générer un identifiant unique pour la salle
-    const room = new Room(roomId);
-    room.players.add(client.id);
-    this.pongRooms.set(roomId, room);
-    return roomId;
-  }
-
-  // Génère un identifiant unique pour la salle
-  private generateRoomId(): string {
-	const timestamp = new Date().getTime().toString(36);
-	const randomId = Math.random().toString(36).substring(2, 8);
-	return `${timestamp}_${randomId}`;
-  }
-
-joinPongRoom(client: Socket, roomId: string): void {
-	const room = this.pongRooms.get(roomId);
-
-	room.setGameState(GameState.inGame);
-	room.players.add(client.id);
-}
-
-// Gestion de l'événement "launchMatchmaking" côté serveur
-@SubscribeMessage('launchMatchmaking')
-async handleLaunchMatchmaking(client: Socket) {
-	try {
-	// Trouver une salle disponible
-	client.emit('testMessage', { content: 'This is a test message from the server' });
-
-	const availableRoom = Array.from(this.pongRooms.values()).find(
-	  (room) => room.gameState === GameState.Waiting && room.players.size === 1,
-	);
-
-	if (availableRoom) {
-	  // Rejoindre une salle disponible
-	  this.joinPongRoom(client, availableRoom.id);
-
-	  // Émettre un événement pour informer le client du succès de la mise en correspondance
-	  client.emit('matchmakingSuccess', { roomId: availableRoom.id });
-	} else {
-	  // Créer une nouvelle salle si aucune salle disponible n'a été trouvée
-	  const newRoomId = this.createPongRoom(client);
-
-	  // Émettre un événement pour informer le client du nouvel ID de la salle
-	  client.emit('createdPongRoom', { roomId: newRoomId });
-
-	  // Émettre un événement pour informer le client du succès de la mise en correspondance
-	  client.emit('matchmakingSuccess', { roomId: newRoomId });
-	}
-  } catch (error) {
-	console.error(error);
-
-	// Émettre un événement pour informer le client en cas d'erreur
-	client.emit('matchmakingError', { message: 'Une erreur s\'est produite lors de la mise en correspondance.' });
-  }
-}
-
-//  ************************** CHAT MANAGER **************************
-    // 1. Retrieve the channels the client is member of
-  async handleChatConnection(client: Socket){
+  async handleConnection(client: Socket){
     // console.log('client:', client.id, client.handshake.query.username.toString());
     this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
-    const username = client.handshake.query.username.toString(); 
+    const username = client.handshake.query.username.toString();
     const channel = await this.channelService.findAll();
     const filteredChannel = channel.filter((channel) =>
       channel.users.some((user) =>
@@ -185,7 +106,7 @@ async handleLaunchMatchmaking(client: Socket) {
           users: true,
         },
       })
-      const user = await this.userService.findOne(payload.username);
+      const user = await this.userService.findOne(payload.username); 
       channel.users.push(user);
       await this.channelRepository.save(channel);
       const channelId = channel.id;
@@ -222,4 +143,3 @@ async handleLaunchMatchmaking(client: Socket) {
     }
   }
 }
-

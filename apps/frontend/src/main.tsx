@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     	<PongWebSocketProvider>
 			<App />
     	</PongWebSocketProvider>
-    </ChatWebSocketProvider>
+     </ChatWebSocketProvider>
     <ToastContainer position="bottom-left" autoClose={2000} />
   </Provider>
 );
