@@ -17,6 +17,7 @@ import { IUserSocket } from 'src/types/types';
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
 */
 @WebSocketGateway({
+	namespace: '/chat',
     cors: {
       // origin: ['http://localhost:5173'],
       origin: '*',
@@ -38,10 +39,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleConnection(client: Socket){
     // console.log('client:', client.id, client.handshake.query.username.toString());
     this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
-    const username = client.handshake.query.username.toString(); 
+    const username = client.handshake.query.username.toString();
     const channel = await this.channelService.findAll();
     const filteredChannel = channel.filter((channel) =>
-      channel.users.some((user) => 
+      channel.users.some((user) =>
       user.username === username)
     )
     // 2. Make him join each room.

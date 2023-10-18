@@ -2,7 +2,7 @@ import { Scrollbar } from 'react-scrollbars-custom';
 import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IResponseMessage } from "../../types/types";
-import { useWebSocket } from "../../context/WebSocketContext";
+import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
 import { store } from '../../store/store';
 import { addChannel } from '../../store/channel/channelSlice';
@@ -12,7 +12,7 @@ interface ChildProps {
 }
 
 const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
 
     /* STATE */
     const [message, setMessage] = useState<IResponseMessage[]>([]);
@@ -30,7 +30,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
         fetchData();
     }
    }, [selectedChannel]);
-  
+
    useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
         // console.log('frontend message array: ', message);

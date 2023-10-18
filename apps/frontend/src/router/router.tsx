@@ -40,7 +40,7 @@ export const router = createBrowserRouter([
         path: "chat",
         element: (
           <ProtectedRoute>
-            <Chat />
+            	<Chat />
           </ProtectedRoute>
         ),
       },
@@ -48,7 +48,7 @@ export const router = createBrowserRouter([
 		path: "game/:ballSpeed/:radius/:color",
 		element: (
 		  <ProtectedRoute>
-			  <GamePage />
+				<GamePage />
 		  </ProtectedRoute>
 		),
 	  },

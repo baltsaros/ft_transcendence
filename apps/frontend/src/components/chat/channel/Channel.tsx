@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { store } from "../../../store/store";
 import { fetchChannel, removeUser } from "../../../store/channel/channelSlice";
-import { useWebSocket } from "../../../context/WebSocketContext";
+import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import SearchBar from "./SearchBar";
 
 
@@ -15,7 +15,7 @@ interface ChildProps {
 
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     /* Use useSelector() hook to access the channel state in the Redux store */
-    const webSocketService = useWebSocket();
+    const webSocketService = useChatWebSocket();
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user.username);
 
@@ -29,7 +29,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     
     
     /* STATE */
-    
+
     /* BEHAVIOR */
     const handleLeaveChannel = async(id: number) => {
         const payload = {

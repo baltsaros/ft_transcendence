@@ -1,10 +1,10 @@
 import { io, Socket } from 'socket.io-client';
 
-class WebSocketService {
+class PongWebSocketService {
     private socket: Socket;
   constructor(username: string) {
     // this.socket = io('ws://localhost:3000');
-    this.socket = io('ws://localhost:3000', {
+    this.socket = io('ws://localhost:3000/pong', {
       query: {
         username: username,
       },
@@ -28,5 +28,5 @@ class WebSocketService {
   }
 }
 
-export default WebSocketService;
+export default PongWebSocketService;
 
