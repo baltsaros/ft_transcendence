@@ -78,7 +78,7 @@ import { GameState, Room } from './entities/room';
 		try {
 			if (!this.waitingPlayers.includes(client)) {
 				// Ajouter le joueur à la file d'attente
-				this.waitingPlayers.push(client);
+			this.waitingPlayers.push(client);
 				// Vérifier si suffisamment de joueurs sont en attente pour former un match
 				if (this.waitingPlayers.length >= 2) {
 					// Retirer les deux premiers joueurs de la file d'attente
@@ -110,4 +110,26 @@ import { GameState, Room } from './entities/room';
 			});
 		  }
 	  }
+
+		@SubscribeMessage('removeFromQueue')
+		async handleRemoveFromQueue(@ConnectedSocket() client: Socket) {
+			try {
+				// Vérifiez d'abord si le joueur est dans la file d'attente
+				const index = this.waitingPlayers.indexOf(client);
+				if (index !== -1) {
+					// Retirez le joueur de la file d'attente
+					this.waitingPlayers.splice(index, 1);
+					console.log(`Player ${client.id} removed from the waiting queue.`);
+					client.emit('removeFromQueueSuccess', {
+						message: 'Vous avez été retiré de la file d\'attente.',
+					});
+				}
+			}
+			catch (error) {
+				console.error(error);
+				client.emit('removeFromQueueError', {
+					message: 'Une erreur s\'est produite lors du retrait de la file d\'attente.',
+				});
+			}
+		}
 }

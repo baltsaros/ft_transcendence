@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 import { useState } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import { NavLink } from "react-router-dom";
@@ -16,7 +16,8 @@ import { ChannelService } from "../services/channels.service";
 import { IChannelPassword, IChannelRelation } from "../types/types";
 import SettingsGame from "./GameSettings";
 import WaitingGame from "../components/WaitingGame";
-import { PongWebSocketProvider } from "../context/PongWebSocketContext";
+import { usePongWebSocket } from "../context/pong.websocket.context";
+import { io, Socket } from "socket.io-client";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
@@ -24,6 +25,7 @@ const Home: FC = () => {
   const dispatch = useAppDispatch();
   const [count, setCount] = useState(0);
   const token = Cookies.get('jwt_token');
+  const webSocketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
     if (token){
@@ -34,21 +36,35 @@ const Home: FC = () => {
   },  [])
 
   const [modalView, setModalView] = useState<boolean>(false);
-  const [isWebSocketConnected, setIsWebSocketConnected] = useState<boolean>(false);
+
+    // Créez la socket WebSocket si elle n'existe pas déjà
 
   const handleOpenModal = () => {
-    // Établir la connexion WebSocket
-    // Mettre à jour isWebSocketConnected à true
-    setIsWebSocketConnected(true);
+    // Ouvrez le modal en passant la socket WebSocket en tant que prop
+	if (!webSocketRef.current) {
+		webSocketRef.current = io('ws://localhost:3000/pong', {
+		  query: {
+			username: Cookies.get('username'),
+		  },
+		});
+	}
     setModalView(true);
   };
 
   const handleCloseModal = () => {
-    // Fermer la connexion WebSocket
-    // Mettre à jour isWebSocketConnected à false
-    setIsWebSocketConnected(false);
-    setModalView(false);
+    // Fermez le modal
+	webSocketRef.current?.close();
+    webSocketRef.current = null;
+	setModalView(false);
   };
+
+  // const updateChannel = async (relation: IChannelPassword) => {
+  //   try {
+  //       if (await ChannelService.checkIfSamePassword(relation))
+  //         toast.success("Same password");
+  //       else
+  //         toast.error("HUH HUH not the same");
+  //    } catch (err: any) {}}
 
   return (
     <>
@@ -70,8 +86,8 @@ const Home: FC = () => {
               <div/>
               <div>
                   <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
-                  {modalView && <WaitingGame onClose={handleCloseModal} isConnected={isWebSocketConnected}/>}
-			  </div>
+                  {modalView && <WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />}
+              </div>
               <div>
                 <Link to="/chat">
                   <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">CHAT</button>

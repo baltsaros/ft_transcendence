@@ -1,28 +1,25 @@
 import { useEffect } from "react";
+import { Socket } from "socket.io-client";
 import { usePongWebSocket } from "../context/pong.websocket.context";
+import PongWebSocketService from "../services/pong.websocket.service";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
-	isConnected: boolean;
+	webSocket: Socket;
 }
 
-const WaitingGame = ({ onClose, isConnected }: ModalProp) => {
+const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
     // STATE
 
 	// Créez une instance du service WebSocket
-	// Remplacez 'username' par le nom d'utilisateur approprié
-	const webSocket = usePongWebSocket();
-
-
+	// const webSocket = usePongWebSocket();
+	// const webSocket = usePongWebSocket();
 	// BEHAVIOUR
 
 	useEffect(() => {
-
-		if (isConnected) {
 			// Établir la connexion WebSocket
-			webSocket.emit('launchMatchmaking', {});
-		  }
+		webSocket.emit('launchMatchmaking', {});
 
 		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
 		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local
@@ -41,18 +38,20 @@ const WaitingGame = ({ onClose, isConnected }: ModalProp) => {
 			console.log(data);
 		});
 
+
 		webSocket.on('matchmakingError', (data: { message: string }) => {
 		  console.error(`Matchmaking error: ${data.message}`);
 		});
 
-		// N'oubliez pas de nettoyer la connexion WebSocket lorsque le composant est démonté
 		return () => {
+			webSocket.disconnect();
 		};
-	  }, [webSocket, isConnected]);
+	  }, [webSocket]);
 
     const closeModal = () => {
-        onClose();
-      }
+		webSocket.emit('removeFromQueue', {});
+		onClose();
+    }
     //render
     return (
         <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
