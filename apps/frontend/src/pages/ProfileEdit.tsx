@@ -38,6 +38,8 @@ const ProfileEdit: FC = () => {
         status: user ? user.status : "",
         wins: user ? user.wins : 0,
         loses: user ? user.loses : 0,
+        invitations: user ? user.invitations : [],
+        friends: user ? user.friends : [],
         createdAt: user ? user.createdAt : new Date(),
       };
       if (twoFA && !(user?.twoFactorAuth)) {
