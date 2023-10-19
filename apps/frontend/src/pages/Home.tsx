@@ -8,7 +8,7 @@ import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import WaitingGame from "../components/WaitingGame";
-import { PongWebSocketProvider } from "../context/PongWebSocketContext";
+import { PongWebSocketProvider } from "../context/pong.websocket.context";
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);
