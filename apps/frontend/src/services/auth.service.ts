@@ -17,10 +17,6 @@ export const AuthService = {
     const { data } = await instance.post<IUser>("auth/login", userData);
     return data;
   },
-  async redir(): Promise<IResponseUser | undefined> {
-    const { data } = await instance.get<IResponseUser>("auth/redir");
-    if (data) return data;
-  },
   async getProfile(): Promise<IResponseUser | undefined> {
     const { data } = await instance.get<IResponseUser>("auth/profile");
     if (data) return data;

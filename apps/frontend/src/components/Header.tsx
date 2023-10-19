@@ -15,6 +15,7 @@ import FriendInvitations from "./FriendInvitations";
 import FriendList from "./FriendList";
 import { AuthService } from "../services/auth.service";
 import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
+import axios from "axios";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -47,6 +48,18 @@ const Header: FC = () => {
     Cookies.remove("jwt_token");
     Cookies.remove("username");
     navigate("/");
+  };
+
+  const redirection = async () => {
+    fetch("http://localhost:3000/api/auth/redir", {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        contentType: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
   };
 
   // useEffect(() => {
@@ -147,12 +160,18 @@ const Header: FC = () => {
           <FaSignOutAlt />
         </button>
       ) : (
-        <Link
+        <a
           className="py-2 text-white/50 hover:text-white ml-auto"
-          to={"http://localhost:3000/api/auth/redir"}
+          href={'http://localhost:3000/api/auth/redir'}
         >
           42 API
-        </Link>
+        </a>
+        // <span
+        //   className="py-2 text-white/50 hover:text-white ml-auto"
+        //   onClick={redirection}
+        // >
+        //   42 API
+        // </span>
       )}
     </header>
   );

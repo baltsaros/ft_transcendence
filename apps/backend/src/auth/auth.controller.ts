@@ -4,8 +4,6 @@ import {
   Get,
   Post,
   Param,
-  HttpCode,
-  HttpStatus,
   Request,
   Response,
   UseGuards,
@@ -14,11 +12,10 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { Public } from "./decorators/public.decorators";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { AuthGuard } from "@nestjs/passport";
 import { FortyTwoAuthGuard } from "./guards/42.guard";
+
+
 
 @Controller("auth")
 export class AuthController {
@@ -28,15 +25,17 @@ export class AuthController {
 
   @Get("redir")
   @UseGuards(FortyTwoAuthGuard)
-  async fortyTwoAPI(@Request() req, @Response() res) {
+  async fortyTwoAPI(@Request() req, @Response({passthrough: true}) res) {
+    // console.log('redir');
     const user = req.user.user;
     const firstEntry = req.user.first;
+    const path = process.env.REDIR ? process.env.REDIR : "http://localhost:5173";
     if (user.twoFactorAuth) {
       res.cookie("intraId", user.intraId, {
         sameSite: "none",
         secure: true,
       });
-      return res.redirect("http://localhost:5173/auth");
+      return res.redirect(path + "/auth");
     }
     const jwt = await this.authService.login(user);
     res.cookie("jwt_token", jwt.access_token, {
@@ -44,8 +43,8 @@ export class AuthController {
       secure: true,
     });
     if (firstEntry)
-      return res.redirect("http://localhost:5173/edit");
-    return res.redirect("http://localhost:5173");
+      return res.redirect(path + "/edit");
+    return res.redirect(path);
   }
 
   @Post("login")

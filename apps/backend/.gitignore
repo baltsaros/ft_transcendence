@@ -38,6 +38,6 @@ lerna-debug.log*
 
 # Other
 .env_back
-.env
+.env.prod
 /src/uploads/avatars/
 /src/uploads/avatars/*

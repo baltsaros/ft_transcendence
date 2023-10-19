@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     ports: 
-      - "5173:5173"
+      - "5173:3000"
       - "3000:3000"
     networks:
       - turbo
@@ -29,10 +29,8 @@ services:
     volumes: 
       - ./apps/backend:/ft_transcendence/apps/backend
       - ./apps/frontend:/ft_transcendence/apps/frontend
-      - ./logs/backend:/ft_transcendence/logs/backend/logs
-      - ./logs/frontend:/ft_transcendence/logs/frontend/logs
     env_file:
-      - .env
+      - .env.prod
     restart: always
 
 networks:
