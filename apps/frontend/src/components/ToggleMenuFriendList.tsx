@@ -16,7 +16,6 @@ function ToggleMenuFriendList(user: IUserUsername) {
 
     //state
     const navigate = useNavigate();
-    const invitations = useSelector((state: RootState) => state.user.invitations);
 
     //behaviour
     

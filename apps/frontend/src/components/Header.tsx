@@ -15,7 +15,6 @@ import FriendInvitations from "./FriendInvitations";
 import FriendList from "./FriendList";
 import { AuthService } from "../services/auth.service";
 import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
-import axios from "axios";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -24,21 +23,6 @@ const Header: FC = () => {
   const navigate = useNavigate();
   const avatar = getAvatar();
   const username = getUsername();
-
-  // const [avatar, setAvatar] = useState<any>({ source: "" });
-  // const [filename, setFilename] = useState<string>("");
-
-  // const checkAvatar = async () => {
-  //   console.log('user: ' + user);
-  //   if (user?.avatar) setFilename(user?.avatar);
-  //   console.log('filename: ' + filename);
-  //   if (filename.includes("https")) {
-  //     setAvatar({ source: filename });
-  //     return ;
-  //   }
-  //   const base64 = await AuthService.getAvatar(filename);
-  //   setAvatar({ source: "data:;base64," + base64 });
-  // }
 
   const logoutHandler = async () => {
     dispatch(logout());
@@ -61,22 +45,6 @@ const Header: FC = () => {
       .then((data) => console.log(data))
       .catch((error) => console.error(error));
   };
-
-  // useEffect(() => {
-  //   checkAvatar();
-  //   console.log('ava: ' + user?.avatar);
-  //   console.log('source: ' + avatar.source);
-  // }, []);
-
-  // const UserComponent = async () => {
-  //   // const [username, setUsername] = useState('');
-  //   const data = await AuthService.getProfile();
-  //   console.log('frotend data: ' + data?.avatar);
-  //   console.log('frotend data: ' + data?.username);
-  //   if (data?.avatar)
-  //     setAvatar(data?.avatar);
-  //   // console.log(data);
-  // };
 
   return (
     <header className="flex items-center p-4 pr-10 shadow-sm bg-gray-500 backdrop-blur-sm">
@@ -118,7 +86,6 @@ const Header: FC = () => {
                   <MenuHeader>
                     <li>
                       <NavLink
-                        // to={"player/" + Cookies.get('username')}
                         to={"player/" + username}
                         className={({ isActive }) =>
                           isActive
@@ -133,7 +100,6 @@ const Header: FC = () => {
                   <MenuHeader>
                     <li>
                       <NavLink
-                        // to={"player/" + Cookies.get('username')}
                         to={"edit"}
                         className={({ isActive }) =>
                           isActive
@@ -162,7 +128,7 @@ const Header: FC = () => {
       ) : (
         <a
           className="py-2 text-white/50 hover:text-white ml-auto"
-          href={'http://localhost:3000/api/auth/redir'}
+          href={"http://localhost:3000/api/auth/redir"}
         >
           42 API
         </a>
