@@ -4,10 +4,11 @@ import { Link, Navigate, generatePath, useNavigate } from "react-router-dom";
 
 interface ModalProp {
   onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
+
 }
 
 const GameSettings = ({onClose}: any) => {
-  
+
   //state
     //ball speed 5-10 + 4
     // size 3-20 + 2
@@ -18,7 +19,7 @@ const GameSettings = ({onClose}: any) => {
     const [ color, setColor ] = useState<string>("white");
     const navigate = useNavigate();
     //render
-    
+
     const closeModal = () => {
       onClose();
       navigate("/");
@@ -41,11 +42,10 @@ const GameSettings = ({onClose}: any) => {
     setRadius(8);
     setSpeed(3);
   }
-  
-  
+
+
   const handleGame = () => {
     closeModal();
-    
     // <GamePage {...{ballSpeed, radius, color}}/>
   }
 

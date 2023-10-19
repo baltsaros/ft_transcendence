@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
         ),
       },
 	  {
-		path: "game/:ballSpeed/:radius/:color",
+		path: "game",
 		element: (
 		  <ProtectedRoute>
 				<GamePage />

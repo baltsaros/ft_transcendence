@@ -69,7 +69,7 @@ import { GameState, Room } from './entities/room';
 			// Supprimer la salle de la liste des salles
 			this.pongRooms.delete(roomId);
 			console.log(`Room ${roomId} has been deleted.`);
-		  }
+ }
 		}
 	  }
 

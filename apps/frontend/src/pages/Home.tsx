@@ -58,13 +58,6 @@ const Home: FC = () => {
 	setModalView(false);
   };
 
-  // const updateChannel = async (relation: IChannelPassword) => {
-  //   try {
-  //       if (await ChannelService.checkIfSamePassword(relation))
-  //         toast.success("Same password");
-  //       else
-  //         toast.error("HUH HUH not the same");
-  //    } catch (err: any) {}}
 
   return (
     <>
@@ -86,7 +79,12 @@ const Home: FC = () => {
               <div/>
               <div>
                   <button onClick={handleOpenModal} className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
-                  {modalView && <WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />}
+                  {modalView && webSocketRef.current && <WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />}
+              </div>
+			  <div>
+                <Link to="/game">
+                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">TEST</button>
+                </Link>
               </div>
               <div>
                 <Link to="/chat">
@@ -94,14 +92,6 @@ const Home: FC = () => {
                 </Link>
               </div>
             </div>
-            {/* <div className="grid grid-rows-6">
-              <div className="row-start-7 w-fit -mr-2 -mb-8 ml-auto">
-                <FriendList />
-              </div>
-            </div> */}
-            {/* <div>
-              <button onClick={() => updateChannel({idChannel: 1, password: "fuck"})}>Kick USer</button>
-            </div> */}
           </div>
       )}
     </>

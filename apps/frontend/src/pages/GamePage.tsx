@@ -1,5 +1,9 @@
+import Cookies from "js-cookie";
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Socket, io } from "socket.io-client";
+import WaitingGame from "../components/WaitingGame";
+import GameSettings from "./GameSettings";
 
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
@@ -14,6 +18,29 @@ const paddleSpeed = 20;
 const ballSpeed = 6;
 
 const GamePage: React.FC = () => {
+
+	const webSocketRef = useRef<Socket | null>(null);
+	const [modalView, setModalView] = useState<boolean>(false);
+	const [showGameSettings, setShowGameSettings] = useState(false);
+
+	const handleOpenModal = () => {
+		// Ouvrez le modal en passant la socket WebSocket en tant que prop
+		if (!webSocketRef.current) {
+		  webSocketRef.current = io('ws://localhost:3000/pong', {
+			query: {
+			  username: Cookies.get('username'),
+			},
+		  });
+		}
+		setModalView(true);
+	  };
+
+	  const handleCloseModal = () => {
+		// Fermez le modal
+		webSocketRef.current?.close();
+		webSocketRef.current = null;
+		setModalView(false);
+	  };
 
 	//check if radius is good.
 	const {radius="10"} = useParams();
@@ -67,8 +94,15 @@ const GamePage: React.FC = () => {
 		}
 	};
 
-
 	useEffect(() => {
+		handleOpenModal();
+
+		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string }) => {
+			console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
+			setModalView(false); // Fermez le composant WaitingGame
+			setShowGameSettings(true); // Affichez le composant GameSettings
+		  });
+
 		const canvas = canvasRef.current;
 		if (!canvas) return;
 
@@ -223,15 +257,16 @@ const GamePage: React.FC = () => {
 	return (
 
 		<div className="game-container">
-			<h1>Welcome to the Game!</h1>
-			<div className="flex justify-center items-center h-screen">
+			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
+			{showGameSettings && ( <GameSettings /> )}
+			{/* <div className="flex justify-center items-center h-screen">`
 				<canvas
 					ref={canvasRef}
 					width={fieldWidth}
 					height={fieldHeight}
 					style={{ border: "2px solid white" }}
 				></canvas>
-			</div>
+			</div> */}
 		</div>
 	);
 };
