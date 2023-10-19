@@ -111,6 +111,11 @@ export class UserService {
   async findOneByIntraId(intraId: number) {
     const user = await this.userRepository.findOne({
       where: { intraId: intraId },
+      relations: {
+        invitations: true,
+        friends: true,
+        blocked: true,
+      },
     });
     return user;
   }
@@ -118,12 +123,22 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({
       where: { id: id },
+      relations: {
+        invitations: true,
+        friends: true,
+        blocked: true,
+      },
     });
     if (!user) throw new NotFoundException("User not found");
     const data = await this.userRepository.update(id, updateUserDto);
     if (!data) throw new NotFoundException("Update failed");
     const userUpd = await this.userRepository.findOne({
       where: { id: id },
+      relations: {
+        invitations: true,
+        friends: true,
+        blocked: true,
+      },
     });
     if (!userUpd) throw new NotFoundException("User not found");
     return userUpd;
@@ -133,7 +148,8 @@ export class UserService {
     const user = await this.findOneByIntraId(intraId);
     if (!user) throw new NotFoundException("User not found");
     user.status = status;
-    const data = await this.update(user.id, user);
+    const data = await this.userRepository.save(user);
+    // const data = await this.update(user.id, user);
     return data;
   }
 

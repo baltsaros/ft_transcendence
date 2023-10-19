@@ -39,18 +39,9 @@ export interface IResponseUser {
   secret: string;
   rank: number;
   avatar: string;
-
-  // @ManyToMany(() => User)
-  // @JoinTable()
-  // friends: User[];
-  status: string;
-  // Change later
-  // @OneToMany()
-  // history: History[];
-
-  // @ManyToMany(() => User)
-  // @JoinTable()
-  // blocked: User[];
+  blocked: IUserUsername[];
+  friends: IUserUsername[];
+  invitations: IUserUsername[];
   wins: number;
   loses: number;
   createdAt: Date;

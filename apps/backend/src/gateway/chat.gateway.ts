@@ -10,8 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { IUserSocket } from 'src/types/types';
 
-
-
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
 ** It is called when a client successfully establishes a connection w. the ws server, typically when the webpage containing ws logis is loaded
