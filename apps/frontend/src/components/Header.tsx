@@ -14,6 +14,7 @@ import { getUser } from "../hooks/getUser";
 import FriendInvitations from "./FriendInvitations";
 import FriendList from "./FriendList";
 import { AuthService } from "../services/auth.service";
+import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -22,10 +23,10 @@ const Header: FC = () => {
   const navigate = useNavigate();
   const avatar = getAvatar();
   const username = getUsername();
-  
+
   // const [avatar, setAvatar] = useState<any>({ source: "" });
   // const [filename, setFilename] = useState<string>("");
-  
+
   // const checkAvatar = async () => {
   //   console.log('user: ' + user);
   //   if (user?.avatar) setFilename(user?.avatar);
@@ -89,19 +90,51 @@ const Header: FC = () => {
                 "[AVATAR]"
               )}
             </li>
-            <li>
-              <NavLink
-                // to={"player/" + Cookies.get('username')}
-                to={"player/" + username}
-                className={({ isActive }) =>
-                  isActive
-                    ? "py-2 text-white hover:text-white/50"
-                    : "text-white/50"
+            <div>
+              <Menu
+                direction={"bottom"}
+                arrow={true}
+                align={"center"}
+                menuButton={
+                  <MenuButton className={"py-2 text-white/50 hover:text-white"}>
+                    {username}
+                  </MenuButton>
                 }
               >
-                {username}
-              </NavLink>
-            </li>
+                <div className="bg-gray-500 text-black">
+                  <MenuHeader>
+                    <li>
+                      <NavLink
+                        // to={"player/" + Cookies.get('username')}
+                        to={"player/" + username}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "py-2 text-white hover:text-white/50"
+                            : "text-white/50 hover:text-white"
+                        }
+                      >
+                        Statistics
+                      </NavLink>
+                    </li>
+                  </MenuHeader>
+                  <MenuHeader>
+                    <li>
+                      <NavLink
+                        // to={"player/" + Cookies.get('username')}
+                        to={"edit"}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "py-2 text-white hover:text-white/50"
+                            : "text-white/50 hover:text-white"
+                        }
+                      >
+                        Edit
+                      </NavLink>
+                    </li>
+                  </MenuHeader>
+                </div>
+              </Menu>
+            </div>
             <li>
               <FriendList />
             </li>

@@ -44,7 +44,7 @@ export class AuthController {
       secure: true,
     });
     if (firstEntry)
-      return res.redirect("http://localhost:5173/profile");
+      return res.redirect("http://localhost:5173/edit");
     return res.redirect("http://localhost:5173");
   }
 
