@@ -30,7 +30,7 @@ services:
       - ./apps/backend:/ft_transcendence/apps/backend
       - ./apps/frontend:/ft_transcendence/apps/frontend
     env_file:
-      - .env.prod
+      - .env
     restart: always
 
 networks:

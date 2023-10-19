@@ -7,7 +7,7 @@ silent:
 	docker-compose --env-file=./.env up -d --build
 
 prod:
-	docker-compose -f docker-compose.prod.yml --env-file=.env.prod up -d --build
+	docker-compose -f docker-compose.prod.yml --env-file=.env up -d --build
 
 
 start:
