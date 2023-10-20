@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { Socket, SocketOptions } from "socket.io-client";
-import { usePongWebSocket } from "../context/pong.websocket.context";
-import PongWebSocketService from "../services/pong.websocket.service";
-import GamePage from "../pages/GamePage";
+import { usePongWebSocket } from "../../context/pong.websocket.context";
+import PongWebSocketService from "../../services/pong.websocket.service";
 import { Link } from "react-router-dom";
-import { removeInvitation } from "../store/user/userSlice";
+import { removeInvitation } from "../../store/user/userSlice";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -34,6 +33,7 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
 		// Gestion des événements du serveur pour la mise en correspondance
 		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
+			// console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
 			setIsMatchmakingSuccess(true);
 			setRoomId(data.roomId);
 		});
@@ -49,16 +49,13 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 		webSocket.on('matchmakingError', (data: { message: string }) => {
 		  console.error(`Matchmaking error: ${data.message}`);
 		});
-
-		return () => {
-			webSocket.disconnect();
-		};
 	  }, [webSocket]);
 
     const closeModal = () => {
 		webSocket.emit('removeFromQueue', {});
 		onClose();
     }
+
 
     //render
     return (
@@ -85,7 +82,7 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
                 </div>
 				<div className="flex justify-between bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 					<Link to={"/"}>
-					<button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-500 text-white px-3 py-2 text-sm font-semibold hover:bg-red-600">Cancel</button>
+						<button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-500 text-white px-3 py-2 text-sm font-semibold hover:bg-red-600">Cancel</button>
 					</Link>
 				</div>
             </div>

@@ -8,7 +8,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
-import GameSettings from "../pages/GameSettings";
+import GameSettings from "../components/pong/GameSettings";
 import SettingsPage from "../pages/SettingsPage";
 
 export const router = createBrowserRouter([

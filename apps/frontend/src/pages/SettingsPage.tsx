@@ -1,5 +1,5 @@
 import { useState } from "react";
-import GameSettings from "./GameSettings";
+import GameSettings from "../components/pong/GameSettings";
 import GamePage from "./GamePage";
   
 export default function SettingsPage(){

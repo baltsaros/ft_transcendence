@@ -14,8 +14,8 @@ import { toast } from "react-toastify";
 import FriendInvitations from "../components/FriendInvitations";
 import { ChannelService } from "../services/channels.service";
 import { IChannelPassword, IChannelRelation } from "../types/types";
-import SettingsGame from "./GameSettings";
-import WaitingGame from "../components/WaitingGame";
+import SettingsGame from "../components/pong/GameSettings";
+import WaitingGame from "../components/pong/WaitingGame";
 import { usePongWebSocket } from "../context/pong.websocket.context";
 import { io, Socket } from "socket.io-client";
 
