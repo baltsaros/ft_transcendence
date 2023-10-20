@@ -9,14 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RootState, store } from "../store/store";
 import { useSelector } from "react-redux";
-import { removeFriend } from "../store/user/userSlice";
+import { removeFriend } from "../store/user/friendsSlice";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
 
     //state
-    const navigate = useNavigate();
-
+    const users = useSelector((state: RootState) => state.allUser.users);
     //behaviour
     
     const deleteFriend = async () => {
@@ -30,7 +29,12 @@ function ToggleMenuFriendList(user: IUserUsername) {
             const data =  await PlayerService.removeFriend({receiverId, senderId});
             if (data)
             {
-                store.dispatch(removeFriend(user.username));
+                const sender = users.filter((elem) => elem.id === senderId)[0];
+                const senderUserUsername: IUserUsername = {
+                    username: sender.username,
+                    status: sender.status,
+                };
+                store.dispatch(removeFriend(senderUserUsername));
                 toast.success("friend successfully deleted");
             }
         } catch (err: any) {

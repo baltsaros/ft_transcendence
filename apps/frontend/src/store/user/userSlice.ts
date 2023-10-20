@@ -41,23 +41,23 @@ export const userSlice = createSlice({
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
-    addInvitation: (state, action: PayloadAction<IUserUsername>) => {
-      state.user!.invitations.push(action.payload);
-    },
-    removeInvitation: (state, action: PayloadAction<string>) => {
-      state.user!.invitations = state.user!.invitations.filter((user) => user.username !== action.payload);
-    },
-    addFriend: (state, action: PayloadAction<string>) => {
-      const friend = state.user!.invitations.filter((user) => user.username === action.payload);
-      state.user!.friends.push(friend[0]);
-    },
-    removeFriend: (state, action: PayloadAction<string>) => {
-      state.user!.friends = state.user!.friends.filter((user) => user.username !== action.payload);
-    }
+    // addInvitation: (state, action: PayloadAction<IUserUsername>) => {
+    //   state.user!.invitations.push(action.payload);
+    // },
+    // removeInvitation: (state, action: PayloadAction<string>) => {
+    //   state.user!.invitations = state.user!.invitations.filter((user) => user.username !== action.payload);
+    // },
+    // addFriend: (state, action: PayloadAction<string>) => {
+    //   const friend = state.user!.invitations.filter((user) => user.username === action.payload);
+    //   state.user!.friends.push(friend[0]);
+    // },
+    // removeFriend: (state, action: PayloadAction<string>) => {
+    //   state.user!.friends = state.user!.friends.filter((user) => user.username !== action.payload);
+    // }
   },
 });
 
-export const { login, logout, setAvatar, setUsername, addInvitation, removeInvitation, addFriend, removeFriend } = userSlice.actions;
+export const { login, logout, setAvatar, setUsername } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user;

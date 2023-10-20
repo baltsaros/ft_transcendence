@@ -9,6 +9,7 @@ import { IResponseUser } from "../../types/types";
 
 const fetchAllUsers = createAsyncThunk('get/fetchAllUsers', async() => {
   const allUsers = await instance.get('user/');
+    // console.log("redux", allUsers);
   return allUsers.data
 })
 

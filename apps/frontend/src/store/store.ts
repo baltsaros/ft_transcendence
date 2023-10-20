@@ -3,6 +3,7 @@ import userReducer from "./user/userSlice";
 import channelReducer from "./channel/channelSlice";
 import invitationReducer from "./user/invitationSlice";
 import friendReducer from "./user/friendsSlice";
+import allUserReducer from "./user/allUsersSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     channel: channelReducer,
     invitation: invitationReducer,
     friend: friendReducer,
+    allUser: allUserReducer,
   },
 });
 
