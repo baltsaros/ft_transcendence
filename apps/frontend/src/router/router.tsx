@@ -3,7 +3,7 @@ import Layout from "../pages/Layout";
 import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Player from "../pages/Player";
-import Profile from "../pages/Profile";
+import ProfileEdit from "../pages/ProfileEdit";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
@@ -29,10 +29,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "profile",
+        path: "edit",
         element: (
           <ProtectedRoute>
-            <Profile />
+            <ProfileEdit />
           </ProtectedRoute>
         ),
       },

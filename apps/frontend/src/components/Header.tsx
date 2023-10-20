@@ -14,6 +14,7 @@ import { getUser } from "../hooks/getUser";
 import FriendInvitations from "./FriendInvitations";
 import FriendList from "./FriendList";
 import { AuthService } from "../services/auth.service";
+import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -22,21 +23,6 @@ const Header: FC = () => {
   const navigate = useNavigate();
   const avatar = getAvatar();
   const username = getUsername();
-  
-  // const [avatar, setAvatar] = useState<any>({ source: "" });
-  // const [filename, setFilename] = useState<string>("");
-  
-  // const checkAvatar = async () => {
-  //   console.log('user: ' + user);
-  //   if (user?.avatar) setFilename(user?.avatar);
-  //   console.log('filename: ' + filename);
-  //   if (filename.includes("https")) {
-  //     setAvatar({ source: filename });
-  //     return ;
-  //   }
-  //   const base64 = await AuthService.getAvatar(filename);
-  //   setAvatar({ source: "data:;base64," + base64 });
-  // }
 
   const logoutHandler = async () => {
     dispatch(logout());
@@ -48,21 +34,17 @@ const Header: FC = () => {
     navigate("/");
   };
 
-  // useEffect(() => {
-  //   checkAvatar();
-  //   console.log('ava: ' + user?.avatar);
-  //   console.log('source: ' + avatar.source);
-  // }, []);
-
-  // const UserComponent = async () => {
-  //   // const [username, setUsername] = useState('');
-  //   const data = await AuthService.getProfile();
-  //   console.log('frotend data: ' + data?.avatar);
-  //   console.log('frotend data: ' + data?.username);
-  //   if (data?.avatar)
-  //     setAvatar(data?.avatar);
-  //   // console.log(data);
-  // };
+  const redirection = async () => {
+    fetch("http://localhost:3000/api/auth/redir", {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        contentType: "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error));
+  };
 
   return (
     <header className="flex items-center p-4 pr-10 shadow-sm bg-gray-500 backdrop-blur-sm">
@@ -89,19 +71,49 @@ const Header: FC = () => {
                 "[AVATAR]"
               )}
             </li>
-            <li>
-              <NavLink
-                // to={"player/" + Cookies.get('username')}
-                to={"player/" + username}
-                className={({ isActive }) =>
-                  isActive
-                    ? "py-2 text-white hover:text-white/50"
-                    : "text-white/50"
+            <div>
+              <Menu
+                direction={"bottom"}
+                arrow={true}
+                align={"center"}
+                menuButton={
+                  <MenuButton className={"py-2 text-white/50 hover:text-white"}>
+                    {username}
+                  </MenuButton>
                 }
               >
-                {username}
-              </NavLink>
-            </li>
+                <div className="bg-gray-500 text-black">
+                  <MenuHeader>
+                    <li>
+                      <NavLink
+                        to={"player/" + username}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "py-2 text-white hover:text-white/50"
+                            : "text-white/50 hover:text-white"
+                        }
+                      >
+                        Statistics
+                      </NavLink>
+                    </li>
+                  </MenuHeader>
+                  <MenuHeader>
+                    <li>
+                      <NavLink
+                        to={"edit"}
+                        className={({ isActive }) =>
+                          isActive
+                            ? "py-2 text-white hover:text-white/50"
+                            : "text-white/50 hover:text-white"
+                        }
+                      >
+                        Edit
+                      </NavLink>
+                    </li>
+                  </MenuHeader>
+                </div>
+              </Menu>
+            </div>
             <li>
               <FriendList />
             </li>
@@ -114,12 +126,18 @@ const Header: FC = () => {
           <FaSignOutAlt />
         </button>
       ) : (
-        <Link
+        <a
           className="py-2 text-white/50 hover:text-white ml-auto"
-          to={"http://localhost:3000/api/auth/redir"}
+          href={"http://localhost:3000/api/auth/redir"}
         >
           42 API
-        </Link>
+        </a>
+        // <span
+        //   className="py-2 text-white/50 hover:text-white ml-auto"
+        //   onClick={redirection}
+        // >
+        //   42 API
+        // </span>
       )}
     </header>
   );

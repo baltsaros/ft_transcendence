@@ -1,11 +1,8 @@
 import { Module } from "@nestjs/common";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
-import { LocalAuthGuard } from "./guards/local-auth.guard";
 import { UserModule } from "src/user/user.module";
 import { JwtModule } from "@nestjs/jwt";
-import { jwtConstants } from "./constants";
-import { APP_GUARD } from "@nestjs/core";
 import { PassportModule } from "@nestjs/passport";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { ConfigModule, ConfigService } from "@nestjs/config";
@@ -37,9 +34,7 @@ import { DataStorageService } from "src/helpers/data-storage.service";
     DataStorageService,
     FortyTwoStrategy,
     LocalStrategy,
-    // AuthService,
     JwtStrategy
   ],
-  // exports: [AuthService],
 })
 export class AuthModule {}
