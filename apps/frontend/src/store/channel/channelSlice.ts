@@ -74,8 +74,6 @@ const channelSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addNewUser } = channelSlice.actions;
-export const { removeUser} = channelSlice.actions;
-export const { addChannel } = channelSlice.actions;
+export const { addNewUser, removeUser, addChannel } = channelSlice.actions;
 export {fetchChannel};
 export default channelSlice.reducer;

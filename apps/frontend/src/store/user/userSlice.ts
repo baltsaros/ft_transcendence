@@ -12,6 +12,7 @@ interface UserState {
   isAuth: boolean;
   invitations: IUserUsername[];
   friends: IUserUsername[];
+  blocked: IUserUsername[];
 }
 
 // Define the initial state using that type
@@ -22,6 +23,7 @@ const initialState: UserState = {
   isAuth: false,
   invitations: [],
   friends: [],
+  blocked: [],
 };
 
 const fetchInvitation = createAsyncThunk('post/fetchInvitation', async(id) => {
@@ -42,6 +44,7 @@ export const userSlice = createSlice({
     login: (state, action: PayloadAction<IResponseUser>) => {
       state.user = action.payload;
       state.isAuth = true;
+      console.log('redux', state.user);
     },
     logout: (state) => {
       state.user = null;
@@ -67,6 +70,9 @@ export const userSlice = createSlice({
     },
     removeFriend: (state, action: PayloadAction<string>) => {
       state.friends = state.friends.filter((user) => user.username !== action.payload);
+    },
+    blockUser: (state, action) => {
+      state.blocked.push(action.payload);
     }
   },
   extraReducers: (builder) => {
@@ -79,7 +85,7 @@ export const userSlice = createSlice({
   },
 });
 
-export const { login, logout, setAvatar, setUsername, addInvitation, removeInvitation, addFriend, removeFriend } = userSlice.actions;
+export const { login, logout, setAvatar, setUsername, addInvitation, removeInvitation, addFriend, removeFriend, blockUser } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user;

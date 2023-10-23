@@ -155,6 +155,13 @@ export class UserController {
     return (this.userService.blockUser(invitation));
   }
 
+  @Post("getAllBlocked")
+  @UseGuards(JwtAuthGuard)
+  getAllBlocked(@Body() payload: {id: number}) {
+    const id = payload.id;
+    return (this.userService.getAllBlocked(id));
+  }
+
   @Post("getBlocked")
   @UseGuards(JwtAuthGuard)
   getBlocked(@Body() relation: UserRelationDto) {

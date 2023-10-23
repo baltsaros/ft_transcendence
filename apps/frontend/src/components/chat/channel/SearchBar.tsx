@@ -25,10 +25,7 @@ export default function SearchBar() {
         return !isUserInChannel
     }
 
-    // const AccessibleChannel = channels.filter((channel) => filterFunction(channel));
-    const AccessibleChannel = channels.filter(filterFunction);
-    
-    console.log('Accessible Channels:', AccessibleChannel);
+    const AccessibleChannel = channels.filter(filterFunction);    
     
     const filteredData = AccessibleChannel.filter((el) => {
         filterFunction(el);

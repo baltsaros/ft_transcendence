@@ -14,13 +14,15 @@ import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { Profile } from "passport-42";
 import { UserRelationDto } from "./dto/user-relation.dto";
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly dataStorage: DataStorageService
+    private readonly dataStorage: DataStorageService,
+    private eventEmmiter: EventEmitter2,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -149,7 +151,6 @@ export class UserService {
     if (!user) throw new NotFoundException("User not found");
     user.status = status;
     const data = await this.userRepository.save(user);
-    // const data = await this.update(user.id, user);
     return data;
   }
 
@@ -286,9 +287,18 @@ export class UserService {
     })
     const friend = await this.findOneById(friendRequest.receiverId);
     source.blocked.push(friend);
-    //console.log(source.blocked);
-
+    this.eventEmmiter.emit('blockUser', friendRequest);
     await this.userRepository.save(source);
+  }
+
+  async getAllBlocked(payload: number) {
+    const user = await this.userRepository.findOne({
+      where: {id: payload},
+      relations: {
+        blocked: true,
+      },
+    })
+    return user.blocked;
   }
 
   async getBlocked(relationBlocked: UserRelationDto)

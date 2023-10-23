@@ -17,7 +17,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
     const [isProtected, setIsProtected] = useState(false);
-    const [isValid, setIsValid] = useState<boolean>(true);
     const [channelPassword, setChannelPassword] = useState('');
 
     /* BEHAVIOR */

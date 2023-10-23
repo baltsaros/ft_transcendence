@@ -39,7 +39,6 @@ export class ChannelService {
     }
 
     async createDmChannel(channelDmData: IChannelDmData) {
-      // 1. create new channel
       const sender = await this.userService.findOneById(channelDmData.sender);
       const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
         if (existingChannel) throw new BadRequestException("Channel already exists");
@@ -51,13 +50,45 @@ export class ChannelService {
         password: channelDmData.password,
         users: [sender, receiver],
       });
-      // console.log('sender:', sender);
-      // console.log('receiver:', receiver);
-      // newDmChannel.users.push(receiver);
-      // newDmChannel.users.push(sender);
       const dmChannel = await this.channelRepository.save(newDmChannel);
-      // console.log('dmChannel:', dmChannel);
       return(dmChannel);
+    }
+
+    async leaveChannel(payload: any) {
+      const channel = await this.channelRepository.findOne({
+        where: {
+          id: payload.channelId,
+        },
+        relations: {
+          users: true,
+          owner: true,
+        },
+      })
+      const user = await this.userService.findOne(payload.username);
+      if (user.id === channel.owner.id) {
+        // 1. check if there are users in the channel, if not prevent owner from leaving the channel
+        if (channel.users.length > 1) {
+          // 1. remove the owner as user and as owner
+          channel.users = channel.users.filter((usr) => usr.id !== user.id);
+          // 2. set new owner
+          const randomIndex = Math.floor(Math.random() * channel.users.length);
+          channel.owner = channel.users[randomIndex];
+          // console.log('new channel owner:', channel.owner.username);
+        }
+        else {
+          throw new BadRequestException("Owner cannot leave channel");
+        }
+      }
+      else {
+        channel.users = channel.users.filter((usr) => usr.id !== user.id);
+      }
+      await this.channelRepository.save(channel);
+      const obj = {
+        leavingUser: user,
+        newOwner: channel.owner,
+      }
+      this.eventEmmiter.emit('onChannelLeave', obj);
+      return (true);
     }
 
     async findOne(channelId: number)
@@ -82,11 +113,28 @@ export class ChannelService {
         return channel;
     }
 
-    async fetchMessage(id: number) {
-      const channelMessage = await this.channelRepository.findOne({
-        where: {id: id},
-        relations: ["messages", "messages.user"],
-      })
+    // const result = await dataSource
+    // .createQueryBuilder('user')
+    // .leftJoinAndSelect('user.linkedSheep', 'linkedSheep')
+    // .leftJoinAndSelect('user.linkedCow', 'linkedCow')
+    // .where('user.linkedSheep = :sheepId', { sheepId })
+    // .andWhere('user.linkedCow = :cowId', { cowId });
+
+    async fetchMessage(channelId: number, userId: number) {
+      console.log('channel id', channelId);
+      console.log('user id', userId);
+      const channelMessage = await this.channelRepository
+      .createQueryBuilder('channel')
+      .where('channel.id = :channelId', {channelId})
+      .leftJoinAndSelect('channel.messages', 'messages')
+      .andWhere(`messages.user NOT IN (
+        SELECT blocked FROM user_block_user
+        WHERE blocker = :userId
+        )`, {userId})
+      // const channelMessage = await this.channelRepository.findOne({
+      //   where: {id: id},
+      //   relations: ["messages", "messages.user"],
+      // })
       return channelMessage;
     }
   

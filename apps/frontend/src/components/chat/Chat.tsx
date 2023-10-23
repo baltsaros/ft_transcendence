@@ -4,8 +4,8 @@ import { instance } from "../../api/axios.api";
 import { IChannel, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
-import { store } from '../../store/store';
-import { addChannel } from '../../store/channel/channelSlice';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -16,15 +16,22 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
 
     /* STATE */
     const [message, setMessage] = useState<IResponseMessage[]>([]);
+    const blocked = useSelector((state: RootState) => state.blocked.blocked);
+    const user = useSelector((state: RootState) => state.user.user);
 
     /* BEHAVIOR */
    useEffect(() => {
     if (selectedChannel)
     {
         const fetchData = async () => {
-            const message = await instance.get('channel/' + selectedChannel?.id);
-            // console.log('backend response: ', message.data);
-            setMessage(message.data.messages);
+            const {data} = await instance.get('channel/', {params:{
+                channelId: selectedChannel?.id,
+                userId: user?.id
+            }});
+            console.log('fetchMessage:', data);
+            const messages = data.messages;
+            // messages.some((message) => message.user.username)
+            setMessage(data.messages);
             // console.log('message state: ', message.data.messages);
         };
         fetchData();
@@ -33,12 +40,13 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
 
    useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        // console.log('frontend message array: ', message);
-        // console.log('frontend payload :', payload);
-        setMessage((prevMessages) => [...prevMessages, payload]);
-        // setMessage((prev) => [...prev, payload]);
+        // 1. Check if the sender is in the blocked array
+        // Take the sender's username and loop over blocked and look for match
+        // If true do not update state
+        if (!blocked.some((blocked) => blocked.username === payload.user.username))
+            setMessage((prevMessages) => [...prevMessages, payload]);
+        // console.log('message array: ', message);
     });
-    
     return () => {
         webSocketService.off('onMessage');
       };
