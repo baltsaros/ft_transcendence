@@ -7,6 +7,7 @@ import {
 	ConnectedSocket,
 	MessageBody
 } from '@nestjs/websockets';
+import { platform } from 'os';
 
 import { Server, Socket } from 'socket.io';
 import { GameSettingsData, GameState, Room } from './entities/room';
@@ -34,6 +35,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			console.log(`Player ${client.id} removed from the waiting queue.`);
 		}
 		else {
+			// console.log("ici");
 			// Parcourir toutes les salles pour vérifier si le client était présent
 			this.pongRooms.forEach((room) => {
 			if (room.players.has(client.id)) {
@@ -62,21 +64,23 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	private leavePongRoom(client: Socket, roomId: string): void {
 		const room = this.pongRooms.get(roomId);
+
 		if (room) {
-			// Retirer le client de la salle
+			//Retirer le client de la salle
 			room.players.delete(client.id);
-			// client.emit('leavePongRoom', {roomId: roomId});
-			// Vérifier si la salle est vide
-			if (room.players.size === 0) {
-				// Supprimer la salle de la liste des salles
-				this.pongRooms.delete(roomId);
-				console.log(`Room ${roomId} has been deleted.`);
- 			}
+
+			room.players.forEach((player) => {
+				this.server.to(player).emit('OpponentDisconnected', {});
+			});
+
+			this.pongRooms.delete(roomId);
+			console.log(`Room ${roomId} has been deleted.`);
 		}
-	  }
+	}
+
 
 	@SubscribeMessage('launchMatchmaking')
-	async handleLaunchMatchmaking(@ConnectedSocket() client: Socket, message: string) {
+	async handleLaunchMatchmaking(@ConnectedSocket() client: Socket) {
 		try {
 			if (!this.waitingPlayers.includes(client)) {
 				// Ajouter le joueur à la file d'attente
@@ -91,17 +95,13 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const newRoomId = this.createPongRoom(player1, player2);
 					// Envoyez l'événement `createdPongRoom` à tous les joueurs de la salle
 					[player1, player2].forEach((player) => {
-						player.emit('createdPongRoom', { roomId: newRoomId });
+						player.emit('createdPongRoom', {roomId: newRoomId});
 					});
 
 					// Vous pouvez également envoyer un événement `matchmakingSuccess` si nécessaire
 					[player1, player2].forEach((player) => {
 						player.emit('matchmakingSuccess', { roomId: newRoomId });
 					});
-				}
-				else {
-					// Le joueur attend dans la file d'attente
-					client.emit('waitingForMatch', { message: 'En attente d\'un adversaire...' });
 				}
 			}
 		}
@@ -154,7 +154,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	}
 
 	@SubscribeMessage('chooseGameSettings')
-	handleChooseGameSettings(
+	async handleChooseGameSettings(
 		@ConnectedSocket() client: Socket,
 		@MessageBody('data')  data: {roomId: string, gameSettingsData: GameSettingsData},
 		)
