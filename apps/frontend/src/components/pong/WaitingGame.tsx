@@ -25,7 +25,8 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
 	useEffect(() => {
 			// Établir la connexion WebSocket
-		webSocket.emit('launchMatchmaking', {});
+		const message = "test";
+		webSocket.emit('launchMatchmaking', message);
 
 		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
 		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local

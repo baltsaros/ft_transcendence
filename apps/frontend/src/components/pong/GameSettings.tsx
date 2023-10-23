@@ -12,10 +12,9 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
   // STATE
 
-    const [ ballSpeed, setSpeed] = useState<number>(3);
+    const [ ballSpeed, setSpeed] = useState<number>(8);
     const [ radius, setRadius] = useState<number>(8);
     const [ color, setColor ] = useState<string>("white");
-    const navigate = useNavigate();
 
 	// BEHAVIOUR
     const closeModal = () => {
@@ -42,15 +41,11 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
   const sendGameSettings = () => {
 	if (roomId) {
-	  const gameSettingsData = {
-		ballSpeed,
-		radius,
-		color
-	  };
 	  // Envoyer les paramètres au serveur via WebSocket
-	  console.log("Send game settings:", gameSettingsData);
-	  console.log("Send roomId:", roomId);
-	  webSocket.emit("chooseGameSettings", gameSettingsData, roomId);
+	//   console.log("Send roomId:", roomId);
+	  webSocket.emit("chooseGameSettings", {data: {roomId, gameSettingsData : {ballSpeed, radius, color}}});
+
+	//   webSocket.emit("testLog", {message: roomId});
 	} else {
 	  console.error("roomId is undefined.");
 	}
@@ -87,8 +82,8 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
                 type="range"
                 className="transparent h-[4px] w-full cursor-pointer rounded
             appearance-none border-transparent bg-neutral-200 dark:bg-neutral-600 w-40"
-                min="1"
-                max="6"
+                min="5"
+                max="11"
                 id="ballSpeed"
                 onChange={handleSpeed}
                 value={ballSpeed}/>
