@@ -37,7 +37,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
   const handleReset = () => {
     setColor("white");
     setRadius(8);
-    setSpeed(3);
+    setSpeed(8);
   }
 
   const sendGameSettings = () => {
@@ -70,7 +70,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
                 <div className="bg-gray-500 px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-start">
                         <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
-                            <h3 className="text-base items-center font-semibold leading-6 text-gray-900" id="modal-title">Game Settings</h3>
+						<h3 className="text-3xl font-semibold leading-6 text-white text-center" id="modal-title">Game Settings</h3>
                         </div>
                     </div>
                 </div>
@@ -86,9 +86,9 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
                         </div>
                     </div>
                 </div>
-                <div className="bg-gray-500 px-4 py-3 grid grid-cols-6 gap-4">
+                <div className="flex justify-center bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <Link to={"/"}>
-                        <button type="button" onClick={closeModal} className="col-start-3 col-span-2 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                        <button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
                     </Link>
                 </div>
             </div>
