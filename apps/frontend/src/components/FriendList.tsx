@@ -8,22 +8,29 @@ import FriendInvitations from "./FriendInvitations";
 import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
-import { fetchFriends, fetchInvitation } from "../store/user/userSlice";
+import { fetchInvitations } from "../store/user/invitationSlice";
+import { fetchFriends } from "../store/user/friendsSlice";
+import { fetchAllUsers } from "../store/user/allUsersSlice";
+// import { fetchFriends, fetchInvitation } from "../store/user/userSlice";
 
 
 function FriendList() {
 
     //state
-  const invitationList = useSelector((state: RootState) => state.user.invitations);
-  const friendList = useSelector((state: RootState) => state.user.friends);
-
+  const invitationList = useSelector((state: RootState) => state.invitation.invitations);
+  const friendList = useSelector((state: RootState) => state.friend.friends);
+  const userConnected = useSelector((state: RootState) => state.user.user);
   const isOnline = (value: IUserUsername) => value.status === 'online';
   const isOffline = (value: IUserUsername) => value.status === 'offline';
 
   useEffect(() => {
-    store.dispatch(fetchInvitation());
-    store.dispatch(fetchFriends());
-      }, []);
+    if (userConnected)
+    {
+      store.dispatch(fetchInvitations(userConnected.username));
+      store.dispatch(fetchFriends(userConnected.username));
+      store.dispatch(fetchAllUsers());
+    }
+}, []);
 
   //render
   return (
@@ -32,12 +39,12 @@ function FriendList() {
         <div className="bg-green-500 text-lg">
           <MenuHeader className="text-white">Online</MenuHeader>
         </div>
-        {friendList.filter(isOnline).length > 0 && friendList.map((friend) => (
+        {Object.values(friendList).filter(isOnline).length > 0 && friendList.map((friend) => (
           friend.status ==="online" && <div className="bg-gray-500" key={friend.username}>
               <ToggleMenuFriendList {...friend} />
               </div>              
         ))}
-        {!friendList.filter(isOnline).length && 
+        {!Object.values(friendList).filter(isOnline).length && 
           <div className="bg-gray-500 flex items-center justify-center text-sm">
             <MenuItem className="" disabled >No friends online</MenuItem>
           </div>
@@ -45,13 +52,13 @@ function FriendList() {
         <div className="bg-red-500 text-lg">
         <MenuHeader className="text-white">Offline</MenuHeader>
         </div>
-        {friendList.filter(isOffline).length > 0 && friendList.map((friend) => (
+        {Object.values(friendList).filter(isOffline).length > 0 && friendList.map((friend) => (
           friend.status ==="offline" && 
             <div className="bg-gray-500" key={friend.username}>
               <ToggleMenuFriendList {...friend} />
             </div>              
         ))}
-        {!friendList.filter(isOffline).length && 
+        {!Object.values(friendList).filter(isOffline).length && 
           <div className="bg-gray-500 flex items-center justify-center text-sm">
             <MenuItem className="" disabled >No friends offline</MenuItem>
           </div>

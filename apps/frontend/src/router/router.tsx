@@ -3,11 +3,12 @@ import Layout from "../pages/Layout";
 import ErrorPage from "../pages/ErrorPage";
 import Home from "../pages/Home";
 import Player from "../pages/Player";
-import Profile from "../pages/Profile";
+import ProfileEdit from "../pages/ProfileEdit";
 import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
+import GameSettings from "../components/pong/GameSettings";
 import SettingsPage from "../pages/SettingsPage";
 
 export const router = createBrowserRouter([
@@ -29,10 +30,10 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "profile",
+        path: "edit",
         element: (
           <ProtectedRoute>
-            <Profile />
+            <ProfileEdit />
           </ProtectedRoute>
         ),
       },
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
         ),
       },
 	  {
-		path: "game/:ballSpeed/:radius/:color",
+		path: "game",
 		element: (
 		  <ProtectedRoute>
 				<GamePage />

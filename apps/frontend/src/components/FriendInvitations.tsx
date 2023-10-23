@@ -3,10 +3,16 @@ import Cookies from "js-cookie";
 import { PlayerService } from "../services/player.service";
 import { MenuItem } from "@szhsin/react-menu";
 import { toast } from "react-toastify";
-import { store } from "../store/store";
-import { addFriend, removeInvitation } from "../store/user/userSlice";
+import { RootState, store } from "../store/store";
+import { addFriend, fetchFriends } from "../store/user/friendsSlice";
+import { fetchInvitations, removeInvitation } from "../store/user/invitationSlice";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 export default function FriendInvitations(invitation: IUserUsername) {
+
+    const users = useSelector((state: RootState) => state.allUser.users);
+    const userConnected = useSelector((state: RootState) => state.user.user);
 
     const acceptInvitation = async (invitation: string) => {
        try {
@@ -20,12 +26,18 @@ export default function FriendInvitations(invitation: IUserUsername) {
                     return toast.error("User doesn't exists !");
                 if (await PlayerService.acceptInvitation({receiverId, senderId}))
                 {
-                    store.dispatch(addFriend(invitation));
-                    store.dispatch(removeInvitation(invitation));
+                    const sender = users.filter((elem) => elem.id === senderId)[0];
+                    const senderUserUsername: IUserUsername = {
+                        username: sender.username,
+                        status: sender.status,
+                    };
+                    store.dispatch(removeInvitation(senderUserUsername));
+                    store.dispatch(addFriend(senderUserUsername));
                     toast.success("player added as friend");
                 }
             }   
-        } catch (err: any) {}}
+        } catch (err: any) {
+        }}
         
         const refuseInvitation = async (invitation: string) => {
             try {
@@ -39,15 +51,17 @@ export default function FriendInvitations(invitation: IUserUsername) {
                     if (!senderId)
                     return toast.error("Friend to remove doesn't exist !");
                     await PlayerService.refuseInvitation({receiverId, senderId});
-                    store.dispatch(removeInvitation(invitation));
+                    const sender = users.filter((elem) => elem.id === senderId)[0];
+                    const senderUserUsername: IUserUsername = {
+                        username: sender.username,
+                        status: sender.status,
+                    };
+                    store.dispatch(removeInvitation(senderUserUsername));
             }
         } catch (err: any) {
-          const error = err.response?.data.message;
         }
     }
     
-  
-  
       //render
 
     return (

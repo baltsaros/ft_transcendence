@@ -21,7 +21,7 @@ export class AuthService {
   ) {}
 
   async validateUser(accessToken: string, profile: Profile) {
-    console.log("validateIntraUser");
+    // console.log("validateIntraUser");
     const user = await this.usersService.findOneByIntraId(profile.id);
     if (!user) {
       const data = new CreateUserDto();

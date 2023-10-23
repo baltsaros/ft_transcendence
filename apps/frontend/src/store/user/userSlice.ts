@@ -10,9 +10,6 @@ interface UserState {
   username: string;
   avatar: string;
   isAuth: boolean;
-  invitations: IUserUsername[];
-  friends: IUserUsername[];
-  blocked: IUserUsername[];
 }
 
 // Define the initial state using that type
@@ -21,20 +18,7 @@ const initialState: UserState = {
   username: "",
   avatar: "",
   isAuth: false,
-  invitations: [],
-  friends: [],
-  blocked: [],
 };
-
-const fetchInvitation = createAsyncThunk('post/fetchInvitation', async(id) => {
-  const invits = await instance.post<IUserUsername[]>('user/getInvitations/', {id});
-  return invits.data;
-})
-
-const fetchFriends = createAsyncThunk('post/fetchFriends', async(id) => {
-  const friends =  await instance.post<IUserUsername[]>("user/getFriends", {id});
-  return friends.data;
-})
 
 export const userSlice = createSlice({
   name: "user",
@@ -58,36 +42,24 @@ export const userSlice = createSlice({
     setUsername: (state, action: PayloadAction<string>) => {
       state.username = action.payload;
     },
-    addInvitation: (state, action: PayloadAction<IUserUsername>) => {
-      state.invitations.push(action.payload);
-    },
-    removeInvitation: (state, action: PayloadAction<string>) => {
-      state.invitations = state.invitations.filter((user) => user.username !== action.payload);
-    },
-    addFriend: (state, action: PayloadAction<string>) => {
-      const friend = state.invitations.filter((user) => user.username === action.payload);
-      state.friends.push(friend[0]);
-    },
-    removeFriend: (state, action: PayloadAction<string>) => {
-      state.friends = state.friends.filter((user) => user.username !== action.payload);
-    },
-    blockUser: (state, action) => {
-      state.blocked.push(action.payload);
-    }
-  },
-  extraReducers: (builder) => {
-    builder.addCase(fetchInvitation.fulfilled, (state, action) => {
-      state.invitations = action.payload;
-    })
-    builder.addCase(fetchFriends.fulfilled, (state, action) => {
-      state.friends = action.payload;
-    })
+    // addInvitation: (state, action: PayloadAction<IUserUsername>) => {
+    //   state.user!.invitations.push(action.payload);
+    // },
+    // removeInvitation: (state, action: PayloadAction<string>) => {
+    //   state.user!.invitations = state.user!.invitations.filter((user) => user.username !== action.payload);
+    // },
+    // addFriend: (state, action: PayloadAction<string>) => {
+    //   const friend = state.user!.invitations.filter((user) => user.username === action.payload);
+    //   state.user!.friends.push(friend[0]);
+    // },
+    // removeFriend: (state, action: PayloadAction<string>) => {
+    //   state.user!.friends = state.user!.friends.filter((user) => user.username !== action.payload);
+    // }
   },
 });
 
-export const { login, logout, setAvatar, setUsername, addInvitation, removeInvitation, addFriend, removeFriend, blockUser } = userSlice.actions;
+export const { login, logout, setAvatar, setUsername } = userSlice.actions;
 
 // Other code such as selectors can use the imported `RootState` type
 export const selectCount = (state: RootState) => state.user;
-export {fetchInvitation, fetchFriends};
 export default userSlice.reducer;

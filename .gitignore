@@ -36,7 +36,11 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 # Other
-.env_back
+.env.prod
 .env
+apps/backend/.env
+apps/backend/.env.prod
+apps/frontend/.env
+apps/frontend/.env.prod
 apps/backend/src/uploads/avatars/
 database

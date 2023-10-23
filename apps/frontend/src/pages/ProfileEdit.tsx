@@ -5,7 +5,7 @@ import { useAppDispatch } from "../store/hooks";
 import { NavLink, useNavigate } from "react-router-dom";
 import { getUser } from "../hooks/getUser";
 
-const Profile: FC = () => {
+const ProfileEdit: FC = () => {
   const user = getUser();
   const [avatar, setAvatar] = useState<string>("");
   const [filename, setFilename] = useState<string>("");
@@ -38,6 +38,8 @@ const Profile: FC = () => {
         status: user ? user.status : "",
         wins: user ? user.wins : 0,
         loses: user ? user.loses : 0,
+        invitations: user ? user.invitations : [],
+        friends: user ? user.friends : [],
         createdAt: user ? user.createdAt : new Date(),
       };
       if (twoFA && !(user?.twoFactorAuth)) {
@@ -100,7 +102,7 @@ const Profile: FC = () => {
   return (
     <div className="mt-8 w-3/5 mx-auto bg-gray-500 text-black uppercase">
       <h2 className="bg-cyan-300 w-full mb-2 p-5 tracking-wider text-lg">
-        Profile creation
+        Profile settings
       </h2>
       <h2 className="bg-gray-500 w-full mb-4 p-5 tracking-wider"></h2>
       <div className="bg-cyan-300 flex justify-start p-5 space-x-4 items-center">
@@ -109,8 +111,7 @@ const Profile: FC = () => {
           <input
             type="text"
             className="input"
-            // placeholder="Username"
-            onChange={(e) => setUsername(e.target.value)}
+             onChange={(e) => setUsername(e.target.value)}
           />
         </form>
       </div>
@@ -144,14 +145,14 @@ const Profile: FC = () => {
       </div>
       <div className="flex flex-row items-end justify-between">
         <form onSubmit={updateHandler}>
-          <button className="btn btn-gray">Ok</button>
+          <button className="btn btn-green">Ok</button>
         </form>
         <NavLink to={"/"}>
-          <button className="btn btn-gray">Cancel</button>
+          <button className="btn btn-red">Cancel</button>
         </NavLink>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default ProfileEdit;

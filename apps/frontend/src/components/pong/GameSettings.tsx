@@ -1,26 +1,25 @@
 import { ChangeEvent, useState } from "react";
-import { Link, generatePath, useNavigate } from "react-router-dom";
+import { Link, Navigate, generatePath, useNavigate } from "react-router-dom";
+import { Socket } from "socket.io-client";
 
 interface ModalProp {
-  onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
+	onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
+	webSocket: Socket;
+	roomId: string;
 }
 
-const GameSettings = ({onClose}: any) => {
-  
-  //state
-    //ball speed 5-10 + 4
-    // size 3-20 + 2
-    //color
-    //behaviour
+const GameSettings = ({ roomId, onClose, webSocket }: any) => {
+
+  // STATE
+
     const [ ballSpeed, setSpeed] = useState<number>(3);
     const [ radius, setRadius] = useState<number>(8);
     const [ color, setColor ] = useState<string>("white");
     const navigate = useNavigate();
-    //render
-    
+
+	// BEHAVIOUR
     const closeModal = () => {
       onClose();
-      navigate("/");
     }
 
   const handleSpeed = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,14 +39,29 @@ const GameSettings = ({onClose}: any) => {
     setRadius(8);
     setSpeed(3);
   }
-  
-  
+
+  const sendGameSettings = () => {
+	if (roomId) {
+	  const gameSettingsData = {
+		ballSpeed,
+		radius,
+		color
+	  };
+	  // Envoyer les paramètres au serveur via WebSocket
+	  console.log("Send game settings:", gameSettingsData);
+	  console.log("Send roomId:", roomId);
+	  webSocket.emit("chooseGameSettings", gameSettingsData, roomId);
+	} else {
+	  console.error("roomId is undefined.");
+	}
+  };
+
   const handleGame = () => {
     closeModal();
-    
     // <GamePage {...{ballSpeed, radius, color}}/>
   }
 
+  // RENDER
   return (
     <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
   <div className="fixed inset-0 bg-gray-500 bg-opacity-60 transition-opacity"></div>
@@ -139,9 +153,10 @@ const GameSettings = ({onClose}: any) => {
         </div>
         <div className="bg-gray-400 px-4 py-3 grid grid-cols-6 gap-4">
             <button type="button" onClick={handleReset} className="col-start-1 inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Reset</button>
-            <button type="button" onClick={closeModal} className="col-start-5 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
-            {/* <button onClick={handleGame} className="btn btn-primary inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</button> */}
-            <Link to={generatePath("/game/:ballSpeed/:radius/:color",{ballSpeed: (ballSpeed + 4).toString(), radius: (radius + 2).toString(), color: color})} className="btn btn-primary inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Submit</Link>
+			<Link to={"/"}>
+				<button type="button" onClick={closeModal} className="col-start-5 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+			</Link>
+			<button type="button" onClick={() => { sendGameSettings(); }} className="btn btn-primary inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto" >Submit</button>
         </div>
       </div>
     </div>
