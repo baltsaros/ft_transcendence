@@ -170,9 +170,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					// Générez des valeurs aléatoires à partir des paramètres reçus
 					const randomSettings = this.generateRandomGameSettings(room.gameSettings);
 					// Envoyez les paramètres générés à tous les joueurs de la salle
-					console.log("ballSpeed : ", randomSettings.ballSpeed);
-					console.log("radius : ", randomSettings.radius);
-					console.log("color : ", randomSettings.color);
 					room.players.forEach((player) => {
 							this.server.to(player).emit('settingsSuccess', randomSettings);
 						}
@@ -187,6 +184,23 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			});
 		}
 	}
+
+	@SubscribeMessage('movePaddle')
+	async handleMovePaddle(
+		@ConnectedSocket() client: Socket,
+		@MessageBody('data')  data: {direction: string, roomId: string}
+		)
+		{
+			const direction = data.direction;
+			const room = this.pongRooms.get(data.roomId);
+			if (room) {
+				room.players.forEach((player) => {
+					if (player != client.id) {
+						this.server.to(player).emit('opponentMovePaddle', {direction: direction});
+					}
+				});
+			}
+		}
 
 	@SubscribeMessage('testLog')
 	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {

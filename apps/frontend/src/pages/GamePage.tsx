@@ -22,6 +22,7 @@ const GamePage: React.FC = () => {
 	const [showGameSettings, setShowGameSettings] = useState(false);
 	const [launchGame, setLaunchGame] = useState(false);
 	const [roomId, setRoomId] = useState<string | null>(null);
+	const [gameSettingsData, setGameSettingsData] = useState<GameSettingsData | null>(null);
 	const [radius, setRadius] = useState<number | null>(null);
 	const [ballSpeed, setBallSpeed] = useState<number | null>(null);
 	const [color, setColor] = useState<string | null>(null);
@@ -56,9 +57,8 @@ const GamePage: React.FC = () => {
 		});
 
 		webSocketRef.current?.on('settingsSuccess', (data) => {
-			setColor(data.color);
-			setRadius(data.radius);
-			setBallSpeed(data.ballSpeed);
+			const settings = new GameSettingsData(data.ballSpeed, data.radius, data.color);
+			setGameSettingsData(settings);
 			setShowGameSettings(false);
 			setLaunchGame(true);
 		});
@@ -72,7 +72,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
 			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && ballSpeed && radius && color && webSocketRef.current && roomId && (<PongLauncher ballSpeed={ballSpeed} radius={radius} color={color}/> )}
+			{launchGame && gameSettingsData && webSocketRef.current && roomId && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData} /> )}
 		</div>
 	);
 };
