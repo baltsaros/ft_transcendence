@@ -3,7 +3,6 @@ import { Socket, SocketOptions } from "socket.io-client";
 import { usePongWebSocket } from "../../context/pong.websocket.context";
 import PongWebSocketService from "../../services/pong.websocket.service";
 import { Link } from "react-router-dom";
-import { removeInvitation } from "../../store/user/userSlice";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -25,11 +24,7 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
 	useEffect(() => {
 			// Établir la connexion WebSocket
-		webSocket.emit('launchMatchmaking', {});
-
-		webSocket.on('createdPongRoom', (data: { roomId: string }) => {
-		  console.log(`Room created with ID: ${data.roomId}`); // Mettez à jour l'ID de la salle dans l'état local
-		});
+		webSocket.emit('launchMatchmaking');
 
 		// Gestion des événements du serveur pour la mise en correspondance
 		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
@@ -40,10 +35,6 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
 		webSocket.on('leavePongRoom', (data: { roomId: string }) => {
 			console.log(`Leave the room ${data.roomId}...`);
-		});
-
-		webSocket.on('waitingForMatch', (data: { message: string }) => {
-			console.log(data);
 		});
 
 		webSocket.on('matchmakingError', (data: { message: string }) => {
@@ -80,16 +71,16 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
                             </div>
                         </div>
                 </div>
-				<div className="flex justify-between bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-					<Link to={"/"}>
-						<button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-500 text-white px-3 py-2 text-sm font-semibold hover:bg-red-600">Cancel</button>
-					</Link>
-				</div>
+                <div className="flex justify-center bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <Link to={"/"}>
+                        <button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
+                    </Link>
+                </div>
             </div>
           </div>
         </div>
       </div>
-	  )
+	)
 }
 
     export default WaitingGame;
