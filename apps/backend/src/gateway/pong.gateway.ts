@@ -217,15 +217,11 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 			if (room)
 			{
+				console.log("client : ", client.id);
 				if (room.leftPaddle == client.id)
 					client.emit('sendPaddle', {paddle: "left"})
 				else if (room.rightPaddle == client.id)
 					client.emit('sendPaddle', {paddle: "right"})
 			}
 		}
-
-	@SubscribeMessage('testLog')
-	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
-		console.log("log : ", message);
-	}
 }

@@ -13,7 +13,7 @@ const leftPaddleX = paddleOffset;
 const rightPaddleX = fieldWidth - paddleWidth - paddleOffset;
 const paddleSpeed = 20;
 
-const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
+const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 	// STATE
 	const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -26,47 +26,64 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const player1ScoreRef = useRef(0);
 	const player2ScoreRef = useRef(0);
-	const [player1Paddle, setPlayer1Paddle] = useState<string | null>(null);
+	const player1PaddleRef = useRef("");
+	const player2PaddleRef = useRef("");
 
-	webSocket.emit('getPaddle', {data: {roomId: roomId}});
 
 	useEffect(() => {
 		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
+		if (player1PaddleRef.current == "" && player2PaddleRef.current == "")
+			webSocket.emit('getPaddle', {data: {roomId: roomId}});
+
 		webSocket.on("sendPaddle", (data: { paddle: string }) => {
-			setPlayer1Paddle(data.paddle);
+			const paddle = data.paddle;
+
+			player1PaddleRef.current = paddle;
+
+			if (data.paddle === "left")
+				player2PaddleRef.current = "right";
+			else if (data.paddle === "right")
+				player2PaddleRef.current = "left";
+
+			console.log(player1PaddleRef);
+			console.log(player2PaddleRef);
 		});
 
 		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
 		return () => {
 		  webSocket.off("sendPaddle");
 		};
-	  }, []);
+	}, [webSocket, roomId, player1PaddleRef, player2PaddleRef]);
 
-	const moveLeftPaddle = (direction: string) =>
+	const movePaddles = (paddle: string, direction: string) =>
 	{
-		if (direction === "up")
-			leftPaddleYRef.current = Math.max(0, leftPaddleYRef.current - paddleSpeed);
-		else if (direction === "down")
-			leftPaddleYRef.current = Math.min(fieldHeight - paddleHeight, leftPaddleYRef.current + paddleSpeed);
+		if (paddle === "left")
+		{
+			if (direction === "up")
+				leftPaddleYRef.current = Math.max(0, leftPaddleYRef.current - paddleSpeed);
+			else if (direction === "down")
+				leftPaddleYRef.current = Math.min(fieldHeight - paddleHeight, leftPaddleYRef.current + paddleSpeed);
+		}
+		else if (paddle === "right")
+		{
+			if (direction === "up")
+				rightPaddleYRef.current = Math.max(0, rightPaddleYRef.current - paddleSpeed);
+			else if (direction === "down")
+				rightPaddleYRef.current = Math.min(fieldHeight - paddleHeight, rightPaddleYRef.current + paddleSpeed);
+		}
 	}
 
-	const moveRightPaddle = (direction: string) =>
-	{
-		if (direction === "up")
-			rightPaddleYRef.current = Math.max(0, rightPaddleYRef.current - paddleSpeed);
-		else if (direction === "down")
-			rightPaddleYRef.current = Math.min(fieldHeight - paddleHeight, rightPaddleYRef.current + paddleSpeed);
-	}
-
-	const movePaddles = (e: KeyboardEvent) => {
+	const movePlayer1 = (e: KeyboardEvent) => {
 		if (e.key === "w") {
 			// Déplacez la raquette gauche vers le haut (w pour joueur 1)
-			if ()
-			leftPaddleYRef.current = Math.max(0, leftPaddleYRef.current - paddleSpeed);
+			if (player1PaddleRef.current)
+				movePaddles(player1PaddleRef.current, "up");
 			webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
-		} else if (e.key === "s") {
-			// Déplacez la raquette gauche vers le bas (s pour joueur 1)
-			leftPaddleYRef.current = Math.min(fieldHeight - paddleHeight, leftPaddleYRef.current + paddleSpeed);
+		}
+		else if (e.key === "s")
+		{
+			if (player1PaddleRef.current)
+				movePaddles(player1PaddleRef.current, "down");
 			webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 		}
 	};
@@ -76,11 +93,11 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 		webSocket.on("opponentMovePaddle", (data: { direction: string }) => {
 			// Mettez à jour la position de la raquette de l'autre joueur
 			if (data.direction === "up") {
-				// Mettez à jour la position de la raquette droite vers le haut
-				rightPaddleYRef.current = Math.max(0, rightPaddleYRef.current - paddleSpeed);
+				if (player2PaddleRef.current)
+					movePaddles(player2PaddleRef.current, "up");
 			} else if (data.direction === "down") {
-				// Mettez à jour la position de la raquette droite vers le bas
-				rightPaddleYRef.current = Math.min(fieldHeight - paddleHeight, rightPaddleYRef.current + paddleSpeed);
+				if (player2PaddleRef.current)
+					movePaddles(player2PaddleRef.current, "down");
 			}
 		});
 
@@ -88,7 +105,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 		return () => {
 		  webSocket.off("opponentMovePaddle");
 		};
-	  }, []);
+	}, []);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -235,11 +252,11 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 	requestAnimationFrame(update);
 
 	// Écoutez les touches de contrôle des raquettes
-	window.addEventListener("keydown", movePaddles);
+	window.addEventListener("keydown", movePlayer1);
 
 		// Nettoyez les événements lorsque le composant est démonté
 		return () => {
-			window.removeEventListener("keydown", movePaddles);
+			window.removeEventListener("keydown", movePlayer1);
 			};
 	}, []);
 
