@@ -1,22 +1,10 @@
 import { FC, useEffect, useRef } from "react";
-import { useState } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import jwtDecode from "jwt-decode";
-import { useAppDispatch } from "../store/hooks";
 import { useAuth } from "../hooks/useAuth";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
-import { PongWebSocketProvider } from "../context/pong.websocket.context";
-import FriendList from "../components/FriendList";
-import userSlice from "../store/user/userSlice";
-import { toast } from "react-toastify";
-import FriendInvitations from "../components/FriendInvitations";
-import { ChannelService } from "../services/channels.service";
-import { IChannelPassword, IChannelRelation } from "../types/types";
-import SettingsGame from "../components/pong/GameSettings";
-import WaitingGame from "../components/pong/WaitingGame";
-import { usePongWebSocket } from "../context/pong.websocket.context";
-import { io, Socket } from "socket.io-client";
+
 
 const Home: FC = () => {
   // const user = useAppSelector((state: RootState) => state.user.user);

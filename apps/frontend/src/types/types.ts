@@ -54,8 +54,6 @@ export interface IResponseUser {
   wins: number;
   loses: number;
   createdAt: Date;
-  invitations: IUserUsername[],
-  friends: IUserUsername[],
 }
 /*
 export interface IUserWithStatus {

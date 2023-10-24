@@ -8,7 +8,7 @@ import { Channel } from 'src/channel/channel.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { IUserSocket } from 'src/types/types';
+import { IResponseUser, IUserSocket } from 'src/types/types';
 
 
 
@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    // console.log('client:', client.id, client.handshake.query.username.toString());
+    console.log('client:', client.id, client.handshake.query.username.toString());
     this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
     const username = client.handshake.query.username.toString();
     const channel = await this.channelService.findAll();
@@ -62,6 +62,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       userMapping.forEach((socket) => {
         socket.emit('newChannelCreated', payload);
       } )
+  }
+
+  @SubscribeMessage('updateStatus')
+  handleUpdateStatus(@MessageBody("data") data: {userUpdate: IResponseUser}) {
+    this.server.emit('newUpdateStatus', data.userUpdate);
   }
 
   @OnEvent('message.created')
