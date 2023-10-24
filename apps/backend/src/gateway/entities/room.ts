@@ -6,6 +6,9 @@ export class Room {
 	gameState: GameState;
 	gameSettings: GameSettingsData[] = [];
 
+	leftPaddle: string;
+	rightPaddle: string;
+
 	constructor(id: string) {
 		this.id = id;
 		this.gameState = GameState.Waiting;
@@ -15,6 +18,8 @@ export class Room {
 		this.gameState = newState;
 	}
 
+	setLeftPaddle(client_id: string) { this.leftPaddle = client_id; }
+	setRightPaddle(client_id: string) { this.rightPaddle = client_id; }
 	addGameSettings(settings: GameSettingsData) {
 		this.gameSettings.push(settings);
 	}

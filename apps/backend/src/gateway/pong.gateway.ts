@@ -55,7 +55,11 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		const roomId = this.generateRoomId();
 		const room = new Room(roomId);
 		room.players.add(player1.id);
+		room.setLeftPaddle(player1.id);
+
 		room.players.add(player2.id);
+		room.setRightPaddle(player2.id);
+
 		this.pongRooms.set(roomId, room);
 		console.log(`Room ${roomId} has been created.`);
 
@@ -185,6 +189,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 	}
 
+
 	@SubscribeMessage('movePaddle')
 	async handleMovePaddle(
 		@ConnectedSocket() client: Socket,
@@ -199,6 +204,23 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 						this.server.to(player).emit('opponentMovePaddle', {direction: direction});
 					}
 				});
+			}
+		}
+
+	@SubscribeMessage('getPaddle')
+	async handleGetPaddle(
+		@ConnectedSocket() client: Socket,
+		@MessageBody('data')  data: {roomId: string}
+		)
+		{
+			const room = this.pongRooms.get(data.roomId);
+
+			if (room)
+			{
+				if (room.leftPaddle == client.id)
+					client.emit('sendPaddle', {paddle: "left"})
+				else if (room.rightPaddle == client.id)
+					client.emit('sendPaddle', {paddle: "right"})
 			}
 		}
 

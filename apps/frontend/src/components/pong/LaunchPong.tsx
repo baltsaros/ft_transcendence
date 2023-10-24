@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/room";
@@ -26,10 +26,42 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const player1ScoreRef = useRef(0);
 	const player2ScoreRef = useRef(0);
+	const [player1Paddle, setPlayer1Paddle] = useState<string | null>(null);
+
+	webSocket.emit('getPaddle', {data: {roomId: roomId}});
+
+	useEffect(() => {
+		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
+		webSocket.on("sendPaddle", (data: { paddle: string }) => {
+			setPlayer1Paddle(data.paddle);
+		});
+
+		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
+		return () => {
+		  webSocket.off("sendPaddle");
+		};
+	  }, []);
+
+	const moveLeftPaddle = (direction: string) =>
+	{
+		if (direction === "up")
+			leftPaddleYRef.current = Math.max(0, leftPaddleYRef.current - paddleSpeed);
+		else if (direction === "down")
+			leftPaddleYRef.current = Math.min(fieldHeight - paddleHeight, leftPaddleYRef.current + paddleSpeed);
+	}
+
+	const moveRightPaddle = (direction: string) =>
+	{
+		if (direction === "up")
+			rightPaddleYRef.current = Math.max(0, rightPaddleYRef.current - paddleSpeed);
+		else if (direction === "down")
+			rightPaddleYRef.current = Math.min(fieldHeight - paddleHeight, rightPaddleYRef.current + paddleSpeed);
+	}
 
 	const movePaddles = (e: KeyboardEvent) => {
 		if (e.key === "w") {
 			// Déplacez la raquette gauche vers le haut (w pour joueur 1)
+			if ()
 			leftPaddleYRef.current = Math.max(0, leftPaddleYRef.current - paddleSpeed);
 			webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
 		} else if (e.key === "s") {
@@ -48,10 +80,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId }: any) => {
 				rightPaddleYRef.current = Math.max(0, rightPaddleYRef.current - paddleSpeed);
 			} else if (data.direction === "down") {
 				// Mettez à jour la position de la raquette droite vers le bas
-				rightPaddleYRef.current = Math.min(
-				fieldHeight - paddleHeight,
-				rightPaddleYRef.current + paddleSpeed
-				);
+				rightPaddleYRef.current = Math.min(fieldHeight - paddleHeight, rightPaddleYRef.current + paddleSpeed);
 			}
 		});
 
