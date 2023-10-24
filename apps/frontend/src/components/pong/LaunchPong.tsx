@@ -53,8 +53,8 @@ const PongLauncher: React.FC<PongProp> = ({ballSpeed, radius, color} : any) => {
 		}
 	};
 
-  useEffect(() => {
-    // ... Mettez ici le code de votre useEffect existant ...
+	useEffect(() => {
+	// ... Mettez ici le code de votre useEffect existant ...
 	const canvas = canvasRef.current;
 	if (!canvas) return;
 
@@ -133,7 +133,7 @@ const PongLauncher: React.FC<PongProp> = ({ballSpeed, radius, color} : any) => {
 
 		// Vérifiez les collisions avec les raquettes
 		if (
-			newBallX - radius < paddleWidth + 10 &&  // Prend en compte le décalage des raquettes
+			newBallX - radius < paddleWidth + 10 &&	// Prend en compte le décalage des raquettes
 			newBallY + radius > leftPaddleY &&
 			newBallY - radius < leftPaddleY + paddleHeight
 		) {
@@ -142,7 +142,7 @@ const PongLauncher: React.FC<PongProp> = ({ballSpeed, radius, color} : any) => {
 		}
 
 		if (
-			newBallX + radius > fieldWidth - paddleWidth - 10 &&  // Prend en compte le décalage des raquettes
+			newBallX + radius > fieldWidth - paddleWidth - 10 &&	// Prend en compte le décalage des raquettes
 			newBallY + radius > rightPaddleY &&
 			newBallY - radius < rightPaddleY + paddleHeight
 		) {
@@ -200,24 +200,19 @@ const PongLauncher: React.FC<PongProp> = ({ballSpeed, radius, color} : any) => {
 	// Écoutez les touches de contrôle des raquettes
 	window.addEventListener("keydown", movePaddles);
 
-    // Nettoyez les événements lorsque le composant est démonté
-    return () => {
-      window.removeEventListener("keydown", movePaddles);
-    };
-  }, []);
+		// Nettoyez les événements lorsque le composant est démonté
+		return () => {
+			window.removeEventListener("keydown", movePaddles);
+			};
+	}, []);
 
-  return (
-    <div className="game-container">
-      <div className="flex justify-center items-center h-screen">
-        <canvas
-          ref={canvasRef}
-          width={fieldWidth}
-          height={fieldHeight}
-          style={{ border: "2px solid white" }}
-        ></canvas>
-      </div>
-    </div>
-  );
+	return (
+		<div className="game-container">
+			<div className="flex justify-center items-center h-screen">
+				<canvas ref={canvasRef} width={fieldWidth} height={fieldHeight} style={{ border: "2px solid white" }}></canvas>
+			</div>
+		</div>
+	);
 };
 
 export default PongLauncher;

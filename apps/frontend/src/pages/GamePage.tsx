@@ -25,34 +25,26 @@ const GamePage: React.FC = () => {
 	const [radius, setRadius] = useState<number | null>(null);
 	const [ballSpeed, setBallSpeed] = useState<number | null>(null);
 	const [color, setColor] = useState<string | null>(null);
-	// const handleOpenModal = () => {
-	// 	// Ouvrez le modal en passant la socket WebSocket en tant que prop
-	// 	setModalView(true);
-	//   };
 
-	  const handleCloseModal = () => {
-		// // Fermez le modal
-		// webSocketRef.current?.close();
-		// webSocketRef.current = null;
+	const handleCloseModal = () => {
 		setModalView(false);
 	};
 
 	if (!webSocketRef.current) {
 		webSocketRef.current = io('ws://localhost:3000/pong', {
-		  query: {
-			username: Cookies.get('username'),
-		  },
+			query: {
+				username: Cookies.get('username'),
+			},
 		});
 	}
+
 	useEffect(() => {
-		// handleOpenModal();
 
 		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string }) => {
 			console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
-			// console.log(data.roomId);
-			setModalView(false); // Fermez le composant WaitingGame
+			setModalView(false);
 			setRoomId(data.roomId);
-			setShowGameSettings(true); // Affichez le composant GameSettings
+			setShowGameSettings(true);
 		});
 
 		webSocketRef.current?.on('OpponentDisconnected', () =>
@@ -64,10 +56,6 @@ const GamePage: React.FC = () => {
 		});
 
 		webSocketRef.current?.on('settingsSuccess', (data) => {
-			// Fermez le composant GameSettings
-			// Vous pouvez maintenant accéder aux données de gameSettings
-			// console.log("hey enfoiré");
-			// console.log("game settings : \n", data.ballSpeed, "\n", data.radius, "\n", data.color);
 			setColor(data.color);
 			setRadius(data.radius);
 			setBallSpeed(data.ballSpeed);
@@ -84,7 +72,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
 			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && ballSpeed && radius && color && (<PongLauncher ballSpeed={ballSpeed} radius={radius} color={color}/> )}
+			{launchGame && ballSpeed && radius && color && webSocketRef.current && roomId && (<PongLauncher ballSpeed={ballSpeed} radius={radius} color={color}/> )}
 		</div>
 	);
 };
