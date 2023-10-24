@@ -8,6 +8,7 @@ import {
 	MessageBody
 } from '@nestjs/websockets';
 import { platform } from 'os';
+import { instance } from "../../../frontend/src/api/axios.api";
 
 import { Server, Socket } from 'socket.io';
 import { GameSettingsData, GameState, Room } from './entities/room';
@@ -224,4 +225,41 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					client.emit('sendPaddle', {paddle: "right"})
 			}
 		}
+
+		@SubscribeMessage('endMatch')
+		async handleEndMatch(
+			@ConnectedSocket() client: Socket,
+			@MessageBody('data')  data: {username:string, roomId: string, score: number}
+			)
+			{
+				const room = this.pongRooms.get(data.roomId);
+				const score = data.score;
+				const username = data.username;
+
+				if (room)
+				{
+					if (!room.player1.score && !room.player1.username)
+					{
+						room.setPlayer1Score(data.score);
+						room.setPlayer1Username(data.username);
+					}
+					else
+					{
+						console.log("ici");
+						room.setPlayer2Score(score);
+						room.setPlayer2Username(username);
+						const { data } = await instance.post("matches/", {
+							username: room.player1.username,
+							opponent: room.player2.username,
+							scoreuser: room.player1.score,
+							scoreOpponent: room.player2.score
+						});
+					}
+				}
+			}
+
+	@SubscribeMessage('testLog')
+	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
+		console.log("log : ", message);
+	}
 }

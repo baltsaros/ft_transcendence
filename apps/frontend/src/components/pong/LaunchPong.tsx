@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, { useRef, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
@@ -24,36 +25,10 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 	const ballSpeedYRef = useRef(ballSpeed);
 	const leftPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
-	const player1ScoreRef = useRef(0);
-	const player2ScoreRef = useRef(0);
+	const leftScoreRef = useRef(0);
+	const rightScoreRef = useRef(0);
 	const player1PaddleRef = useRef("");
 	const player2PaddleRef = useRef("");
-
-
-	useEffect(() => {
-		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
-		if (player1PaddleRef.current == "" && player2PaddleRef.current == "")
-			webSocket.emit('getPaddle', {data: {roomId: roomId}});
-
-		webSocket.on("sendPaddle", (data: { paddle: string }) => {
-			const paddle = data.paddle;
-
-			player1PaddleRef.current = paddle;
-
-			if (data.paddle === "left")
-				player2PaddleRef.current = "right";
-			else if (data.paddle === "right")
-				player2PaddleRef.current = "left";
-
-			console.log(player1PaddleRef);
-			console.log(player2PaddleRef);
-		});
-
-		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
-		return () => {
-		  webSocket.off("sendPaddle");
-		};
-	}, [webSocket, roomId, player1PaddleRef, player2PaddleRef]);
 
 	const movePaddles = (paddle: string, direction: string) =>
 	{
@@ -87,6 +62,44 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 			webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 		}
 	};
+
+	useEffect(() => {
+		if (leftScoreRef.current == 10 || rightScoreRef.current == 10)
+		{
+			const username = Cookies.get('username');
+
+			console.log("score : ", leftScoreRef, " - ", rightScoreRef);
+			if (player1PaddleRef.current === "left")
+				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: leftScoreRef.current}})
+			else if (player1PaddleRef.current === "right")
+				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: rightScoreRef.current}})
+		}
+	}, [leftScoreRef, rightScoreRef]);
+
+	useEffect(() => {
+		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
+		if (player1PaddleRef.current == "" && player2PaddleRef.current == "")
+			webSocket.emit('getPaddle', {data: {roomId: roomId}});
+
+		webSocket.on("sendPaddle", (data: { paddle: string }) => {
+			const paddle = data.paddle;
+
+			player1PaddleRef.current = paddle;
+
+			if (data.paddle === "left")
+				player2PaddleRef.current = "right";
+			else if (data.paddle === "right")
+				player2PaddleRef.current = "left";
+
+			console.log(player1PaddleRef);
+			console.log(player2PaddleRef);
+		});
+
+		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
+		return () => {
+		  webSocket.off("sendPaddle");
+		};
+	}, [webSocket, roomId, player1PaddleRef, player2PaddleRef]);
 
 	useEffect(() => {
 		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
@@ -152,7 +165,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 
 				// Augmentez le score du joueur 1 lorsque la balle touche le bord droit
-				player1ScoreRef.current += 1;
+				leftScoreRef.current += 1;
 			}
 
 			if (newBallX - gameSettings.radius < 0) {
@@ -176,7 +189,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 
 				// Augmentez le score du joueur 2 lorsque la balle touche le bord gauche
-				player2ScoreRef.current += 1;
+				rightScoreRef.current += 1;
 			}
 
 			// Vérifiez les collisions avec les bords verticaux
@@ -241,8 +254,8 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 			// Dessinez les scores sur le canvas
 			ctx.font = "50px Arial";
-			ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
-			ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+			ctx.fillText(`${leftScoreRef.current}`, fieldWidth / 2 - 50, 50);
+			ctx.fillText(`${rightScoreRef.current}`, fieldWidth / 2 + 20, 50);
 
 			// Appelez la fonction update à la prochaine trame d'animation
 			requestAnimationFrame(update);
