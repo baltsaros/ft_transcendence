@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import { IUserUsername } from "../types/types";
+import { useEffect, useRef } from "react";
+import { IResponseUser, IUserUsername } from "../types/types";
 import ToggleMenuFriendList from "./ToggleMenuFriendList";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';

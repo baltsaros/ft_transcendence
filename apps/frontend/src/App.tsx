@@ -1,19 +1,17 @@
 // import ftLogo from './assets/42_Logo.svg'
 import "./App.css";
-import { RouterProvider, useNavigate } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { router } from "./router/router";
-import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { useAppDispatch } from "./store/hooks";
 import {
   getTokenFromLocalStorage,
   setTokenToLocalStorage,
 } from "./helpers/localstorage.helper";
 import { AuthService } from "./services/auth.service";
 import { login, logout, setAvatar, setUsername } from "./store/user/userSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { RootState } from "./store/store";
 import Cookies from "js-cookie";
-import { IUser } from "./types/types";
 
 function App() {
   const dispatch = useAppDispatch();

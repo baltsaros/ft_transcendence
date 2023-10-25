@@ -16,7 +16,6 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { FortyTwoAuthGuard } from "./guards/42.guard";
 
 
-
 @Controller("auth")
 export class AuthController {
   constructor(
@@ -106,3 +105,7 @@ export class AuthController {
     return { jwt: jwt.access_token, valid: isCodeValid };
   }
 }
+function useChatWebSocket() {
+  throw new Error("Function not implemented.");
+}
+
