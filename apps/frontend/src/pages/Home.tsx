@@ -37,21 +37,24 @@ const Home: FC = () => {
           Please, log in with 42 account
         </div>
       ) : (
-          <div className=" grid grid-cols-3 gap-28">
-            <div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
-              <div/>
-			  <div>
-                <Link to="/game">
-                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">PLAY</button>
-                </Link>
-              </div>
-              <div>
-                <Link to="/chat">
-                  <button className="w-64 h-32 bg-gray-500 text-center text-black text-4xl">CHAT</button>
-                </Link>
-              </div>
-            </div>
-          </div>
+		<div className=" grid grid-cols-3 gap-28">
+			<div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
+			<div/>
+			<div className="row-span-1">
+				<Link to="/game">
+					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-white text-4xl font-bold rounded-lg transition-colors duration-300">PLAY</button>
+				</Link>
+			</div>
+			 <div className="row-span-1">
+				<Link to="/chat">
+					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-white text-4xl font-bold rounded-lg transition-colors duration-300">
+						CHAT
+					</button>
+				</Link>
+			</div>
+			</div>
+		</div>
+
       )}
     </>
   );
