@@ -65,7 +65,8 @@ export class ChannelService {
         return await this.channelRepository.findOne
         (
             { 
-                where: {id: channelId }
+                where: {id: channelId },
+                relations: {users:true}
             }
         );
     }
