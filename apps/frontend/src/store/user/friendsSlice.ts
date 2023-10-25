@@ -32,7 +32,7 @@ const friendsSlice = createSlice({
         },
         removeFriend: (state, action: PayloadAction<IUserUsername>) => {
             const friendToRemove = action.payload;
-            state.friends = state.friends.filter((friend) => friend.username != friendToRemove.username);
+            state.friends = state.friends.filter((friend) => friend.username !== friendToRemove.username);
         },
         updateStatusFriend: (state, action: PayloadAction<IUserUsername>) => {
             const userToModify = action.payload;

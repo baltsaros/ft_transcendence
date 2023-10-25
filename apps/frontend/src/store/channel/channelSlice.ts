@@ -12,6 +12,11 @@ const fetchChannel = createAsyncThunk('get/fetchChannel', async() => {
   return channel.data
 })
 
+const fetchChannelById = createAsyncThunk('get/fetchChannelById', async(id: number) => {
+  const channels = await instance.get<IChannel[]>('channel/');
+  const channel = channels.data.filter((elem) => elem.id === id);
+  return channel[0];
+})
 interface ChannelState {
   channel: IChannel[];
   status: string;
@@ -77,5 +82,5 @@ const channelSlice = createSlice({
 export const { addNewUser } = channelSlice.actions;
 export const { removeUser} = channelSlice.actions;
 export const { addChannel } = channelSlice.actions;
-export {fetchChannel};
+export {fetchChannel, fetchChannelById};
 export default channelSlice.reducer;
