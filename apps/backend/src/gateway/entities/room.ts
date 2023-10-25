@@ -39,6 +39,14 @@ export class Room {
 		return this.players.get(id);
 	}
 
+	getUsernameById( id:string ) : string | null{
+		this.players.forEach((player) => {
+			if (player.id === id)
+				return (player.username);
+			});
+		return (null);
+	}
+
 	addGameSettings(settings: GameSettingsData) {
 		this.gameSettings.push(settings);
 	}

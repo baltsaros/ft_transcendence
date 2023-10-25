@@ -14,8 +14,6 @@ const GamePage: React.FC = () => {
 
 	// let webSocket = new WebSocket("ws://localhost:3000/pong");
 
-	const navigate = useNavigate();
-
 	// webSocket.send()
 	const webSocketRef = useRef<Socket | null>(null);
 	const [modalView, setModalView] = useState<boolean>(true);
@@ -27,6 +25,7 @@ const GamePage: React.FC = () => {
 	const [radius, setRadius] = useState<number | null>(null);
 	const [ballSpeed, setBallSpeed] = useState<number | null>(null);
 	const [color, setColor] = useState<string | null>(null);
+	const [opponentUsername, setOpponentUsername] = useState<string | null>(null);
 
 	const handleCloseModal = () => {
 		setModalView(false);
@@ -42,10 +41,12 @@ const GamePage: React.FC = () => {
 
 	useEffect(() => {
 
-		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string }) => {
+		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
+			console.log(data.opponentUsername);
 			setModalView(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
+			setOpponentUsername(data.opponentUsername);
 		});
 
 		webSocketRef.current?.on('OpponentDisconnected', () =>
@@ -72,7 +73,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
 			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && gameSettingsData && webSocketRef.current && roomId && !matchEnded && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData} /> )}
+			{launchGame && gameSettingsData && webSocketRef.current && roomId && !matchEnded && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData} opponent={opponentUsername}/> )}
 		</div>
 	);
 };

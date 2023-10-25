@@ -119,18 +119,22 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					// Retirer les deux premiers joueurs de la file d'attente
 					const player1 = this.waitingPlayers.shift();
 					const player2 = this.waitingPlayers.shift();
+					let player1Username: string;
+					let player2Username: string;
 
 					// Créer une nouvelle salle pour les deux joueurs
 					const newRoomId = this.createPongRoom(player1, player2);
-					// Envoyez l'événement `createdPongRoom` à tous les joueurs de la salle
-					[player1, player2].forEach((player) => {
-						player.emit('createdPongRoom', {roomId: newRoomId});
-					});
 
-					// Vous pouvez également envoyer un événement `matchmakingSuccess` si nécessaire
-					[player1, player2].forEach((player) => {
-						player.emit('matchmakingSuccess', { roomId: newRoomId });
+					const room = this.pongRooms.get(newRoomId);
+
+					room.players.forEach((player) => {
+						if (player.id === player1.id)
+							player1Username = player.username;
+						else if (player.id === player2.id)
+							player2Username = player.username;
 					});
+					player1.emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player2Username });
+					player2.emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player1Username });
 				}
 			}
 		}

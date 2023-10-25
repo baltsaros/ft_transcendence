@@ -42,12 +42,12 @@ const Home: FC = () => {
 			<div/>
 			<div className="row-span-1">
 				<Link to="/game">
-					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-white text-4xl font-bold rounded-lg transition-colors duration-300">PLAY</button>
+					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-gray-200 text-4xl font-bold rounded-lg transition-colors duration-300">PLAY</button>
 				</Link>
 			</div>
 			 <div className="row-span-1">
 				<Link to="/chat">
-					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-white text-4xl font-bold rounded-lg transition-colors duration-300">
+					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-gray-200 text-4xl font-bold rounded-lg transition-colors duration-300">
 						CHAT
 					</button>
 				</Link>

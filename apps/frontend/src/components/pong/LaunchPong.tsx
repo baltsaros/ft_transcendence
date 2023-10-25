@@ -3,6 +3,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/room";
+import { MatchService } from "../../services/matches.service";
+import { PlayerService } from "../../services/player.service";
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
 const scoreMax = 5;
@@ -14,8 +16,9 @@ const paddleOffset = 3;
 const leftPaddleX = paddleOffset;
 const rightPaddleX = fieldWidth - paddleWidth - paddleOffset;
 const paddleSpeed = 20;
+const username = Cookies.get('username');
 
-const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
+const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 
 	// STATE
 	const [matchEnded, setMatchEnded] = useState<boolean>(false);
@@ -32,6 +35,8 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 	const rightScoreRef = useRef(0);
 	const player1PaddleRef = useRef("");
 	const player2PaddleRef = useRef("");
+	const player1ScoreRef = useRef(0);
+	const player2ScoreRef = useRef(0);
 
 	const movePaddles = (paddle: string, direction: string) =>
 	{
@@ -67,7 +72,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 	};
 
 	useEffect(() => {
-		if (leftScoreRef.current == 10 || rightScoreRef.current == 10)
+		if (player1ScoreRef.current == 10 || player2ScoreRef.current == 10)
 		{
 			const username = Cookies.get('username');
 
@@ -76,12 +81,21 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 			else if (player1PaddleRef.current === "right")
 				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: rightScoreRef.current}})
 		}
-	}, [leftScoreRef.current, rightScoreRef.current]);
+	}, [player1ScoreRef.current, player2ScoreRef.current]);
 
 
 	useEffect(() => {
 		webSocket.on('matchEnded', () => {
 			setMatchEnded(true);
+			if (player1ScoreRef.current > player2ScoreRef.current && username && opponent)
+			{
+				MatchService.addMatch({
+					username: username,
+					opponent: opponent,
+					scoreUser: player1ScoreRef.current,
+					scoreOpponent: player2ScoreRef.current
+				});
+			}
 		});
 		return () => {
 			webSocket.off("matchEnded");
@@ -174,21 +188,18 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				// Calculer les composantes X et Y en utilisant des fonctions trigonométriques
 				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
-
-				// Augmentez le score du joueur 1 lorsque la balle touche le bord droit
-				leftScoreRef.current += 1;
-				if (leftScoreRef.current == scoreMax)
+				// Augmentez le score du joueur droit lorsque la balle touche le bord droit
+				if (player1PaddleRef.current === "left")
 				{
-					if (player1PaddleRef.current === "left")
-					{
-						const score = leftScoreRef.current;
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
-					}
-						else if (player1PaddleRef.current === "right")
-					{
-						const score = rightScoreRef.current;
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
-					}
+					player1ScoreRef.current += 1;
+					if (player1ScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: player1ScoreRef.current}});
+				}
+				else
+				{
+					player2ScoreRef.current += 1;
+					if (player2ScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: player2ScoreRef.current}});
 				}
 			}
 
@@ -212,20 +223,18 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 
-				// Augmentez le score du joueur 2 lorsque la balle touche le bord gauche
-				rightScoreRef.current += 1;
-				if (rightScoreRef.current == scoreMax)
+				// Augmentez le score du joueur droit lorsque la balle touche le bord gauche
+				if (player1PaddleRef.current === "right")
 				{
-					if (player1PaddleRef.current === "left")
-					{
-						const score = leftScoreRef.current;
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
-					}
-						else if (player1PaddleRef.current === "right")
-					{
-						const score = rightScoreRef.current;
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
-					}
+					player1ScoreRef.current += 1;
+					if (player1ScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: player1ScoreRef.current}});
+				}
+				else
+				{
+					player2ScoreRef.current += 1;
+					if (player2ScoreRef.current == scoreMax)
+					webSocket.emit('endMatch', {data: {roomId: roomId, score: player2ScoreRef.current}});
 				}
 			}
 
@@ -291,9 +300,16 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 			// Dessinez les scores sur le canvas
 			ctx.font = "50px Arial";
-			ctx.fillText(`${leftScoreRef.current}`, fieldWidth / 2 - 50, 50);
-			ctx.fillText(`${rightScoreRef.current}`, fieldWidth / 2 + 20, 50);
-
+			if (player1PaddleRef.current === "left")
+			{
+				ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
+				ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+			}
+			else if (player1PaddleRef.current === "right")
+			{
+				ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 - 50, 50);
+				ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+			}
 			// Appelez la fonction update à la prochaine trame d'animation
 			requestAnimationFrame(update);
 		};
@@ -320,11 +336,11 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-800 text-center" id="modal-title">Match Result</h3>
 						</div>
 						<div className="bg-gray-600 p-6 space-y-3 text-center">
-							<p className="text-2xl text-black font-bold">ademurge vs hdony</p>
+							<p className="text-2xl text-black font-bold">{username} vs {opponent}</p>
 							<div className="flex justify-center items-center space-x-4">
-								<p className="text-4xl text-black font-bold">{leftScoreRef.current}</p>
+								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>
-								<p className="text-4xl text-black font-bold">{rightScoreRef.current}</p>
+								<p className="text-4xl text-black font-bold">{player2ScoreRef.current}</p>
 							</div>
 						</div>
 						<div className="bg-gray-400 px-4 py-3 text-center">
