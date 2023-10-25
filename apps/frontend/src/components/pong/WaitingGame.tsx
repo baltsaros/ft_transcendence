@@ -31,24 +31,16 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 
 		// Gestion des événements du serveur pour la mise en correspondance
 		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
-			// console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
 			setIsMatchmakingSuccess(true);
 			setRoomId(data.roomId);
 		});
 
-		webSocket.on('leavePongRoom', (data: { roomId: string }) => {
-			console.log(`Leave the room ${data.roomId}...`);
-		});
-
-		webSocket.on('matchmakingError', (data: { message: string }) => {
-		  console.error(`Matchmaking error: ${data.message}`);
-		});
 	  }, [webSocket]);
 
-    const closeModal = () => {
+	const closeModal = () => {
 		webSocket.emit('removeFromQueue', {});
 		onClose();
-    }
+	}
 
 
 	//render

@@ -71,7 +71,6 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 		{
 			const username = Cookies.get('username');
 
-			console.log("score : ", leftScoreRef, " - ", rightScoreRef);
 			if (player1PaddleRef.current === "left")
 				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: leftScoreRef.current}})
 			else if (player1PaddleRef.current === "right")
@@ -105,9 +104,6 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				player2PaddleRef.current = "right";
 			else if (data.paddle === "right")
 				player2PaddleRef.current = "left";
-
-			console.log(player1PaddleRef);
-			console.log(player2PaddleRef);
 		});
 
 		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
@@ -186,12 +182,10 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 					if (player1PaddleRef.current === "left")
 					{
 						const score = leftScoreRef.current;
-						// console.log("end match");
 						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
 					}
 						else if (player1PaddleRef.current === "right")
 					{
-						// console.log("end match");
 						const score = rightScoreRef.current;
 						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
 					}
@@ -222,9 +216,6 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 				rightScoreRef.current += 1;
 				if (rightScoreRef.current == scoreMax)
 				{
-					console.log("end match");
-					const username = Cookies.get('username');
-
 					if (player1PaddleRef.current === "left")
 					{
 						const score = leftScoreRef.current;

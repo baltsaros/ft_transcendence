@@ -27,14 +27,14 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	private	onlinePlayers: Player[] = [];
 
 	handleConnection(client: Socket) {
-		console.log(`Client connected: ${client.id}`);
+		// console.log(`Client connected: ${client.id}`);
 		// const username = Cookies.get('username');
 		const player = new Player(client.id, client.handshake.query.username.toString());
 		this.onlinePlayers.push(player);
 	}
 
 	handleDisconnect(client: Socket) {
-		console.log(`Client disconnected: ${client.id}`);
+		// console.log(`Client disconnected: ${client.id}`);
 
 		let index = this.onlinePlayers.findIndex((player) => player.id === client.id);
 		if (index !== -1) {
@@ -44,7 +44,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		index = this.waitingPlayers.indexOf(client);
 		if (index !== -1) {
 			this.waitingPlayers.splice(index, 1);
-			console.log(`Player ${client.id} removed from the waiting queue.`);
+			// console.log(`Player ${client.id} removed from the waiting queue.`);
 		}
 		else {
 			// Parcourir toutes les salles pour vérifier si le client était présent
@@ -82,7 +82,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 
 		this.pongRooms.set(roomId, room);
-		console.log(`Room ${roomId} has been created.`);
+		// console.log(`Room ${roomId} has been created.`);
 		return roomId;
 	}
 
@@ -101,7 +101,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			}
 
 			this.pongRooms.delete(roomId);
-			console.log(`Room ${roomId} has been deleted.`);
+			// console.log(`Room ${roomId} has been deleted.`);
 		}
 	}
 
@@ -150,7 +150,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			if (index !== -1) {
 				// Retirez le joueur de la file d'attente
 				this.waitingPlayers.splice(index, 1);
-				console.log(`Player ${client.id} removed from the waiting queue.`);
+				// console.log(`Player ${client.id} removed from the waiting queue.`);
 			}
 		}
 		catch (error) {
@@ -276,6 +276,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	@SubscribeMessage('testLog')
 	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
-		console.log("log : ", message);
+		// console.log("log : ", message);
 	}
 }

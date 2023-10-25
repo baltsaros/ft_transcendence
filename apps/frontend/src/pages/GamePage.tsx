@@ -43,7 +43,6 @@ const GamePage: React.FC = () => {
 	useEffect(() => {
 
 		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string }) => {
-			console.log(`Matchmaking successful. Room ID: ${data.roomId}`);
 			setModalView(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);

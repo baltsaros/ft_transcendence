@@ -42,20 +42,10 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
   const sendGameSettings = () => {
 	if (roomId) {
-	  // Envoyer les paramètres au serveur via WebSocket
-	//   console.log("Send roomId:", roomId);
-	webSocket.emit("chooseGameSettings", {data: {roomId, gameSettingsData : {ballSpeed, radius, color}}});
-	displayWaitingOpponent();
-	//   webSocket.emit("testLog", {message: roomId});
-	} else {
-	  console.error("roomId is undefined.");
-	}
-
-  };
-
-	const displayWaitingOpponent = () => {
+		webSocket.emit("chooseGameSettings", {data: {roomId, gameSettingsData : {ballSpeed, radius, color}}});
 		setWaitingOpponent(true);
-}
+	}
+};
 
 	// RENDER
 	return (
