@@ -4,7 +4,6 @@ import { IUserUsername } from "../../types/types";
 
 const fetchBlocked = createAsyncThunk('post/fetchBlocked', async(payload: number) => {
     const blocked = await PlayerService.getAllBlocked(payload);
-    console.log('blocked', blocked);
     return blocked;
 })
 

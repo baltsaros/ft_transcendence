@@ -5,7 +5,9 @@ import { IChannel, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState, store } from '../../store/store';
+import { removeUser, removeOwner } from '../../store/channel/channelSlice';
+import { fetchBlocked } from '../../store/blocked/blockedSlice';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -16,41 +18,74 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
 
     /* STATE */
     const [message, setMessage] = useState<IResponseMessage[]>([]);
-    const blocked = useSelector((state: RootState) => state.blocked.blocked);
-    const user = useSelector((state: RootState) => state.user.user);
+    const blocked = useSelector((state: RootState) => state.blocked);
+    const userLogged = useSelector((state: RootState) => state.user);
 
     /* BEHAVIOR */
    useEffect(() => {
     if (selectedChannel)
     {
         const fetchData = async () => {
-            const {data} = await instance.get('channel/', {params:{
-                channelId: selectedChannel?.id,
-                userId: user?.id
-            }});
-            console.log('fetchMessage:', data);
-            const messages = data.messages;
-            // messages.some((message) => message.user.username)
-            setMessage(data.messages);
-            // console.log('message state: ', message.data.messages);
+            const {data} = await instance.get('channel/' + selectedChannel.id);
+            const filteredMessages = data.messages.filter((message: any) => {
+                return !blocked.blocked.some((u) => message.user.username === u.username);
+            })
+            // console.log('filteredMessages', filteredMessages);
+            setMessage(filteredMessages);
         };
         fetchData();
-    }
-   }, [selectedChannel]);
+}}, [selectedChannel]);
 
-   useEffect(() => {
+//    useEffect(() => {
+//     webSocketService.on('onMessage', (payload: IResponseMessage) => {
+//         if (!blocked.some((b) => {
+//             console.log('user blocked:', b.username);
+//             console.log('payload:', payload.user.username);
+//             b.username === payload.user.username})) {
+//                 console.log('update redux state');
+//             setMessage((prevMessages) => [...prevMessages, payload]);
+//         }
+//     });
+//     return () => {
+//         webSocketService.off('onMessage');
+//       };
+//    }, []);
+
+useEffect(() => {
+        store.dispatch(fetchBlocked(userLogged.user!.id));
+}, []);
+
+useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        // 1. Check if the sender is in the blocked array
-        // Take the sender's username and loop over blocked and look for match
-        // If true do not update state
-        if (!blocked.some((blocked) => blocked.username === payload.user.username))
+        console.log('blocked', blocked);
+        console.log('sender', payload);
+        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username)) {
+            console.log('update redux state');
             setMessage((prevMessages) => [...prevMessages, payload]);
-        // console.log('message array: ', message);
+        }
     });
     return () => {
         webSocketService.off('onMessage');
-      };
-   }, []);
+    };
+}, []);
+
+   useEffect(() => {
+    webSocketService.on('userLeft', (payload: any) => {
+        store.dispatch(removeUser(payload));
+    })
+    return () => {
+        webSocketService.off('userLeft');
+    }
+}, []);
+   
+useEffect(() => {
+    webSocketService.on('ownerLeft', (payload: any) => {
+        store.dispatch(removeOwner(payload));
+    })
+    return () => {
+        webSocketService.off('ownerLeft');
+    }
+}, []);
 
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */

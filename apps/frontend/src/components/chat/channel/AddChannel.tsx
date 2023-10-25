@@ -5,7 +5,6 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { addChannel } from "../../../store/channel/channelSlice";
 import { IChannel, IUserUsername } from "../../../types/types";
 import { useSelector } from "react-redux";
-import { blockUser } from "../../../store/user/userSlice";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked } from "../../../store/blocked/blockedSlice";
 
@@ -34,7 +33,6 @@ function AddChannel () {
         senderId: user.user!.id,
         receiverId: 3,
       }
-      console.log('payload', payload);
       PlayerService.blockUser(payload);
     }
 
@@ -60,7 +58,6 @@ function AddChannel () {
 
       useEffect(() => {
         webSocketService.on('userBlocked', (payload: IUserUsername) => {
-          console.log('blocked redux state (AddChannel)', blocked);
           if (status === 'fulfilled')
             store.dispatch(addBlocked(payload));
         })

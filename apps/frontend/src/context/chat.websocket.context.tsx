@@ -13,7 +13,7 @@ export const ChatWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const [ChatwebSocketService, setChatWebSocketService] = useState<ChatWebSocketService | undefined>();
   useEffect(() => {
     const user = Cookies.get('username');
-      console.log('user', user);
+      // console.log('user', user);
       if (user) {
         setChatWebSocketService(new ChatWebSocketService(user));
       }

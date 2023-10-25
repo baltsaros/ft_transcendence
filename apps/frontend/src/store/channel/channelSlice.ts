@@ -48,11 +48,32 @@ const channelSlice = createSlice({
         if (channel.id === channelId) {
           return {
             ...channel,
-            users: channel.users.filter((u) => u.username !== username),
+            users: channel.users.filter((u) => {
+              return u.username !== username}),
+            }
           }
-        }
-        return channel;
-      })
+          return channel;
+        })
+    },
+    removeOwner: (state, action) => {
+      // 1. remove user & replace old owner by new owner
+      const { channelId, username, newOwner} = action.payload;
+      console.log('redux payload', action.payload);
+      console.log('channelid', channelId);
+      console.log('username', username);
+      console.log('newOwner', newOwner);
+      console.log('here');
+      state.channel = state.channel.map((channel) => {
+        if (channel.id === channelId) {
+          return {
+            ...channel,
+            users: channel.users.filter((u) => {
+              return u.username !== username}),
+            owner: newOwner
+            }
+          }
+          return channel;
+        })
     },
     addChannel: (state, action) => {
         // return [...state, ...action.payload];
@@ -74,6 +95,6 @@ const channelSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addNewUser, removeUser, addChannel } = channelSlice.actions;
+export const { addNewUser, removeUser, removeOwner, addChannel } = channelSlice.actions;
 export {fetchChannel};
 export default channelSlice.reducer;

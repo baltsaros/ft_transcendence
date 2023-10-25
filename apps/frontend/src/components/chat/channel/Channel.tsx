@@ -55,10 +55,8 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     }, []);
 
     useEffect(() => {
-        console.log('dispatch fetchBlocked');
         if (status === 'idle')
             store.dispatch(fetchBlocked(userLogged.user!.id));
-        // console.log('blocked channel:', blocked);
     }, []);
     
     /* RENDER */

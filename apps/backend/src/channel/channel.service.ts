@@ -17,11 +17,6 @@ export class ChannelService {
         private readonly userService: UserService,
         private eventEmmiter: EventEmitter2
     ) {}
-    /* The create method TypeOrm does not involve any interactions with the database
-    ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
-    ** The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
-    ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
-    */
     async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
         const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
@@ -70,10 +65,17 @@ export class ChannelService {
         if (channel.users.length > 1) {
           // 1. remove the owner as user and as owner
           channel.users = channel.users.filter((usr) => usr.id !== user.id);
-          // 2. set new owner
+          // 2. set new owner, for now it's a user that replaces the owner but it should be an admin
           const randomIndex = Math.floor(Math.random() * channel.users.length);
           channel.owner = channel.users[randomIndex];
           // console.log('new channel owner:', channel.owner.username);
+          await this.channelRepository.save(channel);
+          const obj = {
+            username: user.username,
+            newOwner: channel.owner,
+            channelId: channel.id,
+          }
+          this.eventEmmiter.emit('onChannelLeaveOwner', obj);
         }
         else {
           throw new BadRequestException("Owner cannot leave channel");
@@ -81,13 +83,13 @@ export class ChannelService {
       }
       else {
         channel.users = channel.users.filter((usr) => usr.id !== user.id);
+        await this.channelRepository.save(channel);
+        const obj = {
+          username: user.username,
+          channelId: channel.id,
+        }
+        this.eventEmmiter.emit('onChannelLeave', obj);
       }
-      await this.channelRepository.save(channel);
-      const obj = {
-        leavingUser: user,
-        newOwner: channel.owner,
-      }
-      this.eventEmmiter.emit('onChannelLeave', obj);
       return (true);
     }
 
@@ -113,28 +115,11 @@ export class ChannelService {
         return channel;
     }
 
-    // const result = await dataSource
-    // .createQueryBuilder('user')
-    // .leftJoinAndSelect('user.linkedSheep', 'linkedSheep')
-    // .leftJoinAndSelect('user.linkedCow', 'linkedCow')
-    // .where('user.linkedSheep = :sheepId', { sheepId })
-    // .andWhere('user.linkedCow = :cowId', { cowId });
-
-    async fetchMessage(channelId: number, userId: number) {
-      console.log('channel id', channelId);
-      console.log('user id', userId);
-      const channelMessage = await this.channelRepository
-      .createQueryBuilder('channel')
-      .where('channel.id = :channelId', {channelId})
-      .leftJoinAndSelect('channel.messages', 'messages')
-      .andWhere(`messages.user NOT IN (
-        SELECT blocked FROM user_block_user
-        WHERE blocker = :userId
-        )`, {userId})
-      // const channelMessage = await this.channelRepository.findOne({
-      //   where: {id: id},
-      //   relations: ["messages", "messages.user"],
-      // })
+    async fetchMessage(id: number) {
+      const channelMessage = await this.channelRepository.findOne({
+        where: {id: id},
+        relations: ["messages", "messages.user"],
+      })
       return channelMessage;
     }
   

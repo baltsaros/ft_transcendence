@@ -49,8 +49,6 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     /* By dispatching the setChannels action to the Redux store, the associated reducer function will be called to update the state managed by the "channel" slice. */
     const handleChannelCreation = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         try{
-          // handleFormCheck(channelName, channelMode, channelPassword);
-          // console.log('isValid:', isValid);
           if (handleFormCheck())
           {
             const channelData: IChannelData = {

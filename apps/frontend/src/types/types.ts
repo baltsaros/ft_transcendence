@@ -39,15 +39,12 @@ export interface IResponseUser {
   secret: string;
   rank: number;
   avatar: string;
-  blocked: IUserUsername[];
-  friends: IUserUsername[];
-  invitations: IUserUsername[];
+  status: string;
   wins: number;
   loses: number;
   createdAt: Date;
-  invitations: IUserUsername[],
-  friends: IUserUsername[],
 }
+
 /*
 export interface IUserWithStatus {
   username: string;

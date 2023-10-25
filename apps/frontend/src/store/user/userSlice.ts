@@ -28,7 +28,6 @@ export const userSlice = createSlice({
     login: (state, action: PayloadAction<IResponseUser>) => {
       state.user = action.payload;
       state.isAuth = true;
-      console.log('redux', state.user);
     },
     logout: (state) => {
       state.user = null;

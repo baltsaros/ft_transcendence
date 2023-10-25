@@ -36,9 +36,8 @@ export class ChannelController {
 
     @Get(":id")
     @UseGuards(JwtAuthGuard)
-    async fetchMessage(@Query('channelId') channelId: number, @Query('userId') userId: number) {
-        // console.log('id', id);
-        return this.ChannelService.fetchMessage(channelId, userId);
+    async fetchMessage(@Query('channelId') channelId: number) {
+        return this.ChannelService.fetchMessage(channelId);
     }
 
     @Post('leaveChannel')

@@ -11,7 +11,7 @@ export class MessageController {
     @Post()
     async newMessage(@Body() messageData: newMessageDto) {
         const newMessage = await this.messageService.createMessage(messageData);
-        this.eventEmitter.emit('message.created', newMessage);
+        this.eventEmitter.emit('messageCreated', newMessage);
         // console.log('message.created emitted');
     }
 }

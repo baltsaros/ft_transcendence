@@ -52,7 +52,7 @@ export default function SearchBar() {
 
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            // console.log('user', payload.user.username, 'joined', payload.channelId);
+            console.log('user', payload.user.username, 'joined', payload.channelId);
             store.dispatch(addNewUser(payload));
         })
         return () => {
