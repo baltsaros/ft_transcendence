@@ -13,6 +13,7 @@ import { RootState, store } from "../store/store";
 import { updateStatus } from "../store/user/allUsersSlice";
 import { updateStatusFriend } from "../store/user/friendsSlice";
 import { useSelector } from "react-redux";
+import { updateStatutChannel } from "../store/channel/channelSlice";
 
 export default function Logout() {
 
@@ -40,6 +41,7 @@ export default function Logout() {
               store.dispatch(updateStatusFriend({
                 username: data.username, status: data.status
               }));
+              store.dispatch(updateStatutChannel(data));
           });
         return () => {
             webSocketService.off('newUpdateStatus');

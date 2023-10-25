@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
-import { IChannel } from "../../types/types";
+import { IChannel, IResponseUser } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice
@@ -60,10 +60,25 @@ const channelSlice = createSlice({
       })
     },
     addChannel: (state, action) => {
-        // return [...state, ...action.payload];
-        state.channel.push(action.payload);
-      }
+      // return [...state, ...action.payload];
+      state.channel.push(action.payload);
     },
+    updateStatutChannel: (state, action:PayloadAction<IResponseUser>) => {
+      const userToModify = action.payload;
+            state.channel = state.channel.map((elem) => {
+              elem.users = elem.users.map((user) => {
+                if (user.id === userToModify.id) {
+                    return {
+                        ...user,
+                        status: userToModify.status
+                    }
+                }
+                return user;
+              })
+              return elem;
+            })
+    },
+  },
     extraReducers: (builder) => {
       builder.addCase(fetchChannel.fulfilled, (state, action) => {
         state.channel = action.payload;
@@ -81,6 +96,6 @@ const channelSlice = createSlice({
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
 export const { addNewUser } = channelSlice.actions;
 export const { removeUser} = channelSlice.actions;
-export const { addChannel } = channelSlice.actions;
+export const { addChannel, updateStatutChannel } = channelSlice.actions;
 export {fetchChannel, fetchChannelById};
 export default channelSlice.reducer;

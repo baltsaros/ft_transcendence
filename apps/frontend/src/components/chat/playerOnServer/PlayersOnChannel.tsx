@@ -10,12 +10,10 @@ interface ChildProps {
     selectedChannel: IChannel | null;
 }
 
-const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
+const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
     
     const webSocketService = useChatWebSocket();
 
-    // state
-    const [actualChannel, setActualChannel] = useState<IChannel>();
     // behavior
     const [usersOfChannel, setUsersOfChannel] = useState<IResponseUser[]>();
     const isOnline = (value: IResponseUser) => value.status === 'online';
@@ -51,14 +49,14 @@ const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
             <div className="flex flex-grow w-full">
                 <div className="flex-1 p-4 border bg-gray-100 m-2">
                     <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
-                        <h1 className="text-lg font-bold mb-2 text-gray-600">Players on server</h1>
+                        <h1 className="text-lg font-bold mb-2 text-gray-600">Players on channel</h1>
                     </div>
                     <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
                         <p className="text-base mb-1 text-gray-600">Online</p>
                         <hr/>
                         <ul className='text-black'>
                             {usersOfChannel?.map((elem) => (
-                                elem.id !== userConnected!.id &&  
+                                elem.id !== userConnected!.id && elem.status === "online" &&  
                                 <li key={elem.id}>{elem.username}</li>
                             ))}
                         </ul>
@@ -66,6 +64,12 @@ const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
                     <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
                         <p className="text-base mb-1 text-gray-600">Offline</p>
                         <hr/>
+                        <ul className='text-black'>
+                            {usersOfChannel?.map((elem) => (
+                                elem.id !== userConnected!.id && elem.status === "offline" &&  
+                                <li key={elem.id}>{elem.username}</li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -106,4 +110,4 @@ const PlayersOnServer: React.FC<ChildProps> = ({selectedChannel}) => {
 
 }
 
-export default PlayersOnServer;
+export default PlayersOnChannel;

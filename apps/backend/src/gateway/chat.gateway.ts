@@ -130,7 +130,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('onChannelLeave')
   async onChannelLeave(client: Socket, payload) {
     try{
-      console.log(payload);
       const channel = await this.channelRepository.findOne({
         where: {
           id: payload.channelId,
@@ -142,7 +141,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = await this.userService.findOne(payload.username);
       channel.users = channel.users.filter((usr) => usr.id !== user.id);
       await this.channelRepository.save(channel);
-      console.log(payload.channelId);
       this.server.to(payload.channelId.toString()).emit('userLeft', payload);
       client.leave(payload.channelId);
     }catch (error) {
