@@ -5,7 +5,7 @@ import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/room";
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
-const scoreMax = 1;
+const scoreMax = 5;
 const fieldWidth = 800;
 const fieldHeight = 600;
 const paddleWidth = 10;
