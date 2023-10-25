@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    console.log('client:', client.id, client.handshake.query.username.toString());
+    // console.log('client:', client.id, client.handshake.query.username.toString());
     this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
     const username = client.handshake.query.username.toString();
     const channel = await this.channelService.findAll();
@@ -78,7 +78,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       channel: payload.channel
     });
   }
-  
+
   @SubscribeMessage('onNewDmChannel')
   async onNewDmChannel(client: Socket, payload: any) {
     const dmChannel = await this.channelRepository.findOne({

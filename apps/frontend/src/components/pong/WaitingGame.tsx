@@ -3,6 +3,7 @@ import { Socket, SocketOptions } from "socket.io-client";
 import { usePongWebSocket } from "../../context/pong.websocket.context";
 import PongWebSocketService from "../../services/pong.websocket.service";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -22,9 +23,11 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 	const [isMatchmakingSuccess, setIsMatchmakingSuccess] = useState(false);
 	const [roomId, setRoomId] = useState<string | null>(null);
 
+	const username = Cookies.get('username');
+
 	useEffect(() => {
 			// Établir la connexion WebSocket
-		webSocket.emit('launchMatchmaking');
+		webSocket.emit('launchMatchmaking', {data: {username: username}});
 
 		// Gestion des événements du serveur pour la mise en correspondance
 		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {

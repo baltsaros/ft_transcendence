@@ -7,10 +7,13 @@ import {
 	ConnectedSocket,
 	MessageBody
 } from '@nestjs/websockets';
+import Cookies from 'js-cookie';
 import { platform } from 'os';
-import { instance } from "../../../frontend/src/api/axios.api";
+// import { instance } from "../../../frontend/src/api/axios.api";
 
 import { Server, Socket } from 'socket.io';
+import { MissingPrimaryColumnError } from 'typeorm';
+import { Player } from './entities/player';
 import { GameSettingsData, GameState, Room } from './entities/room';
 
   @WebSocketGateway({ namespace: '/pong', cors: { origin: '*' } })
@@ -20,23 +23,30 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	private pongRooms: Map<string, Room> = new Map();
 	// Liste d'attente des joueurs en attente de match
-	private waitingPlayers: Socket[] = [];
+	private	waitingPlayers: Socket[] = [];
+	private	onlinePlayers: Player[] = [];
 
 	handleConnection(client: Socket) {
 		console.log(`Client connected: ${client.id}`);
+		// const username = Cookies.get('username');
+		const player = new Player(client.id, client.handshake.query.username.toString());
+		this.onlinePlayers.push(player);
 	}
 
 	handleDisconnect(client: Socket) {
 		console.log(`Client disconnected: ${client.id}`);
 
+		let index = this.onlinePlayers.findIndex((player) => player.id === client.id);
+		if (index !== -1) {
+		  this.onlinePlayers.splice(index, 1)[0];
+		}
 		// Retirer le client de la file d'attente s'il y est
-		const index = this.waitingPlayers.indexOf(client);
+		index = this.waitingPlayers.indexOf(client);
 		if (index !== -1) {
 			this.waitingPlayers.splice(index, 1);
 			console.log(`Player ${client.id} removed from the waiting queue.`);
 		}
 		else {
-			// console.log("ici");
 			// Parcourir toutes les salles pour vérifier si le client était présent
 			this.pongRooms.forEach((room) => {
 			if (room.players.has(client.id)) {
@@ -55,15 +65,24 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	private createPongRoom(player1: Socket, player2: Socket): string {
 		const roomId = this.generateRoomId();
 		const room = new Room(roomId);
-		room.players.add(player1.id);
-		room.setLeftPaddle(player1.id);
 
-		room.players.add(player2.id);
-		room.setRightPaddle(player2.id);
+		let player = this.onlinePlayers.find((player) => player.id === player1.id);
+
+		if (player)
+		{
+			room.addPlayer(player);
+			room.setLeftPaddle(player.id);
+		}
+
+		player = this.onlinePlayers.find((player) => player.id === player2.id);
+		if (player)
+		{
+			room.addPlayer(player);
+			room.setRightPaddle(player.id);
+		}
 
 		this.pongRooms.set(roomId, room);
 		console.log(`Room ${roomId} has been created.`);
-
 		return roomId;
 	}
 
@@ -75,7 +94,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			room.players.delete(client.id);
 
 			room.players.forEach((player) => {
-				this.server.to(player).emit('OpponentDisconnected', {});
+				this.server.to(player.id).emit('OpponentDisconnected', {});
 			});
 
 			this.pongRooms.delete(roomId);
@@ -85,11 +104,14 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 
 	@SubscribeMessage('launchMatchmaking')
-	async handleLaunchMatchmaking(@ConnectedSocket() client: Socket) {
+	async handleLaunchMatchmaking(
+		@ConnectedSocket() client: Socket
+		) {
 		try {
 			if (!this.waitingPlayers.includes(client)) {
 				// Ajouter le joueur à la file d'attente
-			this.waitingPlayers.push(client);
+				this.waitingPlayers.push(client);
+
 				// Vérifier si suffisamment de joueurs sont en attente pour former un match
 				if (this.waitingPlayers.length >= 2) {
 					// Retirer les deux premiers joueurs de la file d'attente
@@ -137,7 +159,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 	}
 
-
 	private generateRandomGameSettings(settings: GameSettingsData[]): GameSettingsData {
 		// Sélectionnez aléatoirement un index entre 0 et 1 (pour choisir entre les deux objets)
 		const randomBallSpeed = Math.floor(Math.random() * 2); // 0 ou 1
@@ -176,7 +197,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const randomSettings = this.generateRandomGameSettings(room.gameSettings);
 					// Envoyez les paramètres générés à tous les joueurs de la salle
 					room.players.forEach((player) => {
-							this.server.to(player).emit('settingsSuccess', randomSettings);
+							this.server.to(player.id).emit('settingsSuccess', randomSettings);
 						}
 					);
 				}
@@ -201,8 +222,8 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			const room = this.pongRooms.get(data.roomId);
 			if (room) {
 				room.players.forEach((player) => {
-					if (player != client.id) {
-						this.server.to(player).emit('opponentMovePaddle', {direction: direction});
+					if (player.id != client.id) {
+						this.server.to(player.id).emit('opponentMovePaddle', {direction: direction});
 					}
 				});
 			}
@@ -218,7 +239,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 			if (room)
 			{
-				console.log("client : ", client.id);
 				if (room.leftPaddle == client.id)
 					client.emit('sendPaddle', {paddle: "left"})
 				else if (room.rightPaddle == client.id)
@@ -226,37 +246,27 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			}
 		}
 
-		@SubscribeMessage('endMatch')
-		async handleEndMatch(
-			@ConnectedSocket() client: Socket,
-			@MessageBody('data')  data: {username:string, roomId: string, score: number}
-			)
+	@SubscribeMessage('endMatch')
+	async handleEndMatch( @ConnectedSocket() client: Socket, @MessageBody('data')  data: {roomId: string, score: number} )
+	{
+			const room = this.pongRooms.get(data.roomId);
+			if (room)
 			{
-				const room = this.pongRooms.get(data.roomId);
-				const score = data.score;
-				const username = data.username;
-
-				if (room)
+				let isMatchEnded = true;
+				room.players.forEach((player) => {
+					if (player.id == client.id)
+						player.setScore(data.score);
+					if (player.score == -1)
+						isMatchEnded = false;
+				});
+				if (isMatchEnded)
 				{
-					if (!room.player1.score && !room.player1.username)
-					{
-						room.setPlayer1Score(data.score);
-						room.setPlayer1Username(data.username);
-					}
-					else
-					{
-						console.log("ici");
-						room.setPlayer2Score(score);
-						room.setPlayer2Username(username);
-						const { data } = await instance.post("matches/", {
-							username: room.player1.username,
-							opponent: room.player2.username,
-							scoreuser: room.player1.score,
-							scoreOpponent: room.player2.score
-						});
-					}
+					room.players.forEach((player) => {
+						this.server.to(player.id).emit('matchEnded', {});
+					});
 				}
 			}
+		}
 
 	@SubscribeMessage('testLog')
 	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {

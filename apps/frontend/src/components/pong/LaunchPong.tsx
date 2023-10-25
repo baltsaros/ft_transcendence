@@ -17,6 +17,8 @@ const paddleSpeed = 20;
 const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 	// STATE
+	const [matchEnded, setMatchEnded] = useState<boolean>(false);
+
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ballSpeed = gameSettings.ballSpeed;
 	const ballXRef = useRef(fieldWidth / 2);
@@ -74,7 +76,18 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 			else if (player1PaddleRef.current === "right")
 				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: rightScoreRef.current}})
 		}
-	}, [leftScoreRef, rightScoreRef]);
+	}, [leftScoreRef.current, rightScoreRef.current]);
+
+	useEffect(() => {
+		webSocket.on('matchEnded', () => {
+			setMatchEnded(true);
+		});
+		return () => {
+			webSocket.off("matchEnded");
+		  };
+	});
+
+
 
 	useEffect(() => {
 		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
@@ -166,6 +179,21 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 				// Augmentez le score du joueur 1 lorsque la balle touche le bord droit
 				leftScoreRef.current += 1;
+				if (leftScoreRef.current == 10)
+				{
+					if (player1PaddleRef.current === "left")
+					{
+						const score = leftScoreRef.current;
+						// console.log("end match");
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
+					}
+						else if (player1PaddleRef.current === "right")
+					{
+						// console.log("end match");
+						const score = rightScoreRef.current;
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
+					}
+				}
 			}
 
 			if (newBallX - gameSettings.radius < 0) {
@@ -190,6 +218,22 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 				// Augmentez le score du joueur 2 lorsque la balle touche le bord gauche
 				rightScoreRef.current += 1;
+				if (rightScoreRef.current == 10)
+				{
+					console.log("end match");
+					const username = Cookies.get('username');
+
+					if (player1PaddleRef.current === "left")
+					{
+						const score = leftScoreRef.current;
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
+					}
+						else if (player1PaddleRef.current === "right")
+					{
+						const score = rightScoreRef.current;
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: score}})
+					}
+				}
 			}
 
 			// Vérifiez les collisions avec les bords verticaux
@@ -274,11 +318,51 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 	}, []);
 
 	return (
+		matchEnded ?
+		(
+			<div className="game-container">
+				<div className="fixed z-10 inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+					<div className="relative w-auto max-w-3xl">
+						<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
+							<div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
+								<h3 className="text-3xl font-semibold">ademurge vs hdony</h3>
+									<button
+										className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
+										// onClick={()}
+									>
+									<span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
+																×
+									</span>
+									</button>
+							</div>
+							<div className="relative p-6 flex-auto">
+								<div className="text-center">
+									<p className="text-xl text-black font-bold">Match Finished</p>
+									<p className="text-xl text-black font-bold">ademurge: {leftScoreRef.current}</p>
+									<p className="text-xl text-black font-bold">hdony: {rightScoreRef.current}</p>
+								</div>
+							</div>
+							<div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
+								<button
+									className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
+									type="button"
+									style={{ transition: 'all .15s ease' }}
+									// onClick={}
+								>
+									Close
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		) : (
 		<div className="game-container">
 			<div className="flex justify-center items-center h-screen">
 				<canvas ref={canvasRef} width={fieldWidth} height={fieldHeight} style={{ border: "2px solid white" }}></canvas>
 			</div>
 		</div>
+		)
 	);
 };
 
