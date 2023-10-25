@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { instance } from "../../api/axios.api";
-import { IUserUsername } from "../../types/types";
+import {  IUserUsername } from "../../types/types";
 import { PlayerService } from "../../services/player.service";
 
 /* Reducers define how actions change state variables
@@ -34,7 +33,19 @@ const friendsSlice = createSlice({
         removeFriend: (state, action: PayloadAction<IUserUsername>) => {
             const friendToRemove = action.payload;
             state.friends = state.friends.filter((friend) => friend.username != friendToRemove.username);
-        }
+        },
+        updateStatusFriend: (state, action: PayloadAction<IUserUsername>) => {
+            const userToModify = action.payload;
+            state.friends = state.friends.map((friend) => {
+                if (friend.username === userToModify.username) {
+                    return {
+                        ...friend,
+                        status: userToModify.status
+                    }
+                }
+                return friend;
+            })
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchFriends.fulfilled, (state, action) => {
@@ -51,6 +62,6 @@ const friendsSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addFriend, removeFriend } = friendsSlice.actions;
+export const { addFriend, removeFriend, updateStatusFriend } = friendsSlice.actions;
 export {fetchFriends};
 export default friendsSlice.reducer;

@@ -9,7 +9,6 @@ import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
 import GameSettings from "../components/pong/GameSettings";
-import SettingsPage from "../pages/SettingsPage";
 
 export const router = createBrowserRouter([
   {
@@ -61,12 +60,6 @@ export const router = createBrowserRouter([
         path: "*",
         element: <ErrorPage />
       },
-      {path: "settings",
-        element: (
-          <ProtectedRoute>
-            <SettingsPage />
-          </ProtectedRoute>
-        )},
     ],
   },
 ]);

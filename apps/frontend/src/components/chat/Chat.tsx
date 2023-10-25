@@ -36,21 +36,6 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
         fetchData();
 }}, [selectedChannel]);
 
-//    useEffect(() => {
-//     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-//         if (!blocked.some((b) => {
-//             console.log('user blocked:', b.username);
-//             console.log('payload:', payload.user.username);
-//             b.username === payload.user.username})) {
-//                 console.log('update redux state');
-//             setMessage((prevMessages) => [...prevMessages, payload]);
-//         }
-//     });
-//     return () => {
-//         webSocketService.off('onMessage');
-//       };
-//    }, []);
-
 useEffect(() => {
         store.dispatch(fetchBlocked(userLogged.user!.id));
 }, []);

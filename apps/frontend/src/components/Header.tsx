@@ -1,38 +1,19 @@
-import { FC, useEffect, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
-import { FaSignOutAlt, FaUserFriends } from "react-icons/fa";
+import { FC } from "react";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useAppDispatch } from "../store/hooks";
-import { logout } from "../store/user/userSlice";
-import { removeTokenFromLocalStorage } from "../helpers/localstorage.helper";
-import { toast } from "react-toastify";
 import ftLogo from "../assets/42_Logo.svg";
-import Cookies from "js-cookie";
 import { getAvatar } from "../hooks/getAvatar";
 import { getUsername } from "../hooks/getUsername";
 import { getUser } from "../hooks/getUser";
-import FriendInvitations from "./FriendInvitations";
 import FriendList from "./FriendList";
-import { AuthService } from "../services/auth.service";
 import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
+import Logout from "./Logout";
 
 const Header: FC = () => {
   const isAuth = useAuth();
   const user = getUser();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const avatar = getAvatar();
   const username = getUsername();
-
-  const logoutHandler = async () => {
-    dispatch(logout());
-    await AuthService.updateStatus("offline");
-    removeTokenFromLocalStorage("token");
-    toast.success("Bye!");
-    Cookies.remove("jwt_token");
-    Cookies.remove("username");
-    navigate("/");
-  };
 
   const redirection = async () => {
     fetch("http://localhost:3000/api/auth/redir", {
@@ -121,10 +102,7 @@ const Header: FC = () => {
         </nav>
       )}
       {isAuth ? (
-        <button className="btn btn-red" onClick={logoutHandler}>
-          <span>Log out</span>
-          <FaSignOutAlt />
-        </button>
+       <Logout />
       ) : (
         <a
           className="py-2 text-white/50 hover:text-white ml-auto"

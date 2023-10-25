@@ -4,8 +4,10 @@ import {
 	WebSocketServer,
 	OnGatewayConnection,
 	OnGatewayDisconnect,
-	ConnectedSocket
+	ConnectedSocket,
+	MessageBody
 } from '@nestjs/websockets';
+import { platform } from 'os';
 
 import { Server, Socket } from 'socket.io';
 import { GameSettingsData, GameState, Room } from './entities/room';
@@ -33,6 +35,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			console.log(`Player ${client.id} removed from the waiting queue.`);
 		}
 		else {
+			// console.log("ici");
 			// Parcourir toutes les salles pour vérifier si le client était présent
 			this.pongRooms.forEach((room) => {
 			if (room.players.has(client.id)) {
@@ -61,18 +64,20 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	private leavePongRoom(client: Socket, roomId: string): void {
 		const room = this.pongRooms.get(roomId);
+
 		if (room) {
-			// Retirer le client de la salle
+			//Retirer le client de la salle
 			room.players.delete(client.id);
-			// client.emit('leavePongRoom', {roomId: roomId});
-			// Vérifier si la salle est vide
-			if (room.players.size === 0) {
-				// Supprimer la salle de la liste des salles
-				this.pongRooms.delete(roomId);
-				console.log(`Room ${roomId} has been deleted.`);
- 			}
+
+			room.players.forEach((player) => {
+				this.server.to(player).emit('OpponentDisconnected', {});
+			});
+
+			this.pongRooms.delete(roomId);
+			console.log(`Room ${roomId} has been deleted.`);
 		}
-	  }
+	}
+
 
 	@SubscribeMessage('launchMatchmaking')
 	async handleLaunchMatchmaking(@ConnectedSocket() client: Socket) {
@@ -90,17 +95,13 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const newRoomId = this.createPongRoom(player1, player2);
 					// Envoyez l'événement `createdPongRoom` à tous les joueurs de la salle
 					[player1, player2].forEach((player) => {
-						player.emit('createdPongRoom', { roomId: newRoomId });
+						player.emit('createdPongRoom', {roomId: newRoomId});
 					});
 
 					// Vous pouvez également envoyer un événement `matchmakingSuccess` si nécessaire
 					[player1, player2].forEach((player) => {
 						player.emit('matchmakingSuccess', { roomId: newRoomId });
 					});
-				}
-				else {
-					// Le joueur attend dans la file d'attente
-					client.emit('waitingForMatch', { message: 'En attente d\'un adversaire...' });
 				}
 			}
 		}
@@ -134,7 +135,9 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	private generateRandomGameSettings(settings: GameSettingsData[]): GameSettingsData {
 		// Sélectionnez aléatoirement un index entre 0 et 1 (pour choisir entre les deux objets)
-		const randomIndex = Math.floor(Math.random() * 2); // 0 ou 1
+		const randomBallSpeed = Math.floor(Math.random() * 2); // 0 ou 1
+		const randomColor = Math.floor(Math.random() * 2); // 0 ou 1
+		const randomRadius = Math.floor(Math.random() * 2); // 0 ou 1
 
 		// Obtenez les deux objets GameSettingsData du tableau
 		const setting1 = settings[0];
@@ -142,29 +145,34 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 		// Créez un nouvel objet GameSettingsData en utilisant des valeurs aléatoires des deux objets
 		const randomSettings = new GameSettingsData(
-		  randomIndex === 0 ? setting1.ballSpeed : setting2.ballSpeed,
-		  randomIndex === 0 ? setting1.radius : setting2.radius,
-		  randomIndex === 0 ? setting1.color : setting2.color
+		  randomBallSpeed === 0 ? setting1.ballSpeed : setting2.ballSpeed,
+		  randomRadius === 0 ? setting1.radius : setting2.radius,
+		  randomColor === 0 ? setting1.color : setting2.color
 		);
 
 		return randomSettings;
 	}
 
 	@SubscribeMessage('chooseGameSettings')
-	handleChooseGameSettings( @ConnectedSocket() client: Socket, gameSettingsData: {ballSpeed: number; radius: number; color: string }, roomId: string ) {
+	async handleChooseGameSettings(
+		@ConnectedSocket() client: Socket,
+		@MessageBody('data')  data: {roomId: string, gameSettingsData: GameSettingsData},
+		)
+		{
 		try
 		{
 			// Ajoutez les données des paramètres de jeu à la salle du joueur
-			console.log("Received game settings:", gameSettingsData);
-			console.log("Received roomId:", roomId);
-			const room = this.pongRooms.get(roomId);
+			const room = this.pongRooms.get(data.roomId);
 			if (room) {
-				room.addGameSettings(gameSettingsData);
+				room.addGameSettings(data.gameSettingsData);
 				// Vérifiez si les deux joueurs ont envoyé leurs paramètres
 				if (room.gameSettings.length === 2) {
 					// Générez des valeurs aléatoires à partir des paramètres reçus
 					const randomSettings = this.generateRandomGameSettings(room.gameSettings);
 					// Envoyez les paramètres générés à tous les joueurs de la salle
+					console.log("ballSpeed : ", randomSettings.ballSpeed);
+					console.log("radius : ", randomSettings.radius);
+					console.log("color : ", randomSettings.color);
 					room.players.forEach((player) => {
 							this.server.to(player).emit('settingsSuccess', randomSettings);
 						}
@@ -178,5 +186,10 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 				message: 'Une erreur s\'est produite lors du retrait de la file d\'attente.',
 			});
 		}
+	}
+
+	@SubscribeMessage('testLog')
+	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
+		console.log("log : ", message);
 	}
 }

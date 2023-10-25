@@ -39,13 +39,15 @@ const allUsersSlice = createSlice({
         },
         updateStatus: (state, action: PayloadAction<IResponseUser>) => {
             const userToModify = action.payload;
-            const tempState = state;
-            tempState.users.map((user) => {
+            state.users = state.users.map((user) => {
                 if (user.id === userToModify.id) {
-                    user.status = userToModify.status;
+                    return {
+                        ...user,
+                        status: userToModify.status
+                    }
                 }
+                return user;
             })
-            state = tempState;
         },
         updateUsername: (state, action: PayloadAction<IResponseUser>) => {
             const userToModify = action.payload;
@@ -74,6 +76,6 @@ const allUsersSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addNewUser, removeUser } = allUsersSlice.actions;
+export const { addNewUser, removeUser, updateStatus, updateUsername } = allUsersSlice.actions;
 export {fetchAllUsers};
 export default allUsersSlice.reducer;
