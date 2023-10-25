@@ -79,7 +79,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 				</div>
 				<div className="flex justify-center bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 					<Link to={"/"}>
-						<button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
+						<button type="button" className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
 					</Link>
 				</div>
 			</div>

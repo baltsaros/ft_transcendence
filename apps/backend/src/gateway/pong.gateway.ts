@@ -93,15 +93,17 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			//Retirer le client de la salle
 			room.players.delete(client.id);
 
-			room.players.forEach((player) => {
-				this.server.to(player.id).emit('OpponentDisconnected', {});
-			});
+			if (room.gameState == GameState.Playing)
+			{
+				room.players.forEach((player) => {
+					this.server.to(player.id).emit('OpponentDisconnected', {});
+				});
+			}
 
 			this.pongRooms.delete(roomId);
 			console.log(`Room ${roomId} has been deleted.`);
 		}
 	}
-
 
 	@SubscribeMessage('launchMatchmaking')
 	async handleLaunchMatchmaking(
@@ -211,7 +213,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 	}
 
-
 	@SubscribeMessage('movePaddle')
 	async handleMovePaddle(
 		@ConnectedSocket() client: Socket,
@@ -256,11 +257,16 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 				room.players.forEach((player) => {
 					if (player.id == client.id)
 						player.setScore(data.score);
+				});
+
+				room.players.forEach((player) => {
 					if (player.score == -1)
 						isMatchEnded = false;
 				});
+
 				if (isMatchEnded)
 				{
+					room.setGameState(GameState.Ended);
 					room.players.forEach((player) => {
 						this.server.to(player.id).emit('matchEnded', {});
 					});

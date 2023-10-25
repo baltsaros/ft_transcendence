@@ -64,8 +64,6 @@ const GamePage: React.FC = () => {
 			setLaunchGame(true);
 		});
 
-
-
 		return () => {
 			webSocketRef.current?.disconnect();
 		  };

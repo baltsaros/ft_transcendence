@@ -1,10 +1,11 @@
 import Cookies from "js-cookie";
 import React, { useRef, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/room";
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
+const scoreMax = 1;
 const fieldWidth = 800;
 const fieldHeight = 600;
 const paddleWidth = 10;
@@ -78,13 +79,14 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 		}
 	}, [leftScoreRef.current, rightScoreRef.current]);
 
+
 	useEffect(() => {
 		webSocket.on('matchEnded', () => {
 			setMatchEnded(true);
 		});
 		return () => {
 			webSocket.off("matchEnded");
-		  };
+		};
 	});
 
 
@@ -179,7 +181,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 				// Augmentez le score du joueur 1 lorsque la balle touche le bord droit
 				leftScoreRef.current += 1;
-				if (leftScoreRef.current == 10)
+				if (leftScoreRef.current == scoreMax)
 				{
 					if (player1PaddleRef.current === "left")
 					{
@@ -218,7 +220,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 
 				// Augmentez le score du joueur 2 lorsque la balle touche le bord gauche
 				rightScoreRef.current += 1;
-				if (rightScoreRef.current == 10)
+				if (rightScoreRef.current == scoreMax)
 				{
 					console.log("end match");
 					const username = Cookies.get('username');
@@ -321,41 +323,28 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, }: any) => {
 		matchEnded ?
 		(
 			<div className="game-container">
-				<div className="fixed z-10 inset-0 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
-					<div className="relative w-auto max-w-3xl">
-						<div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
-							<div className="flex items-start justify-between p-5 border-b border-solid border-gray-300 rounded-t">
-								<h3 className="text-3xl font-semibold">ademurge vs hdony</h3>
-									<button
-										className="p-1 ml-auto bg-transparent border-0 text-black opacity-5 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-										// onClick={()}
-									>
-									<span className="bg-transparent text-black opacity-5 h-6 w-6 text-2xl block outline-none focus:outline-none">
-																×
-									</span>
-									</button>
+				<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+					<div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
+						<div className="bg-gray-400 p-4">
+							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-800 text-center" id="modal-title">Match Result</h3>
+						</div>
+						<div className="bg-gray-600 p-6 space-y-3 text-center">
+							<p className="text-2xl text-black font-bold">ademurge vs hdony</p>
+							<div className="flex justify-center items-center space-x-4">
+								<p className="text-4xl text-black font-bold">{leftScoreRef.current}</p>
+								<p className="text-4xl text-red-600 font-bold">-</p>
+								<p className="text-4xl text-black font-bold">{rightScoreRef.current}</p>
 							</div>
-							<div className="relative p-6 flex-auto">
-								<div className="text-center">
-									<p className="text-xl text-black font-bold">Match Finished</p>
-									<p className="text-xl text-black font-bold">ademurge: {leftScoreRef.current}</p>
-									<p className="text-xl text-black font-bold">hdony: {rightScoreRef.current}</p>
-								</div>
-							</div>
-							<div className="flex items-center justify-end p-6 border-t border-solid border-gray-300 rounded-b">
-								<button
-									className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1"
-									type="button"
-									style={{ transition: 'all .15s ease' }}
-									// onClick={}
-								>
-									Close
-								</button>
-							</div>
+						</div>
+						<div className="bg-gray-400 px-4 py-3 text-center">
+							<Link to={"/"} className="col-span-3 text-center">
+								<button type="button" style={{ transition: 'all .15s ease' }} className="inline-flex mx-auto rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Leave</button>
+							</Link>
 						</div>
 					</div>
 				</div>
 			</div>
+
 		) : (
 		<div className="game-container">
 			<div className="flex justify-center items-center h-screen">

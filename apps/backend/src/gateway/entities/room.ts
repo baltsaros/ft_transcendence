@@ -12,7 +12,7 @@ export class Room {
 
 	constructor(id: string) {
 		this.id = id;
-		this.gameState = GameState.Waiting;
+		this.gameState = GameState.Playing;
 	}
 
 	setGameState(newState: GameState) {
@@ -45,8 +45,8 @@ export class Room {
 }
 
 export enum GameState {
-	Waiting = 'waiting',
-	inGame = 'inGame',
+	Playing = 'playing',
+	Ended = 'ended'
 	// Autres états du jeu Pong
 }
 
