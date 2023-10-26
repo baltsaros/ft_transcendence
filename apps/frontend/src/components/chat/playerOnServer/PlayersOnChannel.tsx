@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 import { RootState, store } from '../../../store/store';
 import { useChatWebSocket } from '../../../context/chat.websocket.context';
 import { fetchChannel } from '../../../store/channel/channelSlice';
+import PlayerMenu from './PlayerMenu';
+import AdminMenu from './AdminMenu';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -52,22 +54,22 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <h1 className="text-lg font-bold mb-2 text-gray-600">Players on channel</h1>
                     </div>
                     <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
-                        <p className="text-base mb-1 text-gray-600">Online</p>
+                        <p className="text-xl mb-1 text-gray-600">Online</p>
                         <hr/>
                         <ul className='text-black'>
                             {usersOfChannel?.map((elem) => (
                                 elem.id !== userConnected!.id && elem.status === "online" &&  
-                                <li key={elem.id}>{elem.username}</li>
+                                <li key={elem.id}><AdminMenu {...elem}></AdminMenu></li>
                             ))}
                         </ul>
                     </div>
                     <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
-                        <p className="text-base mb-1 text-gray-600">Offline</p>
+                        <p className="text-xl mb-1 text-gray-600">Offline</p>
                         <hr/>
                         <ul className='text-black'>
                             {usersOfChannel?.map((elem) => (
                                 elem.id !== userConnected!.id && elem.status === "offline" &&  
-                                <li key={elem.id}>{elem.username}</li>
+                                <li key={elem.id}><AdminMenu {...elem}></AdminMenu></li>
                             ))}
                         </ul>
                     </div>
