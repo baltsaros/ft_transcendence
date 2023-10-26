@@ -31,10 +31,10 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const leftScoreRef = useRef(0);
 	const rightScoreRef = useRef(0);
-	const player1PaddleRef = useRef("");
-	const player2PaddleRef = useRef("");
-	const player1ScoreRef = useRef(0);
-	const player2ScoreRef = useRef(0);
+	const userPaddleRef = useRef("");
+	const opponentPaddleRef = useRef("");
+	const userScoreRef = useRef(0);
+	const opponentScoreRef = useRef(0);
 
 	const movePaddles = (paddle: string, direction: string) =>
 	{
@@ -54,44 +54,44 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 		}
 	}
 
-	const movePlayer1 = (e: KeyboardEvent) => {
+	const moveUser = (e: KeyboardEvent) => {
 		if (e.key === "w") {
 			// Déplacez la raquette gauche vers le haut (w pour joueur 1)
-			if (player1PaddleRef.current)
-				movePaddles(player1PaddleRef.current, "up");
+			if (userPaddleRef.current)
+				movePaddles(userPaddleRef.current, "up");
 			webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
 		}
 		else if (e.key === "s")
 		{
-			if (player1PaddleRef.current)
-				movePaddles(player1PaddleRef.current, "down");
+			if (userPaddleRef.current)
+				movePaddles(userPaddleRef.current, "down");
 			webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 		}
 	};
 
 	useEffect(() => {
-		if (player1ScoreRef.current == 10 || player2ScoreRef.current == 10)
+		if (userScoreRef.current == 10 || opponentScoreRef.current == 10)
 		{
 			const username = Cookies.get('username');
 
-			if (player1PaddleRef.current === "left")
+			if (userPaddleRef.current === "left")
 				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: leftScoreRef.current}})
-			else if (player1PaddleRef.current === "right")
+			else if (userPaddleRef.current === "right")
 				webSocket.emit('endMatch', {data: {username: username, roomId: roomId, score: rightScoreRef.current}})
 		}
-	}, [player1ScoreRef.current, player2ScoreRef.current]);
+	}, [userScoreRef.current, opponentScoreRef.current]);
 
 
 	useEffect(() => {
 		webSocket.on('matchEnded', () => {
 			setMatchEnded(true);
-			if (player1ScoreRef.current > player2ScoreRef.current && username && opponent)
+			if (userScoreRef.current > opponentScoreRef.current && username && opponent)
 			{
 				MatchService.addMatch({
 					username: username,
 					opponent: opponent,
-					scoreUser: player1ScoreRef.current,
-					scoreOpponent: player2ScoreRef.current
+					scoreUser: userScoreRef.current,
+					scoreOpponent: opponentScoreRef.current
 				});
 			}
 		});
@@ -104,36 +104,36 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 
 	useEffect(() => {
 		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
-		if (player1PaddleRef.current == "" && player2PaddleRef.current == "")
+		if (userPaddleRef.current == "" && opponentPaddleRef.current == "")
 			webSocket.emit('getPaddle', {data: {roomId: roomId}});
 
 		webSocket.on("sendPaddle", (data: { paddle: string }) => {
 			const paddle = data.paddle;
 
-			player1PaddleRef.current = paddle;
+			userPaddleRef.current = paddle;
 
 			if (data.paddle === "left")
-				player2PaddleRef.current = "right";
+				opponentPaddleRef.current = "right";
 			else if (data.paddle === "right")
-				player2PaddleRef.current = "left";
+				opponentPaddleRef.current = "left";
 		});
 
 		// Nettoyez les écouteurs webSocket lorsque le composant est démonté
 		return () => {
 		  webSocket.off("sendPaddle");
 		};
-	}, [webSocket, roomId, player1PaddleRef, player2PaddleRef]);
+	}, [webSocket, roomId, userPaddleRef, opponentPaddleRef]);
 
 	useEffect(() => {
 		// Écoutez les mises à jour du mouvement de la raquette de l'autre joueur
 		webSocket.on("opponentMovePaddle", (data: { direction: string }) => {
 			// Mettez à jour la position de la raquette de l'autre joueur
 			if (data.direction === "up") {
-				if (player2PaddleRef.current)
-					movePaddles(player2PaddleRef.current, "up");
+				if (opponentPaddleRef.current)
+					movePaddles(opponentPaddleRef.current, "up");
 			} else if (data.direction === "down") {
-				if (player2PaddleRef.current)
-					movePaddles(player2PaddleRef.current, "down");
+				if (opponentPaddleRef.current)
+					movePaddles(opponentPaddleRef.current, "down");
 			}
 		});
 
@@ -187,17 +187,17 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 				// Augmentez le score du joueur droit lorsque la balle touche le bord droit
-				if (player1PaddleRef.current === "left")
+				if (userPaddleRef.current === "left")
 				{
-					player1ScoreRef.current += 1;
-					if (player1ScoreRef.current == scoreMax)
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: player1ScoreRef.current}});
+					userScoreRef.current += 1;
+					if (userScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: userScoreRef.current}});
 				}
 				else
 				{
-					player2ScoreRef.current += 1;
-					if (player2ScoreRef.current == scoreMax)
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: player2ScoreRef.current}});
+					opponentScoreRef.current += 1;
+					if (opponentScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: opponentScoreRef.current}});
 				}
 			}
 
@@ -222,17 +222,17 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 
 				// Augmentez le score du joueur droit lorsque la balle touche le bord gauche
-				if (player1PaddleRef.current === "right")
+				if (userPaddleRef.current === "right")
 				{
-					player1ScoreRef.current += 1;
-					if (player1ScoreRef.current == scoreMax)
-						webSocket.emit('endMatch', {data: {roomId: roomId, score: player1ScoreRef.current}});
+					userScoreRef.current += 1;
+					if (userScoreRef.current == scoreMax)
+						webSocket.emit('endMatch', {data: {roomId: roomId, score: userScoreRef.current}});
 				}
 				else
 				{
-					player2ScoreRef.current += 1;
-					if (player2ScoreRef.current == scoreMax)
-					webSocket.emit('endMatch', {data: {roomId: roomId, score: player2ScoreRef.current}});
+					opponentScoreRef.current += 1;
+					if (opponentScoreRef.current == scoreMax)
+					webSocket.emit('endMatch', {data: {roomId: roomId, score: opponentScoreRef.current}});
 				}
 			}
 
@@ -298,15 +298,15 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 
 			// Dessinez les scores sur le canvas
 			ctx.font = "50px Arial";
-			if (player1PaddleRef.current === "left")
+			if (userPaddleRef.current === "left")
 			{
-				ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
-				ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+				ctx.fillText(`${userScoreRef.current}`, fieldWidth / 2 - 50, 50);
+				ctx.fillText(`${opponentScoreRef.current}`, fieldWidth / 2 + 20, 50);
 			}
-			else if (player1PaddleRef.current === "right")
+			else if (userPaddleRef.current === "right")
 			{
-				ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 - 50, 50);
-				ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+				ctx.fillText(`${opponentScoreRef.current}`, fieldWidth / 2 - 50, 50);
+				ctx.fillText(`${userScoreRef.current}`, fieldWidth / 2 + 20, 50);
 			}
 			// Appelez la fonction update à la prochaine trame d'animation
 			requestAnimationFrame(update);
@@ -316,11 +316,11 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 	requestAnimationFrame(update);
 
 	// Écoutez les touches de contrôle des raquettes
-	window.addEventListener("keydown", movePlayer1);
+	window.addEventListener("keydown", moveUser);
 
 		// Nettoyez les événements lorsque le composant est démonté
 		return () => {
-			window.removeEventListener("keydown", movePlayer1);
+			window.removeEventListener("keydown", moveUser);
 			};
 	}, []);
 
@@ -336,9 +336,9 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 						<div className="bg-gray-600 p-6 space-y-3 text-center">
 							<p className="text-2xl text-black font-bold">{username} vs {opponent}</p>
 							<div className="flex justify-center items-center space-x-4">
-								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
+								<p className="text-4xl text-black font-bold">{userScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>
-								<p className="text-4xl text-black font-bold">{player2ScoreRef.current}</p>
+								<p className="text-4xl text-black font-bold">{opponentScoreRef.current}</p>
 							</div>
 						</div>
 						<div className="bg-gray-400 px-4 py-3 text-center">
