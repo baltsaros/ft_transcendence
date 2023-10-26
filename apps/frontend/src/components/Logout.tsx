@@ -52,8 +52,8 @@ export default function Logout() {
       //render
 
     return (
-        <button className="btn btn-red" onClick={logoutHandler}>
-          <span>Log out</span>
+        <button className="btn btn-red rounded-md" onClick={logoutHandler}>
+          <span className="">Log out</span>
           <FaSignOutAlt />
         </button>
         )

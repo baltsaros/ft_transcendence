@@ -49,7 +49,7 @@ const DropdownButton = (player: IPlayersOnServerModalProps) => {
                 }
           }
         } catch (err: any) {}};
-      
+    
   async function logBlockedStatus() {
     const result = await isBlocked(player.player.username);
     //console.log(result);

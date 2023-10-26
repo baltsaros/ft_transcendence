@@ -45,7 +45,7 @@ const Header: FC = () => {
               {avatar.length ? (
                 <img
                   src={avatar}
-                  style={{ width: "70px", height: "70px" }}
+                  style={{ width: "93.1px", height: "70px", borderRadius: "5%" }}
                   alt="[AVA]"
                 />
               ) : (
