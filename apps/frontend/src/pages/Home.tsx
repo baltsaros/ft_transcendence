@@ -24,17 +24,21 @@ const Home: FC = () => {
   return (
     <>
       {!isAuth ? (
-        <div className="flex flex-col items-center justify-center">
-          <a href="http://localhost:3000/api/auth/redir">
-            <img
-              src={ftLogo}
-              className="logo"
-              alt="42 logo"
-              style={{ width: "150px", height: "150px" }}
-            />
-          </a>
-          Please, log in with 42 account
-        </div>
+			<div className="flex flex-col items-center justify-center">
+			<div className="grid grid-cols-3 gap-28">
+				<div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
+					<div></div>
+					<div className="row-span-1">
+						<a href="http://localhost:3000/api/auth/redir" className="relative">
+							<div className="rounded-md bg-gray-500 p-4 group-hover:bg-opacity-70 transition-bg-opacity duration-300">
+								<img src={ftLogo} className="logo w-40 h-40" alt="42 logo" />
+								<p className="text-white text-lg font-bold">LOG IN</p>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
       ) : (
 		<div className=" grid grid-cols-3 gap-28">
 			<div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
