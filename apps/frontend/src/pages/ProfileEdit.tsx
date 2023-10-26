@@ -89,21 +89,21 @@ const ProfileEdit: FC = () => {
   };
 
   return (
-		<div className="mt-8 w-3/5 mx-auto bg-gray-200 text-black uppercase rounded-lg">
-			<h2 className="bg-gray-300 w-full mb-2 p-4 tracking-wider text-lg rounded-t-lg">
+		<div className="mt-8 w-3/5 mx-auto bg-gray-400 text-black uppercase rounded-lg">
+			<h2 className="bg-gray-500 w-full p-4 tracking-wider text-lg rounded-t-lg">
 				 Edit Profile Settings
 			</h2>
-			<div className="bg-gray-100 flex justify-start p-4 space-x-4 items-center">
+			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
 				<h3 className="font-semibold">Enter a new username :</h3>
 				<form className="">
 					<input
 						type="text"
-						className="input text-gray-600 bg-gray-200 border border-gray-300 rounded p-2 focus:outline-none focus:border-gray-500"
+						className="input text-gray-600 bg-gray-400 border border-gray-500 rounded p-2 focus:outline-none focus:border-gray-500"
 						onChange={(e) => setUsername(e.target.value)}
 					/>
 				</form>
 			</div>
-			<div className="bg-gray-100 flex justify-start p-4 space-x-4 items-center">
+			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
 				<h3 className="font-semibold">Two-factor Authentication :</h3>
 				<form className="">
 					<input
@@ -114,30 +114,30 @@ const ProfileEdit: FC = () => {
 					/>
 				</form>
 			</div>
-			<div className="bg-gray-200 flex flex-col justify-center items-center p-4">
-				{avatar.length ? (
-					<img
-						src={avatar}
-						alt="Avatar"
-						className="rounded-full h-16 w-16 object-cover mt-2"
-					/>
-				) : (
-					<h2 className="bg-gray-300 w-full mb-2 p-4 tracking-wider text-lg rounded-t-lg">
+			<div className="bg-gray-400 flex flex-col justify-center items-center ">
+				<div className="bg-gray-300 flex flex-col w-full items-center justify-center  mb-4 rounded-lg">
+					{avatar.length ? (
+						<img
+							src={avatar}
+							alt="Avatar"
+							className="rounded-full h-16 w-16 object-cover mt-2"
+						/>
+						) : (
+					<h2 className="bg-gray-500 w-full mb-2 p-4 tracking-wider text-lg">
 					Choose a new profile image
 					</h2>
-				)}
-				<div className="bg-gray-100 flex flex-col w-full justify-center p-2 mt-4 rounded-lg">
+					)}
 					<form
-						className="flex flex-col items-center object-center"
+						className="flex flex-col items-center mt-3 object-center"
 						onSubmit={(e) => e.preventDefault()}
 					>
 						<input
 							type="file"
 							onChange={getFile}
-							className="input border border-gray-300 bg-gray-200 text-gray-600 rounded p-2 mb-2 focus:outline-none focus:border-gray-500"
+							className="input border border-gray-500 bg-gray-400 text-gray-600 rounded p-2 mb-2 focus:outline-none focus:border-gray-500"
 						/>
 						<button
-							className="btn btn-gray"
+							className="btn btn-gray mb-3"
 							onClick={uploadImage}
 						>
 							Upload
