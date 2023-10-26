@@ -98,7 +98,7 @@ export default function SearchBar() {
                     {/* <button 
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
                     onClick={() => handleJoinChannel(channel)}> */}
-                    {channel.mode === 'Protected' ? (
+                    {channel.mode === 'Private' ? (
                         <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
                         onClick={() => handleChannelPassword(channel)}>Enter password
