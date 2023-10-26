@@ -339,7 +339,7 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-400 text-center" id="modal-title">Match Result</h3>
 						</div>
 						<div className="bg-gray-400 p-6 space-y-3 text-center">
-							<p className="text-2xl text-black font-bold">{username} vs {opponent}</p>
+							<p className="text-2xl text-black font-bold"> {username} vs {opponent}</p>
 							<div className="flex justify-center items-center space-x-4">
 								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>
