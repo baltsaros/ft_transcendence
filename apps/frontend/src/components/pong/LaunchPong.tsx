@@ -12,9 +12,7 @@ const fieldWidth = 800;
 const fieldHeight = 600;
 const paddleWidth = 10;
 const paddleHeight = 100;
-const paddleOffset = 3;
-const leftPaddleX = paddleOffset;
-const rightPaddleX = fieldWidth - paddleWidth - paddleOffset;
+const paddleOffset = 5;
 const paddleSpeed = 20;
 const username = Cookies.get('username');
 
@@ -289,8 +287,8 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 
 			// Dessinez les raquettes
 			ctx.fillStyle = gameSettings.color;
-			ctx.fillRect(10, leftPaddleY, paddleWidth, paddleHeight);
-			ctx.fillRect(fieldWidth - paddleWidth - 10, rightPaddleY, paddleWidth, paddleHeight);
+			ctx.fillRect(paddleOffset, leftPaddleY, paddleWidth, paddleHeight);
+			ctx.fillRect(fieldWidth - paddleWidth - paddleOffset, rightPaddleY, paddleWidth, paddleHeight);
 
 			// Dessinez la balle
 			ctx.fillStyle = "white";
