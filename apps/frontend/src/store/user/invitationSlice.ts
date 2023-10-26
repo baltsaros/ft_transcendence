@@ -29,7 +29,6 @@ const invitationSlice = createSlice({
     initialState,
     reducers: {
         addInvitation: (state, action: PayloadAction<IUserUsername>) => {
-            // return [...state, ...action.payload];
             state.invitations.push(action.payload);
         },
         removeInvitation: (state, action: PayloadAction<IUserUsername>) => {

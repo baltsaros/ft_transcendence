@@ -110,12 +110,6 @@ const Header: FC = () => {
         >
           42 API
         </a>
-        // <span
-        //   className="py-2 text-white/50 hover:text-white ml-auto"
-        //   onClick={redirection}
-        // >
-        //   42 API
-        // </span>
       )}
     </header>
   );

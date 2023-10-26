@@ -15,7 +15,6 @@ import Cookies from "js-cookie";
 
 function App() {
   const dispatch = useAppDispatch();
-  // const user = useAppSelector((state: RootState) => state.user.user);
 
   const checkAvatar = async (avatar: string): Promise<string> => {
     if (avatar.includes("https")) {
@@ -33,6 +32,7 @@ function App() {
         if (data) {
           dispatch(login(data));
           dispatch(setUsername(data.username));
+          Cookies.set("username", data.username);
           const ava = await checkAvatar(data.avatar);
           dispatch(setAvatar(ava));
         } else {
@@ -45,19 +45,10 @@ function App() {
     }
   };
 
-  // const checkUsername = async () => {
-  //   const data = await AuthService.getProfile();
-  //   if (user && data && data.username != user.username) {
-  //     // dispatch(login(data));
-  //     window.location.reload();
-  //   }
-  // }
-
   useEffect(() => {
     if (Cookies.get("jwt_token"))
       setTokenToLocalStorage("token", Cookies.get("jwt_token") || "");
     checkAuth();
-    // checkUsername();
   }, []);
 
   return <RouterProvider router={router} />;

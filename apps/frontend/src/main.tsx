@@ -11,9 +11,7 @@ import { PongWebSocketProvider } from "./context/pong.websocket.context";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
     <ChatWebSocketProvider>
-    	{/* <PongWebSocketProvider> */}
 			<App />
-    	{/* </PongWebSocketProvider> */}
      </ChatWebSocketProvider>
     <ToastContainer position="bottom-left" autoClose={2000} />
   </Provider>
