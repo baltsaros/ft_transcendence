@@ -35,7 +35,6 @@ export const ChatWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 }
 
-/* Create a custom hook for consuming the context */
 export const useChatWebSocket = (): ChatWebSocketService => {
   const context = useContext(ChatWebSocketContext);
   if (!context) {
@@ -43,5 +42,6 @@ export const useChatWebSocket = (): ChatWebSocketService => {
   }
   return context;
 };
+/* Create a custom hook for consuming the context */
 
 /* Wrap the components that need access to the context with the Provider (see main.tsx) */

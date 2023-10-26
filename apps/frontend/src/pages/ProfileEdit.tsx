@@ -2,7 +2,7 @@ import { ChangeEvent, FC, useState } from "react";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../store/hooks";
-import { NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getUser } from "../hooks/getUser";
 
 const ProfileEdit: FC = () => {
@@ -89,67 +89,72 @@ const ProfileEdit: FC = () => {
   };
 
   return (
-    <div className="mt-8 w-3/5 mx-auto bg-gray-500 text-black uppercase">
-      <h2 className="bg-cyan-300 w-full mb-2 p-5 tracking-wider text-lg">
-        Profile settings
-      </h2>
-      <h2 className="bg-gray-500 w-full mb-4 p-5 tracking-wider"></h2>
-      <div className="bg-cyan-300 flex justify-start p-5 space-x-4 items-center">
-        <h3 className="pl-2 pr-6">Enter username:</h3>
-        <form className="">
-          <input
-            type="text"
-            className="input"
-            onChange={(e) => setUsername(e.target.value)}
-          />
-        </form>
-      </div>
-      <div className="bg-cyan-300 flex justify-start mb-2 p-5 space-x-4 items-center">
-        <h3 className="pl-2 pr-6">Two-factor authentication:</h3>
-        <form className="">
-          <input
-            type="checkbox"
-            className="input"
-            checked={twoFA}
-            onChange={handleCheckBox}
-          />
-        </form>
-      </div>
-      <div className="bg-gray-500 flex flex-col justify-center mb-4 items-center">
-        {avatar.length ? (
-          <img
-            src={avatar}
-            alt="ImageError"
-            className="rounded-full h-16 w-16 overflow-hidden mt-2"
-          />
-        ) : (
-          "[AVATAR]"
-        )}
-        <div className="bg-cyan-300 flex flex-col w-full justify-center p-2 mt-4">
-          <form
-            className="flex flex-col items-center object-center"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input type="file" onChange={getFile} />
-            <button
-              className="flex justify-center object-center mt-2 btn btn-gray"
-              onClick={uploadImage}
-            >
-              Upload
-            </button>
-          </form>
-        </div>
-      </div>
-      <div className="flex flex-row items-end justify-between">
-        <form onSubmit={updateHandler}>
-          <button className="btn btn-green">Ok</button>
-        </form>
-        <NavLink to={"/"}>
-          <button className="btn btn-red">Cancel</button>
-        </NavLink>
-      </div>
-    </div>
-  );
+		<div className="mt-8 w-3/5 mx-auto bg-gray-400 text-black uppercase rounded-lg">
+			<h2 className="bg-gray-500 w-full p-4 tracking-wider text-lg rounded-t-lg">
+				 Edit Profile Settings
+			</h2>
+			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
+				<h3 className="font-semibold">Enter a new username :</h3>
+				<form className="">
+					<input
+						type="text"
+						className="input text-gray-600 bg-gray-400 border border-gray-500 rounded p-2 focus:outline-none focus:border-gray-500"
+						onChange={(e) => setUsername(e.target.value)}
+					/>
+				</form>
+			</div>
+			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
+				<h3 className="font-semibold">Two-factor Authentication :</h3>
+				<form className="">
+					<input
+						type="checkbox"
+						className="form-checkbox text-gray-600"
+						checked={twoFA}
+						onChange={handleCheckBox}
+					/>
+				</form>
+			</div>
+			<div className="bg-gray-400 flex flex-col justify-center items-center ">
+				<div className="bg-gray-300 flex flex-col w-full items-center justify-center  mb-4 rounded-lg">
+					{avatar.length ? (
+						<img
+							src={avatar}
+							alt="Avatar"
+							className="rounded-full h-16 w-16 object-cover mt-2"
+						/>
+						) : (
+					<h2 className="bg-gray-500 w-full mb-2 p-4 tracking-wider text-lg">
+					Choose a new profile image
+					</h2>
+					)}
+					<form
+						className="flex flex-col items-center mt-3 object-center"
+						onSubmit={(e) => e.preventDefault()}
+					>
+						<input
+							type="file"
+							onChange={getFile}
+							className="input border border-gray-500 bg-gray-400 text-gray-600 rounded p-2 mb-2 focus:outline-none focus:border-gray-500"
+						/>
+						<button
+							className="btn btn-gray mb-3"
+							onClick={uploadImage}
+						>
+							Upload
+						</button>
+					</form>
+				</div>
+			</div>
+			<div className="flex flex-row justify-between p-4 rounded-b-lg">
+				<Link to="/">
+					<button className="btn btn-red text-white rounded-md">Cancel</button>
+				</Link>
+				<form onSubmit={updateHandler}>
+					<button className="btn btn-green text-white rounded-md">Submit</button>
+				</form>
+			</div>
+		</div>
+	);
 };
 
 export default ProfileEdit;
