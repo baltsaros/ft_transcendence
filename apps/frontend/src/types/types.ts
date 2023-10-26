@@ -121,6 +121,7 @@ export interface IChannel {
   password: string,
   owner: IResponseUser,
   users: IResponseUser[],
+  messages: IMessage[],
 }
 
 export interface IResponseGetChannels {
@@ -128,8 +129,8 @@ export interface IResponseGetChannels {
 }
 
 export interface IMessage {
-  channelId: number | undefined,
-  username: string | undefined,
+  channelId: number,
+  username: string,
   content: string,
 }
 

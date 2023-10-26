@@ -76,12 +76,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent('messageCreated')
   handleMessage(payload: any) {
-    this.server.emit('onMessage', {
-      content: payload.content,
-      user: payload.user,
-      id: payload.id,
-      channel: payload.channel
-    });
+    // 1. Emit message event to memeber of socket.io room
+    console.log('channel id gateway:', payload.channel.id);
+    const socket = this.gatewaySessionManager.getSocket(payload.user.username);
+    this.server.to(`channel-${payload.channel.id}`).emit('onMessage', payload);
+    // this.server.emit('onMessage', {
+    //   content: payload.content,
+    //   user: payload.user,
+    //   id: payload.id,
+    //   channel: payload.channel
+    // });
   }
 
   @OnEvent('blockUser')
@@ -89,7 +93,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const blocked = await this.userRepository.findOne({
       where: {id: payload.receiverId},
     });
-    console.log('blocked', blocked.username);
+    // console.log('blocked', blocked.username);
     const username = blocked.username;
     const status = blocked.status;
     const reduxPayload = {

@@ -110,6 +110,7 @@ export class ChannelService {
                 relations: {
                     users: true,
                     owner: true,
+                    messages: true,
                 }
             }
         );

@@ -20,8 +20,8 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     /* IMessage type on undefined because useState can be null (TBD)*/
     const handleClick = async () => {
         const message: IMessage = {
-            channelId: selectedChannel?.id,
-            username: user?.username,
+            channelId: selectedChannel!.id,
+            username: user!.username,
             content: newMessage,
         };
         if (message.content.length === 0)
