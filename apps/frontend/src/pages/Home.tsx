@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 
 
 const Home: FC = () => {
-  // const user = useAppSelector((state: RootState) => state.user.user);
   const isAuth = useAuth();
   const token = Cookies.get('jwt_token');
 

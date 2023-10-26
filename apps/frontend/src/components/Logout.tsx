@@ -32,6 +32,7 @@ export default function Logout() {
         toast.success("Bye!");
         Cookies.remove("jwt_token");
         Cookies.remove("username");
+        Cookies.remove("intraId");
         navigate("/");
       };
 

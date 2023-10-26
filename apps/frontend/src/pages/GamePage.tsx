@@ -1,20 +1,14 @@
 import Cookies from "js-cookie";
 import React, { useRef, useEffect, useState } from "react";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 import WaitingGame from "../components/pong/WaitingGame";
 import GameSettings from "../components/pong/GameSettings";
-import { GameSettingsData, GameState, Room } from '../../../backend/src/gateway/entities/room';
-import { selectCount } from "../store/user/userSlice";
+import { GameSettingsData } from '../../../backend/src/gateway/entities/room';
 import PongLauncher from "../components/pong/LaunchPong";
-import { usePongWebSocket } from "../context/pong.websocket.context";
 import { toast } from "react-toastify";
 
 const GamePage: React.FC = () => {
 
-	// let webSocket = new WebSocket("ws://localhost:3000/pong");
-
-	// webSocket.send()
 	const webSocketRef = useRef<Socket | null>(null);
 	const [modalView, setModalView] = useState<boolean>(true);
 	const [showGameSettings, setShowGameSettings] = useState<boolean>(false);

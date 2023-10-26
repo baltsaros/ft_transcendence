@@ -75,15 +75,12 @@ export const PlayerService = {
   async getBlocked(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/getBlocked", friendRelation);
-    //console.log(data);
-    //if (data) return (true);
     return (data);
   },
 
   async getFriend(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/getFriend", friendRelation);
-    //console.log(data);
     return (data);
   },
 
