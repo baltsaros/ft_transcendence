@@ -42,7 +42,14 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             });
             webSocketService.on("userJoined", (payload: any) => {
                 store.dispatch(fetchChannel());
-            })
+            });
+            webSocketService.on("DmChannelJoined", (payload: any) => {
+                console.log("emitos");
+                store.dispatch(fetchChannel());
+            });
+            return () => {
+                webSocketService.off('newUpdateStatus');
+                    };
     }, []);
 
     // render

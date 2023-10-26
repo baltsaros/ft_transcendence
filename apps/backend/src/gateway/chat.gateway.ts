@@ -96,6 +96,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         socket.join(payload.id);
       }
     });
+    console.log(payload);
     this.server.to(payload.id).emit('DmChannelJoined', dmChannel);
   }
     
