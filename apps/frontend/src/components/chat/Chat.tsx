@@ -1,7 +1,7 @@
 import { Scrollbar } from 'react-scrollbars-custom';
 import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
-import { IChannel, IResponseMessage } from "../../types/types";
+import { IChannel, IMessage, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
 import { useSelector } from 'react-redux';
@@ -21,7 +21,7 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     const blocked = useSelector((state: RootState) => state.blocked);
     const userLogged = useSelector((state: RootState) => state.user);
     const channel = useSelector((state: RootState) => state.channel.channel);
-    let messages;
+    let messages: IMessage[];
     if (selectedChannel) {
         const channelSelected = channel.find(channel => channel.id === selectedChannel!.id);
         messages = channelSelected!.messages;

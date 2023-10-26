@@ -6,7 +6,7 @@ import { addChannel } from "../../../store/channel/channelSlice";
 import { IChannel, IUserUsername } from "../../../types/types";
 import { useSelector } from "react-redux";
 import { PlayerService } from "../../../services/player.service";
-import { addBlocked } from "../../../store/blocked/blockedSlice";
+import { addBlocked, fetchBlocked } from "../../../store/blocked/blockedSlice";
 
 function AddChannel () {
 
@@ -58,8 +58,11 @@ function AddChannel () {
 
       useEffect(() => {
         webSocketService.on('userBlocked', (payload: IUserUsername) => {
-          if (status === 'fulfilled')
+          if (status === 'fulfilled') {
+            // console.log("bah debug hein")
+            // store.dispatch(fetchBlocked(user.user?.id!));
             store.dispatch(addBlocked(payload));
+          }
         })
         return () => {
           webSocketService.off('userBlocked');

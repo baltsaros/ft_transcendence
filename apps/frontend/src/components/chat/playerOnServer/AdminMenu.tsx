@@ -9,7 +9,9 @@ import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { ChannelService } from "../../../services/channels.service";
-import { RootState } from "../../../store/store";
+import { PlayerService } from "../../../services/player.service";
+import { fetchBlocked } from "../../../store/blocked/blockedSlice";
+import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
 import PlayerMenu from "./PlayerMenu";
 
@@ -18,12 +20,35 @@ function AdminMenu(user: IResponseUser) {
 
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
+    const blocked = useSelector((state: RootState) => state.blocked.blocked);
     const userLogged = useSelector((state: RootState) => state.user.user);
     const webSocketService = useChatWebSocket();
 
     const isFriend = (username: string) => {
       return (friends.some(item => item.username === username));
     }
+
+    const isBlocked = (username: string) => {
+      return (blocked.some(item => item.username === username));
+    }
+
+    const handleBlockUser = async () => {
+      const payload = {
+        senderId: userLogged!.id,
+        receiverId: user.id,
+      }
+      PlayerService.blockUser(payload);
+    }
+
+  //   useEffect(() => {
+  //     webSocketService.on("userBlocked", (payload: any) => {
+  //       console.log('bite');
+  //         store.dispatch(fetchBlocked(userLogged!.id));
+  //     });
+  //     return () => {
+  //         webSocketService.off('newUpdateStatus');
+  //             };
+  // }, []);
 
     const handleDirectMessage = async () => {
       try{ 
@@ -66,6 +91,9 @@ function AdminMenu(user: IResponseUser) {
           <MenuItem>
             <Link to={"/player/" + user.username}>View profile</Link>
           </MenuItem>
+
+          {isBlocked(user.username) && <MenuItem onClick={handleBlockUser}>Unblock User</MenuItem>}
+          {!isBlocked(user.username) && <MenuItem onClick={handleBlockUser}>Block User</MenuItem>}
           
           <MenuItem onClick={handleDirectMessage}>Direct Message</MenuItem>
           
