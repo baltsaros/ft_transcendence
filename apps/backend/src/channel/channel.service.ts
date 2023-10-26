@@ -17,11 +17,6 @@ export class ChannelService {
         private readonly userService: UserService,
         private eventEmmiter: EventEmitter2
     ) {}
-    /* The create method TypeOrm does not involve any interactions with the database
-    ** The new entity is only created in the application's memory, and it does not make use of any asynchronous operations.
-    ** The save method is an asynchronous operation that saves the provided entity (in this case, newChannel)to the database.
-    ** Because save is asynchronous, it returns a Promise that resolves when the save operation is completed.
-    */
     async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
         const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
@@ -39,7 +34,6 @@ export class ChannelService {
     }
 
     async createDmChannel(channelDmData: IChannelDmData) {
-      // 1. create new channel
       const sender = await this.userService.findOneById(channelDmData.sender);
       const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
         if (existingChannel) throw new BadRequestException("Channel already exists");
@@ -51,13 +45,52 @@ export class ChannelService {
         password: channelDmData.password,
         users: [sender, receiver],
       });
-      // console.log('sender:', sender);
-      // console.log('receiver:', receiver);
-      // newDmChannel.users.push(receiver);
-      // newDmChannel.users.push(sender);
       const dmChannel = await this.channelRepository.save(newDmChannel);
-      // console.log('dmChannel:', dmChannel);
       return(dmChannel);
+    }
+
+    async leaveChannel(payload: any) {
+      const channel = await this.channelRepository.findOne({
+        where: {
+          id: payload.channelId,
+        },
+        relations: {
+          users: true,
+          owner: true,
+        },
+      })
+      const user = await this.userService.findOne(payload.username);
+      if (user.id === channel.owner.id) {
+        // 1. check if there are users in the channel, if not prevent owner from leaving the channel
+        if (channel.users.length > 1) {
+          // 1. remove the owner as user and as owner
+          channel.users = channel.users.filter((usr) => usr.id !== user.id);
+          // 2. set new owner, for now it's a user that replaces the owner but it should be an admin
+          const randomIndex = Math.floor(Math.random() * channel.users.length);
+          channel.owner = channel.users[randomIndex];
+          // console.log('new channel owner:', channel.owner.username);
+          await this.channelRepository.save(channel);
+          const obj = {
+            username: user.username,
+            newOwner: channel.owner,
+            channelId: channel.id,
+          }
+          this.eventEmmiter.emit('onChannelLeaveOwner', obj);
+        }
+        else {
+          throw new BadRequestException("Owner cannot leave channel");
+        }
+      }
+      else {
+        channel.users = channel.users.filter((usr) => usr.id !== user.id);
+        await this.channelRepository.save(channel);
+        const obj = {
+          username: user.username,
+          channelId: channel.id,
+        }
+        this.eventEmmiter.emit('onChannelLeave', obj);
+      }
+      return (true);
     }
 
     async findOne(channelId: number)
@@ -77,6 +110,7 @@ export class ChannelService {
                 relations: {
                     users: true,
                     owner: true,
+                    messages: true,
                 }
             }
         );

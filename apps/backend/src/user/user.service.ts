@@ -8,19 +8,19 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import * as argon2 from "argon2";
 import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
-import { Profile } from "passport-42";
 import { UserRelationDto } from "./dto/user-relation.dto";
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    private readonly dataStorage: DataStorageService
+    private readonly dataStorage: DataStorageService,
+    private eventEmmiter: EventEmitter2,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -114,7 +114,8 @@ export class UserService {
       relations: {
         invitations: true,
         friends: true,
-      }
+        blocked: true,
+      },
     });
     return user;
   }
@@ -122,12 +123,22 @@ export class UserService {
   async update(id: number, updateUserDto: UpdateUserDto) {
     const user = await this.userRepository.findOne({
       where: { id: id },
+      relations: {
+        invitations: true,
+        friends: true,
+        blocked: true,
+      },
     });
     if (!user) throw new NotFoundException("User not found");
-    const data = await this.userRepository.update(id, updateUserDto);
+    const data = await this.userRepository.save(updateUserDto);
     if (!data) throw new NotFoundException("Update failed");
     const userUpd = await this.userRepository.findOne({
       where: { id: id },
+      relations: {
+        invitations: true,
+        friends: true,
+        blocked: true,
+      },
     });
     if (!userUpd) throw new NotFoundException("User not found");
     return userUpd;
@@ -274,9 +285,18 @@ export class UserService {
     })
     const friend = await this.findOneById(friendRequest.receiverId);
     source.blocked.push(friend);
-    //console.log(source.blocked);
-
+    this.eventEmmiter.emit('blockUser', friendRequest);
     await this.userRepository.save(source);
+  }
+
+  async getAllBlocked(payload: number) {
+    const user = await this.userRepository.findOne({
+      where: {id: payload},
+      relations: {
+        blocked: true,
+      },
+    })
+    return user.blocked;
   }
 
   async getBlocked(relationBlocked: UserRelationDto)
@@ -287,11 +307,9 @@ export class UserService {
         blocked: true,
       },
     })
-    //console.log(source);
     const blocked = source.blocked.filter((user) => {
       return(user.id === relationBlocked.receiverId)
     })
-    //console.log(blocked);
     if (blocked.length > 0)
       return (true);
     return (false);
@@ -305,11 +323,9 @@ export class UserService {
         friends: true,
       },
     })
-    //console.log('source is', source);
     const friend = source.friends.filter((user) => {
       return(user.id === relationFriend.receiverId)
     })
-    //console.log('friend is', friend);
     if (friend.length > 0)
       return (true);
     return (false);
@@ -323,13 +339,10 @@ export class UserService {
         blocked: true,
       },
     })
-    //console.log('source is', source);
     source.blocked = source.blocked.filter((user) => {
       return (user.id !== relationBlock.receiverId)
     })
-    //console.log('remainders are', remainders);
     const user = await this.userRepository.save(source);
-    //console.log(user);
     if (user)
       return (true);
     return (false);

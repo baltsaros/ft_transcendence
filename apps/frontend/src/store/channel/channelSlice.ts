@@ -12,11 +12,6 @@ const fetchChannel = createAsyncThunk('get/fetchChannel', async() => {
   return channel.data
 })
 
-const fetchChannelById = createAsyncThunk('get/fetchChannelById', async(id: number) => {
-  const channels = await instance.get<IChannel[]>('channel/');
-  const channel = channels.data.filter((elem) => elem.id === id);
-  return channel[0];
-})
 interface ChannelState {
   channel: IChannel[];
   status: string;
@@ -33,11 +28,8 @@ const channelSlice = createSlice({
   reducers: {
     addNewUser: (state, action) => {
       const { channelId, user } = action.payload;
-      // console.log('channelId', channelId);
-      // console.log('user', user);
       state.channel = state.channel.map((channel) => {
         if (channel.id === channelId) {
-          // console.log('match on:', channel.id);
           return {
             ...channel, // clone the channel obj
             users: [...channel.users, user], // copy user in the channel.users array
@@ -45,7 +37,6 @@ const channelSlice = createSlice({
         }
         return channel;
       })
-      // console.log(state.channel);
     },
     removeUser: (state, action) => {
       const { channelId, username } = action.payload;
@@ -53,14 +44,28 @@ const channelSlice = createSlice({
         if (channel.id === channelId) {
           return {
             ...channel,
-            users: channel.users.filter((u) => u.username !== username),
+            users: channel.users.filter((u) => {
+              return u.username !== username}),
+            }
           }
-        }
-        return channel;
-      })
+          return channel;
+        })
+    },
+    removeOwner: (state, action) => {
+      const { channelId, username, newOwner} = action.payload;
+      state.channel = state.channel.map((channel) => {
+        if (channel.id === channelId) {
+          return {
+            ...channel,
+            users: channel.users.filter((u) => {
+              return u.username !== username}),
+            owner: newOwner
+            }
+          }
+          return channel;
+        })
     },
     addChannel: (state, action) => {
-      // return [...state, ...action.payload];
       state.channel.push(action.payload);
     },
     updateStatutChannel: (state, action:PayloadAction<IResponseUser>) => {
@@ -78,6 +83,19 @@ const channelSlice = createSlice({
               return elem;
             })
     },
+    addMessage: (state, action) => {
+      console.log('redux payload:', action.payload);;
+      const message = action.payload;
+      state.channel = state.channel.map((channel) => {
+        if (channel.id === message.channel.id) {
+          return {
+            ...channel, // clone the channel obj
+            messages: [...channel.messages, message], // copy user in the channel.users array
+          }
+        }
+        return channel;
+      })
+    }
   },
     extraReducers: (builder) => {
       builder.addCase(fetchChannel.fulfilled, (state, action) => {
@@ -94,8 +112,6 @@ const channelSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addNewUser } = channelSlice.actions;
-export const { removeUser} = channelSlice.actions;
-export const { addChannel, updateStatutChannel } = channelSlice.actions;
-export {fetchChannel, fetchChannelById};
+export const { addNewUser, removeUser, removeOwner, addChannel, updateStatutChannel, addMessage } = channelSlice.actions;
+export {fetchChannel};
 export default channelSlice.reducer;

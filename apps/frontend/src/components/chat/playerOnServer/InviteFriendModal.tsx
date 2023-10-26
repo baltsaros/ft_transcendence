@@ -45,9 +45,9 @@ const InviteFriendModal: React.FC<ModalProp & { player: IPlayersOnServerModalPro
           <div className="flex justify-end">
             <button
               onClick={() => sendInvitation(player.player.username)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg mr-2 mt-4">Ok
+              className="bg-green-500 text-white px-4 py-2 rounded-lg mr-2 mt-4">Ok
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg mt-4" onClick={handleCancel}>Cancel</button>
+            <button className="bg-red-500 text-white px-4 py-2 rounded-lg mt-4" onClick={handleCancel}>Cancel</button>
           </div>
 		</div>
 		</div>

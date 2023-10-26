@@ -12,30 +12,38 @@ import { ChannelIdDto } from './dto/channelIdDto.dto';
 export class ChannelController {
     constructor(
         private readonly ChannelService: ChannelService,
-        private eventEmmiter: EventEmitter2
         ) {}
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     async createChannel(@Body() channelData: IChannelsData) {
         const newChannel = await this.ChannelService.createChannel(channelData);
         return newChannel;
     }
 
     @Post('dmChannel')
+    @UseGuards(JwtAuthGuard)
     async createDmChannel(@Body() channelDmData: IChannelDmData) {
         const newDmChannel = await this.ChannelService.createDmChannel(channelDmData);
         return newDmChannel;
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     async getChannel() {
         return await (this.ChannelService.findAll());
     }
 
     @Get(":id")
-    async fetchMessage(@Param("id") id: number) {
-        // console.log('id', id);
-        return this.ChannelService.fetchMessage(id);
+    @UseGuards(JwtAuthGuard)
+    async fetchMessage(@Query('channelId') channelId: number) {
+        return this.ChannelService.fetchMessage(channelId);
+    }
+
+    @Post('leaveChannel')
+    @UseGuards(JwtAuthGuard)
+    async leaveChannel(@Body() payload: {channelId: number, username: string}) {
+        return (this.ChannelService.leaveChannel(payload));
     }
 
     @Post('kickMemberOfChannel')

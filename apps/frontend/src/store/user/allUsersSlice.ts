@@ -9,7 +9,6 @@ import { IResponseUser } from "../../types/types";
 
 const fetchAllUsers = createAsyncThunk('get/fetchAllUsers', async() => {
   const allUsers = await instance.get('user/');
-    // console.log("redux", allUsers);
   return allUsers.data
 })
 
@@ -29,9 +28,7 @@ const allUsersSlice = createSlice({
     reducers: {
         addNewUser: (state, action: PayloadAction<IResponseUser>) => {
             const user = action.payload;
-            //   console.log('user', user);
             state.users.push(user);
-            // console.log(state.users);
         },
         removeUser: (state, action: PayloadAction<IResponseUser>) => {
             const userToDelete = action.payload;

@@ -50,7 +50,6 @@ export const PlayerService = {
     return (false);
   },
 
-
   async refuseInvitation(invitation: IUserRelation)
   {
     const { data } = await instance.post("user/refuseInvitation", invitation);
@@ -75,15 +74,21 @@ export const PlayerService = {
   async getBlocked(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/getBlocked", friendRelation);
-    //console.log(data);
-    //if (data) return (true);
     return (data);
+  },
+
+  async getAllBlocked(id: number): Promise<IUserUsername[]> {
+    const payload = {
+      id : id, 
+    }
+    const blocked = await instance.post<IUserUsername[]>("user/getAllBlocked", payload);
+    if (blocked) return (blocked.data);
+    return ([]); 
   },
 
   async getFriend(friendRelation: IUserRelation)
   {
     const { data } = await instance.post("user/getFriend", friendRelation);
-    //console.log(data);
     return (data);
   },
 

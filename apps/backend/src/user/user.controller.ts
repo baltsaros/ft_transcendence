@@ -9,7 +9,6 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
   UsePipes,
   ValidationPipe,
   UseGuards,
@@ -153,6 +152,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   blockUser(@Body() invitation: UserRelationDto) {
     return (this.userService.blockUser(invitation));
+  }
+
+  @Post("getAllBlocked")
+  @UseGuards(JwtAuthGuard)
+  getAllBlocked(@Body() payload: {id: number}) {
+    const id = payload.id;
+    return (this.userService.getAllBlocked(id));
   }
 
   @Post("getBlocked")

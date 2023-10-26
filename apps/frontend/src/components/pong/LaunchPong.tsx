@@ -187,6 +187,9 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 				// Augmentez le score du joueur droit lorsque la balle touche le bord droit
+
+				leftPaddleYRef.current = fieldHeight / 2 - paddleHeight / 2;
+				rightPaddleYRef.current = fieldHeight / 2 - paddleHeight / 2;
 				if (player1PaddleRef.current === "left")
 				{
 					player1ScoreRef.current += 1;
@@ -221,6 +224,8 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 				ballSpeedXRef.current = ballSpeed * Math.cos(radians);
 				ballSpeedYRef.current = ballSpeed * Math.sin(radians);
 
+				leftPaddleYRef.current = fieldHeight / 2 - paddleHeight / 2;
+				rightPaddleYRef.current = fieldHeight / 2 - paddleHeight / 2;
 				// Augmentez le score du joueur droit lorsque la balle touche le bord gauche
 				if (player1PaddleRef.current === "right")
 				{
@@ -330,11 +335,11 @@ const PongLauncher = ({ gameSettings, webSocket, roomId, opponent}: any) => {
 			<div className="game-container">
 				<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 					<div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
-						<div className="bg-gray-400 p-4">
-							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-800 text-center" id="modal-title">Match Result</h3>
+						<div className="bg-gray-600 p-4">
+							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-400 text-center" id="modal-title">Match Result</h3>
 						</div>
-						<div className="bg-gray-600 p-6 space-y-3 text-center">
-							<p className="text-2xl text-black font-bold">{username} vs {opponent}</p>
+						<div className="bg-gray-400 p-6 space-y-3 text-center">
+							<p className="text-2xl text-black font-bold"> {username} vs {opponent}</p>
 							<div className="flex justify-center items-center space-x-4">
 								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>

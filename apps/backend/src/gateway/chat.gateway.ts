@@ -9,8 +9,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { IResponseUser, IUserSocket } from 'src/types/types';
-
-
+import { UserRelationDto } from 'src/user/dto/user-relation.dto';
+import { BadRequestException } from '@nestjs/common';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -47,17 +47,22 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     )
     // 2. Make him join each room.
     filteredChannel.forEach((channel) => {
-      client.join(channel.id.toString())
-      // console.log("client joined:", client.id, channel.name);
+      client.join(`channel-${channel.id}`);
+      // console.log(client.id, client.rooms);
     });
   }
 
-  handleDisconnect(client: any) {
+  handleDisconnect(client: Socket) {
     this.gatewaySessionManager.removeSocket(client.handshake.query.username.toString())
   }
 
   @OnEvent('newChannel')
   handleNewChannel(payload: any) {
+    console.log('payload', payload.owner.username);
+    const socket = this.gatewaySessionManager.getSocket(payload.owner.username);
+    socket.join(`channel-${payload.id}`);
+    console.log('user joined:', `channel-${payload.id}`);
+    console.log('socket.rooms @ creation:', socket.rooms);
     const userMapping: Map<string, IUserSocket> = this.gatewaySessionManager.getUserMapping();
       userMapping.forEach((socket) => {
         socket.emit('newChannelCreated', payload);
@@ -69,16 +74,66 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.emit('newUpdateStatus', data.userUpdate);
   }
 
-  @OnEvent('message.created')
+  @OnEvent('messageCreated')
   handleMessage(payload: any) {
-    this.server.emit('onMessage', {
-      content: payload.content,
-      user: payload.user,
-      id: payload.id,
-      channel: payload.channel
-    });
+    // 1. Emit message event to memeber of socket.io room
+    console.log('channel id gateway:', payload.channel.id);
+    const socket = this.gatewaySessionManager.getSocket(payload.user.username);
+    this.server.to(`channel-${payload.channel.id}`).emit('onMessage', payload);
+    // this.server.emit('onMessage', {
+    //   content: payload.content,
+    //   user: payload.user,
+    //   id: payload.id,
+    //   channel: payload.channel
+    // });
   }
 
+  @OnEvent('blockUser')
+  async handleBlockUser(payload: UserRelationDto) {
+    const blocked = await this.userRepository.findOne({
+      where: {id: payload.receiverId},
+    });
+    // console.log('blocked', blocked.username);
+    const username = blocked.username;
+    const status = blocked.status;
+    const reduxPayload = {
+      username,
+      status,
+    }
+    const sender = await this.userRepository.findOne({
+      where: {id: payload.senderId},
+    });
+    console.log('sender', sender.username);
+    const socket = this.gatewaySessionManager.getSocket(sender.username);
+    socket.emit('userBlocked', reduxPayload);
+  }
+
+  @OnEvent('onChannelLeave')
+  async handleChanneLeave(payload: any) {
+    console.log('payload', payload);
+    // 1. Emit an event to the all clients to update the users array in the redux state
+    const client = this.gatewaySessionManager.getSocket(payload.username);
+    // this.server.to(payload.channelId).emit('userLeft', payload);
+    console.log('before leaving room', client.id, client.rooms);
+    // client.to(`channel-${payload.channelId}`).emit('userLeft', payload);
+    this.server.to(`channel-${payload.channelId}`).emit('userLeft', payload);
+    client.leave(`channel-${payload.channelId}`);
+    console.log('after leaving room', client.id, client.rooms);
+    console.log('userLeft event emitted:', payload);
+  }
+
+  @OnEvent('onChannelLeaveOwner')
+  async handleChannelLeaveOwner(payload: any) {
+    // 1. Emit an event to all clients of the channel w. 
+    const client = this.gatewaySessionManager.getSocket(payload.username);
+    console.log('before leaving room', client.id, client.rooms);
+    // this.server.emit('ownerLeft', payload);
+    this.server.to(`channel-${payload.channelId}`).emit('ownerLeft', payload);
+    client.leave(`channel-${payload.channelId}`);
+    console.log('after leaving room', client.id, client.rooms);
+    console.log('onChannelLeaveOwner');
+  }
+  
   @SubscribeMessage('onNewDmChannel')
   async onNewDmChannel(client: Socket, payload: any) {
     const dmChannel = await this.channelRepository.findOne({
@@ -93,7 +148,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const socket = this.gatewaySessionManager.getSocket(username);
       if (socket) {
         // console.log('client:', username, 'joined:', socket.id, payload.id);
-        socket.join(payload.id);
+        // socket.join(payload.id);
+        socket.join(`channel-${payload.id}`);
       }
     });
     console.log(payload);
@@ -104,6 +160,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('onChannelJoin')
   async onChannelJoin(client: Socket, payload: any) {
     try{
+      console.log('payload', payload);
+      if (payload.password) {
+        console.log('client pswd:', payload.password);
+        const channel = await this.channelRepository.findOne({
+          where: {
+            id: payload.channelId,
+          },
+          relations: {
+            users: true,
+          },
+        })
+        if (payload.password != channel.password) {
+          console.log('event emitted');
+          client.emit('userJoinedError', 'Wrong password');
+          return;
+        }
+      }
       const channel = await this.channelRepository.findOne({
         where: {
           id: payload.channelId,
@@ -120,32 +193,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         channelId,
         user,
       };
-      client.join(payload.channelId.toString());
-      this.server.to(payload.channelId.toString()).emit('userJoined', value);
+      client.join(`channel-${payload.channelId}`);
+      this.server.to(`channel-${payload.channelId}`).emit('userJoined', value);
+      console.log('userJoined event emitted');
 
     }catch (error){
       console.log("error joining channel");
-    }
-  }
-
-  @SubscribeMessage('onChannelLeave')
-  async onChannelLeave(client: Socket, payload) {
-    try{
-      const channel = await this.channelRepository.findOne({
-        where: {
-          id: payload.channelId,
-        },
-        relations: {
-          users: true,
-        },
-      })
-      const user = await this.userService.findOne(payload.username);
-      channel.users = channel.users.filter((usr) => usr.id !== user.id);
-      await this.channelRepository.save(channel);
-      this.server.to(payload.channelId.toString()).emit('userLeft', payload);
-      client.leave(payload.channelId);
-    }catch (error) {
-      console.log('error leaving channel')
     }
   }
 }

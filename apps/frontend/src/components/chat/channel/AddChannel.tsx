@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
-import { store } from "../../../store/store";
+import { RootState, store } from "../../../store/store";
 import AddChannelModal from "./AddChannelModal";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { addChannel } from "../../../store/channel/channelSlice";
-import { useAppDispatch } from "../../../store/hooks";
-import { IChannel } from "../../../types/types";
+import { IChannel, IUserUsername } from "../../../types/types";
+import { useSelector } from "react-redux";
+import { PlayerService } from "../../../services/player.service";
+import { addBlocked } from "../../../store/blocked/blockedSlice";
 
 function AddChannel () {
 
     const webSocketService = useChatWebSocket();
-    const dispatch = useAppDispatch();
+    const user = useSelector((state: RootState) => state.user);
+    const blocked = useSelector((state: RootState) => state.blocked);
+    const status = useSelector((state: RootState) => state.blocked.status);
+    // console.log('user', user);
+
     /* STATE */
     const [modalView, setModalView] = useState(false);
 
@@ -20,6 +26,14 @@ function AddChannel () {
     
     const handleCloseModal = () => {
         setModalView(false);
+    }
+
+    const handleBlockUser = async () => {
+      const payload = {
+        senderId: user.user!.id,
+        receiverId: 3,
+      }
+      PlayerService.blockUser(payload);
     }
 
     useEffect(() => {
@@ -41,10 +55,25 @@ function AddChannel () {
           webSocketService.off('DmChannelJoined');
         };
       }, []);
+
+      useEffect(() => {
+        webSocketService.on('userBlocked', (payload: IUserUsername) => {
+          if (status === 'fulfilled')
+            store.dispatch(addBlocked(payload));
+        })
+        return () => {
+          webSocketService.off('userBlocked');
+        }
+      }, []);
     
     /* RENDER */
     return (
     <div>
+      <div>
+        <button
+        className="bg-pink-500 text-white p-3 rounded-r-lg"
+        onClick={handleBlockUser}>Block user</button>
+      </div>
         <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleOpenModal}>Add channel</button>
         {modalView &&
         <AddChannelModal onClose={handleCloseModal} />
