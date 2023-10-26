@@ -1,11 +1,7 @@
 import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
-import { setTokenToLocalStorage } from "../helpers/localstorage.helper";
-import { useAppDispatch } from "../store/hooks";
-import { login } from "../store/user/userSlice";
 import { useNavigate } from "react-router-dom";
-import { getUser } from "../hooks/getUser";
 import axios from "axios";
 import Cookies from "js-cookie";
 

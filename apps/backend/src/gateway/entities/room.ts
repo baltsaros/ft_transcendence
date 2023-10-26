@@ -7,12 +7,14 @@ export class Room {
 	players: Map<string, Player> = new Map();
 	gameState: GameState;
 	gameSettings: GameSettingsData[] = [];
-	leftPaddle: string;
-	rightPaddle: string;
+	leftPaddle: string | null;
+	rightPaddle: string | null;
 
 	constructor(id: string) {
 		this.id = id;
 		this.gameState = GameState.Playing;
+		this.leftPaddle = null;
+		this.rightPaddle = null;
 	}
 
 	setGameState(newState: GameState) {

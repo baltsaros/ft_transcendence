@@ -77,10 +77,6 @@ export class User {
   @Column()
   status: string;
 
-  // Change later
-  // @OneToMany(() => Match, (match) => match.user)
-  // matches: Match[];
-
   @ManyToMany(() => User)
   @JoinTable({
     name: "user_block_user",

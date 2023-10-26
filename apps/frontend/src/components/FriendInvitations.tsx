@@ -4,10 +4,9 @@ import { PlayerService } from "../services/player.service";
 import { MenuItem } from "@szhsin/react-menu";
 import { toast } from "react-toastify";
 import { RootState, store } from "../store/store";
-import { addFriend, fetchFriends } from "../store/user/friendsSlice";
-import { fetchInvitations, removeInvitation } from "../store/user/invitationSlice";
+import { addFriend } from "../store/user/friendsSlice";
+import { removeInvitation } from "../store/user/invitationSlice";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 
 export default function FriendInvitations(invitation: IUserUsername) {
 

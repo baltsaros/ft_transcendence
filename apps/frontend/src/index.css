@@ -14,6 +14,7 @@
     @apply text-white;
   }
 }
+
 @layer components {
   .btn {
     /* buttons */
@@ -26,6 +27,7 @@
     @apply max-w-[1000px];
   }
 }
+
 @layer utilities {
   .btn-red {
     @apply bg-rose-900 hover:bg-rose-800;

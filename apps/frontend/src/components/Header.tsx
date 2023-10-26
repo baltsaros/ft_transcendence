@@ -45,7 +45,7 @@ const Header: FC = () => {
               {avatar.length ? (
                 <img
                   src={avatar}
-                  style={{ width: "70px", height: "70px" }}
+                  style={{ width: "93.1px", height: "70px", borderRadius: "5%" }}
                   alt="[AVA]"
                 />
               ) : (
@@ -110,12 +110,6 @@ const Header: FC = () => {
         >
           42 API
         </a>
-        // <span
-        //   className="py-2 text-white/50 hover:text-white ml-auto"
-        //   onClick={redirection}
-        // >
-        //   42 API
-        // </span>
       )}
     </header>
   );

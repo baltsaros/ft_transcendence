@@ -33,11 +33,8 @@ const channelSlice = createSlice({
   reducers: {
     addNewUser: (state, action) => {
       const { channelId, user } = action.payload;
-      // console.log('channelId', channelId);
-      // console.log('user', user);
       state.channel = state.channel.map((channel) => {
         if (channel.id === channelId) {
-          // console.log('match on:', channel.id);
           return {
             ...channel, // clone the channel obj
             users: [...channel.users, user], // copy user in the channel.users array
@@ -45,7 +42,6 @@ const channelSlice = createSlice({
         }
         return channel;
       })
-      // console.log(state.channel);
     },
     removeUser: (state, action) => {
       const { channelId, username } = action.payload;
@@ -60,7 +56,6 @@ const channelSlice = createSlice({
       })
     },
     addChannel: (state, action) => {
-      // return [...state, ...action.payload];
       state.channel.push(action.payload);
     },
     updateStatutChannel: (state, action:PayloadAction<IResponseUser>) => {
