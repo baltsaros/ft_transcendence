@@ -27,6 +27,7 @@ export class ChannelService {
             owner: user,
             password: channelData.password,
         });
+        newChannel.messages = [];
         newChannel.users = [user];
         const channel = await this.channelRepository.save(newChannel);
         this.eventEmmiter.emit('newChannel', channel);
