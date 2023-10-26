@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { IResponseUser, IUserSocket } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
+import { BadRequestException } from '@nestjs/common';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -154,6 +155,23 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('onChannelJoin')
   async onChannelJoin(client: Socket, payload: any) {
     try{
+      console.log('payload', payload);
+      if (payload.password) {
+        console.log('client pswd:', payload.password);
+        const channel = await this.channelRepository.findOne({
+          where: {
+            id: payload.channelId,
+          },
+          relations: {
+            users: true,
+          },
+        })
+        if (payload.password != channel.password) {
+          console.log('event emitted');
+          client.emit('userJoinedError', 'Wrong password');
+          return;
+        }
+      }
       const channel = await this.channelRepository.findOne({
         where: {
           id: payload.channelId,

@@ -6,6 +6,7 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
 import { addNewUser } from "../../../store/channel/channelSlice";
 import { IChannel, IResponseUser } from "../../../types/types";
+import { IconBaseProps } from "react-icons/lib";
 
 export default function SearchBar() {
     
@@ -36,15 +37,21 @@ export default function SearchBar() {
     })
     
     /* BEHAVIOUR */
-    const handleJoinChannel = async (id: number) => {
+
+    const handleChannelPassword = async(channel: IChannel) => {
+
+    }
+
+    const handleJoinChannel = async (channel: IChannel) => {
+        let payload;
         try{
-            const payload = {
-                channelId: id,
-                username: userLogged.username,
-            }
+           
+            payload = {
+            channelId: channel.id,
+            username: userLogged.username,
+        }
             webSocketService.emit('onChannelJoin', payload);
             setInput("");
-
         } catch(err: any) {
             console.log('join channel failed');
         }
@@ -60,6 +67,17 @@ export default function SearchBar() {
         };
     }, []);
 
+    useEffect(() => {
+        webSocketService.on('userJoinedError', (payload: string) => {
+            console.log('event received');
+            alert(payload);
+        })
+        return () => {
+            webSocketService.off('userJoinedError');
+        };
+    }, []);
+
+
     //render
     return (
         <div>
@@ -72,18 +90,29 @@ export default function SearchBar() {
                 onChange={(e) => setInput(e.target.value.toLocaleLowerCase())}
             />
             <Scrollbar style={{width: 250, height: 250}}>
-
-                <ul>
-                {(input !== "") && filteredData.map((item) => (
-                    <li key={item.id}>{item.name}
-                    <button 
+                <div>
+                {(input !== "") && filteredData.map((channel) => (
+                    <div key={channel.id}>
+                    <h3>{channel.name}</h3>
+                    {/* <li key={channel.id}>{channel.name} */}
+                    {/* <button 
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
-                    onClick={e=>handleJoinChannel(item.id)}>Join
-                    </button>
-                    </li>
+                    onClick={() => handleJoinChannel(channel)}> */}
+                    {channel.mode === 'Protected' ? (
+                        <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
+                        onClick={() => handleChannelPassword(channel)}>Enter password
+                        </button>
+                        ): (
+                            <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
+                            onClick={() => handleJoinChannel(channel)}>Join
+                            </button>
+                        )}
+                    </div>
                 ))}
-            </ul>
-            </Scrollbar>
         </div>
+            </Scrollbar>
+            </div>
     );
 }  

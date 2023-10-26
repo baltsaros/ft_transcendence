@@ -53,11 +53,6 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     useEffect(() => {
         store.dispatch(fetchChannel());
     }, []);
-
-    useEffect(() => {
-        if (status === 'idle')
-            store.dispatch(fetchBlocked(userLogged.user!.id));
-    }, []);
     
     /* RENDER */
     /* Destructuring of the data array is used with the map method */
