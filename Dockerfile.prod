@@ -3,7 +3,8 @@ WORKDIR /ft_transcendence
 COPY  ./package.json .
 COPY  ./package-lock.json .
 COPY  ./turbo.json  .
-COPY  ./.env.prod  .
+COPY  ./.env.prod  .env
+RUN ls -la
 COPY ./apps /ft_transcendence/apps
 
 RUN npm install -g npm && npm install -D turbo
@@ -13,5 +14,4 @@ RUN apt update \
   && apt autoremove -y && apt clean && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 5173 3000 5432
-RUN npm run build
-CMD ["npm", "run", "start"]
+ENTRYPOINT ["/bin/bash", "-c", "npm install && npm run build && npm run start"]

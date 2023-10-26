@@ -1,18 +1,52 @@
 // room.ts (ou room.model.ts)
 
+import { Player } from "./player";
+
 export class Room {
 	id: string;
-	players: Set<string> = new Set();
+	players: Map<string, Player> = new Map();
 	gameState: GameState;
 	gameSettings: GameSettingsData[] = [];
+	leftPaddle: string | null;
+	rightPaddle: string | null;
 
 	constructor(id: string) {
 		this.id = id;
-		this.gameState = GameState.Waiting;
+		this.gameState = GameState.Playing;
+		this.leftPaddle = null;
+		this.rightPaddle = null;
 	}
 
 	setGameState(newState: GameState) {
 		this.gameState = newState;
+	}
+
+	// Méthode pour ajouter un joueur à la salle
+	addPlayer(player: Player) {
+		this.players.set(player.id, player);
+	}
+
+	// Méthode pour définir le paddle gauche
+	setLeftPaddle(client_id: string) {
+		this.leftPaddle = client_id;
+	}
+
+	// Méthode pour définir le paddle droit
+	setRightPaddle(client_id: string) {
+		this.rightPaddle = client_id;
+	}
+
+	// Méthode pour obtenir un joueur par son id
+	getPlayerById(id: string): Player | undefined {
+		return this.players.get(id);
+	}
+
+	getUsernameById( id:string ) : string | null{
+		this.players.forEach((player) => {
+			if (player.id === id)
+				return (player.username);
+			});
+		return (null);
 	}
 
 	addGameSettings(settings: GameSettingsData) {
@@ -21,8 +55,8 @@ export class Room {
 }
 
 export enum GameState {
-	Waiting = 'waiting',
-	inGame = 'inGame',
+	Playing = 'playing',
+	Ended = 'ended'
 	// Autres états du jeu Pong
 }
 

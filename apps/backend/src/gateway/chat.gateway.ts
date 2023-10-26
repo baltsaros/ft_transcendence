@@ -37,7 +37,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   ) {}
 
   async handleConnection(client: Socket){
-    console.log('client:', client.id, client.handshake.query.username.toString());
+    // console.log('client:', client.id, client.handshake.query.username.toString());
     this.gatewaySessionManager.setSocket(client.handshake.query.username.toString(), client);
     const username = client.handshake.query.username.toString();
     const channel = await this.channelService.findAll();

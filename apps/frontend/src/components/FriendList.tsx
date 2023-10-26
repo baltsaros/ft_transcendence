@@ -11,7 +11,6 @@ import { RootState, store } from "../store/store";
 import { fetchInvitations } from "../store/user/invitationSlice";
 import { fetchFriends } from "../store/user/friendsSlice";
 import { fetchAllUsers } from "../store/user/allUsersSlice";
-// import { fetchFriends, fetchInvitation } from "../store/user/userSlice";
 
 
 function FriendList() {

@@ -1,11 +1,10 @@
 import {
   Injectable,
   NotImplementedException,
-  UnauthorizedException,
 } from "@nestjs/common";
 import { UserService } from "src/user/user.service";
 import { JwtService } from "@nestjs/jwt";
-import { IResponseUser, IUser } from "src/types/types";
+import { IResponseUser } from "src/types/types";
 import { Profile } from "passport-42";
 import { DataStorageService } from "src/helpers/data-storage.service";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
@@ -21,7 +20,6 @@ export class AuthService {
   ) {}
 
   async validateUser(accessToken: string, profile: Profile) {
-    // console.log("validateIntraUser");
     const user = await this.usersService.findOneByIntraId(profile.id);
     if (!user) {
       const data = new CreateUserDto();

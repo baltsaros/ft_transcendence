@@ -8,11 +8,9 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import * as argon2 from "argon2";
 import { User } from "./entities/user.entity";
 import { JwtService } from "@nestjs/jwt";
 import { DataStorageService } from "src/helpers/data-storage.service";
-import { Profile } from "passport-42";
 import { UserRelationDto } from "./dto/user-relation.dto";
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
@@ -132,7 +130,7 @@ export class UserService {
       },
     });
     if (!user) throw new NotFoundException("User not found");
-    const data = await this.userRepository.update(id, updateUserDto);
+    const data = await this.userRepository.save(updateUserDto);
     if (!data) throw new NotFoundException("Update failed");
     const userUpd = await this.userRepository.findOne({
       where: { id: id },
@@ -309,11 +307,9 @@ export class UserService {
         blocked: true,
       },
     })
-    //console.log(source);
     const blocked = source.blocked.filter((user) => {
       return(user.id === relationBlocked.receiverId)
     })
-    //console.log(blocked);
     if (blocked.length > 0)
       return (true);
     return (false);
@@ -327,11 +323,9 @@ export class UserService {
         friends: true,
       },
     })
-    //console.log('source is', source);
     const friend = source.friends.filter((user) => {
       return(user.id === relationFriend.receiverId)
     })
-    //console.log('friend is', friend);
     if (friend.length > 0)
       return (true);
     return (false);
@@ -345,13 +339,10 @@ export class UserService {
         blocked: true,
       },
     })
-    //console.log('source is', source);
     source.blocked = source.blocked.filter((user) => {
       return (user.id !== relationBlock.receiverId)
     })
-    //console.log('remainders are', remainders);
     const user = await this.userRepository.save(source);
-    //console.log(user);
     if (user)
       return (true);
     return (false);

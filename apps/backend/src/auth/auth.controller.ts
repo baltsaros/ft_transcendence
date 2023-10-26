@@ -15,7 +15,6 @@ import { AuthService } from "./auth.service";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { FortyTwoAuthGuard } from "./guards/42.guard";
 
-
 @Controller("auth")
 export class AuthController {
   constructor(
@@ -24,11 +23,12 @@ export class AuthController {
 
   @Get("redir")
   @UseGuards(FortyTwoAuthGuard)
-  async fortyTwoAPI(@Request() req, @Response({passthrough: true}) res) {
-    // console.log('redir');
+  async fortyTwoAPI(@Request() req, @Response({ passthrough: true }) res) {
     const user = req.user.user;
     const firstEntry = req.user.first;
-    const path = process.env.REDIR ? process.env.REDIR : "http://localhost:5173";
+    const path = process.env.REDIR
+      ? process.env.REDIR
+      : "http://localhost:5173";
     if (user.twoFactorAuth) {
       res.cookie("intraId", user.intraId, {
         sameSite: "none",
@@ -41,8 +41,7 @@ export class AuthController {
       sameSite: "none",
       secure: true,
     });
-    if (firstEntry)
-      return res.redirect(path + "/edit");
+    if (firstEntry) return res.redirect(path + "/edit");
     return res.redirect(path);
   }
 
@@ -55,7 +54,6 @@ export class AuthController {
   @Get("profile")
   @UseGuards(JwtAuthGuard)
   async getProfile(@Request() req) {
-    // console.log('getProfile');
     const intraId = req.user.intraId;
     if (!intraId)
       throw new NotImplementedException(
@@ -80,10 +78,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   generateTwoFactorAuthenticationSecret(@Request() req) {
     const secret = this.authService.generateSecret();
-    if (!secret)
-      throw new NotImplementedException(
-        "Cannot generate a secret!"
-      );
+    if (!secret) throw new NotImplementedException("Cannot generate a secret!");
     return secret;
   }
 
@@ -108,4 +103,3 @@ export class AuthController {
 function useChatWebSocket() {
   throw new Error("Function not implemented.");
 }
-

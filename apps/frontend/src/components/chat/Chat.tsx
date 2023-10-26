@@ -74,7 +74,7 @@ useEffect(() => {
 
     /* RENDER */
     /* <div> is a container to encapsulate jsx code */
-    return (   
+    return (
     <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
         <div className="flex flex-grow w-full">
             <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">

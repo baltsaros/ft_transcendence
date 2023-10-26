@@ -13,6 +13,7 @@ import { RootState, store } from "../store/store";
 import { updateStatus } from "../store/user/allUsersSlice";
 import { updateStatusFriend } from "../store/user/friendsSlice";
 import { useSelector } from "react-redux";
+import { updateStatutChannel } from "../store/channel/channelSlice";
 
 export default function Logout() {
 
@@ -31,6 +32,7 @@ export default function Logout() {
         toast.success("Bye!");
         Cookies.remove("jwt_token");
         Cookies.remove("username");
+        Cookies.remove("intraId");
         navigate("/");
       };
 
@@ -40,6 +42,7 @@ export default function Logout() {
               store.dispatch(updateStatusFriend({
                 username: data.username, status: data.status
               }));
+              store.dispatch(updateStatutChannel(data));
           });
         return () => {
             webSocketService.off('newUpdateStatus');
@@ -49,8 +52,8 @@ export default function Logout() {
       //render
 
     return (
-        <button className="btn btn-red" onClick={logoutHandler}>
-          <span>Log out</span>
+        <button className="btn btn-red rounded-md" onClick={logoutHandler}>
+          <span className="">Log out</span>
           <FaSignOutAlt />
         </button>
         )

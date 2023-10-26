@@ -82,4 +82,10 @@ export class ChannelController {
         return (this.ChannelService.checkIfSamePassword(relation));
     }
 
+    @Post('getChannelById')
+    @UseGuards(JwtAuthGuard)
+    async getChannelById(@Body() channelId: ChannelIdDto) {
+        return (this.ChannelService.findOne(channelId.idChannel));
+    }
+
 }

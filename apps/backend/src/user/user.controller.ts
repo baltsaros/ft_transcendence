@@ -9,7 +9,6 @@ import {
   Patch,
   Param,
   Delete,
-  Request,
   UsePipes,
   ValidationPipe,
   UseGuards,

@@ -10,7 +10,9 @@ const ProfileEdit: FC = () => {
   const [avatar, setAvatar] = useState<string>("");
   const [filename, setFilename] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [twoFA, setTwoFA] = useState<boolean>(user ? user.twoFactorAuth : false);
+  const [twoFA, setTwoFA] = useState<boolean>(
+    user ? user.twoFactorAuth : false
+  );
   const [file, setFile] = useState<any>();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -18,9 +20,6 @@ const ProfileEdit: FC = () => {
   const updateHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
-      // if (username == "") {
-      //   toast.error("Username field cannot be empty");
-      //   return;
       if (username == user?.username) {
         toast.error("Username cannot be the same");
         return;
@@ -38,15 +37,11 @@ const ProfileEdit: FC = () => {
         status: user ? user.status : "",
         wins: user ? user.wins : 0,
         loses: user ? user.loses : 0,
-        invitations: user ? user.invitations : [],
-        friends: user ? user.friends : [],
         createdAt: user ? user.createdAt : new Date(),
       };
-      if (twoFA && !(user?.twoFactorAuth)) {
+      if (twoFA && !user?.twoFactorAuth) {
         tmp.secret = await AuthService.generateSecret();
       }
-      // console.log(tmp);
-      // console.log("filename: " + filename);
       const data = await AuthService.update(tmp);
       if (data) {
         toast.success("User information was successfully updated!");
@@ -65,16 +60,10 @@ const ProfileEdit: FC = () => {
       file,
       user?.id.toString() || "0"
     );
-    // console.log('upload image' + upload);
-    // console.log(upload.data.filename);
     setFilename(upload.data.filename);
-    // if (upload.data.filename)
     const base64 = await AuthService.getAvatar(upload.data.filename);
     setAvatar("data:;base64," + base64);
-    // console.log(base64);
-    // setAvatar('uploads/avatar/' + upload.data.filename)
     toast.success("File was successfully added!");
-    // setAvatar(e.target.value);
   };
 
   const getFile = (file: ChangeEvent) => {
@@ -111,14 +100,14 @@ const ProfileEdit: FC = () => {
           <input
             type="text"
             className="input"
-             onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </form>
       </div>
       <div className="bg-cyan-300 flex justify-start mb-2 p-5 space-x-4 items-center">
         <h3 className="pl-2 pr-6">Two-factor authentication:</h3>
         <form className="">
-            <input
+          <input
             type="checkbox"
             className="input"
             checked={twoFA}
@@ -137,10 +126,18 @@ const ProfileEdit: FC = () => {
           "[AVATAR]"
         )}
         <div className="bg-cyan-300 flex flex-col w-full justify-center p-2 mt-4">
-          <form className="flex flex-col items-center object-center" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="flex flex-col items-center object-center"
+            onSubmit={(e) => e.preventDefault()}
+          >
             <input type="file" onChange={getFile} />
-            <button className="flex justify-center object-center mt-2 btn btn-gray" onClick={uploadImage}>Upload</button>
-          </form> 
+            <button
+              className="flex justify-center object-center mt-2 btn btn-gray"
+              onClick={uploadImage}
+            >
+              Upload
+            </button>
+          </form>
         </div>
       </div>
       <div className="flex flex-row items-end justify-between">

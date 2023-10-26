@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
-import { IChannel } from "../../types/types";
+import { IChannel, IResponseUser } from "../../types/types";
 
 /* Reducers define how actions change state variables
 ** One reducer per slice
@@ -12,6 +12,11 @@ const fetchChannel = createAsyncThunk('get/fetchChannel', async() => {
   return channel.data
 })
 
+const fetchChannelById = createAsyncThunk('get/fetchChannelById', async(id: number) => {
+  const channels = await instance.get<IChannel[]>('channel/');
+  const channel = channels.data.filter((elem) => elem.id === id);
+  return channel[0];
+})
 interface ChannelState {
   channel: IChannel[];
   status: string;
@@ -28,11 +33,8 @@ const channelSlice = createSlice({
   reducers: {
     addNewUser: (state, action) => {
       const { channelId, user } = action.payload;
-      // console.log('channelId', channelId);
-      // console.log('user', user);
       state.channel = state.channel.map((channel) => {
         if (channel.id === channelId) {
-          // console.log('match on:', channel.id);
           return {
             ...channel, // clone the channel obj
             users: [...channel.users, user], // copy user in the channel.users array
@@ -40,7 +42,6 @@ const channelSlice = createSlice({
         }
         return channel;
       })
-      // console.log(state.channel);
     },
     removeUser: (state, action) => {
       const { channelId, username } = action.payload;
@@ -76,10 +77,24 @@ const channelSlice = createSlice({
         })
     },
     addChannel: (state, action) => {
-        // return [...state, ...action.payload];
-        state.channel.push(action.payload);
-      }
+      state.channel.push(action.payload);
     },
+    updateStatutChannel: (state, action:PayloadAction<IResponseUser>) => {
+      const userToModify = action.payload;
+            state.channel = state.channel.map((elem) => {
+              elem.users = elem.users.map((user) => {
+                if (user.id === userToModify.id) {
+                    return {
+                        ...user,
+                        status: userToModify.status
+                    }
+                }
+                return user;
+              })
+              return elem;
+            })
+    },
+  },
     extraReducers: (builder) => {
       builder.addCase(fetchChannel.fulfilled, (state, action) => {
         state.channel = action.payload;
