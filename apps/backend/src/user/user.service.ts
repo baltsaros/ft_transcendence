@@ -344,7 +344,10 @@ export class UserService {
     })
     const user = await this.userRepository.save(source);
     if (user)
+    {
+      this.eventEmmiter.emit('unblockUser', relationBlock);
       return (true);
+    }
     return (false);
   }
 }

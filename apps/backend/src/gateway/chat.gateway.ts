@@ -108,6 +108,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.emit('userBlocked', reduxPayload);
   }
 
+  @OnEvent('unblockUser')
+  async handleUnblockUser(payload: UserRelationDto) {
+    const blocked = await this.userRepository.findOne({
+      where: {id: payload.receiverId},
+    });
+    const username = blocked.username;
+    const status = blocked.status;
+    const reduxPayload = {
+      username,
+      status,
+    }
+    const sender = await this.userRepository.findOne({
+      where: {id: payload.senderId},
+    });
+    const socket = this.gatewaySessionManager.getSocket(sender.username);
+    socket.emit('userUnblocked', reduxPayload);
+  }
+
   @OnEvent('onChannelLeave')
   async handleChanneLeave(payload: any) {
     console.log('payload', payload);

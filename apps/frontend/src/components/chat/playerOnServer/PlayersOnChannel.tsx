@@ -44,11 +44,12 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                 store.dispatch(fetchChannel());
             });
             webSocketService.on("DmChannelJoined", (payload: any) => {
-                console.log("emitos");
                 store.dispatch(fetchChannel());
             });
             return () => {
-                webSocketService.off('newUpdateStatus');
+                webSocketService.off('userLeft');
+                webSocketService.off('userJoined');
+                webSocketService.off('DmChannelJoined');
                     };
     }, []);
 
@@ -66,7 +67,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <ul className='text-black'>
                             {usersOfChannel?.map((elem) => (
                                 elem.id !== userConnected!.id && elem.status === "online" &&  
-                                <li key={elem.id}><AdminMenu {...elem}></AdminMenu></li>
+                                <li key={elem.id}><PlayerMenu {...elem}></PlayerMenu></li>
                             ))}
                         </ul>
                     </div>
@@ -76,7 +77,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <ul className='text-black'>
                             {usersOfChannel?.map((elem) => (
                                 elem.id !== userConnected!.id && elem.status === "offline" &&  
-                                <li key={elem.id}><AdminMenu {...elem}></AdminMenu></li>
+                                <li key={elem.id}><PlayerMenu {...elem}></PlayerMenu></li>
                             ))}
                         </ul>
                     </div>
