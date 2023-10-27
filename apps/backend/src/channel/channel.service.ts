@@ -32,6 +32,7 @@ export class ChannelService {
             owner: user,
             password: channelData.password,
         });
+        newChannel.messages = [];
         newChannel.users = [user];
         newChannel.messages = [];
         const channel = await this.channelRepository.save(newChannel);

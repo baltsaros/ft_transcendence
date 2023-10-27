@@ -16,7 +16,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
   /* STATE */
     const [channelName, setChannelName] = useState('');
     const [channelMode, setChannelMode] = useState('');
-    const [isProtected, setIsProtected] = useState(false);
+    const [isPrivate, setIsPrivate] = useState(false);
     const [channelPassword, setChannelPassword] = useState('');
     const [isChannelNameFilled, setIsChannelNameFilled] = useState<boolean>(false);
     const [isPasswordFilled, setIsPasswordFilled] = useState<boolean>(false);
@@ -37,14 +37,14 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const handleChannelMode = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		const mode = event.target.value;
 		setChannelMode(mode);
-		if (mode === 'Protected')
-			setIsProtected(true);
+		if (mode === 'Private')
+			setIsPrivate(true);
 		else
-			setIsProtected(false);
+			setIsPrivate(false);
 
     }
 
-    const handleProtectedChannel = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePrivateChannel = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value != '')
 		{
 			setChannelPassword(event.target.value);
@@ -114,10 +114,9 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 						<option value="">Select mode</option>
 						<option value="Public">Public</option>
 						<option value="Private">Private</option>
-						<option value="Protected">Protected</option>
 					</select>
 				</div>
-				{channelMode === "Protected" && (
+				{channelMode === "Private" && (
 					<div className="mb-4">
 						<label htmlFor="channelPassword" className="block text-sm font-medium text-gray-700">
 							Channel Password
@@ -127,7 +126,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 							id="channelPassword"
 							className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
 							placeholder="Enter channel password"
-							onChange={handleProtectedChannel}
+							onChange={handlePrivateChannel}
 						/>
 					</div>
 				)}
@@ -135,8 +134,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 				<div className="flex justify-between">
 						<button onClick={handleCancel} className="bg-red-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300">Cancel</button>
 						<button onClick={handleChannelCreation}
-								className={`${(((channelMode === "Public" || channelMode === "Public") && isChannelNameFilled) || (channelMode === "Protected" && isChannelNameFilled && isPasswordFilled)) ? "bg-green-500 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300" : "bg-gray-300 cursor-not-allowed" } text-white px-4 py-2 rounded-lg ml-auto`}
-								disabled={(!channelMode || (!isChannelNameFilled && (channelMode === "Private" || channelMode === "Public") || (channelMode === "Protected" && !isPasswordFilled)))}>Ok
+								className={`${(((channelMode === "Public" || channelMode === "Public") && isChannelNameFilled) || (channelMode === "Private" && isChannelNameFilled && isPasswordFilled)) ? "bg-green-500 hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300" : "bg-gray-300 cursor-not-allowed" } text-white px-4 py-2 rounded-lg ml-auto`}
+								disabled={(!channelMode || (!isChannelNameFilled && (channelMode === "Private" || channelMode === "Public") || (channelMode === "Private" && !isPasswordFilled)))}>Ok
 						</button>
 				</div>
 			</div>
