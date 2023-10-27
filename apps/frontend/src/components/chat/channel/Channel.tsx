@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { store } from "../../../store/store";
 import { fetchChannel, removeUser } from "../../../store/channel/channelSlice";
-import { fetchBlocked } from "../../../store/blocked/blockedSlice";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import SearchBar from "./SearchBar";
+import ChannelMenu from "./ChannelMenu"
 import { instance } from "../../../api/axios.api";
 import { toast } from "react-toastify"
 
@@ -65,16 +65,19 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                             <div className="flex flex-col text-black space-y-4">
                                 <SearchBar />
                                 {filteredChannels.map((channel: IChannel) => (
-                                <div key={channel.id}>
+                                <div key={channel.id} className="flex items-center justify-between mb-2">
+                                <div className="flex items-center">
                                 <button
                                 onClick={() => onSelectChannel(channel)} 
                                 className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
                                 </button>
-                                <button 
+                                <ChannelMenu channelId={channel.id}/>
+                                {/* <button 
                                 className="bg-red-300 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded"
                                 onClick={() => handleLeaveChannel(channel.id)}
                                 >leave
-                                </button>
+                                </button> */}
+                                </div>
                                 </div>
                                 ))}
                             </div>

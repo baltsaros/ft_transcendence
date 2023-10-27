@@ -11,7 +11,7 @@ const chatPage: React.FC = () => {
     
     /* STATE */
     const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
-    // console.log('current channel owner:', selectedChannel?.owner);
+    console.log('channel mode:', selectedChannel?.mode);
 
     /* BEHAVIOR */
     const handleSelectedChannel = (channel: IChannel) => {

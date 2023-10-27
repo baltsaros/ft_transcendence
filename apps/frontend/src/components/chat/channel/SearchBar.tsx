@@ -6,7 +6,6 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
 import { addNewUser } from "../../../store/channel/channelSlice";
 import { IChannel, IResponseUser } from "../../../types/types";
-import { IconBaseProps } from "react-icons/lib";
 
 export default function SearchBar() {
     
@@ -15,6 +14,7 @@ export default function SearchBar() {
     
     /* STATE */
     const [ input, setInput ] = useState<string>("");
+    const [passwordInput, setPasswordInput] = useState<string>("");
     const channels = useSelector((state: RootState) => state.channel.channel);
 
     const isTrue = (user: IResponseUser) => {
@@ -38,24 +38,34 @@ export default function SearchBar() {
     
     /* BEHAVIOUR */
 
-    const handleChannelPassword = async(channel: IChannel) => {
-
-    }
+    const handleChannelPassword = (channel: IChannel) => {
+        console.log('channel', channel);
+        console.log('password', passwordInput);
+        try {
+            const payload = {
+                channelId: channel.id,
+                username: userLogged.username,
+                password: passwordInput,
+            }
+            webSocketService.emit('onChannelJoin', payload);
+            setPasswordInput('');
+        } catch(err: any) {
+            console.log('join channel failed');
+        }
+    };
 
     const handleJoinChannel = async (channel: IChannel) => {
-        let payload;
         try{
-           
-            payload = {
+            const payload = {
             channelId: channel.id,
             username: userLogged.username,
         }
             webSocketService.emit('onChannelJoin', payload);
-            setInput("");
+            setInput('');
         } catch(err: any) {
             console.log('join channel failed');
         }
-    }
+    };
 
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
@@ -78,7 +88,7 @@ export default function SearchBar() {
     }, []);
 
 
-    //render
+    /* RENDER */
     return (
         <div>
             <input
@@ -94,24 +104,30 @@ export default function SearchBar() {
                 {(input !== "") && filteredData.map((channel) => (
                     <div key={channel.id}>
                     <h3>{channel.name}</h3>
-                    {/* <li key={channel.id}>{channel.name} */}
-                    {/* <button 
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
-                    onClick={() => handleJoinChannel(channel)}> */}
                     {channel.mode === 'Private' ? (
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Enter the channel password"
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                        />
                         <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
-                        onClick={() => handleChannelPassword(channel)}>Enter password
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline"
+                            onClick={() => handleChannelPassword(channel)}
+                        >Join
                         </button>
-                        ): (
-                            <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
-                            onClick={() => handleJoinChannel(channel)}>Join
-                            </button>
-                        )}
                     </div>
+                ) : (
+                    // Condition for public channels
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline"
+                        onClick={() => handleJoinChannel(channel)}
+                    >Join
+                    </button>
+                )}
+                </div>
                 ))}
-        </div>
+            </div>
             </Scrollbar>
             </div>
     );
