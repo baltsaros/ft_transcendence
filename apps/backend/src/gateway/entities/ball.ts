@@ -5,12 +5,12 @@ export class Ball {
 	speedY: number;
 	radius: number;
 
-	constructor(x: number, radius: number, y: number, speedX: number, speedY: number) {
-	  this.x = x;
-	  this.y = y;
-	  this.radius = radius;
-	  this.speedX = speedX;
-	  this.speedY = speedY;
+	constructor() {
+	  this.x = 0;
+	  this.y = 0;
+	  this.radius = 0;
+	  this.speedX = 0;
+	  this.speedY = 0;
 	}
 
 	setPosition(x: number, y: number)

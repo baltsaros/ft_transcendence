@@ -56,7 +56,6 @@ const GamePage: React.FC = () => {
 			setOpponentPaddleColor(data.opponentPaddleColor);
 
 			console.log(`${Cookies.get('username')} paddle color : ${data.userPaddleColor}`);
-			console.log(`${}`)
 			setShowGameSettings(false);
 			setLaunchGame(true);
 		});

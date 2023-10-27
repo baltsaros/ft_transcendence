@@ -25,7 +25,7 @@ export class Room {
 		this.rightPaddle = new Paddle(player2, this.fieldWidth - 10 - 5, 100, 10);
 		this.id = id;
 		this.gameState = GameState.Playing;
-		this.ball = null;
+		this.ball = new Ball();
 	}
 
 	setGameState(newState: GameState) {
