@@ -8,7 +8,7 @@ import { Channel } from 'src/channel/channel.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { IResponseUser, IUserSocket } from 'src/types/types';
+import { IResponseUser, IUserRelation, IUserSocket } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
 import { BadRequestException } from '@nestjs/common';
 
@@ -173,6 +173,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(payload);
     this.server.to(payload.id).emit('DmChannelJoined', dmChannel);
   }
+
+  @OnEvent('removeFriend')
+  handleRemoveFriend(@MessageBody("data") data: {users: IResponseUser[]}) {
+      const socket1 = this.gatewaySessionManager.getSocket(data.users[0].username);
+      const socket2 = this.gatewaySessionManager.getSocket(data.users[1].username);
+      if (socket1 && socket2) {
+          socket2.emit("requestRemoveFriend", {username: data.users[0].username, status: data.users[0].status});
+          socket1.emit("requestRemoveFriend", {username: data.users[1].username, status: data.users[1].status});
+      }
+    }
+
     
   /* any should be specified */
   @SubscribeMessage('onChannelJoin')

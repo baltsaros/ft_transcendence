@@ -9,8 +9,9 @@ import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
 import { fetchInvitations } from "../store/user/invitationSlice";
-import { fetchFriends } from "../store/user/friendsSlice";
+import { fetchFriends, removeFriend } from "../store/user/friendsSlice";
 import { fetchAllUsers } from "../store/user/allUsersSlice";
+import { useChatWebSocket } from "../context/chat.websocket.context";
 
 
 function FriendList() {
@@ -21,6 +22,7 @@ function FriendList() {
   const userConnected = useSelector((state: RootState) => state.user.user);
   const isOnline = (value: IUserUsername) => value.status === 'online';
   const isOffline = (value: IUserUsername) => value.status === 'offline';
+  const webSocketService = useChatWebSocket();
 
   useEffect(() => {
     if (userConnected)
@@ -30,6 +32,13 @@ function FriendList() {
       store.dispatch(fetchAllUsers());
     }
 }, []);
+
+  useEffect(() => {
+    webSocketService.on("requestRemoveFriend", (payload: any) => {
+      console.log(payload);
+      store.dispatch(removeFriend(payload));
+    });
+  })
 
   //render
   return (

@@ -63,49 +63,63 @@ function AdminMenu(props: any) {
       }
   }
 
+  const handleDirectMessage = async () => {
+    try{ 
+      const strings = [user.username, userLogged?.username];
+      strings.sort();
+      const channelName = strings.join('_');
+      const channelData: IChannelDmData = {
+          name: channelName,
+          mode: 'private',
+          sender: userLogged?.id!,
+          receiver: user.username,
+          password: '',
+      }
+      const newDmChannel = await instance.post('channel/dmChannel', channelData);
+      const payload = {
+        user: strings,
+        id: newDmChannel.data.id,
+      }
+      webSocketService.emit('onNewDmChannel', payload);
+      if (newDmChannel.data) {
+        toast.success("Channel successfully added!");
+      }
+      else {
+        toast.error("Channel already exists");
+      }
+  } catch (error: any) {
+      const err = error.response?.data.message;
+      toast.error(err.toString());
+  }
 
+  const handleInviteFriends = async () => {
+  
+      try {
+        const payload = {
+          senderId: userLogged!.id,
+          receiverId: user.id,
+        }
+          const ret = await PlayerService.sendInvitation(payload);
+          if (ret)
+            toast.success("Invitation sent !");
+          else
+            toast.error("Invitation not sent !");
+        } catch (err: any) {}}
+}
+  
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
           store.dispatch(addBlocked(payload));
       });
       webSocketService.on("userUnblocked", (payload: any) => {
         store.dispatch(removeBlocked(payload));
-    });
+      });
       return () => {
           webSocketService.off('userBlocked');
           webSocketService.off('userUnblocked');
               };
   }, []);
 
-    const handleDirectMessage = async () => {
-      try{ 
-        const strings = [user.username, userLogged?.username];
-        strings.sort();
-        const channelName = strings.join('_');
-        const channelData: IChannelDmData = {
-            name: channelName,
-            mode: 'private',
-            sender: userLogged?.id!,
-            receiver: user.username,
-            password: '',
-        }
-        const newDmChannel = await instance.post('channel/dmChannel', channelData);
-        const payload = {
-          user: strings,
-          id: newDmChannel.data.id,
-        }
-        webSocketService.emit('onNewDmChannel', payload);
-        if (newDmChannel.data) {
-          toast.success("Channel successfully added!");
-        }
-        else {
-          toast.error("Channel already exists");
-        }
-    } catch (error: any) {
-        const err = error.response?.data.message;
-        toast.error(err.toString());
-    } 
-  }
 
   //render
   return (

@@ -209,6 +209,10 @@ export class UserService {
     });
     const friendOk = await this.userRepository.save(friendUser);
     if (!friendOk) return false;
+    const payload = {
+      users: [user, friendUser]
+    }
+    this.eventEmmiter.emit("removeFriend", payload);
     return true;
   }
 
