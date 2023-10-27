@@ -8,6 +8,9 @@ import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
+import { toast } from "react-toastify";
+
+import { toNamespacedPath } from 'path';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
@@ -20,14 +23,18 @@ export class ChannelService {
     async createChannel(channelData: IChannelsData) {
         const user = await this.userService.findOne(channelData.owner.username);
         const existingChannel = await this.channelRepository.findOne({where: {name: channelData.name}});
-        if (existingChannel) throw new BadRequestException("Channel already exists");
+        if (existingChannel) {
+          return undefined;
+        } 
         const newChannel = this.channelRepository.create({
             name: channelData.name,
             mode: channelData.mode,
             owner: user,
             password: channelData.password,
         });
+        newChannel.messages = [];
         newChannel.users = [user];
+        newChannel.messages = [];
         const channel = await this.channelRepository.save(newChannel);
         this.eventEmmiter.emit('newChannel', channel);
         return channel;
@@ -36,7 +43,9 @@ export class ChannelService {
     async createDmChannel(channelDmData: IChannelDmData) {
       const sender = await this.userService.findOneById(channelDmData.sender);
       const existingChannel = await this.channelRepository.findOne({where: {name: channelDmData.name}});
-        if (existingChannel) throw new BadRequestException("Channel already exists");
+        if (existingChannel) {
+          return undefined;
+        } 
       const receiver = await this.userService.findOne(channelDmData.receiver);
       const newDmChannel = this.channelRepository.create({
         name: channelDmData.name,

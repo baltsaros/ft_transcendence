@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { PlayerService } from "../../services/player.service";
 import { IUserUsername } from "../../types/types";
 
@@ -25,8 +25,10 @@ const blockedSlice = createSlice({
             console.log('redux action executed');
             state.blocked.push(action.payload);
         },
-        // removeBlocked: (state, action) => {
-        // }
+        removeBlocked: (state, action: PayloadAction<IUserUsername>) => {
+            const blockToRemove = action.payload;
+            state.blocked = state.blocked.filter((block) => block.username !== blockToRemove.username);
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchBlocked.fulfilled, (state, action) => {
@@ -42,6 +44,6 @@ const blockedSlice = createSlice({
     },
 });
 
-export const { addBlocked } = blockedSlice.actions;
+export const { addBlocked, removeBlocked } = blockedSlice.actions;
 export { fetchBlocked };
 export default blockedSlice.reducer;

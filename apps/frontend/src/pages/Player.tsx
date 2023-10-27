@@ -67,8 +67,7 @@ export default function Player(){
         <MatchHistory
           {...user}
         />
-
-        <MatchForm />
+        
       </div>
     );
 };

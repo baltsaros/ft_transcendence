@@ -1,6 +1,3 @@
-
-// import { fetchFriends, fetchInvitation } from "../store/user/userSlice";
-
 import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
@@ -8,22 +5,62 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { ChannelService } from "../../../services/channels.service";
-import { RootState } from "../../../store/store";
+import { PlayerService } from "../../../services/player.service";
+import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
+import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
-import PlayerMenu from "./PlayerMenu";
 
 
 function AdminMenu(user: IResponseUser) {
 
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
+    const blocked = useSelector((state: RootState) => state.blocked.blocked);
     const userLogged = useSelector((state: RootState) => state.user.user);
     const webSocketService = useChatWebSocket();
 
     const isFriend = (username: string) => {
       return (friends.some(item => item.username === username));
     }
+
+    const isBlocked = (username: string) => {
+      return (blocked.some(item => item.username === username));
+    }
+
+    const handleBlockUser = async () => {
+      const payload = {
+        senderId: userLogged!.id,
+        receiverId: user.id,
+      }
+      PlayerService.blockUser(payload);
+    
+    }
+    const handleUnblockUser = async () => {
+      const payload = {
+        senderId: userLogged!.id,
+        receiverId: user.id,
+      }
+      PlayerService.unblockUser(payload);
+    }
+
+    useEffect(() => {
+
+        
+           
+    }, [blocked]);
+
+    useEffect(() => {
+      webSocketService.on("userBlocked", (payload: any) => {
+          store.dispatch(addBlocked(payload));
+      });
+      webSocketService.on("userUnblocked", (payload: any) => {
+        store.dispatch(removeBlocked(payload));
+    });
+      return () => {
+          webSocketService.off('userBlocked');
+          webSocketService.off('userUnblocked');
+              };
+  }, []);
 
     const handleDirectMessage = async () => {
       try{ 
@@ -44,9 +81,12 @@ function AdminMenu(user: IResponseUser) {
           id: newDmChannel.data.id,
         }
         webSocketService.emit('onNewDmChannel', payload);
-        if (newDmChannel) {
+        if (newDmChannel.data) {
           toast.success("Channel successfully added!");
           // store.dispatch(addChannel(newDmChannel.data));
+        }
+        else {
+          toast.error("Channel already exists");
         }
     } catch (error: any) {
         const err = error.response?.data.message;
@@ -66,6 +106,9 @@ function AdminMenu(user: IResponseUser) {
           <MenuItem>
             <Link to={"/player/" + user.username}>View profile</Link>
           </MenuItem>
+
+          {isBlocked(user.username) && <MenuItem onClick={handleUnblockUser}>Unblock User</MenuItem>}
+          {!isBlocked(user.username) && <MenuItem onClick={handleBlockUser}>Block User</MenuItem>}
           
           <MenuItem onClick={handleDirectMessage}>Direct Message</MenuItem>
           

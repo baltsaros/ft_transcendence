@@ -6,7 +6,7 @@ import { addChannel } from "../../../store/channel/channelSlice";
 import { IChannel, IUserUsername } from "../../../types/types";
 import { useSelector } from "react-redux";
 import { PlayerService } from "../../../services/player.service";
-import { addBlocked } from "../../../store/blocked/blockedSlice";
+import { addBlocked, fetchBlocked } from "../../../store/blocked/blockedSlice";
 
 function AddChannel () {
 
@@ -28,14 +28,6 @@ function AddChannel () {
         setModalView(false);
     }
 
-    const handleBlockUser = async () => {
-      const payload = {
-        senderId: user.user!.id,
-        receiverId: 3,
-      }
-      PlayerService.blockUser(payload);
-    }
-
     useEffect(() => {
         webSocketService.on('newChannelCreated', (payload: any) => {
             store.dispatch(addChannel(payload));
@@ -48,32 +40,16 @@ function AddChannel () {
 
        useEffect(() => {
         webSocketService.on('DmChannelJoined', (payload: IChannel) => {
-        //   console.log('event DmChannelJoined received:', payload.users);
           store.dispatch(addChannel(payload));
         });
         return () => {
           webSocketService.off('DmChannelJoined');
         };
       }, []);
-
-      useEffect(() => {
-        webSocketService.on('userBlocked', (payload: IUserUsername) => {
-          if (status === 'fulfilled')
-            store.dispatch(addBlocked(payload));
-        })
-        return () => {
-          webSocketService.off('userBlocked');
-        }
-      }, []);
     
     /* RENDER */
     return (
     <div>
-      <div>
-        <button
-        className="bg-pink-500 text-white p-3 rounded-r-lg"
-        onClick={handleBlockUser}>Block user</button>
-      </div>
         <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleOpenModal}>Add channel</button>
         {modalView &&
         <AddChannelModal onClose={handleCloseModal} />
