@@ -7,12 +7,13 @@ import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
+import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
-import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
+import { IChannelDmData } from "../../../types/types";
 
 
-function AdminMenu(user: IResponseUser) {
-
+function AdminMenu(props: any) {
+    const {user, selectedChannel} = props;
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
     const blocked = useSelector((state: RootState) => state.blocked.blocked);
@@ -25,6 +26,10 @@ function AdminMenu(user: IResponseUser) {
 
     const isBlocked = (username: string) => {
       return (blocked.some(item => item.username === username));
+    }
+
+    const isOwner = (id: number) => {
+      return (selectedChannel?.owner.id === user.id);
     }
 
     const handleBlockUser = async () => {
@@ -43,11 +48,21 @@ function AdminMenu(user: IResponseUser) {
       PlayerService.unblockUser(payload);
     }
 
-    useEffect(() => {
+    const handleKickChannel = async() => {
+      try{
+          const payload = {
+              channelId: selectedChannel.id,
+              username: user.username,
+          }
+          const response = await instance.post("channel/leaveChannel", payload);
+          if (response)
+              store.dispatch(removeUser(payload));
+      } catch(error: any) {
+          const err = error.response?.data.message;
+          toast.error(err.toString());
+      }
+  }
 
-        
-           
-    }, [blocked]);
 
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
@@ -74,7 +89,6 @@ function AdminMenu(user: IResponseUser) {
             receiver: user.username,
             password: '',
         }
-        // 1. The new instance in the channel table could be done directly in the backend when emitting the event
         const newDmChannel = await instance.post('channel/dmChannel', channelData);
         const payload = {
           user: strings,
@@ -83,7 +97,6 @@ function AdminMenu(user: IResponseUser) {
         webSocketService.emit('onNewDmChannel', payload);
         if (newDmChannel.data) {
           toast.success("Channel successfully added!");
-          // store.dispatch(addChannel(newDmChannel.data));
         }
         else {
           toast.error("Channel already exists");
@@ -116,6 +129,12 @@ function AdminMenu(user: IResponseUser) {
             <MenuItem disabled>Invite to game</MenuItem>}
           {user.status === "online" && 
             <MenuItem>Invite to game</MenuItem>}
+
+          {isOwner(user.id) && <MenuItem disabled onClick={handleKickChannel}>Kick user</MenuItem>}
+          {!isOwner(user.id) && <MenuItem onClick={handleKickChannel}>Kick user</MenuItem>}
+            <MenuItem>Ban user</MenuItem>
+            <MenuItem>Mute user</MenuItem>
+            <MenuItem>Set as admin</MenuItem>
         </div>
       </Menu>
     </div>
