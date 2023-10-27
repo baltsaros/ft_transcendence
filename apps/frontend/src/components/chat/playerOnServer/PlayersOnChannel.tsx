@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IChannel, IResponseUser } from '../../../types/types';
+import { IChannel, IResponseUser, IUserUsername } from '../../../types/types';
 import { instance } from '../../../api/axios.api';
 import { useSelector } from 'react-redux';
 import { RootState, store } from '../../../store/store';
@@ -7,13 +7,14 @@ import { useChatWebSocket } from '../../../context/chat.websocket.context';
 import { fetchChannel } from '../../../store/channel/channelSlice';
 import PlayerMenu from './PlayerMenu';
 import AdminMenu from './AdminMenu';
+import { addInvitation } from '../../../store/user/invitationSlice';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
 }
 
 const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
-    
     const webSocketService = useChatWebSocket();
 
     // behavior
@@ -46,6 +47,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             webSocketService.on("DmChannelJoined", (payload: any) => {
                 store.dispatch(fetchChannel());
             });
+            
             return () => {
                 webSocketService.off('userLeft');
                 webSocketService.off('userJoined');
@@ -65,9 +67,9 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <p className="text-xl mb-1 text-gray-600">Online</p>
                         <hr/>
                         <ul className='text-black'>
-                            {usersOfChannel?.map((elem) => (
-                                elem.id !== userConnected!.id && elem.status === "online" &&  
-                                <li key={elem.id}><PlayerMenu {...elem}></PlayerMenu></li>
+                            {usersOfChannel?.map((user) => (
+                                user.id !== userConnected!.id && user.status === "online" &&  
+                                <li key={user.id}><AdminMenu {...{user, selectedChannel}}></AdminMenu></li>
                             ))}
                         </ul>
                     </div>
@@ -75,9 +77,9 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <p className="text-xl mb-1 text-gray-600">Offline</p>
                         <hr/>
                         <ul className='text-black'>
-                            {usersOfChannel?.map((elem) => (
-                                elem.id !== userConnected!.id && elem.status === "offline" &&  
-                                <li key={elem.id}><PlayerMenu {...elem}></PlayerMenu></li>
+                            {usersOfChannel?.map((user) => (
+                                user.id !== userConnected!.id && user.status === "offline" &&  
+                                <li key={user.id}><AdminMenu {...{user, selectedChannel}}></AdminMenu></li>
                             ))}
                         </ul>
                     </div>

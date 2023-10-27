@@ -30,8 +30,8 @@ export default function FriendInvitations(invitation: IUserUsername) {
                         username: sender.username,
                         status: sender.status,
                     };
+                    console.log(senderUserUsername);
                     store.dispatch(removeInvitation(senderUserUsername));
-                    store.dispatch(addFriend(senderUserUsername));
                     toast.success("player added as friend");
                 }
             }   
