@@ -251,7 +251,10 @@ export class UserService {
     const friend = await this.findOneById(friendRequest.senderId);
     if (!friend) return false;
     source.friends.push(friend);
-
+    const payload = {
+      users: [source, friend]
+    }
+    this.eventEmmiter.emit("addFriend", payload);
     await this.userRepository.save(source);
     return true;
   }
@@ -276,8 +279,16 @@ export class UserService {
     });
     const friend = await this.findOneById(friendRequest.senderId);
     source.invitations.push(friend);
+    const data = {
+      username: friend.username,
+      status: friend.status,
+      socketUsername: source.username,
+    }
+    const ret = await this.userRepository.save(source);
+    if (!ret) return (false);
+    this.eventEmmiter.emit("addInvitation", data)
+    return true;
 
-    await this.userRepository.save(source);
   }
 
   async blockUser(friendRequest: UserRelationDto) {

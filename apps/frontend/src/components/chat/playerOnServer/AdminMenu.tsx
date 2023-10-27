@@ -90,6 +90,7 @@ function AdminMenu(props: any) {
   } catch (error: any) {
       const err = error.response?.data.message;
       toast.error(err.toString());
+    }
   }
 
   const handleInviteFriends = async () => {
@@ -104,8 +105,8 @@ function AdminMenu(props: any) {
             toast.success("Invitation sent !");
           else
             toast.error("Invitation not sent !");
-        } catch (err: any) {}}
-}
+        } catch (err: any) {}
+  }
   
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
@@ -114,6 +115,7 @@ function AdminMenu(props: any) {
       webSocketService.on("userUnblocked", (payload: any) => {
         store.dispatch(removeBlocked(payload));
       });
+
       return () => {
           webSocketService.off('userBlocked');
           webSocketService.off('userUnblocked');
@@ -128,7 +130,7 @@ function AdminMenu(props: any) {
       <Menu direction={"left"} arrow={true} align={"center"} menuButton={<MenuButton className="w-24">{user.username}</MenuButton>}>
         <div className="bg-gray-500">
           {isFriend(user.username) && <MenuItem disabled>Invite as Friend</MenuItem>}
-          {!isFriend(user.username) && <MenuItem>Invite as Friend</MenuItem>}
+          {!isFriend(user.username) && <MenuItem onClick={handleInviteFriends}>Invite as Friend</MenuItem>}
           
           <MenuItem>
             <Link to={"/player/" + user.username}>View profile</Link>

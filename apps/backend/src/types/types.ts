@@ -80,3 +80,8 @@ export interface IUserRelation {
   idSender: number;
 }
 
+export interface IUserUsername {
+  username: string;
+  status: string;
+}
+
