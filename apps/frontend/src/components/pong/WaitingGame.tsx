@@ -23,16 +23,16 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 	const [isMatchmakingSuccess, setIsMatchmakingSuccess] = useState(false);
 	const [roomId, setRoomId] = useState<string | null>(null);
 
-	const username = Cookies.get('username');
 
 	useEffect(() => {
 			// Établir la connexion WebSocket
-		webSocket.emit('launchMatchmaking', {data: {username: username}});
+		webSocket.emit('launchMatchmaking', {});
 
 		// Gestion des événements du serveur pour la mise en correspondance
 		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
 			setIsMatchmakingSuccess(true);
 			setRoomId(data.roomId);
+			console.log(`Matchmaking success. RoomID : ${data.roomId}`);
 		});
 
 	  }, [webSocket]);

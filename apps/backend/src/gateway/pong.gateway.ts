@@ -23,25 +23,25 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	private pongRooms: Map<string, Room> = new Map();
 	// Liste d'attente des joueurs en attente de match
-	private	waitingPlayers: Socket[] = [];
+	private	waitingPlayers: Player[] = [];
 	private	onlinePlayers: Player[] = [];
 
 	handleConnection(client: Socket) {
 		// console.log(`Client connected: ${client.id}`);
 		// const username = Cookies.get('username');
-		const player = new Player(client.id, client.handshake.query.username.toString());
+		let username = client.handshake.query.username.toString();
+		const player = new Player(client.id, username);
 		this.onlinePlayers.push(player);
 	}
 
 	handleDisconnect(client: Socket) {
 		// console.log(`Client disconnected: ${client.id}`);
-
 		let index = this.onlinePlayers.findIndex((player) => player.id === client.id);
 		if (index !== -1) {
-		  this.onlinePlayers.splice(index, 1)[0];
+		  this.onlinePlayers.splice(index, 1);
 		}
 		// Retirer le client de la file d'attente s'il y est
-		index = this.waitingPlayers.indexOf(client);
+		index = this.waitingPlayers.findIndex((player) => player.id === client.id);
 		if (index !== -1) {
 			this.waitingPlayers.splice(index, 1);
 			// console.log(`Player ${client.id} removed from the waiting queue.`);
@@ -49,10 +49,30 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		else {
 			// Parcourir toutes les salles pour vérifier si le client était présent
 			this.pongRooms.forEach((room) => {
-			if (room.players.has(client.id)) {
+			if (room.getPlayerById(client.id)) {
 				this.leavePongRoom(client, room.id);
 			}
 		});
+		}
+	}
+
+	private leavePongRoom(client: Socket, roomId: string): void {
+		const room = this.pongRooms.get(roomId);
+		let user: Player;
+
+		if (room) {
+			//Retirer le client de la salle
+			user = room.getPlayerById(client.id);
+
+			if (room.gameState == GameState.Playing)
+			{
+				if (room.player1.id == user.id)
+					this.server.to(room.player2.id).emit('OpponentDisconnected', {});
+				else if (room.player2.id == user.id)
+					this.server.to(room.player1.id).emit('OpponentDisconnected', {});
+			}
+			this.pongRooms.delete(roomId);
+			console.log(`Room ${roomId} has been deleted.`);
 		}
 	}
 
@@ -62,47 +82,15 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		return `${timestamp}_${randomId}`;
 	}
 
-	private createPongRoom(player1: Socket, player2: Socket): string {
+	private createPongRoom(player1: Player, player2: Player): string {
 		const roomId = this.generateRoomId();
-		const room = new Room(roomId);
+		let room: Room;
 
-		let player = this.onlinePlayers.find((player) => player.id === player1.id);
-
-		if (player)
-		{
-			room.addPlayer(player);
-			room.setLeftPaddle(player.id);
-		}
-
-		player = this.onlinePlayers.find((player) => player.id === player2.id);
-		if (player)
-		{
-			room.addPlayer(player);
-			room.setRightPaddle(player.id);
-		}
+		room = new Room(roomId, player1, player2);
 
 		this.pongRooms.set(roomId, room);
-		// console.log(`Room ${roomId} has been created.`);
+		console.log(`Pong room '${roomId}' created with ${player1.username} & ${player2.username} `);
 		return roomId;
-	}
-
-	private leavePongRoom(client: Socket, roomId: string): void {
-		const room = this.pongRooms.get(roomId);
-
-		if (room) {
-			//Retirer le client de la salle
-			room.players.delete(client.id);
-
-			if (room.gameState == GameState.Playing)
-			{
-				room.players.forEach((player) => {
-					this.server.to(player.id).emit('OpponentDisconnected', {});
-				});
-			}
-
-			this.pongRooms.delete(roomId);
-			// console.log(`Room ${roomId} has been deleted.`);
-		}
 	}
 
 	@SubscribeMessage('launchMatchmaking')
@@ -110,31 +98,25 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		@ConnectedSocket() client: Socket
 		) {
 		try {
-			if (!this.waitingPlayers.includes(client)) {
-				// Ajouter le joueur à la file d'attente
-				this.waitingPlayers.push(client);
+			let player = this.waitingPlayers.find((player) => player.id === client.id);
 
+			if (!player) {
+				// Ajouter le joueur à la file d'attente
+				player = this.onlinePlayers.find((player) => player.id === client.id);
+
+				if (player)
+					this.waitingPlayers.push(player);
 				// Vérifier si suffisamment de joueurs sont en attente pour former un match
 				if (this.waitingPlayers.length >= 2) {
 					// Retirer les deux premiers joueurs de la file d'attente
 					const player1 = this.waitingPlayers.shift();
 					const player2 = this.waitingPlayers.shift();
-					let player1Username: string;
-					let player2Username: string;
 
 					// Créer une nouvelle salle pour les deux joueurs
 					const newRoomId = this.createPongRoom(player1, player2);
 
-					const room = this.pongRooms.get(newRoomId);
-
-					room.players.forEach((player) => {
-						if (player.id === player1.id)
-							player1Username = player.username;
-						else if (player.id === player2.id)
-							player2Username = player.username;
-					});
-					player1.emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player2Username });
-					player2.emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player1Username });
+					this.server.to(player1.id).emit('matchmakingSuccess', { roomId: newRoomId });
+					this.server.to(player2.id).emit('matchmakingSuccess', { roomId: newRoomId });
 				}
 			}
 		}
@@ -150,11 +132,15 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	async handleRemoveFromQueue(@ConnectedSocket() client: Socket) {
 		try {
 			// Vérifiez d'abord si le joueur est dans la file d'attente
-			const index = this.waitingPlayers.indexOf(client);
-			if (index !== -1) {
-				// Retirez le joueur de la file d'attente
-				this.waitingPlayers.splice(index, 1);
-				// console.log(`Player ${client.id} removed from the waiting queue.`);
+			const player = this.waitingPlayers.find((player) => player.id === client.id);
+
+			if (player)
+			{
+				const index = this.waitingPlayers.indexOf(player);
+				if (index !== -1) {
+					// Retirez le joueur de la file d'attente
+					this.waitingPlayers.splice(index, 1);
+				}
 			}
 		}
 		catch (error) {
@@ -165,30 +151,10 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 	}
 
-	private generateRandomGameSettings(settings: GameSettingsData[]): GameSettingsData {
-		// Sélectionnez aléatoirement un index entre 0 et 1 (pour choisir entre les deux objets)
-		const randomBallSpeed = Math.floor(Math.random() * 2); // 0 ou 1
-		const randomColor = Math.floor(Math.random() * 2); // 0 ou 1
-		const randomRadius = Math.floor(Math.random() * 2); // 0 ou 1
-
-		// Obtenez les deux objets GameSettingsData du tableau
-		const setting1 = settings[0];
-		const setting2 = settings[1];
-
-		// Créez un nouvel objet GameSettingsData en utilisant des valeurs aléatoires des deux objets
-		const randomSettings = new GameSettingsData(
-		  randomBallSpeed === 0 ? setting1.ballSpeed : setting2.ballSpeed,
-		  randomRadius === 0 ? setting1.radius : setting2.radius,
-		  randomColor === 0 ? setting1.color : setting2.color
-		);
-
-		return randomSettings;
-	}
-
 	@SubscribeMessage('chooseGameSettings')
 	async handleChooseGameSettings(
 		@ConnectedSocket() client: Socket,
-		@MessageBody('data')  data: {roomId: string, gameSettingsData: GameSettingsData},
+		@MessageBody('data')  data: {roomId: string, ballSpeed: number, radius: number, userPaddleColor: string},
 		)
 		{
 		try
@@ -196,16 +162,41 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			// Ajoutez les données des paramètres de jeu à la salle du joueur
 			const room = this.pongRooms.get(data.roomId);
 			if (room) {
-				room.addGameSettings(data.gameSettingsData);
+				const gameSettings = new GameSettingsData(client.id, data.ballSpeed, data.radius, data.userPaddleColor, "");
+
+				console.log(gameSettings.ballSpeed);
+				if (room.player1.id == client.id)
+					room.player1.setGameSettings(gameSettings);
+				else if (room.player2.id == client.id)
+					room.player2.setGameSettings(gameSettings);
+
 				// Vérifiez si les deux joueurs ont envoyé leurs paramètres
-				if (room.gameSettings.length === 2) {
+				if (room.player1.gameSettings.ballSpeed && room.player2.gameSettings.ballSpeed) {
+					let player1Color: string;
+					let player2Color: string;
+
 					// Générez des valeurs aléatoires à partir des paramètres reçus
-					const randomSettings = this.generateRandomGameSettings(room.gameSettings);
+					let randomBallSpeed = Math.floor(Math.random() * 2); // 0 ou 1
+					let randomBallSize = Math.floor(Math.random() * 2); // 0 ou 1
+
+					randomBallSpeed === 0 ? room.player1.gameSettings.ballSpeed : room.player2.gameSettings.ballSpeed;
+					randomBallSize === 0 ? room.player1.gameSettings.radius : room.player2.gameSettings.radius;
+
+					if (room.player1.id == client.id)
+					{
+						player1Color = room.player1.gameSettings.userPaddlecolor;
+						player2Color = room.player2.gameSettings.userPaddlecolor;
+					}
+					else if (room.player2.id == client.id)
+					{
+						player1Color = room.player2.gameSettings.userPaddlecolor;
+						player2Color = room.player1.gameSettings.userPaddlecolor;
+					}
+					room.ball.setRadius(randomBallSize);
+					room.ball.setSpeed(randomBallSpeed, randomBallSpeed);
 					// Envoyez les paramètres générés à tous les joueurs de la salle
-					room.players.forEach((player) => {
-							this.server.to(player.id).emit('settingsSuccess', randomSettings);
-						}
-					);
+					this.server.to(room.player1.id).emit('settingsSuccess', {userPaddleColor: player1Color, opponentPaddleColor: player2Color});
+					this.server.to(room.player2.id).emit('settingsSuccess', {userPaddleColor: player2Color, opponentPaddleColor: player1Color});
 				}
 			}
 		}
@@ -226,11 +217,10 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			const direction = data.direction;
 			const room = this.pongRooms.get(data.roomId);
 			if (room) {
-				room.players.forEach((player) => {
-					if (player.id != client.id) {
-						this.server.to(player.id).emit('opponentMovePaddle', {direction: direction});
-					}
-				});
+				if (room.player1.id == client.id)
+					this.server.to(room.player2.id).emit('opponentMovePaddle', {direction: direction});
+				else if (room.player2.id == client.id)
+					this.server.to(room.player1.id).emit('opponentMovePaddle', {direction: direction});
 			}
 		}
 
@@ -244,9 +234,9 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 			if (room)
 			{
-				if (room.leftPaddle == client.id)
+				if (room.leftPaddle.player.id == client.id)
 					client.emit('sendPaddle', {paddle: "left"})
-				else if (room.rightPaddle == client.id)
+				else if (room.rightPaddle.player.id  == client.id)
 					client.emit('sendPaddle', {paddle: "right"})
 			}
 		}
@@ -258,22 +248,21 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			if (room)
 			{
 				let isMatchEnded = true;
-				room.players.forEach((player) => {
-					if (player.id == client.id)
-						player.setScore(data.score);
-				});
+				if (room.player1.id == client.id) {
+					room.player1.setScore(data.score);
+				}
+				else if (room.player2.id == client.id) {
+					room.player2.setScore(data.score);
+				}
 
-				room.players.forEach((player) => {
-					if (player.score == -1)
-						isMatchEnded = false;
-				});
+				if (room.player1.score == -1 || room.player2.score == -1)
+					isMatchEnded = false;
 
 				if (isMatchEnded)
 				{
 					room.setGameState(GameState.Ended);
-					room.players.forEach((player) => {
-						this.server.to(player.id).emit('matchEnded', {});
-					});
+					this.server.to(room.player1.id).emit('matchEnded', {});
+					this.server.to(room.player2.id).emit('matchEnded', {});
 				}
 			}
 		}

@@ -20,6 +20,8 @@ const GamePage: React.FC = () => {
 	const [ballSpeed, setBallSpeed] = useState<number | null>(null);
 	const [color, setColor] = useState<string | null>(null);
 	const [opponentUsername, setOpponentUsername] = useState<string | null>(null);
+	const [userPaddleColor, setUserPaddleColor] = useState<string | null>(null);
+	const [opponentPaddleColor, setOpponentPaddleColor] = useState<string | null>(null);
 
 	const handleCloseModal = () => {
 		setModalView(false);
@@ -35,12 +37,10 @@ const GamePage: React.FC = () => {
 
 	useEffect(() => {
 
-		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
-			console.log(data.opponentUsername);
+		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string }) => {
 			setModalView(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
-			setOpponentUsername(data.opponentUsername);
 		});
 
 		webSocketRef.current?.on('OpponentDisconnected', () =>
@@ -51,9 +51,12 @@ const GamePage: React.FC = () => {
 			toast.error("Opponent disconnected.");
 		});
 
-		webSocketRef.current?.on('settingsSuccess', (data) => {
-			const settings = new GameSettingsData(data.ballSpeed, data.radius, data.color);
-			setGameSettingsData(settings);
+		webSocketRef.current?.on('settingsSuccess', (data: {userPaddleColor:string, opponentPaddleColor: string}) => {
+			setUserPaddleColor(data.userPaddleColor);
+			setOpponentPaddleColor(data.opponentPaddleColor);
+
+			console.log(`${Cookies.get('username')} paddle color : ${data.userPaddleColor}`);
+			console.log(`${}`)
 			setShowGameSettings(false);
 			setLaunchGame(true);
 		});
@@ -67,7 +70,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
 			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && gameSettingsData && webSocketRef.current && roomId && !matchEnded && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData} opponent={opponentUsername}/> )}
+			{launchGame && gameSettingsData && webSocketRef.current && roomId && !matchEnded && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData}/> )}
 		</div>
 	);
 };
