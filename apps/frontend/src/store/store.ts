@@ -6,6 +6,7 @@ import friendReducer from "./user/friendsSlice";
 import allUserReducer from "./user/allUsersSlice";
 import blockedReducer from "./blocked/blockedSlice"
 import bannedReducer from "./channel/banSlice"
+import adminReducer from "./channel/adminSlice"
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     allUser: allUserReducer,
     blocked: blockedReducer,
     banned: bannedReducer,
+    admin: adminReducer
   },
 });
 

@@ -174,11 +174,15 @@ export class ChannelService {
         },
         })
         const admin = await this.userService.findOneById(channelRelation.idUser);
-        if (!admin) return (false);
+        if (!admin) return (admin);
         channel.adminUsers.push(admin);
-
+        const payload = {
+          channel: channel,
+          user: admin
+        }
         await this.channelRepository.save(channel);
-        return (true);
+        this.eventEmmiter.emit("addAdmin", payload);
+        return (admin);
     }
 
     async addBannedUserToChannel(channelRelation: ChannelUserDto) {
@@ -209,8 +213,15 @@ export class ChannelService {
         request.adminUsers = request.adminUsers.filter((user) => {
           return (user.id !== channelRelation.idUser)
         })
-        const isOk = await this.channelRepository.save(request);
-        return (isOk);
+        const admin = await this.userService.findOneById(channelRelation.idUser);
+        if (!admin) return (admin);
+        await this.channelRepository.save(request);
+        const payload = {
+          channel: request,
+          user: admin,
+        }
+        this.eventEmmiter.emit("removeAdmin", payload);
+        return (admin);
       }
     
       async getAllAdminsOfChannel(channelId: ChannelIdDto) {

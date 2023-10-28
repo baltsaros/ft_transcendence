@@ -11,7 +11,7 @@ import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
 
 
-function AdminMenu(user: IResponseUser) {
+function PlayerMenu(user: IResponseUser) {
 
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
@@ -43,11 +43,6 @@ function AdminMenu(user: IResponseUser) {
       PlayerService.unblockUser(payload);
     }
 
-    useEffect(() => {
-
-        
-           
-    }, [blocked]);
 
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
@@ -122,4 +117,4 @@ function AdminMenu(user: IResponseUser) {
     </div>
   )
 }
-export default AdminMenu;
+export default PlayerMenu;

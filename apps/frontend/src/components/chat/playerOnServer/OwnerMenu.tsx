@@ -13,12 +13,13 @@ import { IChannelDmData } from "../../../types/types";
 import { ChannelService } from "../../../services/channels.service";
 
 
-function AdminMenu(props: any) {
+function OwnerMenu(props: any) {
     const {user, selectedChannel} = props;
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
     const blocked = useSelector((state: RootState) => state.blocked.blocked);
     const userLogged = useSelector((state: RootState) => state.user.user);
+    const admins = useSelector((state: RootState) => state.admin.users);
     const webSocketService = useChatWebSocket();
 
     const isFriend = (username: string) => {
@@ -27,6 +28,10 @@ function AdminMenu(props: any) {
 
     const isBlocked = (username: string) => {
       return (blocked.some(item => item.username === username));
+    }
+
+    const isAdmin = () => {
+      return (admins.some(item => item.id === user.id));
     }
 
     const isOwner = () => {
@@ -117,6 +122,22 @@ function AdminMenu(props: any) {
             toast.error("Invitation not sent !");
         } catch (err: any) {}
   }
+
+  const handleAddUserAsAdmin = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    ChannelService.addUserAsAdmin(payload);
+  }
+
+  const handleRemoveUserAsAdmin = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    ChannelService.removeUserAsAdmin(payload);
+  }
   
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
@@ -157,18 +178,23 @@ function AdminMenu(props: any) {
             <MenuItem>Invite to game</MenuItem>}
           
           {/* Kick method */}
-          {isOwner() && <MenuItem disabled >Kick user</MenuItem>}
-          {!isOwner() && <MenuItem onClick={handleKickChannel}>Kick user</MenuItem>}
+          {(isOwner() || isAdmin()) && <MenuItem disabled >Kick user</MenuItem>}
+          {(!isOwner() && !isAdmin()) && <MenuItem onClick={handleKickChannel}>Kick user</MenuItem>}
 
           {/* Ban method */}
-          {isOwner() && <MenuItem disabled >Ban user</MenuItem>}
-          {!isOwner() && <MenuItem onClick={handleBanUser}>Ban user</MenuItem>}
-            <MenuItem>Mute user</MenuItem>
-            <MenuItem>Set as admin</MenuItem>
+          {(isOwner() || isAdmin()) && <MenuItem disabled >Ban user</MenuItem>}
+          {(!isOwner() && !isAdmin()) && <MenuItem onClick={handleBanUser}>Ban user</MenuItem>}
+
+          {(isOwner() || isAdmin()) && <MenuItem disabled >Mute user</MenuItem>}
+          {(!isOwner() && !isAdmin()) && <MenuItem>Mute user</MenuItem>}
+          
+          {(isOwner() || isAdmin()) && <MenuItem disabled >Set as admin</MenuItem>}
+          {(!isOwner() && !isAdmin()) && <MenuItem onClick={handleAddUserAsAdmin}>Set as admin</MenuItem>}
+        
         </div>
       </Menu>
     </div>
     </div>
   )
 }
-export default AdminMenu;
+export default OwnerMenu;

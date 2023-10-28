@@ -108,11 +108,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     socket.emit('userBlocked', reduxPayload);
   }
 
-   @OnEvent('banUser')
-   async handleBanUser(payload: ChannelUserObjectDto) {
+  @OnEvent('banUser')
+  async handleBanUser(payload: ChannelUserObjectDto) {
     const socket = this.gatewaySessionManager.getSocket(payload.user.username);
     socket.emit("userBanned", payload);
-   }
+  }
+
+  @OnEvent('addAdmin')
+  async handleAddAdmin(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('adminAdded', payload);
+  }
+
+  @OnEvent('removeAdmin')
+  async handleRemoveAdmin(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('adminRemoved', payload);
+  }
 
 
   @OnEvent('unblockUser')

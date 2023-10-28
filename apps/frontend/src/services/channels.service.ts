@@ -29,12 +29,12 @@ export const ChannelService = {
     },
 
     async addUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/addUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/addUserAsAdmin/", channelRelation);
         return (data);
     },
 
     async removeUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/removeUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/removeUserAsAdmin/", channelRelation);
         return (data);
     },
 
