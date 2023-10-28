@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
@@ -129,6 +129,14 @@ export class ChannelService {
         relations: ["messages", "messages.user"],
       })
       return channelMessage;
+    }
+
+    async getHashedPass(channelId: string) {
+      const channel = await this.channelRepository.findOne({
+        where: {id: parseInt(channelId)},
+      })
+      if (!channel) throw new NotImplementedException("Could not find the channel by its id");
+      return {hashed: channel.password};
     }
   
     async kickMemberOfChannel(relation: ChannelUserDto)

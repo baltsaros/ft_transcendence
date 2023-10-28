@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Query, UseGuards, Patch} from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, UseGuards, Patch, Req, Param} from '@nestjs/common';
 import { ChannelService } from './channel.service';
 import { IChannelDmData, IChannelsData } from 'src/types/types';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -31,6 +31,12 @@ export class ChannelController {
     @UseGuards(JwtAuthGuard)
     async getChannel() {
         return await (this.ChannelService.findAll());
+    }
+
+    @Get("getPass/:channelId")
+    @UseGuards(JwtAuthGuard)
+    async getHashedPass(@Param("channelId") channelId: string, @Req() req) {
+        return await this.ChannelService.getHashedPass(channelId);
     }
 
     @Get(":id")

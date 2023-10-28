@@ -6,6 +6,9 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
 import { updateChannelPassword, addNewUser } from "../../../store/channel/channelSlice";
 import { IChannel, IChannelPassword, IResponseUser } from "../../../types/types";
+import bcrypt from "bcryptjs";
+import { ChannelService } from "../../../services/channels.service";
+import { toast } from "react-toastify";
 
 export default function SearchBar() {
     
@@ -38,17 +41,22 @@ export default function SearchBar() {
     
     /* BEHAVIOUR */
 
-    const handleChannelPassword = (channel: IChannel) => {
+    const handleChannelPassword = async (channel: IChannel) => {
         console.log('channel', channel);
         console.log('password', passwordInput);
         try {
-            const payload = {
-                channelId: channel.id,
-                username: userLogged.username,
-                password: passwordInput,
-            }
-            webSocketService.emit('onChannelJoin', payload);
+            const data = await ChannelService.getHashedPassword(channel.id);
+            const isMatch = bcrypt.compareSync(passwordInput, data.hashed);
             setPasswordInput('');
+            if (!isMatch) toast.error("Incorrect password! Try again.");
+            else {
+                toast.success("Access granted!");
+                const payload = {
+                    channelId: channel.id,
+                    username: userLogged.username,
+                }
+                webSocketService.emit('onChannelJoin', payload);
+            }
         } catch(err: any) {
             console.log('join channel failed');
         }

@@ -233,24 +233,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
           users: true,
         },
       })
-      if (channel.mode === 'Private') {
-        console.log('client pswd:', payload.password);
-        const channel = await this.channelRepository.findOne({
-          where: {
-            id: payload.channelId,
-          },
-          relations: {
-            users: true,
-          },
-        })
-        console.log('payload pswd', payload.password);
-        console.log('channle pswd', channel.password);
-        if (payload.password != channel.password) {
-          console.log('error event emitted');
-          client.emit('userJoinedError', 'Wrong password');
-          return;
-        }
-      }
+      // if (channel.mode === 'Private') {
+      //   console.log('client pswd:', payload.password);
+      //   const channel = await this.channelRepository.findOne({
+      //     where: {
+      //       id: payload.channelId,
+      //     },
+      //     relations: {
+      //       users: true,
+      //     },
+      //   })
+      //   console.log('payload pswd', payload.password);
+      //   console.log('channle pswd', channel.password);
+      //   if (payload.password != channel.password) {
+      //     console.log('error event emitted');
+      //     client.emit('userJoinedError', 'Wrong password');
+      //     return;
+      //   }
+      // }
       const user = await this.userService.findOne(payload.username); 
       channel.users.push(user);
       await this.channelRepository.save(channel);
