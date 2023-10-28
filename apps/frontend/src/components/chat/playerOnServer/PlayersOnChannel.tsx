@@ -5,10 +5,8 @@ import { RootState, store } from '../../../store/store';
 import { useChatWebSocket } from '../../../context/chat.websocket.context';
 import { fetchChannel } from '../../../store/channel/channelSlice';
 import PlayerMenu from './PlayerMenu';
-import AdminMenu from './OwnerMenu';
 import { addBanned } from '../../../store/channel/banSlice';
-import { addAdmin, removeAdmin } from '../../../store/channel/adminSlice';
-import OwnerMenu from './OwnerMenu';
+import { addAdmin, fetchAdmin, removeAdmin } from '../../../store/channel/adminSlice';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -22,15 +20,6 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
     const isOnline = (value: IResponseUser) => value.status === 'online';
     const isOffline = (value: IResponseUser) => value.status === 'offline';
     const userConnected = useSelector((state: RootState) => state.user.user);
-    const bannedUsers = useSelector((state: RootState) => state.banned.banned);
-    const adminUsers = useSelector((state: RootState) => state.admin.users);
-    const isAdmin = () => {
-        return (adminUsers.some(item => item.id === userConnected!.id));
-      }
-
-      const isOwner = () => {
-        return (selectedChannel?.owner.id === userConnected!.id);
-      }
 
     const channels = useSelector((state: RootState) => state.channel.channel);
     
@@ -58,10 +47,10 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             });
             webSocketService.on("adminAdded", (payload: any) => {
                 store.dispatch(addAdmin(payload.user));
-            })
+            });
             webSocketService.on("adminRemoved", (payload: any) => {
                 store.dispatch(removeAdmin(payload.user));
-            })
+            });
             
             return () => {
                 webSocketService.off('userLeft');
@@ -88,8 +77,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                             {usersOfChannel?.map((user) => (
                                 user.id !== userConnected!.id && isOnline(user) &&  
                                 <li key={user.id}>
-                                    {selectedChannel && (isAdmin() || isOwner()) && <OwnerMenu {...{user, selectedChannel}}></OwnerMenu>}
-                                    {selectedChannel && (!isAdmin() && !isOwner()) && <PlayerMenu {...user}></PlayerMenu>}
+                                    {selectedChannel && <PlayerMenu {...{user, selectedChannel}}></PlayerMenu>}
                                 </li>
                             ))}
                         </ul>
@@ -100,7 +88,9 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <ul className='text-black'>
                             {usersOfChannel?.map((user) => (
                                 user.id !== userConnected!.id && isOffline(user) &&  
-                                <li key={user.id}><AdminMenu {...{user, selectedChannel}}></AdminMenu></li>
+                             <li key={user.id}>
+                                {selectedChannel && <PlayerMenu {...{user, selectedChannel}}></PlayerMenu>}
+                            </li>
                             ))}
                         </ul>
                     </div>
