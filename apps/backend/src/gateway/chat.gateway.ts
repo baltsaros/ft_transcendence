@@ -11,6 +11,7 @@ import { User } from 'src/user/entities/user.entity';
 import { IResponseUser, IUserSocket } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
 import { BadRequestException } from '@nestjs/common';
+import { ChannelPasswordDto } from 'src/channel/dto/channelPassword.dto';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -80,12 +81,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log('channel id gateway:', payload.channel.id);
     const socket = this.gatewaySessionManager.getSocket(payload.user.username);
     this.server.to(`channel-${payload.channel.id}`).emit('onMessage', payload);
-    // this.server.emit('onMessage', {
-    //   content: payload.content,
-    //   user: payload.user,
-    //   id: payload.id,
-    //   channel: payload.channel
-    // });
+  }
+
+  @OnEvent('onSetChannelPassword')
+  handleSetChannelPassword(payload: ChannelPasswordDto) {
+    console.log('gateway payload', payload);
+    // 1. Redux: channel id + password
+    // 2. emit event to all clients
+    console.log('event emitted');
+    this.server.emit('setChannelPassword', payload);
   }
 
   @OnEvent('blockUser')

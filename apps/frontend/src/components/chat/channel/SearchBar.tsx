@@ -4,8 +4,8 @@ import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
-import { addNewUser } from "../../../store/channel/channelSlice";
-import { IChannel, IResponseUser } from "../../../types/types";
+import { updateChannelPassword, addNewUser } from "../../../store/channel/channelSlice";
+import { IChannel, IChannelPassword, IResponseUser } from "../../../types/types";
 
 export default function SearchBar() {
     
@@ -55,6 +55,7 @@ export default function SearchBar() {
     };
 
     const handleJoinChannel = async (channel: IChannel) => {
+        console.log('channel', channel);
         try{
             const payload = {
             channelId: channel.id,
@@ -84,6 +85,16 @@ export default function SearchBar() {
         })
         return () => {
             webSocketService.off('userJoinedError');
+        };
+    }, []);
+
+    useEffect(() => {
+        webSocketService.on('setChannelPassword', (payload: IChannelPassword) => {
+            console.log('ws event received');
+            store.dispatch(updateChannelPassword(payload));
+        })
+        return () => {
+            webSocketService.off('setChannelPassword');
         };
     }, []);
 

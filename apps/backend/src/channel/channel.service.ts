@@ -153,15 +153,23 @@ export class ChannelService {
 
     async setPasswordToChannel(channelPassword: ChannelPasswordDto)
     {
+      console.log('setPasswordToChannel (back)');
         const channel = await this.findOne(channelPassword.idChannel);
         if (!channel) return (false);
        await this.channelRepository.update({
             id: channelPassword.idChannel},
             {
-                password: channelPassword.password
+                password: channelPassword.password,
+                mode: 'Private'
         });
         const newChannel = await this.findOne(channelPassword.idChannel);
         if (channel.password === newChannel.password) return (false);
+        const payload = {
+          channelId: channelPassword.idChannel,
+          password: channelPassword.password,
+          mode: newChannel.mode,
+        }
+        this.eventEmmiter.emit('onSetChannelPassword', payload);
         return (true);
     }
 
