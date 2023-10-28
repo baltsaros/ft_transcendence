@@ -11,7 +11,7 @@ export class Player {
 	constructor(id: string, username: string) {
 	  this.id = id;
 	  this.username = username;
-	  this.score = -1;
+	  this.score = 0;
 	  this.gameSettings = new GameSettingsData(id, 0, 0, "", "");
 	}
 
@@ -19,8 +19,8 @@ export class Player {
 
 	setGameSettings(settings: GameSettingsData) { this.gameSettings = settings; }
 
-	setScore(score: number) {
-		this.score = score;
+	scoreGoal() {
+		this.score++;
 	}
 
 	setUsername(username: string) {

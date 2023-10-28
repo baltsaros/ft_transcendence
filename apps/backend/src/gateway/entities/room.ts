@@ -15,18 +15,30 @@ export class Room {
 	fieldWidth: number;
 	fieldHeight: number;
 	ball: Ball;
+	ballSpeed: number;
+	scoreMax: number;
+	counter: number;
 
 	constructor(id: string, player1: Player, player2: Player) {
 		this.player1 = new Player(player1.id, player1.username);
 		this.player2 = new Player(player2.id, player2.username);
 		this.fieldHeight = 600;
 		this.fieldWidth = 800;
-		this.leftPaddle = new Paddle(player1, 5, 100, 10);
-		this.rightPaddle = new Paddle(player2, this.fieldWidth - 10 - 5, 100, 10);
+		this.leftPaddle = new Paddle(player1, 5, this.fieldHeight / 2, 100, 10);
+		this.rightPaddle = new Paddle(player2, this.fieldWidth - 10 - 5, this.fieldHeight / 2, 100, 10);
 		this.id = id;
-		this.gameState = GameState.Playing;
+		this.gameState = GameState.Starting;
 		this.ball = new Ball();
+		this.ballSpeed = 0;
+		this.scoreMax = 5;
+		this.counter = 0;
 	}
+
+	incrementCounter() { this.counter++; }
+
+	resetCounter() { this.counter = 0; }
+
+	setBallSpeed(speed: number) { this.ballSpeed = speed; }
 
 	setGameState(newState: GameState) {
 		this.gameState = newState;
@@ -55,8 +67,10 @@ export class Room {
 
 export enum GameState {
 	Playing = 'playing',
-	Ended = 'ended'
+	Ended = 'ended',
+	Starting = 'starting'
 	// Autres états du jeu Pong
 }
 
 export { GameSettingsData };
+

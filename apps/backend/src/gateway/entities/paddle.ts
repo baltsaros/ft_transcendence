@@ -9,8 +9,8 @@ export class Paddle {
 	player: Player;
 	color: string;
 
-	constructor(player: Player, y: number, height: number, width: number) {
-	  this.x = 0;
+	constructor(player: Player, x: number, y: number, height: number, width: number) {
+	  this.x = x;
 	  this.y = y;
 	  this.speed = 0;
 	  this.height = height;
@@ -21,8 +21,7 @@ export class Paddle {
 
 	setColor(color: string) { this.color = color; }
 
-	setPosition(x: number, y: number) {
-		this.x = x;
+	setPosition(y: number) {
 		this.y = y;
 	}
 

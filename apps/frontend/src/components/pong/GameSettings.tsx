@@ -43,10 +43,6 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
   const sendGameSettings = () => {
 	if (roomId) {
-		console.log(ballSpeed);
-		console.log(radius);
-		console.log(paddleColor);
-		console.log(opponentColor);
 		webSocket.emit("chooseGameSettings", {data: {roomId: roomId, ballSpeed: ballSpeed, radius: radius, userPaddleColor: paddleColor}});
 		setWaitingOpponent(true);
 	}
