@@ -150,32 +150,61 @@ export class ChannelService {
 
     async setPasswordToChannel(channelPassword: ChannelPasswordDto)
     {
+      console.log('setPasswordToChannel (back)');
         const channel = await this.findOne(channelPassword.idChannel);
         if (!channel) return (false);
        await this.channelRepository.update({
             id: channelPassword.idChannel},
             {
-                password: channelPassword.password
+                password: channelPassword.password,
+                mode: 'Private'
         });
         const newChannel = await this.findOne(channelPassword.idChannel);
         if (channel.password === newChannel.password) return (false);
+        const payload = {
+          channelId: channelPassword.idChannel,
+          password: channelPassword.password,
+          mode: newChannel.mode,
+        }
+        this.eventEmmiter.emit('onSetChannelPassword', payload);
         return (true);
     }
 
     async addUserAsAdmin(channelRelation: ChannelUserDto)
     {
         const channel = await this.channelRepository.findOne({
-        where: { id: channelRelation.idUser, },
+        where: { id: channelRelation.idChannel },
         relations: {
             adminUsers: true,
         },
         })
         const admin = await this.userService.findOneById(channelRelation.idUser);
-        if (!admin) return (false);
+        if (!admin) return (admin);
         channel.adminUsers.push(admin);
-
+        const payload = {
+          channel: channel,
+          user: admin
+        }
         await this.channelRepository.save(channel);
-        return (true);
+        this.eventEmmiter.emit("addAdmin", payload);
+        return (admin);
+    }
+
+    async addBannedUserToChannel(channelRelation: ChannelUserDto) {
+      const channel = await this.channelRepository.findOne({
+        where: {id: channelRelation.idChannel},
+        relations: { bannedUsers: true}
+      });
+      const bannedUser = await this.userService.findOneById(channelRelation.idUser);
+      if (!bannedUser) return (bannedUser);
+      channel.bannedUsers.push(bannedUser);
+      await this.channelRepository.save(channel);
+      const payload = {
+        channel: channel,
+        user: bannedUser
+      }
+      this.eventEmmiter.emit("banUser", payload);
+      return (bannedUser);
     }
 
     async removeUserAsAdmin(channelRelation: ChannelUserDto) {
@@ -183,14 +212,21 @@ export class ChannelService {
           relations: {
             adminUsers: true,
           },
-          where: { id: channelRelation.idUser}
+          where: { id: channelRelation.idChannel}
         });
     
         request.adminUsers = request.adminUsers.filter((user) => {
           return (user.id !== channelRelation.idUser)
         })
-        const isOk = await this.channelRepository.save(request);
-        return (isOk);
+        const admin = await this.userService.findOneById(channelRelation.idUser);
+        if (!admin) return (admin);
+        await this.channelRepository.save(request);
+        const payload = {
+          channel: request,
+          user: admin,
+        }
+        this.eventEmmiter.emit("removeAdmin", payload);
+        return (admin);
       }
     
       async getAllAdminsOfChannel(channelId: ChannelIdDto) {
@@ -208,6 +244,14 @@ export class ChannelService {
         const channel = await this.findOne(relation.idChannel);
         if (channel.password === relation.password) return (true);
         return (false);
+      }
+
+      async getAllBannedUsersOfChannel(channelId: ChannelIdDto) {
+        const request = await this.channelRepository.findOne({
+          where: {id: channelId.idChannel},
+          relations: {bannedUsers: true}
+        });
+        return (request.bannedUsers);
       }
 
 }

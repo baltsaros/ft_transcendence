@@ -68,6 +68,21 @@ const channelSlice = createSlice({
     addChannel: (state, action) => {
       state.channel.push(action.payload);
     },
+    updateChannelPassword: (state, action) => {
+      console.log('redux payload', action.payload);
+      const { channelId, password, mode } = action.payload;
+      state.channel = state.channel.map((channel) => {
+        if (channel.id === channelId) {
+          console.log('match on channel');
+          return {
+            ...channel,
+            mode: mode,
+            password: password,
+          }
+        }
+        return channel;
+      })
+    },
     updateStatutChannel: (state, action:PayloadAction<IResponseUser>) => {
       const userToModify = action.payload;
             state.channel = state.channel.map((elem) => {
@@ -112,6 +127,6 @@ const channelSlice = createSlice({
 
 /* The code doesn't explicitly define actions, it indirectly creates an action named setChannels
 ** This line exports the setChannels action, allowing you to dispatch it to update the state managed by the "channel" slice. */
-export const { addNewUser, removeUser, removeOwner, addChannel, updateStatutChannel, addMessage } = channelSlice.actions;
+export const { addNewUser, removeUser, removeOwner, addChannel, updateStatutChannel, addMessage, updateChannelPassword } = channelSlice.actions;
 export {fetchChannel};
 export default channelSlice.reducer;

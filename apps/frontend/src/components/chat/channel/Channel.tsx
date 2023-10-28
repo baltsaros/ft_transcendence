@@ -12,13 +12,11 @@ import { instance } from "../../../api/axios.api";
 import { toast } from "react-toastify"
 import Scrollbar from "react-scrollbars-custom";
 
-
 interface ChildProps {
     onSelectChannel: (channel: IChannel) => void;
 }
 
 const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
-    /* Use useSelector() hook to access the channel state in the Redux store */
     const webSocketService = useChatWebSocket();
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user);
@@ -74,12 +72,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                                         onClick={() => onSelectChannel(channel)} 
                                         className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
                                         </button>
-                                        <ChannelMenu channelId={channel.id}/>
-                                        {/* <button 
-                                        className="bg-red-300 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded"
-                                        onClick={() => handleLeaveChannel(channel.id)}
-                                        >leave
-                                        </button> */}
+                                        <ChannelMenu channel={channel}/>
                                         </div>
                                         </div>
                                         ))}
