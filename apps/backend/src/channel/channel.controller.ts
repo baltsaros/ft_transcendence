@@ -88,4 +88,16 @@ export class ChannelController {
         return (this.ChannelService.findOne(channelId.idChannel));
     }
 
+    @Post('getAllBannedUsers')
+    @UseGuards(JwtAuthGuard)
+    async getAllBannedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+        return (this.ChannelService.getAllBannedUsersOfChannel(channelId));
+    }
+
+    @Post('addBannedUserToChannel')
+    @UseGuards(JwtAuthGuard)
+    async addBannedUserToChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.addBannedUserToChannel(relation));
+    }
+
 }

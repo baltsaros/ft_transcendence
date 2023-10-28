@@ -10,6 +10,7 @@ import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { IChannelDmData } from "../../../types/types";
+import { ChannelService } from "../../../services/channels.service";
 
 
 function AdminMenu(props: any) {
@@ -28,7 +29,7 @@ function AdminMenu(props: any) {
       return (blocked.some(item => item.username === username));
     }
 
-    const isOwner = (id: number) => {
+    const isOwner = () => {
       return (selectedChannel?.owner.id === user.id);
     }
 
@@ -38,8 +39,8 @@ function AdminMenu(props: any) {
         receiverId: user.id,
       }
       PlayerService.blockUser(payload);
-    
     }
+
     const handleUnblockUser = async () => {
       const payload = {
         senderId: userLogged!.id,
@@ -61,6 +62,15 @@ function AdminMenu(props: any) {
           const err = error.response?.data.message;
           toast.error(err.toString());
       }
+  }
+
+  const handleBanUser = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    ChannelService.addUserBannedToChannel(payload);
+    handleKickChannel();
   }
 
   const handleDirectMessage = async () => {
@@ -145,10 +155,14 @@ function AdminMenu(props: any) {
             <MenuItem disabled>Invite to game</MenuItem>}
           {user.status === "online" && 
             <MenuItem>Invite to game</MenuItem>}
+          
+          {/* Kick method */}
+          {isOwner() && <MenuItem disabled >Kick user</MenuItem>}
+          {!isOwner() && <MenuItem onClick={handleKickChannel}>Kick user</MenuItem>}
 
-          {isOwner(user.id) && <MenuItem disabled onClick={handleKickChannel}>Kick user</MenuItem>}
-          {!isOwner(user.id) && <MenuItem onClick={handleKickChannel}>Kick user</MenuItem>}
-            <MenuItem>Ban user</MenuItem>
+          {/* Ban method */}
+          {isOwner() && <MenuItem disabled >Ban user</MenuItem>}
+          {!isOwner() && <MenuItem onClick={handleBanUser}>Ban user</MenuItem>}
             <MenuItem>Mute user</MenuItem>
             <MenuItem>Set as admin</MenuItem>
         </div>

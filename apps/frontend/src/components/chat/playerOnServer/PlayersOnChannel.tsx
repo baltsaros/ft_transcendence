@@ -9,6 +9,7 @@ import PlayerMenu from './PlayerMenu';
 import AdminMenu from './AdminMenu';
 import { addInvitation } from '../../../store/user/invitationSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { addBanned } from '../../../store/channel/banSlice';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -22,20 +23,18 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
     const isOnline = (value: IResponseUser) => value.status === 'online';
     const isOffline = (value: IResponseUser) => value.status === 'offline';
     const userConnected = useSelector((state: RootState) => state.user.user);
+    const bannedUsers = useSelector((state: RootState) => state.banned.banned);
 
-    const channels = useSelector((state: RootState) => state.channel);
+    const channels = useSelector((state: RootState) => state.channel.channel);
     
     useEffect(() => {
 
-        if (selectedChannel)
-        {
-            const fetchUsers = async () => {
-                const channel = await instance.post<IChannel>('channel/getChannelById/', {idChannel: selectedChannel.id});
-                setUsersOfChannel(channel.data.users);
-            }
-            fetchUsers();
+        if (selectedChannel) {
+            const channel = channels.filter((elem)=>elem.id===selectedChannel?.id)[0];
+            setUsersOfChannel(channel.users);
         }
     }, [selectedChannel, channels]);
+
 
     useEffect(() => {
             webSocketService.on("userLeft", (payload: any) => {
@@ -47,11 +46,15 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             webSocketService.on("DmChannelJoined", (payload: any) => {
                 store.dispatch(fetchChannel());
             });
+            webSocketService.on("userBanned",(payload: any) => {
+                store.dispatch(addBanned(payload.user));
+            });
             
             return () => {
                 webSocketService.off('userLeft');
                 webSocketService.off('userJoined');
                 webSocketService.off('DmChannelJoined');
+                webSocketService.off('userBanned');
                     };
     }, []);
 
@@ -68,7 +71,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <hr/>
                         <ul className='text-black'>
                             {usersOfChannel?.map((user) => (
-                                user.id !== userConnected!.id && user.status === "online" &&  
+                                user.id !== userConnected!.id && isOnline(user) &&  
                                 <li key={user.id}><AdminMenu {...{user, selectedChannel}}></AdminMenu></li>
                             ))}
                         </ul>
@@ -78,7 +81,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                         <hr/>
                         <ul className='text-black'>
                             {usersOfChannel?.map((user) => (
-                                user.id !== userConnected!.id && user.status === "offline" &&  
+                                user.id !== userConnected!.id && isOffline(user) &&  
                                 <li key={user.id}><AdminMenu {...{user, selectedChannel}}></AdminMenu></li>
                             ))}
                         </ul>
@@ -88,38 +91,6 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
         </div>
 
     );
-    // return (
-        // <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
-        //     <div className="flex flex-grow w-full">
-        //         <div className="flex-1 p-4 border bg-gray-100 m-2">
-        //             <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
-        //                 <h1 className="text-lg font-bold mb-2 text-gray-600">Players on server</h1>
-        //             </div>
-        //             <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
-        //                 <p className="text-base mb-1 text-gray-600">Online</p>
-        //             </div>
-        //             <div className="flex flex-col text-black space-y-4">
-        //                 {onlinePlayers!.map(onlinePlayer => (
-        //                     onlinePlayer.username !== loggedInUser && onlinePlayer.status === 'online' && <div key={onlinePlayer.username} >
-        //                         <DropdownButton { ...{ player: onlinePlayer, text: '', channel: selectedChannel } } />
-        //                     </div>
-        //                 ))}
-        //             </div>
-        //             <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
-        //                 <p className="text-base mb-1 text-gray-600">Offline</p>
-        //             </div>
-        //             <div className="flex flex-col text-black space-y-4">
-        //                 {offlinePlayers!.map(offlinePlayer => (
-        //                     offlinePlayer.username !== loggedInUser && offlinePlayer.status === 'offline' && <div key={offlinePlayer.username} >
-        //                         <DropdownButton { ...{ player: offlinePlayer, text: '', channel: selectedChannel } } />
-        //                     </div>
-        //                 ))}
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-    // );
-
 }
 
 export default PlayersOnChannel;

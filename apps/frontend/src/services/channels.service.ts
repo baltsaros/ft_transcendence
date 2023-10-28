@@ -47,6 +47,16 @@ export const ChannelService = {
     async checkIfSamePassword(channelPassword: IChannelPassword) {
         const { data } = await instance.post<Boolean>("channel/checkIfSamePassword/", channelPassword);
         return (data);
+    },
+
+    async getAllBannedUsersOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllBannedUsersOfChannel/", {channelId});
+        return (data);
+    },
+
+    async addUserBannedToChannel(channelRelation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/addBannedUserToChannel/", channelRelation);
+        return (data);
     }
     
 };

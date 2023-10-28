@@ -11,6 +11,8 @@ import { User } from 'src/user/entities/user.entity';
 import { IResponseUser, IUserRelation, IUserSocket, IUserUsername } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
 import { BadRequestException } from '@nestjs/common';
+import { ChannelUserDto } from 'src/channel/dto/channelUser.dto';
+import { ChannelUserObjectDto } from 'src/channel/dto/channelUserObject.dto';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -93,7 +95,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const blocked = await this.userRepository.findOne({
       where: {id: payload.receiverId},
     });
-    // console.log('blocked', blocked.username);
     const username = blocked.username;
     const status = blocked.status;
     const reduxPayload = {
@@ -103,10 +104,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const sender = await this.userRepository.findOne({
       where: {id: payload.senderId},
     });
-    console.log('sender', sender.username);
     const socket = this.gatewaySessionManager.getSocket(sender.username);
     socket.emit('userBlocked', reduxPayload);
   }
+
+   @OnEvent('banUser')
+   async handleBanUser(payload: ChannelUserObjectDto) {
+    const socket = this.gatewaySessionManager.getSocket(payload.user.username);
+    socket.emit("userBanned", payload);
+   }
+
 
   @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {
