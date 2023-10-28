@@ -1,10 +1,7 @@
 import Cookies from "js-cookie";
-import React, { useRef, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Socket } from "socket.io-client";
-import { GameSettingsData } from "../../../../backend/src/gateway/entities/room";
+import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { MatchService } from "../../services/matches.service";
-import { PlayerService } from "../../services/player.service";
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
 const scoreMax = 5;

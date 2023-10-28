@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import { IPlayersOnServerModalProps } from "../../../types/types";
 import { PlayerService } from "../../../services/player.service";
-import { useEffect, useState } from "react";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg

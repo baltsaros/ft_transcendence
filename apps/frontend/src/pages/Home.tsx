@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import jwtDecode from "jwt-decode";
 import { useAuth } from "../hooks/useAuth";

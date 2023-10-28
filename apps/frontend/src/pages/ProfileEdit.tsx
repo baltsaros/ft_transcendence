@@ -2,7 +2,7 @@ import { ChangeEvent, FC, useState } from "react";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { useAppDispatch } from "../store/hooks";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getUser } from "../hooks/getUser";
 
 const ProfileEdit: FC = () => {

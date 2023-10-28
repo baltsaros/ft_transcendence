@@ -1,14 +1,11 @@
 import { useState, useEffect } from 'react';
-import { IChannel, IResponseUser, IUserUsername } from '../../../types/types';
+import { IChannel, IResponseUser } from '../../../types/types';
 import { instance } from '../../../api/axios.api';
 import { useSelector } from 'react-redux';
 import { RootState, store } from '../../../store/store';
 import { useChatWebSocket } from '../../../context/chat.websocket.context';
 import { fetchChannel } from '../../../store/channel/channelSlice';
-import PlayerMenu from './PlayerMenu';
 import AdminMenu from './AdminMenu';
-import { addInvitation } from '../../../store/user/invitationSlice';
-import { PayloadAction } from '@reduxjs/toolkit';
 
 interface ChildProps {
     selectedChannel: IChannel | null;

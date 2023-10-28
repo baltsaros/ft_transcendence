@@ -8,7 +8,7 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
-import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
+import { IChannelDmData, IResponseUser } from "../../../types/types";
 
 
 function AdminMenu(user: IResponseUser) {

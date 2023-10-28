@@ -1,16 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
-import { IChannel, IResponseUser } from '../../../types/types';
 import { instance } from '../../../api/axios.api';
 import { toast } from 'react-toastify';
 import ButtonWithModal from './ButtonWithModal';
 import { IChannelDmData, IPlayersOnServerModalProps } from '../../../types/types';
 import Cookies from 'js-cookie';
 import { PlayerService } from '../../../services/player.service';
-import { Link, NavLink, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/store';
-import { store } from '../../../store/store';
-import { addChannel } from '../../../store/channel/channelSlice';
 import { useChatWebSocket } from '../../../context/chat.websocket.context';
 
 const DropdownButton = (player: IPlayersOnServerModalProps) => {

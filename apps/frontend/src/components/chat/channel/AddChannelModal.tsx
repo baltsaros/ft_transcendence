@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { instance } from "../../../api/axios.api";
 import { useAppSelector } from "../../../store/hooks";
 import { RootState } from "../../../store/store";

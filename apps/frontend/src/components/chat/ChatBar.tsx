@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
