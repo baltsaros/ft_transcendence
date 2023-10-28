@@ -16,7 +16,6 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     const webSocketService = useChatWebSocket();
 
     /* STATE */
-    // const [message, setMessage] = useState<IResponseMessage[]>([]);
     const blocked = useSelector((state: RootState) => state.blocked);
     const userLogged = useSelector((state: RootState) => state.user);
     const channel = useSelector((state: RootState) => state.channel.channel);
@@ -27,31 +26,14 @@ const Chat: React.FC<ChildProps> = ({selectedChannel}) => {
     }
 
     /* BEHAVIOR */
-//    useEffect(() => {
-//     if (selectedChannel)
-//     {
-//         const fetchData = async () => {
-//             const {data} = await instance.get('channel/' + selectedChannel.id);
-//             const filteredMessages = data.messages.filter((message: any) => {
-//                 return !blocked.blocked.some((u) => message.user.username === u.username);
-//             })
-//             // console.log('filteredMessages', filteredMessages);
-//             // setMessage(filteredMessages);
-//         };
-//         fetchData();
-// }}, [selectedChannel]);
-
 useEffect(() => {
         store.dispatch(fetchBlocked(userLogged.user!.id));
 }, []);
 
 useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        console.log('payload front:', payload);
-        store.dispatch(addMessage(payload));
-        // if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username)) {
-            // setMessage((prevMessages) => [...prevMessages, payload]);
-        // }
+        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username))
+            store.dispatch(addMessage(payload));
     });
     return () => {
         webSocketService.off('onMessage');
