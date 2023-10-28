@@ -99,4 +99,23 @@ export class ChannelController {
         return (this.ChannelService.addBannedUserToChannel(relation));
     }
 
+    @Post("getAllMutedUsersOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async getAllMutedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+        return (this.ChannelService.getAllMutedUsersOfChannel(channelId));
+    }
+
+    @Post("addMutedUserOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async addMutedUserToChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.addMutedUserToChannel(relation));
+    }
+
+    @Post("removeMutedUserOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async removeMutedUserOfChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.removeMutedUserOfChannel(relation));
+    }
+
+
 }

@@ -11,9 +11,14 @@ function OwnerMenu(props: any) {
     const {user, selectedChannel} = props;
     //state
     const admins = useSelector((state: RootState) => state.admin.users);
+    const muted = useSelector((state: RootState) => state.muted.users);
 
     const isAdmin = () => {
       return (admins.some(item => item.id === user.id));
+    }
+
+    const isMuted = () => {
+      return (muted.some(item => item.id === user.id));
     }
 
     const handleKickChannel = async() => {
@@ -57,6 +62,22 @@ function OwnerMenu(props: any) {
     await ChannelService.removeUserAsAdmin(payload);
   }
 
+  const handleMuteUser = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    await ChannelService.addMutedUserOfChannel(payload);
+  }
+
+  const handleUnmuteUser = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    await ChannelService.removeMutedUserOfChannel(payload);
+  }
+
   //render
   return (
     <div className="bg-gray-500">
@@ -67,7 +88,8 @@ function OwnerMenu(props: any) {
       {/* Ban method */}
       {<MenuItem onClick={handleBanUser}>Ban user</MenuItem>}
 
-      {<MenuItem>Mute user</MenuItem>}
+      {!isMuted() && <MenuItem onClick={handleMuteUser}>Mute user</MenuItem>}
+      {isMuted() && <MenuItem onClick={handleUnmuteUser}>Unmute user</MenuItem>}
       
       {!isAdmin() && <MenuItem onClick={handleAddUserAsAdmin}>Set as admin</MenuItem>}
       {isAdmin() && <MenuItem onClick={handleRemoveUserAsAdmin}>Remove as admin</MenuItem>}
