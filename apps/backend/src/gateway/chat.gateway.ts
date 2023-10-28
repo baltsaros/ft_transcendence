@@ -8,9 +8,8 @@ import { Channel } from 'src/channel/channel.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
-import { IResponseUser, IUserRelation, IUserSocket, IUserUsername } from 'src/types/types';
+import { IResponseUser, IUserSocket } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
-import { BadRequestException } from '@nestjs/common';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client

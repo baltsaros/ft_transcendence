@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataStorageService } from 'src/helpers/data-storage.service';
 import { UserModule } from 'src/user/user.module';
-import { UserService } from 'src/user/user.service';
 import { Match } from './entities/matches.entity';
 import { MatchController } from './match.controller';
 import { MatchService } from './match.service';

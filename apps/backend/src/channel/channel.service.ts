@@ -2,15 +2,12 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
-import { IChannelsData, IChannel, IChannelDmData } from 'src/types/types';
+import { IChannelsData, IChannelDmData } from 'src/types/types';
 import { UserService } from '../user/user.service';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
-import { toast } from "react-toastify";
-
-import { toNamespacedPath } from 'path';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {

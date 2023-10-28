@@ -2,7 +2,6 @@ import { Profile, Strategy } from "passport-42";
 import { PassportStrategy } from "@nestjs/passport";
 import { Inject, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { IUser } from "src/types/types";
 import { AuthService } from "../auth.service";
 
 @Injectable()

@@ -1,9 +1,8 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards, Patch} from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, UseGuards, Patch} from '@nestjs/common';
 import { ChannelService } from './channel.service';
-import { IChannelDmData, IChannelsData, IGetChannels } from 'src/types/types';
+import { IChannelDmData, IChannelsData } from 'src/types/types';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChannelUserDto } from './dto/channelUser.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
 

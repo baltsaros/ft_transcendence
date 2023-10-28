@@ -1,5 +1,3 @@
-import { StorageEngine } from "multer";
-
 export class Player {
 	id: string;
 	username: string;
