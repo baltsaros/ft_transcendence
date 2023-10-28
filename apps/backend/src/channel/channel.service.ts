@@ -266,4 +266,51 @@ export class ChannelService {
         return (request.bannedUsers);
       }
 
+      async getAllMutedUsersOfChannel(channelId: ChannelIdDto) {
+        const request = await this.channelRepository.findOne({
+          where: {id: channelId.idChannel},
+          relations: {mutedUsers: true}
+        });
+        return (request.mutedUsers);
+      }
+
+    async addMutedUserToChannel(channelRelation: ChannelUserDto) {
+      const channel = await this.channelRepository.findOne({
+        where: {id: channelRelation.idChannel},
+        relations: { mutedUsers: true}
+      });
+      const mutedUser = await this.userService.findOneById(channelRelation.idUser);
+      if (!mutedUser) return (mutedUser);
+      channel.mutedUsers.push(mutedUser);
+      await this.channelRepository.save(channel);
+      const payload = {
+        channel: channel,
+        user: mutedUser
+      }
+      this.eventEmmiter.emit("muteUser", payload);
+      return (mutedUser);
+    }
+
+    async removeMutedUserOfChannel(channelRelation: ChannelUserDto) {
+      const request = await this.channelRepository.findOne({
+        relations: {
+          mutedUsers: true,
+        },
+        where: { id: channelRelation.idChannel}
+      });
+  
+      request.mutedUsers = request.mutedUsers.filter((user) => {
+        return (user.id !== channelRelation.idUser)
+      })
+      const muted = await this.userService.findOneById(channelRelation.idUser);
+      if (!muted) return (muted);
+      await this.channelRepository.save(request);
+      const payload = {
+        channel: request,
+        user: muted,
+      }
+      this.eventEmmiter.emit("unmuteUser", payload);
+      return (muted);
+    }
+
 }

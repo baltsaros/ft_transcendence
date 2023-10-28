@@ -5,8 +5,9 @@ import invitationReducer from "./user/invitationSlice";
 import friendReducer from "./user/friendsSlice";
 import allUserReducer from "./user/allUsersSlice";
 import blockedReducer from "./blocked/blockedSlice"
-import bannedReducer from "./channel/banSlice"
-import adminReducer from "./channel/adminSlice"
+import bannedReducer from "./channel/banSlice";
+import adminReducer from "./channel/adminSlice";
+import mutedReducer from "./channel/mutedSlice";
 
 export const store = configureStore({
   reducer: {
@@ -17,7 +18,8 @@ export const store = configureStore({
     allUser: allUserReducer,
     blocked: blockedReducer,
     banned: bannedReducer,
-    admin: adminReducer
+    admin: adminReducer,
+    muted: mutedReducer
   },
 });
 

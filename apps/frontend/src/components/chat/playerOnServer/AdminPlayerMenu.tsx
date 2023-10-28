@@ -10,10 +10,11 @@ import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
 
 
-function OwnerMenu(props: any) {
+function AdminPlayerMenu(props: any) {
     const {user, selectedChannel} = props;
     //state
     const admins = useSelector((state: RootState) => state.admin.users);
+    const muted = useSelector((state: RootState) => state.muted.users);
     const webSocketService = useChatWebSocket();
 
     const isAdmin = () => {
@@ -23,6 +24,11 @@ function OwnerMenu(props: any) {
     const isOwner = () => {
         return (selectedChannel?.owner.id === user.id);
       }
+
+    const isMuted = () => {
+      return (muted.some(item => item.id === user.id));
+    }
+
 
     const handleKickChannel = async() => {
       try{
@@ -46,6 +52,22 @@ function OwnerMenu(props: any) {
     }
     await ChannelService.addUserBannedToChannel(payload);
     handleKickChannel();
+  }
+
+  const handleMuteUser = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    await ChannelService.addMutedUserOfChannel(payload);
+  }
+
+  const handleUnmuteUser = async () => {
+    const payload = {
+      idChannel: selectedChannel.id,
+      idUser: user.id
+    }
+    await ChannelService.removeMutedUserOfChannel(payload);
   }
 
 
@@ -77,11 +99,13 @@ function OwnerMenu(props: any) {
           {(!isOwner() && !isAdmin()) && <MenuItem onClick={handleBanUser}>Ban user</MenuItem>}
           {(isOwner() || isAdmin()) && <MenuItem disabled>Ban user</MenuItem>}
 
-          {(!isOwner() && !isAdmin()) && <MenuItem>Mute user</MenuItem>}
+          {!isMuted() && (!isOwner() && !isAdmin()) && <MenuItem onClick={handleMuteUser}>Mute user</MenuItem>}
           {(isOwner() || isAdmin()) && <MenuItem disabled>Mute user</MenuItem>}
 
+          {isMuted() && (!isOwner() && !isAdmin()) && <MenuItem onClick={handleUnmuteUser}>Unmute user</MenuItem>}
+          {(isOwner() || isAdmin()) && <MenuItem disabled>Unmute user</MenuItem>}
         
         </div>
   )
 }
-export default OwnerMenu;
+export default AdminPlayerMenu;
