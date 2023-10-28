@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
-import { instance } from "../../../api/axios.api";
+import { useState } from "react";
 import { useAppSelector } from "../../../store/hooks";
 import { RootState } from "../../../store/store";
-import { IChannel, IChannelData } from "../../../types/types";
+import { IChannel } from "../../../types/types";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { ChannelService } from "../../../services/channels.service";
 import bcrypt from "bcryptjs";
+import { useNavigate } from "react-router-dom";
 
 interface ModalProp {
   onClose: () => void;
@@ -22,22 +21,21 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
   const [oldPassword, setOldPassword] = useState("");
   const [isOldPasswordFilled, setIsOldPasswordFilled] =
     useState<boolean>(false);
+  const navigate = useNavigate();
 
   /* BEHAVIOR */
-  const handleOldPassword = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.value != "") {
-      setOldPassword(event.target.value);
+  const handleOldPassword = async () => {
+    if (oldPassword != "") {
       try {
         const data = await ChannelService.getHashedPassword(channel.id);
         const isMatch = bcrypt.compareSync(oldPassword, data.hashed);
+        console.log("oldPass for " + channel.name);
         setOldPassword("");
         if (!isMatch) {
-          toast.error("Incorrect password! Try again.");
+          toast.error("Old password is incorrect! Try again.");
           setIsOldPasswordFilled(false);
         } else {
-          toast.success("DONE!");
+          toast.success("Old password was accepted!");
           setIsOldPasswordFilled(true);
         }
       } catch (err: any) {
@@ -46,27 +44,35 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
     } else setIsOldPasswordFilled(false);
   };
 
-  const handleNewPassword = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.value != "") {
-      const hashed = bcrypt.hashSync(event.target.value, bcrypt.genSaltSync());
+  const handleNewPassword = async () => {
+    if (password != "") {
+      const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync());
       setPassword(hashed);
       setIsPasswordFilled(true);
-    } else {
-      setIsPasswordFilled(false);
-    }
+      console.log("new pass: " + password);
+    } else setIsPasswordFilled(false);
   };
 
   const handleCancel = async () => {
     onClose();
   };
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // event.preventDefault();
+    await handleOldPassword();
+    await handleNewPassword();
     const payload = {
       idChannel: channel.id,
       password: password,
     };
-    ChannelService.setPasswordToChannel(payload);
+    if (isOldPasswordFilled && isPasswordFilled) {
+      const data = await ChannelService.setPasswordToChannel(payload);
+      if (data) {
+        toast.success("Password has been successfuly changed!");
+        setIsOldPasswordFilled(false);
+        setIsPasswordFilled(false);
+        navigate("/chat");
+      } else toast.error("Something went wrong!");
+    }
   };
 
   /* RENDERING */
@@ -90,7 +96,7 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
                 id="oldPassword"
                 className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
                 placeholder="Old password"
-                onChange={handleOldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
               />
             </div>
           )}
@@ -107,7 +113,7 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
             id="newPassword"
             className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
             placeholder="New password"
-            onChange={handleNewPassword}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <div className="flex justify-between">
@@ -117,12 +123,11 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
           >
             Cancel
           </button>
-          <button
-            onClick={handleSubmit}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300"
-          >
-            Ok
-          </button>
+          <form onSubmit={handleSubmit}>
+            <button className="bg-green-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300">
+              Ok
+            </button>
+          </form>
         </div>
       </div>
     </div>
