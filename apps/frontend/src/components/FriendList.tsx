@@ -80,7 +80,7 @@ function FriendList() {
           <MenuHeader className="text-white">Invitations : {invitationList.length} </MenuHeader>
           <div className="bg-gray-500">
             {invitationList.length > 0 && invitationList.map((invitation) => (
-              <FriendInvitations key={invitation.username} {...invitation} />
+             <FriendInvitations key={invitation.username} {...invitation} />
             ))}
             </div >
             {!invitationList.length &&
