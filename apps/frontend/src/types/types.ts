@@ -152,8 +152,9 @@ export interface IChannelRelation {
 }
 
 export interface IChannelPassword {
-  idChannel: number,
-  password: string,
+  channelId: number,
+  newPassword: string,
+  oldPassword: string,
 }
 
 export interface IPlayersOnServerModalProps {

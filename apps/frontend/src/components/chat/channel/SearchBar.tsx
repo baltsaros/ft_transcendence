@@ -123,7 +123,7 @@ export default function SearchBar() {
                             onChange={(e) => setPasswordInput(e.target.value)}
                         />
                         <button
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline"
+                            className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg"
                             onClick={() => handleChannelPassword(channel)}
                         >Join
                         </button>
@@ -131,7 +131,7 @@ export default function SearchBar() {
                 ) : (
                     // Condition for public channels
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline"
+                        className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg"
                         onClick={() => handleJoinChannel(channel)}
                     >Join
                     </button>

@@ -70,7 +70,7 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                                         <div className="flex items-center">
                                         <button
                                         onClick={() => onSelectChannel(channel)} 
-                                        className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
+                                        className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg">{channel.name}
                                         </button>
                                         <ChannelMenu channel={channel}/>
                                         </div>

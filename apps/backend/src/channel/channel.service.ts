@@ -150,20 +150,30 @@ export class ChannelService {
 
     async setPasswordToChannel(channelPassword: ChannelPasswordDto)
     {
-      console.log('setPasswordToChannel (back)');
-        const channel = await this.findOne(channelPassword.idChannel);
+      console.log('setPasswordToChannel (back)', channelPassword);
+        const channel = await this.findOne(channelPassword.channelId);
         if (!channel) return (false);
-       await this.channelRepository.update({
-            id: channelPassword.idChannel},
+        if (channelPassword.newPassword.length === 0) {
+          await this.channelRepository.update({
+            id: channelPassword.channelId},
             {
-                password: channelPassword.password,
-                mode: 'Private'
-        });
-        const newChannel = await this.findOne(channelPassword.idChannel);
+                password: channelPassword.newPassword,
+                mode: 'Public',
+            });
+        }
+        else {
+          await this.channelRepository.update({
+               id: channelPassword.channelId},
+               {
+                   password: channelPassword.newPassword,
+                   mode: 'Private'
+           });
+        }
+        const newChannel = await this.findOne(channelPassword.channelId);
         if (channel.password === newChannel.password) return (false);
         const payload = {
-          channelId: channelPassword.idChannel,
-          password: channelPassword.password,
+          channelId: channelPassword.channelId,
+          password: channelPassword.newPassword,
           mode: newChannel.mode,
         }
         this.eventEmmiter.emit('onSetChannelPassword', payload);
@@ -241,8 +251,10 @@ export class ChannelService {
       }
 
       async checkIfSamePassword(relation: ChannelPasswordDto) {
-        const channel = await this.findOne(relation.idChannel);
-        if (channel.password === relation.password) return (true);
+        const channel = await this.findOne(relation.channelId);
+        console.log('channel password', channel.password);
+        console.log('password inputted', relation.oldPassword);
+        if (channel.password === relation.oldPassword) return (true);
         return (false);
       }
 

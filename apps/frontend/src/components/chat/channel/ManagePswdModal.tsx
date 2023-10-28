@@ -49,12 +49,29 @@ const ManagePswdModal: React.FC<ModalProp> = ({onClose, channel}) =>  {
         onClose();
     }
     const handleSubmit = async() => {
+		console.log('oldpaswddd', oldPassword);
 		const payload = {
-			idChannel: channel.id,
-			password: password,
+			channelId: channel.id,
+			newPassword: password,
+			oldPassword: oldPassword,
 		}
-		ChannelService.setPasswordToChannel(payload);
-
+		try {
+			if (!isOldPasswordFilled) {
+				ChannelService.setPasswordToChannel(payload);
+			}
+			else {
+				// 1. Owner wants to change existing password
+				// 2. Owner wants to remove the password
+				// 1* Check of oldPassword is correct
+				// 2* Post new password to the db and update redux state
+				const isValid = await ChannelService.checkIfSamePassword(payload);
+				console.log('isValid', isValid);
+				if (isValid) {
+					ChannelService.setPasswordToChannel(payload);
+				}
+			}
+		} catch (error: any) {
+		} 
     }
 
     /* RENDERING */

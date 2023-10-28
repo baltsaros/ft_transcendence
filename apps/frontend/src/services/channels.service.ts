@@ -21,10 +21,11 @@ export const ChannelService = {
         return (data);
     },
 
-    async removePasswordOfChannel(idChannel: number) {
+    async removePasswordOfChannel(channelId: number) {
         const channelPassword = {
-            idChannel,
-            password: "",
+            channelId,
+            oldPassword: "",
+            newPassword: "",
         }
         return (this.setPasswordToChannel(channelPassword));
     },

@@ -48,7 +48,7 @@ function AddChannel () {
     /* RENDER */
     return (
     <div>
-        <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleOpenModal}>Add channel</button>
+        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleOpenModal}>Add channel</button>
         {modalView &&
         <AddChannelModal onClose={handleCloseModal} />
         }
