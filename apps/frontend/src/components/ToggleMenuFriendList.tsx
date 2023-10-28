@@ -5,7 +5,6 @@ import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { PlayerService } from "../services/player.service";
 import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RootState, store } from "../store/store";
 import { useSelector } from "react-redux";

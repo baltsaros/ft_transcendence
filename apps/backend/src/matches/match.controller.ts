@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, InternalServerErrorException, Param, Post, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, UsePipes } from "@nestjs/common";
 import { CreateMatchDto } from "./dto/create-match.dto";
 import { MatchService } from "./match.service";
 import { UserService } from "src/user/user.service";

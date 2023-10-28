@@ -1,8 +1,7 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../store";
-import { IResponseUser, IUser, IUserUsername } from "../../types/types";
-import { instance } from "../../api/axios.api";
+import { IResponseUser } from "../../types/types";
 
 // Define a type for the slice state
 interface UserState {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IChannel, IResponseUser, IUserUsername } from '../../../types/types';
+import { IChannel, IResponseUser } from '../../../types/types';
 import { useSelector } from 'react-redux';
 import { RootState, store } from '../../../store/store';
 import { useChatWebSocket } from '../../../context/chat.websocket.context';

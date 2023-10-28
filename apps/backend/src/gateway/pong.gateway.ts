@@ -7,12 +7,9 @@ import {
 	ConnectedSocket,
 	MessageBody
 } from '@nestjs/websockets';
-import Cookies from 'js-cookie';
-import { platform } from 'os';
 // import { instance } from "../../../frontend/src/api/axios.api";
 
 import { Server, Socket } from 'socket.io';
-import { MissingPrimaryColumnError } from 'typeorm';
 import { Player } from './entities/player';
 import { GameSettingsData, GameState, Room } from './entities/room';
 

@@ -2,7 +2,6 @@
 import { useState, createContext, useContext, useEffect } from 'react';
 import ChatWebSocketService from '../services/chat.websocket.service';
 import Cookies from 'js-cookie';
-import { getUser } from '../hooks/getUser';
 
 /* Context */
 const ChatWebSocketContext = createContext<ChatWebSocketService | undefined>(undefined);

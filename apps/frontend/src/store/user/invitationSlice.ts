@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { instance } from "../../api/axios.api";
-import { IUserRelation, IUserUsername } from "../../types/types";
+import { IUserUsername } from "../../types/types";
 import { PlayerService } from "../../services/player.service";
 
 /* Reducers define how actions change state variables

@@ -3,6 +3,7 @@ import { IMatch, IUserPlayerProfileData } from "../types/types";
 import Match from "./Match";
 import { toast } from "react-toastify";
 import { MatchService } from "../services/matches.service";
+import Scrollbar from "react-scrollbars-custom";
 
 
 export default function MatchHistory(userData: IUserPlayerProfileData) {
@@ -50,13 +51,19 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
               </td>
             </tr>
           </thead>
-          <tbody className="divide-y-2 divide-gray-400">
-            {matches!.map((match) => (
-              <Match key={match.id}
-                  {...match}
-                />
-            ))}
-          </tbody>
+          <Scrollbar style={{ width: 400, height: 150 }}>
+            <div>
+              <table className="w-96 divide-y-2 divide-gray-400">
+                <tbody className="divide-y-2 divide-gray-400">
+                  {matches!.map((match) => (
+                    <Match key={match.id}
+                        {...match}
+                      />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Scrollbar>
         </table>
         
       </div>
