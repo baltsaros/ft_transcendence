@@ -70,6 +70,7 @@ const ManagePswdModal: React.FC<ModalProp> = ({onClose, channel}) =>  {
 					ChannelService.setPasswordToChannel(payload);
 				}
 			}
+			onClose();
 		} catch (error: any) {
 		} 
     }
