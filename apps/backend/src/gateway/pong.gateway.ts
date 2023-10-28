@@ -262,20 +262,20 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		while (room.gameState === GameState.Playing) {
 
 			const currentTime = Date.now();
-		  const deltaTime = currentTime - lastUpdate;
+			const deltaTime = currentTime - lastUpdate;
 
-		  if (deltaTime >= updateRate) {
-			// Mettez à jour l'état du jeu en fonction du temps écoulé
-			this.updateGameState(room, deltaTime);
+			if (deltaTime >= updateRate) {
+				// Mettez à jour l'état du jeu en fonction du temps écoulé
+				this.updateGameState(room, deltaTime);
 
-			// Envoyez les mises à jour aux clients
-			this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, userScore: room.player1.score, opponentScore: room.player2.score});
-			this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, userScore: room.player2.score, opponentScore: room.player1.score});
+				// Envoyez les mises à jour aux clients
+				this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, userScore: room.player1.score, opponentScore: room.player2.score});
+				this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, userScore: room.player2.score, opponentScore: room.player1.score});
 
-			lastUpdate = currentTime;
-		  }
+				lastUpdate = currentTime;
+			}
 
-		  await new Promise((resolve) => setTimeout(resolve, 1)); // Attendre une courte période avant la prochaine mise à jour
+			await new Promise((resolve) => setTimeout(resolve, 1)); // Attendre une courte période avant la prochaine mise à jour
 		}
 	}
 
@@ -314,37 +314,38 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					room.ball.setSpeedX(-room.ball.speedX);
 				}
 
-				if (room.gameState === GameState.Playing && (room.player1.score >= room.scoreMax || room.player2.score >= room.scoreMax)) {
+				if (room.gameState === GameState.Playing && (room.player1.score == room.scoreMax || room.player2.score == room.scoreMax)) {
 					room.setGameState(GameState.Ended);
 					this.sendGameEnd(room);
 				  }
 		}
 
-	@SubscribeMessage('movePaddle')
-	async handleMovePaddle(
-		@ConnectedSocket() client: Socket,
-		@MessageBody('data')  data: {direction: string, roomId: string}
-		)
-		{
-			const room = this.pongRooms.get(data.roomId);
+		@SubscribeMessage('movePaddle')
+		async handleMovePaddle(
+		  @ConnectedSocket() client: Socket,
+		  @MessageBody('data')  data: { direction: string, roomId: string }
+		) {
+		  const room = this.pongRooms.get(data.roomId);
 
-			if (room)
-			{
-				if (client.id === room.player1.id)
-				{
-					if (data.direction === "up")
-						room.leftPaddle.setPosition(Math.max(0, room.leftPaddle.y - room.leftPaddle.speed));
-					else if (data.direction === "down")
-						room.leftPaddle.setPosition(Math.max(0, room.leftPaddle.y + room.leftPaddle.speed));
-				}
-				else if (client.id === room.player2.id)
-				{
-					if (data.direction === "up")
-						room.rightPaddle.setPosition(Math.max(0, room.rightPaddle.y - room.rightPaddle.speed));
-					else if (data.direction === "down")
-						room.rightPaddle.setPosition(Math.max(0, room.rightPaddle.y + room.rightPaddle.speed));
-				}
+		  if (room) {
+			if (client.id === room.player1.id) {
+			  if (data.direction === "up") {
+				// Utilisez Math.max pour vous assurer que la nouvelle position ne soit pas inférieure à zéro
+				room.leftPaddle.setPosition(Math.max(0, room.leftPaddle.y - room.leftPaddle.speed));
+				console.log(room.leftPaddle.y);
+			  } else if (data.direction === "down") {
+				// Utilisez Math.min pour vous assurer que la nouvelle position ne dépasse pas la hauteur du champ
+				room.leftPaddle.setPosition(Math.min(room.fieldHeight - room.leftPaddle.height, room.leftPaddle.y + room.leftPaddle.speed));
+			  }
+			} else if (client.id === room.player2.id) {
+			  if (data.direction === "up") {
+				room.rightPaddle.setPosition(Math.max(0, room.rightPaddle.y - room.rightPaddle.speed));
+			  } else if (data.direction === "down") {
+				console.log("4");
+				room.rightPaddle.setPosition(Math.min(room.fieldHeight - room.rightPaddle.height, room.rightPaddle.y + room.rightPaddle.speed));
+			  }
 			}
+		  }
 		}
 
 		private startGame(room: Room) {
@@ -366,11 +367,14 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		) {
 		  const room = this.pongRooms.get(data.roomId);
 
-		  room.incrementCounter();
-		  if (room.counter == 2) {
-			room.resetCounter();
-			room.setGameState(GameState.Playing);
-			this.startGame(room);
+		  if (room)
+		  {
+			room.incrementCounter();
+			if (room.counter == 2) {
+			  room.resetCounter();
+			  room.setGameState(GameState.Playing);
+			  this.startGame(room);
+			}
 		  }
 		}
 

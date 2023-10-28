@@ -24,8 +24,8 @@ export class Room {
 		this.player2 = new Player(player2.id, player2.username);
 		this.fieldHeight = 600;
 		this.fieldWidth = 800;
-		this.leftPaddle = new Paddle(player1, 5, this.fieldHeight / 2, 100, 10);
-		this.rightPaddle = new Paddle(player2, this.fieldWidth - 10 - 5, this.fieldHeight / 2, 100, 10);
+		this.leftPaddle = new Paddle(player1, 5, this.fieldHeight / 2 - 50, 100, 10, 20);
+		this.rightPaddle = new Paddle(player2, this.fieldWidth - 10 - 5, this.fieldHeight / 2 - 50, 100, 10, 20);
 		this.id = id;
 		this.gameState = GameState.Starting;
 		this.ball = new Ball();
@@ -34,7 +34,7 @@ export class Room {
 		this.counter = 0;
 	}
 
-	incrementCounter() { this.counter++; }
+	incrementCounter() { this.counter += 1; }
 
 	resetCounter() { this.counter = 0; }
 

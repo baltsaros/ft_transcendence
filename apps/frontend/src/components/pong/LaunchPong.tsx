@@ -36,7 +36,10 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 
 	useEffect(() => {
 		webSocket.on('matchEnded', (data: {userScore: number, opponentScore: number}) => {
-			setMatchEnded(true);
+
+			// player1ScoreRef.current = data.userScore;
+			// player2ScoreRef.current = data.opponentScore;
+			// console.log(data.userScore, " - ", data.opponentScore);
 
 			if (username && data.userScore > data.opponentScore)
 			{
@@ -47,6 +50,8 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					scoreOpponent: data.opponentScore
 				});
 			}
+			setMatchEnded(true);
+
 		});
 		return () => {
 			webSocket.off("matchEnded");
@@ -72,12 +77,12 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					player1ScoreRef.current = data.userScore;
 					player2ScoreRef.current = data.opponentScore;
 
-					console.log("ball x : ", data.ballX);
-					console.log("ball y : ", data.ballY);
-					console.log("left paddle y : ", data.leftPaddleY);
-					console.log("right paddle y : ", data.rightPaddleY);
-					console.log("user score : ", data.userScore);
-					console.log("opponent score : ", data.opponentScore);
+					// console.log("ball x : ", data.ballX);
+					// console.log("ball y : ", data.ballY);
+					// console.log("left paddle y : ", data.leftPaddleY);
+					// console.log("right paddle y : ", data.rightPaddleY);
+					// console.log("user score : ", data.userScore);
+					// console.log("opponent score : ", data.opponentScore);
 
 					const ballX = ballXRef.current;
 					const ballY = ballYRef.current;
@@ -125,13 +130,10 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 
 
 			const moveUser = (e: KeyboardEvent) => {
-				const up = "up";
-				const down = "down";
-
 				if (e.key === "w")
-					webSocket.emit('movePaddle', {data : {direction : up, roomId: roomId}});
+					webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
 				else if (e.key === "s")
-					webSocket.emit('movePaddle', {data : {direction : down, roomId: roomId}});
+					webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 			};
 
 			// Écoutez les touches de contrôle des raquettes
