@@ -122,6 +122,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(`channel-${payload.channel.id}`).emit('adminRemoved', payload);
   }
 
+  @OnEvent('muteUser')
+  async handleMuteUser(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('userMuted', payload);
+  }
+
+  @OnEvent('unmuteUser')
+  async handleUnmuteUser(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('userUnmuted', payload);
+  }
+
 
   @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {

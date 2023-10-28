@@ -57,6 +57,22 @@ export const ChannelService = {
     async addUserBannedToChannel(channelRelation: IChannelRelation) {
         const { data } = await instance.post<IUser>("channel/addBannedUserToChannel/", channelRelation);
         return (data);
-    }
+    },
     
+    async getAllMutedUsersOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllMutedUsersOfChannel", {channelId});
+        return (data);
+    },
+
+    async removeMutedUserOfChannel(relation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/removeMutedUserOfChannel", relation);
+        return (data);
+    },
+
+    async addMutedUserOfChannel(relation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/addMutedUserOfChannel", relation);
+        return (data);
+    }
+
+
 };

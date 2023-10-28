@@ -7,6 +7,7 @@ import { fetchChannel } from '../../../store/channel/channelSlice';
 import PlayerMenu from './PlayerMenu';
 import { addBanned } from '../../../store/channel/banSlice';
 import { addAdmin, fetchAdmin, removeAdmin } from '../../../store/channel/adminSlice';
+import { addMuted, removeMuted } from '../../../store/channel/mutedSlice';
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -51,6 +52,12 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             webSocketService.on("adminRemoved", (payload: any) => {
                 store.dispatch(removeAdmin(payload.user));
             });
+            webSocketService.on("userMuted", (payload: any) => {
+                store.dispatch(addMuted(payload.user));
+            });
+            webSocketService.on("userUnmuted", (payload: any) => {
+                store.dispatch(removeMuted(payload.user));
+            });
             
             return () => {
                 webSocketService.off('userLeft');
@@ -59,6 +66,8 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
                 webSocketService.off('userBanned');
                 webSocketService.off('adminAdded');
                 webSocketService.off('adminRemoved');
+                webSocketService.off('userMuted');
+                webSocketService.off('userUnmuted');
             };
     }, []);
 
