@@ -10,8 +10,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 import { IResponseUser, IUserSocket } from 'src/types/types';
 import { UserRelationDto } from 'src/user/dto/user-relation.dto';
-import { BadRequestException } from '@nestjs/common';
 import { ChannelPasswordDto } from 'src/channel/dto/channelPassword.dto';
+import { ChannelUserObjectDto } from 'src/channel/dto/channelUserObject.dto';
 
 /* The handleConnection function typically takes a parameter that represents the client WebSocket connection that has been established. 
 ** The Socket type is provided by the socket.io library and represents a WebSocket connection between the server and a client
@@ -97,7 +97,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const blocked = await this.userRepository.findOne({
       where: {id: payload.receiverId},
     });
-    // console.log('blocked', blocked.username);
     const username = blocked.username;
     const status = blocked.status;
     const reduxPayload = {
@@ -107,10 +106,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const sender = await this.userRepository.findOne({
       where: {id: payload.senderId},
     });
-    console.log('sender', sender.username);
     const socket = this.gatewaySessionManager.getSocket(sender.username);
     socket.emit('userBlocked', reduxPayload);
   }
+
+  @OnEvent('banUser')
+  async handleBanUser(payload: ChannelUserObjectDto) {
+    const socket = this.gatewaySessionManager.getSocket(payload.user.username);
+    socket.emit("userBanned", payload);
+  }
+
+  @OnEvent('addAdmin')
+  async handleAddAdmin(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('adminAdded', payload);
+  }
+
+  @OnEvent('removeAdmin')
+  async handleRemoveAdmin(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('adminRemoved', payload);
+  }
+
 
   @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {
@@ -177,6 +192,33 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(payload);
     this.server.to(payload.id).emit('DmChannelJoined', dmChannel);
   }
+
+  @OnEvent('removeFriend')
+  handleRemoveFriend(@MessageBody("data") data: {users: IResponseUser[]}) {
+      const socket1 = this.gatewaySessionManager.getSocket(data.users[0].username);
+      const socket2 = this.gatewaySessionManager.getSocket(data.users[1].username);
+      if (socket1 && socket2) {
+          socket2.emit("requestRemoveFriend", {username: data.users[0].username, status: data.users[0].status});
+          socket1.emit("requestRemoveFriend", {username: data.users[1].username, status: data.users[1].status});
+      }
+    }
+
+  @OnEvent('addFriend')
+  handleAddFriend(@MessageBody("data") data: {users: IResponseUser[]}) {
+      const socket1 = this.gatewaySessionManager.getSocket(data.users[0].username);
+      if (socket1) {
+          socket1.emit("requestAddFriend", {username: data.users[1].username, status: data.users[1].status});
+      }
+    }
+
+  @OnEvent('addInvitation')
+  handleAddInvitation(@MessageBody("data") data: any) {
+      const socket = this.gatewaySessionManager.getSocket(data.socketUsername);
+      if (socket) {
+          socket.emit("requestAddInvitation", {username: data.username, status: data.status});
+      }
+    }
+
     
   /* any should be specified */
   @SubscribeMessage('onChannelJoin')

@@ -10,6 +10,7 @@ import SearchBar from "./SearchBar";
 import ChannelMenu from "./ChannelMenu"
 import { instance } from "../../../api/axios.api";
 import { toast } from "react-toastify"
+import Scrollbar from "react-scrollbars-custom";
 
 interface ChildProps {
     onSelectChannel: (channel: IChannel) => void;
@@ -62,22 +63,21 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                             <h1 className="text-lg font-bold mb-2 text-gray-600">Channels</h1>
                             <div className="flex flex-col text-black space-y-4">
                                 <SearchBar />
-                                {filteredChannels.map((channel: IChannel) => (
-                                <div key={channel.id} className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                <button
-                                onClick={() => onSelectChannel(channel)} 
-                                className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
-                                </button>
-                                <ChannelMenu channel={channel}/>
-                                {/* <button 
-                                className="bg-red-300 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded"
-                                onClick={() => handleLeaveChannel(channel.id)}
-                                >leave
-                                </button> */}
+                                <div className="flex flex-col text-black space-y-4">
+                                    <Scrollbar style={{ width: 300, height: 300 }}>
+                                        {filteredChannels.map((channel: IChannel) => (
+                                        <div key={channel.id} className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center">
+                                        <button
+                                        onClick={() => onSelectChannel(channel)} 
+                                        className="bg-blue-300 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">{channel.name}
+                                        </button>
+                                        <ChannelMenu channel={channel}/>
+                                        </div>
+                                        </div>
+                                        ))}
+                                    </Scrollbar>
                                 </div>
-                                </div>
-                                ))}
                             </div>
                         </div>
                         <div className="mt-auto">

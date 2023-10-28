@@ -26,7 +26,6 @@ import { randomUUID } from "crypto";
 import Path = require("path");
 import { UserRelationDto } from "./dto/user-relation.dto";
 import { IdUserDto } from "./dto/id-user.dto";
-import { User } from "./entities/user.entity";
 
 const storage = {
   storage: diskStorage({

@@ -75,3 +75,13 @@ export interface IUserSocket extends Socket {
   userId?: number
 }
 
+export interface IUserRelation {
+  idReceiver: number;
+  idSender: number;
+}
+
+export interface IUserUsername {
+  username: string;
+  status: string;
+}
+

@@ -3,10 +3,8 @@ import { RootState, store } from "../../../store/store";
 import AddChannelModal from "./AddChannelModal";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { addChannel } from "../../../store/channel/channelSlice";
-import { IChannel, IUserUsername } from "../../../types/types";
+import { IChannel } from "../../../types/types";
 import { useSelector } from "react-redux";
-import { PlayerService } from "../../../services/player.service";
-import { addBlocked, fetchBlocked } from "../../../store/blocked/blockedSlice";
 
 function AddChannel () {
 

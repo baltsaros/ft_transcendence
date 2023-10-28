@@ -2,15 +2,12 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
-import { IChannelsData, IChannel, IChannelDmData } from 'src/types/types';
+import { IChannelsData, IChannelDmData } from 'src/types/types';
 import { UserService } from '../user/user.service';
 import { ChannelUserDto } from './dto/channelUser.dto';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
-import { toast } from "react-toastify";
-
-import { toNamespacedPath } from 'path';
 
 @Injectable() // Injectable decorator allows to inject the service into other Nestjs components like controllers, other services..
 export class ChannelService {
@@ -176,17 +173,38 @@ export class ChannelService {
     async addUserAsAdmin(channelRelation: ChannelUserDto)
     {
         const channel = await this.channelRepository.findOne({
-        where: { id: channelRelation.idUser, },
+        where: { id: channelRelation.idChannel },
         relations: {
             adminUsers: true,
         },
         })
         const admin = await this.userService.findOneById(channelRelation.idUser);
-        if (!admin) return (false);
+        if (!admin) return (admin);
         channel.adminUsers.push(admin);
-
+        const payload = {
+          channel: channel,
+          user: admin
+        }
         await this.channelRepository.save(channel);
-        return (true);
+        this.eventEmmiter.emit("addAdmin", payload);
+        return (admin);
+    }
+
+    async addBannedUserToChannel(channelRelation: ChannelUserDto) {
+      const channel = await this.channelRepository.findOne({
+        where: {id: channelRelation.idChannel},
+        relations: { bannedUsers: true}
+      });
+      const bannedUser = await this.userService.findOneById(channelRelation.idUser);
+      if (!bannedUser) return (bannedUser);
+      channel.bannedUsers.push(bannedUser);
+      await this.channelRepository.save(channel);
+      const payload = {
+        channel: channel,
+        user: bannedUser
+      }
+      this.eventEmmiter.emit("banUser", payload);
+      return (bannedUser);
     }
 
     async removeUserAsAdmin(channelRelation: ChannelUserDto) {
@@ -194,14 +212,21 @@ export class ChannelService {
           relations: {
             adminUsers: true,
           },
-          where: { id: channelRelation.idUser}
+          where: { id: channelRelation.idChannel}
         });
     
         request.adminUsers = request.adminUsers.filter((user) => {
           return (user.id !== channelRelation.idUser)
         })
-        const isOk = await this.channelRepository.save(request);
-        return (isOk);
+        const admin = await this.userService.findOneById(channelRelation.idUser);
+        if (!admin) return (admin);
+        await this.channelRepository.save(request);
+        const payload = {
+          channel: request,
+          user: admin,
+        }
+        this.eventEmmiter.emit("removeAdmin", payload);
+        return (admin);
       }
     
       async getAllAdminsOfChannel(channelId: ChannelIdDto) {
@@ -219,6 +244,14 @@ export class ChannelService {
         const channel = await this.findOne(relation.idChannel);
         if (channel.password === relation.password) return (true);
         return (false);
+      }
+
+      async getAllBannedUsersOfChannel(channelId: ChannelIdDto) {
+        const request = await this.channelRepository.findOne({
+          where: {id: channelId.idChannel},
+          relations: {bannedUsers: true}
+        });
+        return (request.bannedUsers);
       }
 
 }

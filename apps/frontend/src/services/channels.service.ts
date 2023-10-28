@@ -30,12 +30,12 @@ export const ChannelService = {
     },
 
     async addUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/addUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/addUserAsAdmin/", channelRelation);
         return (data);
     },
 
     async removeUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/removeUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/removeUserAsAdmin/", channelRelation);
         return (data);
     },
 
@@ -49,4 +49,15 @@ export const ChannelService = {
         const { data } = await instance.post<Boolean>("channel/checkIfSamePassword/", channelPassword);
         return (data);
     },
+
+    async getAllBannedUsersOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllBannedUsersOfChannel/", {channelId});
+        return (data);
+    },
+
+    async addUserBannedToChannel(channelRelation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/addBannedUserToChannel/", channelRelation);
+        return (data);
+    }
+    
 };

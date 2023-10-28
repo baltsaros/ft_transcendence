@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem } from "@szhsin/react-menu";
+import { MenuItem } from "@szhsin/react-menu";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -8,10 +8,10 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
-import { IChannelDmData, IResponseUser, IUser, IUserUsername } from "../../../types/types";
+import { IChannelDmData, IResponseUser } from "../../../types/types";
 
 
-function AdminMenu(user: IResponseUser) {
+function NormalPlayerMenu(user: IResponseUser) {
 
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
@@ -43,11 +43,6 @@ function AdminMenu(user: IResponseUser) {
       PlayerService.unblockUser(payload);
     }
 
-    useEffect(() => {
-
-        
-           
-    }, [blocked]);
 
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
@@ -96,10 +91,7 @@ function AdminMenu(user: IResponseUser) {
 
   //render
   return (
-    <div>
-    <div className="text-black bg-blue-500 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none">
-      <Menu direction={"left"} arrow={true} align={"center"} menuButton={<MenuButton className="w-24">{user.username}</MenuButton>}>
-        <div className="bg-gray-500">
+    <div className="bg-gray-500">
           {isFriend(user.username) && <MenuItem disabled>Invite as Friend</MenuItem>}
           {!isFriend(user.username) && <MenuItem>Invite as Friend</MenuItem>}
           
@@ -117,9 +109,6 @@ function AdminMenu(user: IResponseUser) {
           {user.status === "online" && 
             <MenuItem>Invite to game</MenuItem>}
         </div>
-      </Menu>
-    </div>
-    </div>
   )
 }
-export default AdminMenu;
+export default NormalPlayerMenu;

@@ -1,6 +1,5 @@
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useEffect, useState } from "react";
-import { instance } from "../../api/axios.api";
+import { useEffect } from "react";
 import { IChannel, IMessage, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
