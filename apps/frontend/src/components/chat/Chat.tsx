@@ -1,5 +1,5 @@
 import { Scrollbar } from 'react-scrollbars-custom';
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { IChannel, IMessage, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
@@ -32,8 +32,11 @@ useEffect(() => {
 
 useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username))
+        // console.log('ws event received');
+        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username)) {
+            // console.log('redux state updated');
             store.dispatch(addMessage(payload));
+        }
     });
     return () => {
         webSocketService.off('onMessage');
