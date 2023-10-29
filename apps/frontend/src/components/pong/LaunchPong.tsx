@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { MatchService } from "../../services/matches.service";
 import { PlayerService } from "../../services/player.service";
+import backgroundImage from "./real.jpeg"; // Remplacez par le nom de votre image et son extension
 
 const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
 const scoreMax = 5;
@@ -28,36 +29,18 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const player1ScoreRef = useRef(0);
 	const player2ScoreRef = useRef(0);
+	const player1UsernameRef = useRef<string>("");
+	const player2UsernameRef = useRef<string>("");
 
 	useEffect(() => {
 		  // Démarrez la partie lorsque le composant est monté
 		  webSocket.emit('startMatch', { data: { roomId: roomId } });
-	  }, [webSocket, roomId]);
 
-	useEffect(() => {
-		webSocket.on('matchEnded', (data: {userScore: number, opponentScore: number}) => {
-
-			// player1ScoreRef.current = data.userScore;
-			// player2ScoreRef.current = data.opponentScore;
-			// console.log(data.userScore, " - ", data.opponentScore);
-
-			if (username && data.userScore > data.opponentScore)
-			{
-				MatchService.addMatch({
-					username: username,
-					opponent: opponent,
-					scoreUser: data.userScore,
-					scoreOpponent: data.opponentScore
-				});
-			}
-			setMatchEnded(true);
-
-		});
-		return () => {
-			webSocket.off("matchEnded");
-		};
-	});
-
+		  webSocket.on('matchStarted', (data: {player1Username: string, player2Username: string}) => {
+				player1UsernameRef.current = data.player1Username;
+				player2UsernameRef.current = data.player2Username;
+		  });
+	  }, [webSocket]);
 
 	useEffect(() => {
 			const canvas = canvasRef.current;
@@ -69,70 +52,95 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 			if (!ctx)
 				return;
 
-			webSocket.on('pongUpdate', (data: {ballX: number, ballY: number, leftPaddleY: number, rightPaddleY: number, userScore: number, opponentScore: number}) => {
+			webSocket.on('pongUpdate', (data: {ballX: number, ballY: number, leftPaddleY: number, rightPaddleY: number, player1Score: number, player2Score: number}) => {
 					ballXRef.current = data.ballX;
 					ballYRef.current = data.ballY;
 					leftPaddleYRef.current = data.leftPaddleY;
 					rightPaddleYRef.current = data.rightPaddleY;
-					player1ScoreRef.current = data.userScore;
-					player2ScoreRef.current = data.opponentScore;
-
-					// console.log("ball x : ", data.ballX);
-					// console.log("ball y : ", data.ballY);
-					// console.log("left paddle y : ", data.leftPaddleY);
-					// console.log("right paddle y : ", data.rightPaddleY);
-					// console.log("user score : ", data.userScore);
-					// console.log("opponent score : ", data.opponentScore);
+					player1ScoreRef.current = data.player1Score;
+					player2ScoreRef.current = data.player2Score;
 
 					const ballX = ballXRef.current;
 					const ballY = ballYRef.current;
 					const leftPaddleY = leftPaddleYRef.current;
 					const rightPaddleY = rightPaddleYRef.current;
 
-					// Dessinez le terrain
-					ctx.clearRect(0, 0, fieldWidth, fieldHeight);
-					ctx.fillStyle = "black";
-					ctx.fillRect(0, 0, fieldWidth, fieldHeight);
-					ctx.globalAlpha = 0.2;
-					ctx.fillStyle = "white";
-					ctx.font = "200px Arial"
-					ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
-					ctx.globalAlpha = 1;
+					if ((player1ScoreRef.current == 5 || player2ScoreRef.current == 5))
+					{
+						if (player1UsernameRef.current == username && player1ScoreRef.current > player2ScoreRef.current)
+						{
+							MatchService.addMatch({
+								username: username,
+								opponent: opponent,
+								scoreUser: player1ScoreRef.current,
+								scoreOpponent: player2ScoreRef.current
+							});
+						}
+						else if (player2UsernameRef.current == username && player2ScoreRef.current > player1ScoreRef.current)
+						{
+							MatchService.addMatch({
+								username: username,
+								opponent: opponent,
+								scoreUser: player2ScoreRef.current,
+								scoreOpponent: player1ScoreRef.current
+							});
+						}
+						setMatchEnded(true);
+					}
+					else
+					{
+						// Dessinez le terrain
+						ctx.clearRect(0, 0, fieldWidth, fieldHeight);
+						ctx.fillStyle = "black";
+						ctx.fillRect(0, 0, fieldWidth, fieldHeight);
+						ctx.globalAlpha = 0.2;
+						ctx.fillStyle = "white";
+						ctx.font = "200px Arial"
+						ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
+						ctx.globalAlpha = 1;
 
-					// Dessinez la ligne verticale blanche pointillée au milieu du terrain
-					ctx.strokeStyle = "white";
-					ctx.setLineDash([5, 15]); // Motif de ligne pointillée
-					ctx.beginPath();
-					ctx.moveTo(fieldWidth / 2, 0);
-					ctx.lineTo(fieldWidth / 2, fieldHeight);
-					ctx.stroke();
-					ctx.setLineDash([]); // Réinitialisez le motif de ligne
+						// Dessinez la ligne verticale blanche pointillée au milieu du terrain
+						ctx.strokeStyle = "white";
+						ctx.setLineDash([5, 15]); // Motif de ligne pointillée
+						ctx.beginPath();
+						ctx.moveTo(fieldWidth / 2, 0);
+						ctx.lineTo(fieldWidth / 2, fieldHeight);
+						ctx.stroke();
+						ctx.setLineDash([]); // Réinitialisez le motif de ligne
 
-					// Dessinez les raquettes
-					ctx.fillStyle = player1PaddleColor;
-					ctx.fillRect(paddleOffset, leftPaddleY, paddleWidth, paddleHeight);
+						// Dessinez les raquettes
+						ctx.fillStyle = player1PaddleColor;
+						ctx.fillRect(paddleOffset, leftPaddleY, paddleWidth, paddleHeight);
 
-					ctx.fillStyle = player2PaddleColor;
-					ctx.fillRect(fieldWidth - paddleWidth - paddleOffset, rightPaddleY, paddleWidth, paddleHeight);
+						ctx.fillStyle = player2PaddleColor;
+						ctx.fillRect(fieldWidth - paddleWidth - paddleOffset, rightPaddleY, paddleWidth, paddleHeight);
 
-					// Dessinez la balle
-					ctx.fillStyle = "white";
-					ctx.beginPath();
-					ctx.arc(ballX, ballY, radius, 0, 2 * Math.PI);
-					ctx.fill();
+						// Dessinez la balle
+						ctx.fillStyle = "white";
+						ctx.beginPath();
+						ctx.arc(ballX, ballY, radius, 0, 2 * Math.PI);
+						ctx.fill();
 
-					// Dessinez les scores sur le canvas
-					ctx.font = "50px Arial";
-					ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
-					ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+						// Dessinez les scores sur le canvas
+						ctx.font = "50px Arial";
+						ctx.fillText(`${player1ScoreRef.current}`, fieldWidth / 2 - 50, 50);
+						ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
+
+						ctx.font = "20px Arial";
+						ctx.fillText(`${player1UsernameRef.current}`, 35, 35);
+						ctx.fillText(`${player2UsernameRef.current}`, fieldWidth - 120, 35);
+
+					}
+
 
 			});
 
 
 			const moveUser = (e: KeyboardEvent) => {
-				if (e.key === "w")
+				e.preventDefault();
+				if (e.key === "ArrowUp")
 					webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
-				else if (e.key === "s")
+				else if (e.key === "ArrowDown")
 					webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 			};
 
@@ -145,24 +153,8 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 			};
 	}, [webSocket]);
 
-//   useEffect(() => {
-//     webSocket.on('pongUpdate', (data: {ballX: number, ballY: number, leftPaddleY: number, rightPaddleY: number, userScore: number, opponentScore: number}) => {
-// 		ballXRef.current = data.ballX;
-// 		ballYRef.current = data.ballY;
-// 		leftPaddleYRef.current = data.leftPaddleY;
-// 		rightPaddleYRef.current = data.rightPaddleY;
-// 		player1ScoreRef.current = data.userScore;
-// 		player2ScoreRef.current = data.opponentScore;
-// 	});
-
-    // Clean up the socket connection when the component unmounts
-//     return () => {
-//       webSocket.off('pongUpdate');
-//     };
-//   }, []);
-
 	return (
-		matchEnded ?
+		(matchEnded && username && opponent) ?
 		(
 			<div className="game-container">
 				<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -171,7 +163,7 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-400 text-center" id="modal-title">Match Result</h3>
 						</div>
 						<div className="bg-gray-400 p-6 space-y-3 text-center">
-							<p className="text-2xl text-black font-bold"> {username} vs {opponent}</p>
+							<p className="text-2xl text-black font-bold"> {player1UsernameRef.current} vs {player2UsernameRef.current}</p>
 							<div className="flex justify-center items-center space-x-4">
 								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>
@@ -186,13 +178,21 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					</div>
 				</div>
 			</div>
-
 		) : (
-		<div className="game-container">
-			<div className="flex justify-center items-center h-screen">
-				<canvas ref={canvasRef} width={fieldWidth} height={fieldHeight} style={{ border: "5px solid white" }}></canvas>
+			<div className="bg-gray-600 flex flex-col items-center pb-16 mt-20 rounded-md">
+				<div className="mb-4 mt-4 text-white text-left text-lg font-semibold">
+					<p><span className="text-green-400">⬆️</span> to move up</p>
+					<p><span className="text-red-400">⬇️</span> to move down</p>
+				</div>
+				<div className="relative bg-black shadow-2xl">
+					<canvas
+						ref={canvasRef}
+						width={fieldWidth}
+						height={fieldHeight}
+						className="border-4 border-white rounded-md"
+					></canvas>
+				</div>
 			</div>
-		</div>
 		)
 	);
 };

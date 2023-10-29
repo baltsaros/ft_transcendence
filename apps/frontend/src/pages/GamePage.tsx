@@ -46,6 +46,9 @@ const GamePage: React.FC = () => {
 			setModalView(true);
 			setLaunchGame(false);
 			setShowGameSettings(false);
+			// setRoomId(null);
+			// setOpponentUsername(null);
+
 			toast.error("Opponent disconnected.");
 		});
 

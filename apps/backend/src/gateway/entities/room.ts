@@ -18,6 +18,7 @@ export class Room {
 	ballSpeed: number;
 	scoreMax: number;
 	counter: number;
+	currentBallSpeed: number;
 
 	constructor(id: string, player1: Player, player2: Player) {
 		this.player1 = new Player(player1.id, player1.username);
@@ -30,6 +31,7 @@ export class Room {
 		this.gameState = GameState.Starting;
 		this.ball = new Ball();
 		this.ballSpeed = 0;
+		this.currentBallSpeed = 0;
 		this.scoreMax = 5;
 		this.counter = 0;
 	}
@@ -38,12 +40,22 @@ export class Room {
 
 	resetCounter() { this.counter = 0; }
 
-	setBallSpeed(speed: number) { this.ballSpeed = speed; }
+	setBallSpeed(speed: number) {
+		this.ballSpeed = speed;
+		this.currentBallSpeed = speed;
+	}
 
 	setGameState(newState: GameState) {
 		this.gameState = newState;
 	}
 
+	setPlayer1(player: Player) {
+			this.player1 = player;
+	}
+
+	setPlayer2(player: Player) {
+		this.player2 = player;
+	}
 	// Méthode pour obtenir un joueur par son id
 	getPlayerById(id: string): Player | undefined {
 		if (this.player1.id == id)
@@ -68,7 +80,8 @@ export class Room {
 export enum GameState {
 	Playing = 'playing',
 	Ended = 'ended',
-	Starting = 'starting'
+	Starting = 'starting',
+	Stopped = 'stopped'
 	// Autres états du jeu Pong
 }
 

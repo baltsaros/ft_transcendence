@@ -19,7 +19,7 @@ export class Ball {
 		let angle: number;
 
 		if (random < 1)
-				angle = 22.5 + Math.random() * 45;
+			angle = 22.5 + Math.random() * 45;
 		else if (random < 2)
 			angle = 112.5 + Math.random() * 45;
 		else if (random < 3)
@@ -31,15 +31,18 @@ export class Ball {
 
 		this.speedX = ballSpeed * Math.cos(radians);
 		this.speedY = ballSpeed * Math.sin(radians);
-		console.log(this.speedX);
-		console.log(this.speedY);
-
 	}
 
 	setPosition(x: number, y: number)
 	{
 		this.x = x;
 		this.y = y;
+	}
+
+	increaseSpeed() {
+		this.speedX *= 1.0005;
+		console.log(this.speedX);
+		this.speedY *= 1.0005;
 	}
 
 	setSpeedX(speedX: number)
