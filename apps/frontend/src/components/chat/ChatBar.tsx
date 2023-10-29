@@ -1,23 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
 import { RootState } from "../../store/store";
-import { useChatWebSocket } from "../../context/chat.websocket.context";
+import { toast } from "react-toastify"
 
 interface ChildProps {
     selectedChannel: IChannel | null;
 }
 
-type Message = {
-    senderId: string;
-    content: string;
-  };
-
 const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
 
     const user = useAppSelector((state: RootState) => state.user.user);
-    const webSocketService = useChatWebSocket();
     
     /* STATE */
     const [newMessage, setMessage] =  useState("");
@@ -26,10 +20,15 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     /* IMessage type on undefined because useState can be null (TBD)*/
     const handleClick = async () => {
         const message: IMessage = {
-            channelId: selectedChannel?.id,
-            username: user?.username,
+            channelId: selectedChannel!.id,
+            username: user!.username,
             content: newMessage,
         };
+        if (message.content.length === 0)
+        {
+            toast.error("Enter a value");
+            return; 
+        }
         await instance.post('message', message);
         setMessage('');
     }

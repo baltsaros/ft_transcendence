@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { instance } from "../../../api/axios.api";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store/store";
 import { Scrollbar } from 'react-scrollbars-custom';
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
-import { addNewUser } from "../../../store/channel/channelSlice";
-import { IChannel, IResponseUser } from "../../../types/types";
+import { updateChannelPassword, addNewUser } from "../../../store/channel/channelSlice";
+import { IChannel, IChannelPassword, IResponseUser } from "../../../types/types";
 
 export default function SearchBar() {
     
@@ -15,27 +14,21 @@ export default function SearchBar() {
     
     /* STATE */
     const [ input, setInput ] = useState<string>("");
+    const [passwordInput, setPasswordInput] = useState<string>("");
     const channels = useSelector((state: RootState) => state.channel.channel);
 
     const isTrue = (user: IResponseUser) => {
-        // console.log('redux:', userLogged.username);
-        // console.log('channel:', user.username);
         return user.intraId === userLogged.user?.intraId;
     }
 
     const filterFunction = (channel:IChannel) => {
-        console.log('CHANNEL USERS:', channel.users);
         const isUserInChannel = channel.users.some(isTrue);
         return !isUserInChannel
-        console.log('result', isUserInChannel);
     }
 
-    // const AccessibleChannel = channels.filter((channel) => filterFunction(channel));
-    const AccessibleChannel = channels.filter(filterFunction);
+    const AccessibleChannel = channels.filter(filterFunction);    
     
-    console.log('Accessible Channels:', AccessibleChannel);
-    
-    const filteredData = channels.filter((el) => {
+    const filteredData = AccessibleChannel.filter((el) => {
         filterFunction(el);
         if (input === '')
             return el;
@@ -44,22 +37,40 @@ export default function SearchBar() {
     })
     
     /* BEHAVIOUR */
-    const handleJoinChannel = async (id: number) => {
-        try{
+
+    const handleChannelPassword = (channel: IChannel) => {
+        console.log('channel', channel);
+        console.log('password', passwordInput);
+        try {
             const payload = {
-                channelId: id,
+                channelId: channel.id,
                 username: userLogged.username,
+                password: passwordInput,
             }
             webSocketService.emit('onChannelJoin', payload);
-
+            setPasswordInput('');
         } catch(err: any) {
             console.log('join channel failed');
         }
-    }
+    };
+
+    const handleJoinChannel = async (channel: IChannel) => {
+        console.log('channel', channel);
+        try{
+            const payload = {
+            channelId: channel.id,
+            username: userLogged.username,
+        }
+            webSocketService.emit('onChannelJoin', payload);
+            setInput('');
+        } catch(err: any) {
+            console.log('join channel failed');
+        }
+    };
 
     useEffect(() => {
         webSocketService.on('userJoined', (payload: any) => {
-            // console.log('user', payload.user.username, 'joined', payload.channelId);
+            console.log('user', payload.user.username, 'joined', payload.channelId);
             store.dispatch(addNewUser(payload));
         })
         return () => {
@@ -67,7 +78,28 @@ export default function SearchBar() {
         };
     }, []);
 
-    //render
+    useEffect(() => {
+        webSocketService.on('userJoinedError', (payload: string) => {
+            console.log('event received');
+            alert(payload);
+        })
+        return () => {
+            webSocketService.off('userJoinedError');
+        };
+    }, []);
+
+    useEffect(() => {
+        webSocketService.on('setChannelPassword', (payload: IChannelPassword) => {
+            console.log('ws event received');
+            store.dispatch(updateChannelPassword(payload));
+        })
+        return () => {
+            webSocketService.off('setChannelPassword');
+        };
+    }, []);
+
+
+    /* RENDER */
     return (
         <div>
             <input
@@ -79,18 +111,35 @@ export default function SearchBar() {
                 onChange={(e) => setInput(e.target.value.toLocaleLowerCase())}
             />
             <Scrollbar style={{width: 250, height: 250}}>
-
-                <ul>
-                {(input !== "") && AccessibleChannel.map((item) => (
-                    <li key={item.id}>{item.name}
-                    <button 
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded focus:outline-none focus:shadow-outline" 
-                    onClick={e=>handleJoinChannel(item.id)}>Join
+                <div>
+                {(input !== "") && filteredData.map((channel) => (
+                    <div key={channel.id}>
+                    <h3>{channel.name}</h3>
+                    {channel.mode === 'Private' ? (
+                    <div>
+                        <input
+                            type="password"
+                            placeholder="Enter the channel password"
+                            onChange={(e) => setPasswordInput(e.target.value)}
+                        />
+                        <button
+                            className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg"
+                            onClick={() => handleChannelPassword(channel)}
+                        >Join
+                        </button>
+                    </div>
+                ) : (
+                    // Condition for public channels
+                    <button
+                        className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg"
+                        onClick={() => handleJoinChannel(channel)}
+                    >Join
                     </button>
-                    </li>
+                )}
+                </div>
                 ))}
-            </ul>
+            </div>
             </Scrollbar>
-        </div>
+            </div>
     );
 }  

@@ -39,22 +39,12 @@ export interface IResponseUser {
   secret: string;
   rank: number;
   avatar: string;
-
-  // @ManyToMany(() => User)
-  // @JoinTable()
-  // friends: User[];
   status: string;
-  // Change later
-  // @OneToMany()
-  // history: History[];
-
-  // @ManyToMany(() => User)
-  // @JoinTable()
-  // blocked: User[];
   wins: number;
   loses: number;
   createdAt: Date;
 }
+
 /*
 export interface IUserWithStatus {
   username: string;
@@ -131,6 +121,7 @@ export interface IChannel {
   password: string,
   owner: IResponseUser,
   users: IResponseUser[],
+  messages: IMessage[],
 }
 
 export interface IResponseGetChannels {
@@ -138,8 +129,8 @@ export interface IResponseGetChannels {
 }
 
 export interface IMessage {
-  channelId: number | undefined,
-  username: string | undefined,
+  channelId: number,
+  username: string,
   content: string,
 }
 
@@ -161,8 +152,9 @@ export interface IChannelRelation {
 }
 
 export interface IChannelPassword {
-  idChannel: number,
-  password: string,
+  channelId: number,
+  newPassword: string,
+  oldPassword: string,
 }
 
 export interface IPlayersOnServerModalProps {

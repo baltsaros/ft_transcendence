@@ -1,9 +1,8 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards, Patch} from '@nestjs/common';
+import { Controller, Post, Get, Body, Query, UseGuards, Patch} from '@nestjs/common';
 import { ChannelService } from './channel.service';
-import { IChannelDmData, IChannelsData, IGetChannels } from 'src/types/types';
+import { IChannelDmData, IChannelsData } from 'src/types/types';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChannelUserDto } from './dto/channelUser.dto';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ChannelPasswordDto } from './dto/channelPassword.dto';
 import { ChannelIdDto } from './dto/channelIdDto.dto';
 
@@ -12,30 +11,38 @@ import { ChannelIdDto } from './dto/channelIdDto.dto';
 export class ChannelController {
     constructor(
         private readonly ChannelService: ChannelService,
-        private eventEmmiter: EventEmitter2
         ) {}
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     async createChannel(@Body() channelData: IChannelsData) {
         const newChannel = await this.ChannelService.createChannel(channelData);
         return newChannel;
     }
 
     @Post('dmChannel')
+    @UseGuards(JwtAuthGuard)
     async createDmChannel(@Body() channelDmData: IChannelDmData) {
         const newDmChannel = await this.ChannelService.createDmChannel(channelDmData);
         return newDmChannel;
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     async getChannel() {
         return await (this.ChannelService.findAll());
     }
 
     @Get(":id")
-    async fetchMessage(@Param("id") id: number) {
-        // console.log('id', id);
-        return this.ChannelService.fetchMessage(id);
+    @UseGuards(JwtAuthGuard)
+    async fetchMessage(@Query('channelId') channelId: number) {
+        return this.ChannelService.fetchMessage(channelId);
+    }
+
+    @Post('leaveChannel')
+    @UseGuards(JwtAuthGuard)
+    async leaveChannel(@Body() payload: {channelId: number, username: string}) {
+        return (this.ChannelService.leaveChannel(payload));
     }
 
     @Post('kickMemberOfChannel')
@@ -79,5 +86,36 @@ export class ChannelController {
     async getChannelById(@Body() channelId: ChannelIdDto) {
         return (this.ChannelService.findOne(channelId.idChannel));
     }
+
+    @Post('getAllBannedUsers')
+    @UseGuards(JwtAuthGuard)
+    async getAllBannedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+        return (this.ChannelService.getAllBannedUsersOfChannel(channelId));
+    }
+
+    @Post('addBannedUserToChannel')
+    @UseGuards(JwtAuthGuard)
+    async addBannedUserToChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.addBannedUserToChannel(relation));
+    }
+
+    @Post("getAllMutedUsersOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async getAllMutedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+        return (this.ChannelService.getAllMutedUsersOfChannel(channelId));
+    }
+
+    @Post("addMutedUserOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async addMutedUserToChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.addMutedUserToChannel(relation));
+    }
+
+    @Post("removeMutedUserOfChannel")
+    @UseGuards(JwtAuthGuard)
+    async removeMutedUserOfChannel(@Body() relation: ChannelUserDto) {
+        return (this.ChannelService.removeMutedUserOfChannel(relation));
+    }
+
 
 }

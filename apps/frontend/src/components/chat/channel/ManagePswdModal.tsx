@@ -1,0 +1,119 @@
+import { useEffect, useState } from "react";
+import { instance } from "../../../api/axios.api";
+import { useAppSelector } from "../../../store/hooks";
+import { RootState } from "../../../store/store";
+import { IChannel, IChannelData } from "../../../types/types";
+import { toast } from "react-toastify"
+import axios from "axios";
+import { ChannelService } from "../../../services/channels.service";
+
+interface ModalProp {
+    onClose: () => void;
+    channel: IChannel;
+}
+
+const ManagePswdModal: React.FC<ModalProp> = ({onClose, channel}) =>  {
+
+  const user = useAppSelector((state: RootState) => state.user.user);
+  
+  /* STATE */
+    const [password, setPassword] = useState('');
+    const [isPasswordFilled, setIsPasswordFilled] = useState<boolean>(false);
+    const [oldPassword, setOldPassword] = useState('');
+    const [isOldPasswordFilled, setIsOldPasswordFilled] = useState<boolean>(false);
+    
+    /* BEHAVIOR */
+    const handleOldPassword = async(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value != '')
+		{
+			setOldPassword(event.target.value);
+			setIsOldPasswordFilled(true);
+		}
+		else
+			setIsOldPasswordFilled(false);
+    }
+
+    const handleNewPassword = async(event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.value != '')
+		{
+			setPassword(event.target.value);
+			setIsPasswordFilled(true);
+		}
+		else
+		{
+			setIsPasswordFilled(false);
+		}
+    }
+
+    const handleCancel = async() => {
+        onClose();
+    }
+    const handleSubmit = async() => {
+		console.log('oldpaswddd', oldPassword);
+		const payload = {
+			channelId: channel.id,
+			newPassword: password,
+			oldPassword: oldPassword,
+		}
+		try {
+			if (!isOldPasswordFilled) {
+				ChannelService.setPasswordToChannel(payload);
+			}
+			else {
+				// 1. Owner wants to change existing password
+				// 2. Owner wants to remove the password
+				// 1* Check of oldPassword is correct
+				// 2* Post new password to the db and update redux state
+				const isValid = await ChannelService.checkIfSamePassword(payload);
+				console.log('isValid', isValid);
+				if (isValid) {
+					ChannelService.setPasswordToChannel(payload);
+				}
+			}
+			onClose();
+		} catch (error: any) {
+		} 
+    }
+
+    /* RENDERING */
+    return (
+		<div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-opacity-50 bg-black z-50">
+			<div className="bg-gray-400 p-8 rounded-lg shadow-lg flex flex-col">
+				<h2 className="text-2xl font-bold mb-4 text-center text-gray-800">Set Password</h2>
+				<div className="mb-4">
+                    {channel.mode === 'Private' &&
+                    <div>
+					<label htmlFor="channelName" className="block text-sm font-medium text-gray-700">
+						Old Password
+					</label>
+					<input
+						type="password"
+                        id="oldPassword"
+						className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
+						placeholder="Old password"
+						onChange={handleOldPassword}
+					/>
+				</div>}
+				</div>
+                <div className="mb-4">
+					<label htmlFor="channelName" className="block text-sm font-medium text-gray-700">
+						New Password
+					</label>
+					<input
+						type="password"
+                        id="newPassword"
+						className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
+						placeholder="New password"
+						onChange={handleNewPassword}
+					/>
+				</div>
+                <div className="flex justify-between">
+                    <button onClick={handleCancel} className="bg-red-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300">Cancel</button>
+					<button onClick={handleSubmit} className="bg-green-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300">Ok</button>
+				</div>
+                </div>
+		</div>
+	)
+}
+
+export default ManagePswdModal;

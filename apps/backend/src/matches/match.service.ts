@@ -1,4 +1,4 @@
-import { BadGatewayException, BadRequestException, Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
+import { BadGatewayException, Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataStorageService } from "src/helpers/data-storage.service";

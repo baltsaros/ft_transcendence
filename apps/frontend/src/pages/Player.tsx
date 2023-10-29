@@ -6,7 +6,6 @@ import MatchHistory from "../components/MatchHistory";
 import { PlayerService } from "../services/player.service";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import MatchForm from "../components/AddMatch";
 
 export default function Player(){
   
@@ -67,8 +66,7 @@ export default function Player(){
         <MatchHistory
           {...user}
         />
-
-        <MatchForm />
+        
       </div>
     );
 };

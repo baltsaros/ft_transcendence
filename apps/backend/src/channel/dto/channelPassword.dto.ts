@@ -3,9 +3,12 @@ import { IsNotEmpty } from "class-validator";
 export class ChannelPasswordDto {
     
   @IsNotEmpty()
-    idChannel: number;
+    channelId: number;
   
   @IsNotEmpty()
-    password: string;
+    newPassword: string;
+
+    @IsNotEmpty()
+    oldPassword: string;
 
 }  

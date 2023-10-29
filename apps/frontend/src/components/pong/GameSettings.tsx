@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from "react";
-import { Link, Navigate, generatePath, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/gameSettingsData";
 

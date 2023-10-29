@@ -16,25 +16,27 @@ export const ChannelService = {
     },
 
     async setPasswordToChannel(channelPassword: IChannelPassword) {
+        console.log('setPasswordToChannel (front)');
         const { data } = await instance.patch<Boolean>("channel/setPassword/", channelPassword);
         return (data);
     },
 
-    async removePasswordOfChannel(idChannel: number) {
+    async removePasswordOfChannel(channelId: number) {
         const channelPassword = {
-            idChannel,
-            password: "",
+            channelId,
+            oldPassword: "",
+            newPassword: "",
         }
         return (this.setPasswordToChannel(channelPassword));
     },
 
     async addUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/addUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/addUserAsAdmin/", channelRelation);
         return (data);
     },
 
     async removeUserAsAdmin(channelRelation: IChannelRelation) {
-        const { data } = await instance.post<Boolean>("channel/removeUserAsAdmin/", channelRelation);
+        const { data } = await instance.post<IUser>("channel/removeUserAsAdmin/", channelRelation);
         return (data);
     },
 
@@ -47,6 +49,32 @@ export const ChannelService = {
     async checkIfSamePassword(channelPassword: IChannelPassword) {
         const { data } = await instance.post<Boolean>("channel/checkIfSamePassword/", channelPassword);
         return (data);
-    }
+    },
+
+    async getAllBannedUsersOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllBannedUsersOfChannel/", {channelId});
+        return (data);
+    },
+
+    async addUserBannedToChannel(channelRelation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/addBannedUserToChannel/", channelRelation);
+        return (data);
+    },
     
+    async getAllMutedUsersOfChannel(channelId: number) {
+        const { data } = await instance.post<IUser[]>("channel/getAllMutedUsersOfChannel", {channelId});
+        return (data);
+    },
+
+    async removeMutedUserOfChannel(relation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/removeMutedUserOfChannel", relation);
+        return (data);
+    },
+
+    async addMutedUserOfChannel(relation: IChannelRelation) {
+        const { data } = await instance.post<IUser>("channel/addMutedUserOfChannel", relation);
+        return (data);
+    }
+
+
 };

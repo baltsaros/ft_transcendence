@@ -1,12 +1,8 @@
 import Cookies from "js-cookie";
-import React, { useRef, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Socket } from "socket.io-client";
+import { useRef, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { MatchService } from "../../services/matches.service";
-import { PlayerService } from "../../services/player.service";
-import backgroundImage from "./real.jpeg"; // Remplacez par le nom de votre image et son extension
 
-const colors = ["white", "teal", "yellow", "orange", "red", "green", "purple"];
 const scoreMax = 5;
 const fieldWidth = 800;
 const fieldHeight = 600;
@@ -65,7 +61,7 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					const leftPaddleY = leftPaddleYRef.current;
 					const rightPaddleY = rightPaddleYRef.current;
 
-					if ((player1ScoreRef.current == 5 || player2ScoreRef.current == 5))
+					if ((player1ScoreRef.current == scoreMax || player2ScoreRef.current == scoreMax))
 					{
 						if (player1UsernameRef.current == username && player1ScoreRef.current > player2ScoreRef.current)
 						{

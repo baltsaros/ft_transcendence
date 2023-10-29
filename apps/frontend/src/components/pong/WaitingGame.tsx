@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
-import { Socket, SocketOptions } from "socket.io-client";
-import { usePongWebSocket } from "../../context/pong.websocket.context";
-import PongWebSocketService from "../../services/pong.websocket.service";
+import { Socket } from "socket.io-client";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 

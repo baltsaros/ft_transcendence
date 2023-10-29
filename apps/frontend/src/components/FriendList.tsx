@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { IResponseUser, IUserUsername } from "../types/types";
+import { useEffect } from "react";
+import { IUserUsername } from "../types/types";
 import ToggleMenuFriendList from "./ToggleMenuFriendList";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
@@ -8,9 +8,10 @@ import FriendInvitations from "./FriendInvitations";
 import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
-import { fetchInvitations } from "../store/user/invitationSlice";
-import { fetchFriends } from "../store/user/friendsSlice";
+import { addInvitation, fetchInvitations } from "../store/user/invitationSlice";
+import { addFriend, fetchFriends, removeFriend } from "../store/user/friendsSlice";
 import { fetchAllUsers } from "../store/user/allUsersSlice";
+import { useChatWebSocket } from "../context/chat.websocket.context";
 
 
 function FriendList() {
@@ -21,6 +22,7 @@ function FriendList() {
   const userConnected = useSelector((state: RootState) => state.user.user);
   const isOnline = (value: IUserUsername) => value.status === 'online';
   const isOffline = (value: IUserUsername) => value.status === 'offline';
+  const webSocketService = useChatWebSocket();
 
   useEffect(() => {
     if (userConnected)
@@ -30,6 +32,18 @@ function FriendList() {
       store.dispatch(fetchAllUsers());
     }
 }, []);
+
+  useEffect(() => {
+    webSocketService.on("requestRemoveFriend", (payload: any) => {
+      store.dispatch(removeFriend(payload));
+    });
+    webSocketService.on("requestAddInvitation", (payload: any) => {
+      store.dispatch(addInvitation(payload));
+    });
+    webSocketService.on("requestAddFriend", (payload: any) => {
+      store.dispatch(addFriend(payload));
+    });
+  }, []);
 
   //render
   return (
@@ -66,7 +80,7 @@ function FriendList() {
           <MenuHeader className="text-white">Invitations : {invitationList.length} </MenuHeader>
           <div className="bg-gray-500">
             {invitationList.length > 0 && invitationList.map((invitation) => (
-              <FriendInvitations key={invitation.username} {...invitation} />
+             <FriendInvitations key={invitation.username} {...invitation} />
             ))}
             </div >
             {!invitationList.length &&

@@ -47,7 +47,7 @@ export class Channel {
             referencedColumnName: "id"
         }
     })
-    blockedUsers: User[];
+    mutedUsers: User[];
 
     @ManyToMany(() => User)
     @JoinTable({

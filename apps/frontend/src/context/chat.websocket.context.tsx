@@ -2,7 +2,6 @@
 import { useState, createContext, useContext, useEffect } from 'react';
 import ChatWebSocketService from '../services/chat.websocket.service';
 import Cookies from 'js-cookie';
-import { getUser } from '../hooks/getUser';
 
 /* Context */
 const ChatWebSocketContext = createContext<ChatWebSocketService | undefined>(undefined);
@@ -17,7 +16,8 @@ export const ChatWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   /* Define the state/data to share along the React component tree */
   const [ChatwebSocketService, setChatWebSocketService] = useState<ChatWebSocketService | undefined>();
   useEffect(() => {
-      const user = Cookies.get("username");
+    const user = Cookies.get('username');
+      // console.log('user', user);
       if (user) {
         setChatWebSocketService(new ChatWebSocketService(user));
       }

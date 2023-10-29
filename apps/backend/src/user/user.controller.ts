@@ -26,7 +26,6 @@ import { randomUUID } from "crypto";
 import Path = require("path");
 import { UserRelationDto } from "./dto/user-relation.dto";
 import { IdUserDto } from "./dto/id-user.dto";
-import { User } from "./entities/user.entity";
 
 const storage = {
   storage: diskStorage({
@@ -152,6 +151,13 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   blockUser(@Body() invitation: UserRelationDto) {
     return (this.userService.blockUser(invitation));
+  }
+
+  @Post("getAllBlocked")
+  @UseGuards(JwtAuthGuard)
+  getAllBlocked(@Body() payload: {id: number}) {
+    const id = payload.id;
+    return (this.userService.getAllBlocked(id));
   }
 
   @Post("getBlocked")

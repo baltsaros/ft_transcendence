@@ -1,4 +1,3 @@
-import { StorageEngine } from "multer";
 import { GameSettingsData } from "./gameSettingsData";
 
 export class Player {
