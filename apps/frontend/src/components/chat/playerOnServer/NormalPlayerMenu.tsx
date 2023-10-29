@@ -69,16 +69,9 @@ function NormalPlayerMenu(user: IResponseUser) {
             receiver: user.username,
             password: '',
         }
-        // 1. The new instance in the channel table could be done directly in the backend when emitting the event
         const newDmChannel = await instance.post('channel/dmChannel', channelData);
-        const payload = {
-          user: strings,
-          id: newDmChannel.data.id,
-        }
-        webSocketService.emit('onNewDmChannel', payload);
         if (newDmChannel.data) {
           toast.success("Channel successfully added!");
-          // store.dispatch(addChannel(newDmChannel.data));
         }
         else {
           toast.error("Channel already exists");

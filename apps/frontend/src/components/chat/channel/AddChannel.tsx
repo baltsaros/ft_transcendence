@@ -38,6 +38,7 @@ function AddChannel () {
 
        useEffect(() => {
         webSocketService.on('DmChannelJoined', (payload: IChannel) => {
+          console.log('ws event received');
           store.dispatch(addChannel(payload));
         });
         return () => {
