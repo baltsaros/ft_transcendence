@@ -15,11 +15,10 @@ const GamePage: React.FC = () => {
 	const [matchEnded, setMatchEnded] = useState<boolean>(false);
 	const [launchGame, setLaunchGame] = useState(false);
 	const [roomId, setRoomId] = useState<string | null>(null);
-	const [gameSettingsData, setGameSettingsData] = useState<GameSettingsData | null>(null);
-	const [radius, setRadius] = useState<number | null>(null);
-	const [ballSpeed, setBallSpeed] = useState<number | null>(null);
-	const [color, setColor] = useState<string | null>(null);
 	const [opponentUsername, setOpponentUsername] = useState<string | null>(null);
+	const [player1PaddleColor, setPlayer1PaddleColor] = useState<string | null>(null);
+	const [player2PaddleColor, setPlayer2PaddleColor] = useState<string | null>(null);
+	const [radius, setRadius] = useState<number | null>(null);
 
 	const handleCloseModal = () => {
 		setModalView(false);
@@ -36,7 +35,6 @@ const GamePage: React.FC = () => {
 	useEffect(() => {
 
 		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
-			console.log(data.opponentUsername);
 			setModalView(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
@@ -48,12 +46,17 @@ const GamePage: React.FC = () => {
 			setModalView(true);
 			setLaunchGame(false);
 			setShowGameSettings(false);
+			// setRoomId(null);
+			// setOpponentUsername(null);
+
 			toast.error("Opponent disconnected.");
 		});
 
-		webSocketRef.current?.on('settingsSuccess', (data) => {
-			const settings = new GameSettingsData(data.ballSpeed, data.radius, data.color);
-			setGameSettingsData(settings);
+		webSocketRef.current?.on('settingsSuccess', (data: {radius: number, player1PaddleColor: string, player2PaddleColor: string}) => {
+			setPlayer1PaddleColor(data.player1PaddleColor);
+			setPlayer2PaddleColor(data.player2PaddleColor);
+			setRadius(data.radius);
+
 			setShowGameSettings(false);
 			setLaunchGame(true);
 		});
@@ -67,7 +70,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
 			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && gameSettingsData && webSocketRef.current && roomId && !matchEnded && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} gameSettings={gameSettingsData} opponent={opponentUsername}/> )}
+			{launchGame && webSocketRef.current && roomId && radius && opponentUsername && player1PaddleColor && player2PaddleColor && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} radius={radius} player1PaddleColor={player1PaddleColor} player2PaddleColor={player2PaddleColor} opponent={opponentUsername}/> )}
 		</div>
 	);
 };

@@ -51,11 +51,11 @@ const ChannelMenu: React.FC<ChildProps> = ({channel}) => {
         toast.error(err.toString());
     }
 }
-    
+
     /* RENDER */
     return (
-      <div className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg">
-        <Menu direction={"right"} arrow={true} align={"center"} menuButton={<MenuButton className="text-sm w-1">+</MenuButton>}>
+      <div className="text-center">
+        <Menu direction={"right"} arrow={true} align={"center"} menuButton={<MenuButton className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg text-sm">+</MenuButton>}>
           <div className="bg-gray-500">
             <MenuItem onClick={() => handleLeaveChannel(channel.id)}>Leave Channel</MenuItem>
             {isOwner &&

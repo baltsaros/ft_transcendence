@@ -53,9 +53,9 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             placeholder="Type your message..."
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            className="flex-grow p-2 border rounded-l-lg"
+            className="flex-grow p-2 border rounded-lg"
             />
-        <button className="bg-blue-500 text-white p-3 rounded-r-lg" onClick={handleClick}>Send</button>
+        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleClick}>Send</button>
         </div>
     );
 }
