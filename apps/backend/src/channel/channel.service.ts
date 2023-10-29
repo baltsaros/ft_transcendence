@@ -28,10 +28,9 @@ export class ChannelService {
             mode: channelData.mode,
             owner: user,
             password: channelData.password,
+            users: [user],
+            messages: [],
         });
-        newChannel.messages = [];
-        newChannel.users = [user];
-        newChannel.messages = [];
         const channel = await this.channelRepository.save(newChannel);
         this.eventEmmiter.emit('newChannel', channel);
         return channel;
@@ -50,9 +49,12 @@ export class ChannelService {
         owner: sender,
         password: channelDmData.password,
         users: [sender, receiver],
+        messages: [],
       });
       const dmChannel = await this.channelRepository.save(newDmChannel);
-      return(dmChannel);
+      // console.log('dmChannel', dmChannel);
+      this.eventEmmiter.emit('onNewDmChannel', dmChannel);
+      return dmChannel;
     }
 
     async leaveChannel(payload: any) {

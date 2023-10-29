@@ -40,9 +40,9 @@ const PlayersOnChannel: React.FC<ChildProps> = ({selectedChannel}) => {
             webSocketService.on("userJoined", (payload: any) => {
                 store.dispatch(fetchChannel());
             });
-            webSocketService.on("DmChannelJoined", (payload: any) => {
-                store.dispatch(fetchChannel());
-            });
+            // webSocketService.on("DmChannelJoined", (payload: any) => {
+            //     store.dispatch(fetchChannel());
+            // });
             webSocketService.on("userBanned",(payload: any) => {
                 store.dispatch(addBanned(payload.user));
             });
