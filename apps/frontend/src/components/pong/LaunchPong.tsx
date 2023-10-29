@@ -91,8 +91,8 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 						ctx.fillRect(0, 0, fieldWidth, fieldHeight);
 						ctx.globalAlpha = 0.2;
 						ctx.fillStyle = "white";
-						ctx.font = "200px Arial"
-						ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
+						// ctx.font = "200px Arial"
+						// ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
 						ctx.globalAlpha = 1;
 
 						// Dessinez la ligne verticale blanche pointillée au milieu du terrain
@@ -130,8 +130,6 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 
 
 			});
-
-
 			const moveUser = (e: KeyboardEvent) => {
 				e.preventDefault();
 				if (e.key === "ArrowUp")
