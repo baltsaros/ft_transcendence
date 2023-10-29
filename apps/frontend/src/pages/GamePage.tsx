@@ -6,6 +6,8 @@ import GameSettings from "../components/pong/GameSettings";
 import { GameSettingsData } from '../../../backend/src/gateway/entities/room';
 import PongLauncher from "../components/pong/LaunchPong";
 import { toast } from "react-toastify";
+import { AuthService } from "../services/auth.service";
+import { useChatWebSocket } from "../context/chat.websocket.context";
 
 const GamePage: React.FC = () => {
 
@@ -19,6 +21,7 @@ const GamePage: React.FC = () => {
 	const [player1PaddleColor, setPlayer1PaddleColor] = useState<string | null>(null);
 	const [player2PaddleColor, setPlayer2PaddleColor] = useState<string | null>(null);
 	const [radius, setRadius] = useState<number | null>(null);
+    const webSocketService = useChatWebSocket();
 
 	const handleCloseModal = () => {
 		setModalView(false);
@@ -32,6 +35,17 @@ const GamePage: React.FC = () => {
 		});
 	}
 
+	const updateInGameStatus = async () => {
+		const userUpdate = await AuthService.updateStatus("inGame");
+		webSocketService.emit("updateStatus", {data: {userUpdate}});
+	};
+
+	const updateOnlineStatus = async () => {
+
+		const userUpdate = await AuthService.updateStatus("online");
+		webSocketService.emit("updateStatus", {data: {userUpdate}});
+	};
+
 	useEffect(() => {
 
 		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
@@ -39,6 +53,14 @@ const GamePage: React.FC = () => {
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
 			setOpponentUsername(data.opponentUsername);
+			updateInGameStatus();
+		});
+
+		webSocketRef.current?.on('MatchEnded', () =>
+		{
+			// setRoomId(null);
+			// setOpponentUsername(null);
+			updateOnlineStatus();
 		});
 
 		webSocketRef.current?.on('OpponentDisconnected', () =>
@@ -48,7 +70,7 @@ const GamePage: React.FC = () => {
 			setShowGameSettings(false);
 			// setRoomId(null);
 			// setOpponentUsername(null);
-
+			updateOnlineStatus();
 			toast.error("Opponent disconnected.");
 		});
 
@@ -62,6 +84,7 @@ const GamePage: React.FC = () => {
 		});
 
 		return () => {
+			updateOnlineStatus();
 			webSocketRef.current?.disconnect();
 		  };
 	}, []);

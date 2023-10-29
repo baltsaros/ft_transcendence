@@ -121,8 +121,8 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 						<button onClick={closeModal} className="col-span-1 px-4 py-2 text-white font-semibold bg-red-600 hover:bg-red-500  transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400">Cancel</button>
 					</Link>
 					<button onClick={handleReset} className="col-start-3 col-span-1 px-4 py-2 text-white font-semibold bg-yellow-500 hover:bg-yellow-400  transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">Reset</button>
-					<button 
-					onClick={() => { sendGameSettings(); }} 
+					<button
+					onClick={() => { sendGameSettings(); }}
 					className={`col-start-5 col-span-1 px-4 py-2 text-white font-semibold ${paddleColor ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-400 cursor-not-allowed'} transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 ${paddleColor ? 'focus:ring-green-400' : ''}`}
 					disabled={!paddleColor}>Submit</button>
 								</div>
