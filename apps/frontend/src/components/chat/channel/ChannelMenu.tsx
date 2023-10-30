@@ -10,9 +10,10 @@ import { IChannel } from "../../../types/types";
 
 interface ChildProps {
   channel: IChannel;
+  onSelectChannel: (channel: IChannel | null) => void;
 }
 
-const ChannelMenu: React.FC<ChildProps> = ({channel}) => {
+const ChannelMenu: React.FC<ChildProps> = ({channel, onSelectChannel}) => {
   const userLogged = useSelector((state: RootState) => state.user);  
   
   /* STATE */
@@ -36,15 +37,15 @@ const ChannelMenu: React.FC<ChildProps> = ({channel}) => {
     /* BEHAVIOUR */
   const handleLeaveChannel = async(id: number) => {
     try{
-      // console.log('channel', channel);
         const payload = {
             channelId: id,
             username: userLogged.username,
         }
         const response = await instance.post("channel/leaveChannel", payload);
-        // webSocketService.emit('onChannelLeave', payload);
-        if (response)
-            store.dispatch(removeUser(payload));
+        if (response) {
+          store.dispatch(removeUser(payload));
+          onSelectChannel(null);
+        }
     } catch(error: any) {
         const err = error.response?.data.message;
         toast.error(err.toString());

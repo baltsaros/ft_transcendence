@@ -6,6 +6,7 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { store } from "../../../store/store";
 import { updateChannelPassword, addNewUser } from "../../../store/channel/channelSlice";
 import { IChannel, IChannelPassword, IResponseUser } from "../../../types/types";
+import { toast } from "react-toastify";
 
 export default function SearchBar() {
     
@@ -39,8 +40,8 @@ export default function SearchBar() {
     /* BEHAVIOUR */
 
     const handleChannelPassword = (channel: IChannel) => {
-        console.log('channel', channel);
-        console.log('password', passwordInput);
+        // console.log('channel', channel);
+        // console.log('password', passwordInput);
         try {
             const payload = {
                 channelId: channel.id,
@@ -55,9 +56,12 @@ export default function SearchBar() {
     };
 
     const handleJoinChannel = async (channel: IChannel) => {
-        console.log('channel', channel);
         try{
-            // 1. Take channel search if user is banned 
+            if (channel.banned) {if (channel.banned.some((b) =>
+                b.username === userLogged.username
+            )) {
+                return toast.error("You have been banned from this channel");
+            }}
             const payload = {
             channelId: channel.id,
             username: userLogged.username,
@@ -65,7 +69,7 @@ export default function SearchBar() {
             webSocketService.emit('onChannelJoin', payload);
             setInput('');
         } catch(err: any) {
-            console.log('join channel failed');
+            console.log('join channel failed', err);
         }
     };
 

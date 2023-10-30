@@ -32,11 +32,7 @@ useEffect(() => {
 
 useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
-        console.log('ws event received');
-        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username)) {
-            console.log('redux state updated');
             store.dispatch(addMessage(payload));
-        }
     });
     return () => {
         webSocketService.off('onMessage');

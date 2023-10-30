@@ -13,13 +13,13 @@ const chatPage: React.FC = () => {
     const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
 
     /* BEHAVIOR */
-    const handleSelectedChannel = (channel: IChannel) => {
+    const handleSelectedChannel = (channel: IChannel | null) => {
         setSelectedChannel(channel);}
 
     /* RENDER */
     return (
     <div className="flex items-stretch justify-center">
-        <Channels onSelectChannel={handleSelectedChannel} />
+        <Channels onSelectChannel={handleSelectedChannel}/>
         <Chat selectedChannel={selectedChannel} />
         { <PlayersOnChannel selectedChannel={selectedChannel} /> }
     </div>
