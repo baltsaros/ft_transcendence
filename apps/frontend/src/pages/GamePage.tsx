@@ -48,12 +48,14 @@ const GamePage: React.FC = () => {
 
 	useEffect(() => {
 
+		if (modalView)
+			updateInGameStatus();
+
 		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
 			setModalView(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
 			setOpponentUsername(data.opponentUsername);
-			updateInGameStatus();
 		});
 
 		webSocketRef.current?.on('MatchEnded', () =>

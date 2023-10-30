@@ -62,14 +62,19 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 		if (player) {
 			let kFactor: number;
 
-			if (player.rank < 1200) {
+			if (player.rank < 1200)
+			{
 				if (scoreDifference > 0)
 					kFactor = 60;
 				else
 					kFactor = 20;
-			} else if (player.rank < 1800) {
+			}
+			else if (player.rank < 1800)
+			{
 				kFactor = 40;
-			} else {
+			}
+			else
+			{
 				if (scoreDifference > 0)
 					kFactor = 20;
 				else
