@@ -48,7 +48,7 @@ export class UserService {
       avatar: createUserDto.avatar,
       twoFactorAuth: false,
       secret: "",
-      rank: 0,
+      rank: 1000,
       wins: 0,
       loses: 0,
       status: "",
@@ -118,6 +118,17 @@ export class UserService {
       },
     });
     return user;
+  }
+
+  async updateElo(IntraId: number, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({
+      where: { intraId: IntraId },
+    });
+
+	if (!user) throw new NotFoundException("User not found");
+    const data = await this.userRepository.save(updateUserDto);
+    if (!data) throw new NotFoundException("Update failed");
+		return data;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {

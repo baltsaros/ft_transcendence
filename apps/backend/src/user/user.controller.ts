@@ -177,4 +177,10 @@ export class UserController {
   unblockUser(@Body() relation: UserRelationDto) {
     return (this.userService.unblockUser(relation));
   }
+
+	@Post("updateElo")
+	@UseGuards(JwtAuthGuard)
+	updateElo(@Body() player: UpdateUserDto) {
+	  return (this.userService.updateElo(player.intraId, player));
+	}
 }

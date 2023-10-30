@@ -87,16 +87,16 @@ function NormalPlayerMenu(user: IResponseUser) {
     <div className="bg-gray-500">
           {isFriend(user.username) && <MenuItem disabled>Invite as Friend</MenuItem>}
           {!isFriend(user.username) && <MenuItem>Invite as Friend</MenuItem>}
-          
+
           <MenuItem>
             <Link to={"/player/" + user.username}>View profile</Link>
           </MenuItem>
 
           {isBlocked(user.username) && <MenuItem onClick={handleUnblockUser}>Unblock User</MenuItem>}
           {!isBlocked(user.username) && <MenuItem onClick={handleBlockUser}>Block User</MenuItem>}
-          
+
           <MenuItem onClick={handleDirectMessage}>Direct Message</MenuItem>
-          
+
           {(user.status === "offline" || user.status === "inGame") && 
             <MenuItem disabled>Invite to game</MenuItem>}
           {user.status === "online" && 

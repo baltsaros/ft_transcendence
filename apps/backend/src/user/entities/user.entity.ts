@@ -38,7 +38,7 @@ export class User {
   @Column({default: false})
   secret: string;
 
-  @Column()
+  @Column({default: 1000})
   rank: number;
 
   @Column()
