@@ -190,7 +190,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const player2PaddleColor = room.player2.gameSettings.userPaddlecolor;
 
 					// Envoyez les paramètres générés à tous les joueurs de la salle
-
 					this.server.to(room.player1.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
 					this.server.to(room.player2.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
 				}
@@ -231,34 +230,27 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	}
 
 	private updateScore(room: Room, side: string): void {
-		room.ball.setSpeedX(-room.ball.speedX);
-
 		room.ball.setPosition(room.fieldWidth / 2, room.fieldHeight / 2);
 
-		let randomAngle = Math.random();
+		let randomAngle = Math.random() * 2;
 
 		if (side === "right")
 		{
-			if (randomAngle < 0.5)
+			if (randomAngle < 1)
 				randomAngle = 22.5 + Math.random() * 45;
-			else
+			else if (randomAngle < 2)
 				randomAngle = 292.5 + Math.random() * 45;
 		}
 		else if (side === "left")
 		{
-			if (randomAngle < 0.5)
+			if (randomAngle < 1)
 				randomAngle = 112.5 + Math.random() * 45;
-			else
+			else if (randomAngle < 2)
 				randomAngle = 202.5 + Math.random() * 45;
 		}
 
-		if (randomAngle < 0.5)
-			randomAngle = 22.5 + Math.random() * 45;
-		else
-			randomAngle = 292.5 + Math.random() * 4
 		// Convertir l'angle en radians
 		const radians = (randomAngle * Math.PI) / 180;
-
 		// Calculer les composantes X et Y en utilisant des fonctions trigonométriques
 		room.ball.setSpeedX(room.ballSpeed * Math.cos(radians));
 		room.ball.setSpeedY(room.ballSpeed * Math.sin(radians));
@@ -309,8 +301,12 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 				}
 
 				if (room.gameState === GameState.Playing && (room.player1.score == room.scoreMax || room.player2.score == room.scoreMax))
+				{
 					room.setGameState(GameState.Ended);
-	}
+					this.server.to(room.player1.id).emit('MatchEnded', {});
+					this.server.to(room.player2.id).emit('MatchEnded', {});
+				}
+			}
 
 		private async gameLoop(room: Room) {
 			const updateRate = 1000 / 60; // Mise à jour du jeu 60 fois par seconde
@@ -328,7 +324,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					// Envoyez les mises à jour aux clients
 					this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
 					this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
-
 					lastUpdate = currentTime;
 				}
 
@@ -336,8 +331,9 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			}
 			if (room.gameState === GameState.Ended)
 			{
-				this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
-				this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
+				// this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
+				// this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
+				this.pongRooms.delete(room.id);
 			}
 		}
 

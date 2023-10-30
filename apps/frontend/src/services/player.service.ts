@@ -1,5 +1,5 @@
 import { instance } from "../api/axios.api";
-import {  IUserRelation, IUser, IUserPlayerProfileData, IUserUsername } from "../types/types";
+import {  IUserRelation, IUser, IUserPlayerProfileData, IUserUsername, IResponseUser } from "../types/types";
 
 export const PlayerService = {
 
@@ -48,6 +48,13 @@ export const PlayerService = {
     const { data } = await instance.post("user/acceptInvitation", invitation);
     if (data) return (true);
     return (false);
+  },
+
+  async updateElo(player: IResponseUser)
+  {
+    const { data } = await instance.post("user/updateElo", player);
+    if (data) return (true);
+    return
   },
 
   async refuseInvitation(invitation: IUserRelation)

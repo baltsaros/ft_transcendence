@@ -45,7 +45,11 @@ const Header: FC = () => {
               {avatar.length ? (
                 <img
                   src={avatar}
-                  style={{ width: "93.1px", height: "70px", borderRadius: "5%" }}
+                  style={{
+                    width: "93.1px",
+                    height: "70px",
+                    borderRadius: "5%",
+                  }}
                   alt="[AVA]"
                 />
               ) : (
@@ -64,13 +68,15 @@ const Header: FC = () => {
                 }
               >
                 <div className="bg-gray-500 text-black">
-                  <MenuHeader>
+                  <MenuHeader
+                    className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
+                  >
                     <li>
                       <NavLink
                         to={"player/" + username}
                         className={({ isActive }) =>
                           isActive
-                            ? "py-2 text-white hover:text-white/50"
+                            ? "py-2 text-white"
                             : "text-white/50 hover:text-white"
                         }
                       >
@@ -78,13 +84,15 @@ const Header: FC = () => {
                       </NavLink>
                     </li>
                   </MenuHeader>
-                  <MenuHeader>
+                  <MenuHeader
+                    className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
+                  >
                     <li>
                       <NavLink
                         to={"edit"}
                         className={({ isActive }) =>
                           isActive
-                            ? "py-2 text-white hover:text-white/50"
+                            ? "py-2 text-white"
                             : "text-white/50 hover:text-white"
                         }
                       >
@@ -102,7 +110,7 @@ const Header: FC = () => {
         </nav>
       )}
       {isAuth ? (
-       <Logout />
+        <Logout />
       ) : (
         <a
           className="py-2 text-white/50 hover:text-white ml-auto"

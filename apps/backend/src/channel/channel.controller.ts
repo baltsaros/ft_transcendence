@@ -1,121 +1,127 @@
-import { Controller, Post, Get, Body, Query, UseGuards, Patch} from '@nestjs/common';
-import { ChannelService } from './channel.service';
-import { IChannelDmData, IChannelsData } from 'src/types/types';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { ChannelUserDto } from './dto/channelUser.dto';
-import { ChannelPasswordDto } from './dto/channelPassword.dto';
-import { ChannelIdDto } from './dto/channelIdDto.dto';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Query,
+  UseGuards,
+  Patch,
+  Param,
+} from "@nestjs/common";
+import { ChannelService } from "./channel.service";
+import { IChannelDmData, IChannelsData } from "src/types/types";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { ChannelUserDto } from "./dto/channelUser.dto";
+import { ChannelPasswordDto } from "./dto/channelPassword.dto";
+import { ChannelIdDto } from "./dto/channelIdDto.dto";
 
-
-@Controller('channel')
+@Controller("channel")
 export class ChannelController {
-    constructor(
-        private readonly ChannelService: ChannelService,
-        ) {}
+  constructor(private readonly ChannelService: ChannelService) {}
 
-    @Post()
-    @UseGuards(JwtAuthGuard)
-    async createChannel(@Body() channelData: IChannelsData) {
-        const newChannel = await this.ChannelService.createChannel(channelData);
-        return newChannel;
-    }
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async createChannel(@Body() channelData: IChannelsData) {
+    const newChannel = await this.ChannelService.createChannel(channelData);
+    return newChannel;
+  }
 
-    @Post('dmChannel')
-    @UseGuards(JwtAuthGuard)
-    async createDmChannel(@Body() channelDmData: IChannelDmData) {
-        const newDmChannel = await this.ChannelService.createDmChannel(channelDmData);
-        return newDmChannel;
-    }
+  @Post("dmChannel")
+  @UseGuards(JwtAuthGuard)
+  async createDmChannel(@Body() channelDmData: IChannelDmData) {
+    const newDmChannel = await this.ChannelService.createDmChannel(
+      channelDmData
+    );
+    return newDmChannel;
+  }
 
-    @Get()
-    @UseGuards(JwtAuthGuard)
-    async getChannel() {
-        return await (this.ChannelService.findAll());
-    }
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getChannel() {
+    return await this.ChannelService.findAll();
+  }
 
-    @Get(":id")
-    @UseGuards(JwtAuthGuard)
-    async fetchMessage(@Query('channelId') channelId: number) {
-        return this.ChannelService.fetchMessage(channelId);
-    }
+  @Get("getPass/:channelId")
+  @UseGuards(JwtAuthGuard)
+  async getHashedPass(@Param("channelId") channelId: string) {
+    return await this.ChannelService.getHashedPass(channelId);
+  }
 
-    @Post('leaveChannel')
-    @UseGuards(JwtAuthGuard)
-    async leaveChannel(@Body() payload: {channelId: number, username: string}) {
-        return (this.ChannelService.leaveChannel(payload));
-    }
+  @Get(":id")
+  @UseGuards(JwtAuthGuard)
+  async fetchMessage(@Query("channelId") channelId: number) {
+    return this.ChannelService.fetchMessage(channelId);
+  }
 
-    @Post('kickMemberOfChannel')
-    @UseGuards(JwtAuthGuard)
-    async kickMemberOfChannel(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.kickMemberOfChannel(relation));
-    }
+  @Post("leaveChannel")
+  @UseGuards(JwtAuthGuard)
+  async leaveChannel(@Body() payload: { channelId: number; username: string }) {
+    return this.ChannelService.leaveChannel(payload);
+  }
 
-    @Patch('setPassword')
-    @UseGuards(JwtAuthGuard)
-    async setPasswordChannel(@Body() channelPassword: ChannelPasswordDto) {
-        return (this.ChannelService.setPasswordToChannel(channelPassword));
-    }
+  @Post("kickMemberOfChannel")
+  @UseGuards(JwtAuthGuard)
+  async kickMemberOfChannel(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.kickMemberOfChannel(relation);
+  }
 
-    @Post('addUserAsAdmin')
-    @UseGuards(JwtAuthGuard)
-    async addUserAsAdmin(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.addUserAsAdmin(relation));
-    }
+  @Patch("setPassword")
+  @UseGuards(JwtAuthGuard)
+  async setPasswordChannel(@Body() channelPassword: ChannelPasswordDto) {
+    return this.ChannelService.setPasswordToChannel(channelPassword);
+  }
 
-    @Post('removeUserAsAdmin')
-    @UseGuards(JwtAuthGuard)
-    async removeUserAsAdmin(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.removeUserAsAdmin(relation));
-    }
+  @Post("addUserAsAdmin")
+  @UseGuards(JwtAuthGuard)
+  async addUserAsAdmin(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.addUserAsAdmin(relation);
+  }
 
-    @Post('getAllAdminsOfChannel')
-    @UseGuards(JwtAuthGuard)
-    async getAllAdminsOfChannel(@Body() channelId: ChannelIdDto) {
-        return (this.ChannelService.getAllAdminsOfChannel(channelId));
-    }
+  @Post("removeUserAsAdmin")
+  @UseGuards(JwtAuthGuard)
+  async removeUserAsAdmin(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.removeUserAsAdmin(relation);
+  }
 
-    @Post('checkIfSamePassword')
-    @UseGuards(JwtAuthGuard)
-    async checkIfSamePassword(@Body() relation: ChannelPasswordDto) {
-        return (this.ChannelService.checkIfSamePassword(relation));
-    }
+  @Post("getAllAdminsOfChannel")
+  @UseGuards(JwtAuthGuard)
+  async getAllAdminsOfChannel(@Body() channelId: ChannelIdDto) {
+    return this.ChannelService.getAllAdminsOfChannel(channelId);
+  }
 
-    @Post('getChannelById')
-    @UseGuards(JwtAuthGuard)
-    async getChannelById(@Body() channelId: ChannelIdDto) {
-        return (this.ChannelService.findOne(channelId.idChannel));
-    }
+  @Post("getChannelById")
+  @UseGuards(JwtAuthGuard)
+  async getChannelById(@Body() channelId: ChannelIdDto) {
+    return this.ChannelService.findOne(channelId.idChannel);
+  }
 
-    @Post('getAllBannedUsers')
-    @UseGuards(JwtAuthGuard)
-    async getAllBannedUsersOfChannel(@Body() channelId: ChannelIdDto) {
-        return (this.ChannelService.getAllBannedUsersOfChannel(channelId));
-    }
+  @Post("getAllBannedUsers")
+  @UseGuards(JwtAuthGuard)
+  async getAllBannedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+    return this.ChannelService.getAllBannedUsersOfChannel(channelId);
+  }
 
-    @Post('addBannedUserToChannel')
-    @UseGuards(JwtAuthGuard)
-    async addBannedUserToChannel(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.addBannedUserToChannel(relation));
-    }
+  @Post("addBannedUserToChannel")
+  @UseGuards(JwtAuthGuard)
+  async addBannedUserToChannel(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.addBannedUserToChannel(relation);
+  }
 
-    @Post("getAllMutedUsersOfChannel")
-    @UseGuards(JwtAuthGuard)
-    async getAllMutedUsersOfChannel(@Body() channelId: ChannelIdDto) {
-        return (this.ChannelService.getAllMutedUsersOfChannel(channelId));
-    }
+  @Post("getAllMutedUsersOfChannel")
+  @UseGuards(JwtAuthGuard)
+  async getAllMutedUsersOfChannel(@Body() channelId: ChannelIdDto) {
+    return this.ChannelService.getAllMutedUsersOfChannel(channelId);
+  }
 
-    @Post("addMutedUserOfChannel")
-    @UseGuards(JwtAuthGuard)
-    async addMutedUserToChannel(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.addMutedUserToChannel(relation));
-    }
+  @Post("addMutedUserOfChannel")
+  @UseGuards(JwtAuthGuard)
+  async addMutedUserToChannel(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.addMutedUserToChannel(relation);
+  }
 
-    @Post("removeMutedUserOfChannel")
-    @UseGuards(JwtAuthGuard)
-    async removeMutedUserOfChannel(@Body() relation: ChannelUserDto) {
-        return (this.ChannelService.removeMutedUserOfChannel(relation));
-    }
-
-
+  @Post("removeMutedUserOfChannel")
+  @UseGuards(JwtAuthGuard)
+  async removeMutedUserOfChannel(@Body() relation: ChannelUserDto) {
+    return this.ChannelService.removeMutedUserOfChannel(relation);
+  }
 }

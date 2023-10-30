@@ -41,7 +41,6 @@ export class Ball {
 
 	increaseSpeed() {
 		this.speedX *= 1.0005;
-		console.log(this.speedX);
 		this.speedY *= 1.0005;
 	}
 

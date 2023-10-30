@@ -61,24 +61,15 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					const leftPaddleY = leftPaddleYRef.current;
 					const rightPaddleY = rightPaddleYRef.current;
 
-					if ((player1ScoreRef.current == scoreMax || player2ScoreRef.current == scoreMax))
+					if (!matchEnded && (player1ScoreRef.current == scoreMax || player2ScoreRef.current == scoreMax))
 					{
-						if (player1UsernameRef.current == username && player1ScoreRef.current > player2ScoreRef.current)
+						if (player1UsernameRef.current == username)
 						{
 							MatchService.addMatch({
 								username: username,
 								opponent: opponent,
 								scoreUser: player1ScoreRef.current,
 								scoreOpponent: player2ScoreRef.current
-							});
-						}
-						else if (player2UsernameRef.current == username && player2ScoreRef.current > player1ScoreRef.current)
-						{
-							MatchService.addMatch({
-								username: username,
-								opponent: opponent,
-								scoreUser: player2ScoreRef.current,
-								scoreOpponent: player1ScoreRef.current
 							});
 						}
 						setMatchEnded(true);
@@ -91,8 +82,8 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 						ctx.fillRect(0, 0, fieldWidth, fieldHeight);
 						ctx.globalAlpha = 0.2;
 						ctx.fillStyle = "white";
-						ctx.font = "200px Arial"
-						ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
+						// ctx.font = "200px Arial"
+						// ctx.fillText("PONG", 110, fieldHeight / 2 + 50);
 						ctx.globalAlpha = 1;
 
 						// Dessinez la ligne verticale blanche pointillée au milieu du terrain
@@ -130,8 +121,6 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 
 
 			});
-
-
 			const moveUser = (e: KeyboardEvent) => {
 				e.preventDefault();
 				if (e.key === "ArrowUp")

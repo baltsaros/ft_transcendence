@@ -15,7 +15,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
 	const [ ballSpeed, setSpeed] = useState<number>(8);
 	const [ radius, setRadius] = useState<number>(10);
-	const [ paddleColor, setPaddleColor ] = useState<string>("white");
+	const [ paddleColor, setPaddleColor ] = useState<string | null>(null);
 	const [ waitingOpponent, setWaitingOpponent] = useState<boolean>(false);
 	const opponentColor = "";
 	// BEHAVIOUR
@@ -81,19 +81,19 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 		<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 			<div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
 				<div className="bg-gray-600 p-4">
-					<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-400 text-center" id="modal-title">Game Settings</h3>
+					<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-300 text-center" id="modal-title">Game Settings</h3>
 				</div>
 				<div className="bg-gray-400 p-6 space-y-6 text-center">
 				<div className="border-2 border-gray-300 rounded px-2 py-1">
-					<label className="text-gray-600 mb-2 block font-medium uppercase ">Ball speed</label>
+					<label className="text-gray-600 mb-2 block font-bold m uppercase ">Ball speed</label>
 					<input type="range" className="mb-2 w-full cursor-pointer rounded appearance-none bg-neutral-200" min="5" max="11" id="ballSpeed" onChange={handleSpeed} value={ballSpeed} />
 				</div>
 				<div className="text-gray-600 border-2 border-gray-300  rounded px-2 py-1">
-					<label className="mb-2 block font-medium uppercase">Ball size</label>
+					<label className="mb-2 block font-bold uppercase">Ball size</label>
 					<input type="range" className="mb-2 w-full cursor-pointer rounded appearance-none bg-neutral-200" min="1" max="19" id="ballSize" onChange={handleSize} value={radius} />
 				</div>
 				<div className="border-2 border-gray-300 rounded px-2 py-1">
-					<label className="text-gray-600 block mb-2 font-medium uppercase">Racket paddleColor</label>
+					<label className="text-gray-600 block mb-2 uppercase font-bold">Paddle color</label>
 					<div className="grid grid-cols-6 gap-4 mb-2 ml-3">
 						<div className="flex items-center">
 							<input id="red-radio" type="radio" value="red" name="paddleColor" checked={paddleColor === "red"} onChange={handlePaddleColor} className="w-10 h-10 text-red-600 bg-red-500 border-gray-300 rounded focus:ring-red-500 dark:focus:ring-red-600 dark:ring-offset-gray-800 focus:ring-2"/>
@@ -121,8 +121,11 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 						<button onClick={closeModal} className="col-span-1 px-4 py-2 text-white font-semibold bg-red-600 hover:bg-red-500  transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400">Cancel</button>
 					</Link>
 					<button onClick={handleReset} className="col-start-3 col-span-1 px-4 py-2 text-white font-semibold bg-yellow-500 hover:bg-yellow-400  transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-400">Reset</button>
-					<button onClick={() => { sendGameSettings(); }} className="col-start-5 col-span-1 px-4 py-2  text-white font-semibold bg-green-500 hover:bg-green-400 transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-green-400">Submit</button>
-				</div>
+					<button
+					onClick={() => { sendGameSettings(); }}
+					className={`col-start-5 col-span-1 px-4 py-2 text-white font-semibold ${paddleColor ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-400 cursor-not-allowed'} transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 ${paddleColor ? 'focus:ring-green-400' : ''}`}
+					disabled={!paddleColor}>Submit</button>
+								</div>
 			</div>
 		</div>
 		)

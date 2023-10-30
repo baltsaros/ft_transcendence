@@ -34,8 +34,8 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
           <thead className="divide-y-2 divide-gray-400">
             <tr>
               <td>
-                <div className="text-2xl text-gray-400 text-xl">  
-                  <div className="bg-cyan-300 text-black text-2xl">
+                <div className="text-2xl text-gray-400 text-xl">
+                  <div className="bg-gray-400 text-white text-2xl">
                     <div>MATCH HISTORY</div>
                   </div>
                 </div>
@@ -44,7 +44,7 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
             <tr>
               <td>
                 <div className=" text-xl grid grid-cols-3 text-center">
-                  <div>Score</div>
+                  <div >Score</div>
                   <div>Win/Loss</div>
                   <div>Opponent</div>
                </div>
@@ -65,7 +65,6 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
             </div>
           </Scrollbar>
         </table>
-        
       </div>
     );
 }
