@@ -113,17 +113,22 @@ export class ChannelService {
     }
 
     async findAll() {
-        const channel = await this.channelRepository.find(
-            {
-                relations: {
-                    users: true,
-                    owner: true,
-                    messages: true,
-                }
-            }
-        );
-        return channel;
-    }
+      const channel = await this.channelRepository.find(
+          {
+            order: {
+              messages: {
+                id: "ASC"
+              }
+            },
+              relations: {
+                  users: true,
+                  owner: true,
+                  messages: true,
+              }
+          }
+      );
+      return channel;
+  }
 
     async fetchMessage(id: number) {
       const channelMessage = await this.channelRepository.findOne({
