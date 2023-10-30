@@ -33,10 +33,7 @@ useEffect(() => {
 useEffect(() => {
     webSocketService.on('onMessage', (payload: IResponseMessage) => {
         console.log('ws event received');
-        if (blocked.status === 'fulfilled' && !blocked.blocked.some((b) => b.username === payload.user.username)) {
-            console.log('redux state updated');
-            store.dispatch(addMessage(payload));
-        }
+        store.dispatch(addMessage(payload));
     });
     return () => {
         webSocketService.off('onMessage');
@@ -81,6 +78,7 @@ useEffect(() => {
                     {
                         selectedChannel &&
                         messages!.map((idx, index) => (
+                            !blocked.users.some((elem) => elem.username !== idx.username) &&
                             <div
                             key={index}
                             className={`${

@@ -15,7 +15,7 @@ function NormalPlayerMenu(user: IResponseUser) {
 
     //state
     const friends = useSelector((state: RootState) => state.friend.friends);
-    const blocked = useSelector((state: RootState) => state.blocked.blocked);
+    const blocked = useSelector((state: RootState) => state.blocked.users);
     const userLogged = useSelector((state: RootState) => state.user.user);
     const webSocketService = useChatWebSocket();
 
