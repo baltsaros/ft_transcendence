@@ -67,21 +67,21 @@ function AdminPlayerMenu(props: any) {
     await ChannelService.removeMutedUserOfChannel(payload);
   };
 
-  useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userBlocked", (payload: any) => {
-        store.dispatch(addBlocked(payload));
-      });
-      webSocketService.on("userUnblocked", (payload: any) => {
-        store.dispatch(removeBlocked(payload));
-      });
+  // useEffect(() => {
+  //   if (webSocketService) {
+  //     webSocketService.on("userBlocked", (payload: any) => {
+  //       store.dispatch(addBlocked(payload));
+  //     });
+  //     webSocketService.on("userUnblocked", (payload: any) => {
+  //       store.dispatch(removeBlocked(payload));
+  //     });
 
-      return () => {
-        webSocketService.off("userBlocked");
-        webSocketService.off("userUnblocked");
-      };
-    }
-  }, []);
+  //     return () => {
+  //       webSocketService.off("userBlocked");
+  //       webSocketService.off("userUnblocked");
+  //     };
+  //   }
+  // }, []);
 
   //render
   return (

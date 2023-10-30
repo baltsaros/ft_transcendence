@@ -27,20 +27,18 @@ function PlayerMenu(props: any) {
       return (admins.some(item => item.id === id));
     }
 
-    useEffect(() => {
-      if (webSocketService) {
-        webSocketService.on("userBlocked", (payload: any) => {
-            store.dispatch(addBlocked(payload));
-        });
-        webSocketService.on("userUnblocked", (payload: any) => {
-          store.dispatch(removeBlocked(payload));
-        });
-        return () => {
-            webSocketService.off('userBlocked');
-            webSocketService.off('userUnblocked');
-                };
-      }
-  }, []);
+  //   useEffect(() => {
+  //     webSocketService.on("userBlocked", (payload: any) => {
+  //         store.dispatch(addBlocked(payload));
+  //     });
+  //     webSocketService.on("userUnblocked", (payload: any) => {
+  //       store.dispatch(removeBlocked(payload));
+  //     });
+  //     return () => {
+  //         webSocketService.off('userBlocked');
+  //         webSocketService.off('userUnblocked');
+  //             };
+  // }, []);
 
   useEffect(() => {
     store.dispatch(fetchAdmin(selectedChannel.id));

@@ -37,15 +37,14 @@ const Chat: React.FC<ChildProps> = ({ selectedChannel }) => {
   }, []);
 
 useEffect(() => {
-    if (webSocketService) {
-        webSocketService.on('onMessage', (payload: IResponseMessage) => {
-            console.log('ws event received');
-            store.dispatch(addMessage(payload));
-        });
-        return () => {
-            webSocketService.off('onMessage');
-        };
-    }
+  if (webSocketService) {
+    webSocketService.on('onMessage', (payload: IResponseMessage) => {
+              store.dispatch(addMessage(payload));
+      });
+      return () => {
+          webSocketService.off('onMessage');
+      };
+  }  
 }, []);
 
   useEffect(() => {
