@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { instance } from "../../api/axios.api";
 import { IChannel, IMessage } from "../../types/types";
 import { useAppSelector } from "../../store/hooks";
-import { RootState } from "../../store/store";
+import { RootState, store } from "../../store/store";
 import { toast } from "react-toastify"
+import { fetchMuted } from "../../store/channel/mutedSlice";
 
 interface ChildProps {
     selectedChannel: IChannel | null;
@@ -12,9 +13,16 @@ interface ChildProps {
 const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
 
     const user = useAppSelector((state: RootState) => state.user.user);
+    const muted = useAppSelector((state: RootState) => state.muted.users);
     
     /* STATE */
     const [newMessage, setMessage] =  useState("");
+
+    const isMuted = () => {
+        if (user)
+            return (muted.some((elem) => elem.id === user.id));
+        return (true);
+    }
 
     /* BEHAVIOR */
     /* IMessage type on undefined because useState can be null (TBD)*/
@@ -44,9 +52,24 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
         }
     }
 
+    useEffect(() => {
+        if (selectedChannel)
+            store.dispatch(fetchMuted(selectedChannel.id));
+    }, [])
+
     /* RENDER */
     return (
         <div className="flex text-black items-center bg-gray-200 p-2">
+            {isMuted() && <div><input
+                value={newMessage}
+                type="text" 
+                placeholder="You're muted"
+                disabled
+                className="flex-grow p-2 border rounded-lg"
+                />
+                <button disabled className="bg-gray-500 text-gray p-3 rounded-lg">Send</button></div>}
+            
+            {!isMuted() && <div>
             <input
             value={newMessage}
             type="text" 
@@ -55,7 +78,7 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
             onKeyDown={handleKeyDown}
             className="flex-grow p-2 border rounded-lg"
             />
-        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleClick}>Send</button>
+        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleClick}>Send</button></div>}
         </div>
     );
 }
