@@ -34,15 +34,17 @@ function FriendList() {
 }, []);
 
   useEffect(() => {
-    webSocketService.on("requestRemoveFriend", (payload: any) => {
-      store.dispatch(removeFriend(payload));
-    });
-    webSocketService.on("requestAddInvitation", (payload: any) => {
-      store.dispatch(addInvitation(payload));
-    });
-    webSocketService.on("requestAddFriend", (payload: any) => {
-      store.dispatch(addFriend(payload));
-    });
+    if (webSocketService) {
+      webSocketService.on("requestRemoveFriend", (payload: any) => {
+        store.dispatch(removeFriend(payload));
+      });
+      webSocketService.on("requestAddInvitation", (payload: any) => {
+        store.dispatch(addInvitation(payload));
+      });
+      webSocketService.on("requestAddFriend", (payload: any) => {
+        store.dispatch(addFriend(payload));
+      });
+    }
   }, []);
 
   //render
