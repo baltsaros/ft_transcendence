@@ -82,13 +82,21 @@ function NormalPlayerMenu(user: IResponseUser) {
     }
   };
 
+  const handleAddInvitation = async () => {
+    const payload = {
+      senderId: userLogged!.id,
+      receiverId: user.id,
+    };
+    PlayerService.sendInvitation(payload);
+  }
+
   //render
   return (
     <div className="bg-gray-500">
       {isFriend(user.username) && (
         <MenuItem disabled>Invite as Friend</MenuItem>
       )}
-      {!isFriend(user.username) && <MenuItem>Invite as Friend</MenuItem>}
+      {!isFriend(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
 
       <MenuItem>
         <Link to={"/player/" + user.username}>View profile</Link>
