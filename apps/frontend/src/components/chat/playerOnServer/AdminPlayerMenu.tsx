@@ -28,19 +28,21 @@ function AdminPlayerMenu(props: any) {
     return muted.some((item) => item.id === user.id);
   };
 
-  const handleKickChannel = async () => {
-    try {
-      const payload = {
-        channelId: selectedChannel.id,
-        username: user.username,
-      };
-      const response = await instance.post("channel/leaveChannel", payload);
-      if (response) store.dispatch(removeUser(payload));
-    } catch (error: any) {
-      const err = error.response?.data.message;
-      toast.error(err.toString());
+  const handleKickChannel = async() => {
+    try{
+        const payload = {
+            channelId: selectedChannel.id,
+            username: user.username,
+        }
+        const response = await instance.post("channel/leaveChannel", payload);
+        if (response) {
+          store.dispatch(removeUser(payload));
+        }
+    } catch(error: any) {
+        const err = error.response?.data.message;
+        toast.error(err.toString());
     }
-  };
+}
 
   const handleBanUser = async () => {
     const payload = {

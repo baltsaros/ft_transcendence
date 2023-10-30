@@ -49,17 +49,6 @@ useEffect(() => {
 
   useEffect(() => {
     if (webSocketService) {
-      webSocketService.on("userLeft", (payload: any) => {
-        store.dispatch(removeUser(payload));
-      });
-      return () => {
-        webSocketService.off("userLeft");
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (webSocketService) {
       webSocketService.on("ownerLeft", (payload: any) => {
         store.dispatch(removeOwner(payload));
       });
@@ -89,7 +78,7 @@ useEffect(() => {
                     {
                         selectedChannel &&
                         messages!.map((idx, index) => (
-                            !blocked.users.some((elem) => elem.username !== idx.username) &&
+                            !blocked.users.some((elem) => elem.username === idx.username) &&
                             <div
                             key={index}
                             className={`${
