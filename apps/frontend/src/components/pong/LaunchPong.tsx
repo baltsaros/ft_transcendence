@@ -58,14 +58,29 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 	//   }
 
 	const calculateNewElo = async (scoreDifference: number) => {
-		const kFactor = 32;
 		let player = await AuthService.getProfile();
-		if (player)
-		{
-			player.rank += scoreDifference * 10;
+		if (player) {
+			let kFactor: number;
+
+			if (player.rank < 1200) {
+				if (scoreDifference > 0)
+					kFactor = 60;
+				else
+					kFactor = 20;
+			} else if (player.rank < 1800) {
+				kFactor = 40;
+			} else {
+				if (scoreDifference > 0)
+					kFactor = 20;
+				else
+					kFactor = 60;
+			}
+
+			player.rank += scoreDifference * kFactor;
 			PlayerService.updateElo(player);
 		}
 	};
+
 
 	useEffect(() => {
 			const canvas = canvasRef.current;
