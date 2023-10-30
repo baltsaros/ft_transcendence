@@ -6,55 +6,61 @@ import { addChannel } from "../../../store/channel/channelSlice";
 import { IChannel } from "../../../types/types";
 import { useSelector } from "react-redux";
 
-function AddChannel () {
+function AddChannel() {
+  const webSocketService = useChatWebSocket();
+  const user = useSelector((state: RootState) => state.user);
+  const blocked = useSelector((state: RootState) => state.blocked);
+  const status = useSelector((state: RootState) => state.blocked.status);
+  // console.log('user', user);
 
-    const webSocketService = useChatWebSocket();
-    const user = useSelector((state: RootState) => state.user);
-    const blocked = useSelector((state: RootState) => state.blocked);
-    const status = useSelector((state: RootState) => state.blocked.status);
-    // console.log('user', user);
+  /* STATE */
+  const [modalView, setModalView] = useState(false);
 
-    /* STATE */
-    const [modalView, setModalView] = useState(false);
+  /* BEHAVIOUR */
+  const handleOpenModal = () => {
+    setModalView(true);
+  };
 
-     /* BEHAVIOUR */
-    const handleOpenModal = () => {
-        setModalView(true);
+  const handleCloseModal = () => {
+    setModalView(false);
+  };
+
+  useEffect(() => {
+    if (webSocketService) {
+      webSocketService.on("newChannelCreated", (payload: any) => {
+        store.dispatch(addChannel(payload));
+      });
+
+      return () => {
+        webSocketService.off("newChannelCreated");
+      };
     }
-    
-    const handleCloseModal = () => {
-        setModalView(false);
+  }, []);
+
+  useEffect(() => {
+    if (webSocketService) {
+      webSocketService.on("DmChannelJoined", (payload: IChannel) => {
+        console.log("ws event received");
+        store.dispatch(addChannel(payload));
+      });
+      return () => {
+        webSocketService.off("DmChannelJoined");
+      };
     }
+  }, []);
 
-    useEffect(() => {
-        webSocketService.on('newChannelCreated', (payload: any) => {
-            store.dispatch(addChannel(payload));
-        });
-        
-        return () => {
-            webSocketService.off('newChannelCreated');
-          };
-       }, []);
-
-       useEffect(() => {
-        webSocketService.on('DmChannelJoined', (payload: IChannel) => {
-          console.log('ws event received');
-          store.dispatch(addChannel(payload));
-        });
-        return () => {
-          webSocketService.off('DmChannelJoined');
-        };
-      }, []);
-    
-    /* RENDER */
-    return (
+  /* RENDER */
+  return (
     <div>
-        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleOpenModal}>Add channel</button>
-        {modalView &&
-        <AddChannelModal onClose={handleCloseModal} />
-        }
+      <button
+        className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg"
+        onClick={handleOpenModal}
+      >
+        Add channel
+      </button>
+      {modalView && <AddChannelModal onClose={handleCloseModal} />}
     </div>
-    )
+  );
 }
 
 export default AddChannel;

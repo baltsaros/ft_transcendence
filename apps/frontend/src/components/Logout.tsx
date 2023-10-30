@@ -16,46 +16,50 @@ import { useSelector } from "react-redux";
 import { updateStatutChannel } from "../store/channel/channelSlice";
 
 export default function Logout() {
+  const navigate = useNavigate();
+  const webSocketService = useChatWebSocket();
+  const dispatch = useAppDispatch();
+  const userUpdate = useSelector((state: RootState) => state.user.user);
 
-    const navigate = useNavigate();
-    const webSocketService = useChatWebSocket();
-    const dispatch = useAppDispatch();
-    const userUpdate = useSelector((state: RootState) => state.user.user);
+  if (webSocketService)
+    webSocketService.emit("updateStatus", { data: { userUpdate } });
 
-    webSocketService.emit("updateStatus", {data: {userUpdate}});
+  const logoutHandler = async () => {
+    const userUpdate = await AuthService.updateStatus("offline");
+    if (webSocketService) webSocketService.emit("updateStatus", { data: { userUpdate } });
+    dispatch(logout());
+    removeTokenFromLocalStorage("token");
+    toast.success("Bye!");
+    Cookies.remove("jwt_token");
+    Cookies.remove("username");
+    Cookies.remove("intraId");
+    navigate("/");
+  };
 
-    const logoutHandler = async () => {
-      const userUpdate = await AuthService.updateStatus("offline");
-      webSocketService.emit("updateStatus", {data: {userUpdate}});
-        dispatch(logout());
-        removeTokenFromLocalStorage("token");
-        toast.success("Bye!");
-        Cookies.remove("jwt_token");
-        Cookies.remove("username");
-        Cookies.remove("intraId");
-        navigate("/");
-      };
+  useEffect(() => {
+    if (webSocketService) {
+      webSocketService.on("newUpdateStatus", (data: IResponseUser) => {
+        store.dispatch(updateStatus(data));
+        store.dispatch(
+          updateStatusFriend({
+            username: data.username,
+            status: data.status,
+        })
+      );
+      store.dispatch(updateStatutChannel(data));
+    });
+    return () => {
+      webSocketService.off("newUpdateStatus");
+    };
+  }
+  }, []);
 
-    useEffect(() => {
-        webSocketService.on('newUpdateStatus', (data: IResponseUser) => {
-              store.dispatch(updateStatus(data));
-              store.dispatch(updateStatusFriend({
-                username: data.username, status: data.status
-              }));
-              store.dispatch(updateStatutChannel(data));
-          });
-        return () => {
-            webSocketService.off('newUpdateStatus');
-                };
-             }, []);
-    
-      //render
+  //render
 
-    return (
-        <button className="btn btn-red rounded-md" onClick={logoutHandler}>
-          <span className="">Log out</span>
-          <FaSignOutAlt />
-        </button>
-        )
+  return (
+    <button className="btn btn-red rounded-md" onClick={logoutHandler}>
+      <span className="">Log out</span>
+      <FaSignOutAlt />
+    </button>
+  );
 }
-
