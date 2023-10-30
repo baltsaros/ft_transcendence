@@ -35,17 +35,15 @@ function FriendList() {
 }, []);
 
   useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("requestRemoveFriend", (payload: any) => {
+      webSocketService!.on("requestRemoveFriend", (payload: any) => {
         store.dispatch(removeFriend(payload));
       });
-      webSocketService.on("requestAddInvitation", (payload: any) => {
+      webSocketService!.on("requestAddInvitation", (payload: any) => {
         store.dispatch(addInvitation(payload));
       });
-      webSocketService.on("requestAddFriend", (payload: any) => {
+      webSocketService!.on("requestAddFriend", (payload: any) => {
         store.dispatch(addFriend(payload));
       });
-    }
   }, []);
 
   //render

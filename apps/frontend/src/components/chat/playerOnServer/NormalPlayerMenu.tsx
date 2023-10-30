@@ -16,6 +16,7 @@ function NormalPlayerMenu(user: IResponseUser) {
   const blocked = useSelector((state: RootState) => state.blocked.users);
   const userLogged = useSelector((state: RootState) => state.user.user);
   const webSocketService = useChatWebSocket();
+  const invitations = useSelector((state: RootState) => state.invitation.invitations);
 
   const isFriend = (username: string) => {
     return friends.some((item) => item.username === username);
@@ -23,6 +24,10 @@ function NormalPlayerMenu(user: IResponseUser) {
 
   const isBlocked = (username: string) => {
     return blocked.some((item) => item.username === username);
+  };
+
+  const isInvited = (username: string) => {
+    return invitations.some((item) => item.username === username);
   };
 
   const handleBlockUser = async () => {
@@ -83,7 +88,9 @@ function NormalPlayerMenu(user: IResponseUser) {
   };
 
   const handleAddInvitation = async () => {
-    const payload = {
+    console.log(invitations);
+    if (isInvited(user.username)) return;
+      const payload = {
       senderId: userLogged!.id,
       receiverId: user.id,
     };
@@ -93,10 +100,10 @@ function NormalPlayerMenu(user: IResponseUser) {
   //render
   return (
     <div className="bg-gray-500">
-      {isFriend(user.username) && (
+      {isFriend(user.username) && isInvited(user.username) && (
         <MenuItem disabled>Invite as Friend</MenuItem>
       )}
-      {!isFriend(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
+      {!isFriend(user.username) && !isInvited(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
 
       <MenuItem>
         <Link to={"/player/" + user.username}>View profile</Link>

@@ -72,7 +72,7 @@ const Header: FC = () => {
                     className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
                   >
                     <li>
-                      <NavLink
+                      <NavLink reloadDocument
                         to={"player/" + username}
                         className={({ isActive }) =>
                           isActive
