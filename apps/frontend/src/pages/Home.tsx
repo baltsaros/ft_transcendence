@@ -1,25 +1,11 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import ftLogo from "../assets/42_Logo.svg";
-import jwtDecode from "jwt-decode";
 import { useAuth } from "../hooks/useAuth";
-import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 
 
 const Home: FC = () => {
   const isAuth = useAuth();
-  const token = Cookies.get('jwt_token');
-
-  useEffect(() => {
-    if (token) {
-      const decoded = jwtDecode<any>(Cookies.get("jwt_token")!);
-      if (decoded)
-        Cookies.set("username", decoded.username, {
-          sameSite: "none",
-          secure: true,
-        });
-    }
-  }, []);
 
   return (
     <>

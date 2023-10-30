@@ -3,7 +3,8 @@ import { instance } from "../../../api/axios.api";
 import { useAppSelector } from "../../../store/hooks";
 import { RootState } from "../../../store/store";
 import { IChannelData } from "../../../types/types";
-import { toast } from "react-toastify"
+import { toast } from "react-toastify";
+import bcrypt from "bcryptjs";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
@@ -47,7 +48,8 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
     const handlePrivateChannel = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value != '')
 		{
-			setChannelPassword(event.target.value);
+			const hashed = bcrypt.hashSync(event.target.value, bcrypt.genSaltSync());
+			setChannelPassword(hashed);
 			setIsPasswordFilled(true);
 		}
 		else
