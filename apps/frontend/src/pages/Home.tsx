@@ -1,8 +1,6 @@
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import ftLogo from "../assets/42_Logo.svg";
-import jwtDecode from "jwt-decode";
 import { useAuth } from "../hooks/useAuth";
-import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 
 
