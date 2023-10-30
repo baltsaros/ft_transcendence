@@ -8,7 +8,7 @@ export default function PlayerNameBox(user: IUserPlayerProfileData) {
 
     //render
     return (
-    <div className="bg-cyan-300 w-96 h-20 flex justify-center items-center">
+    <div className="w-96 text-2xl p-4 mt-16 rounded-lg shadow-lg bg-gray-400">
         <div className="text-4xl">{user.username}'s profile</div>
       </div>
     );
