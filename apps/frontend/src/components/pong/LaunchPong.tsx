@@ -65,15 +65,14 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 					{
 						if (player1UsernameRef.current == username)
 						{
-							console.log("ici 1");
 							MatchService.addMatch({
 								username: username,
 								opponent: opponent,
 								scoreUser: player1ScoreRef.current,
 								scoreOpponent: player2ScoreRef.current
 							});
-							setMatchEnded(true);
 						}
+						setMatchEnded(true);
 					}
 					else
 					{

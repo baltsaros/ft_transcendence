@@ -58,8 +58,6 @@ const GamePage: React.FC = () => {
 
 		webSocketRef.current?.on('MatchEnded', () =>
 		{
-			// setRoomId(null);
-			// setOpponentUsername(null);
 			updateOnlineStatus();
 		});
 
@@ -68,8 +66,6 @@ const GamePage: React.FC = () => {
 			setModalView(true);
 			setLaunchGame(false);
 			setShowGameSettings(false);
-			// setRoomId(null);
-			// setOpponentUsername(null);
 			updateOnlineStatus();
 			toast.error("Opponent disconnected.");
 		});

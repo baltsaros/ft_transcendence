@@ -190,7 +190,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const player2PaddleColor = room.player2.gameSettings.userPaddlecolor;
 
 					// Envoyez les paramètres générés à tous les joueurs de la salle
-
 					this.server.to(room.player1.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
 					this.server.to(room.player2.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
 				}
@@ -325,7 +324,6 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					// Envoyez les mises à jour aux clients
 					this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
 					this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
-
 					lastUpdate = currentTime;
 				}
 
@@ -333,8 +331,8 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 			}
 			if (room.gameState === GameState.Ended)
 			{
-				this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
-				this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
+				// this.server.to(room.player1.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
+				// this.server.to(room.player2.id).emit("pongUpdate", {ballX: room.ball.x, ballY: room.ball.y, leftPaddleY: room.leftPaddle.y, rightPaddleY: room.rightPaddle.y, player1Score: room.player1.score, player2Score: room.player2.score});
 				this.pongRooms.delete(room.id);
 			}
 		}
