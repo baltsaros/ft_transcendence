@@ -51,22 +51,17 @@ export default function Player(){
   {
     return (<div>Loading...</div>);
   }
-  
   return (
       <div className="flex flex-col text-black space-y-20 flex justify-center items-center">
-        
         <PlayerNameBox
           {...user}
         />
-      
         <PlayerStats
           {...user}
         />
-
         <MatchHistory
           {...user}
         />
-        
       </div>
     );
 };
