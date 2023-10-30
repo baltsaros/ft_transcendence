@@ -127,6 +127,7 @@ export class ChannelService {
                   users: true,
                   owner: true,
                   messages: true,
+                  banned: true,
               }
           }
       );

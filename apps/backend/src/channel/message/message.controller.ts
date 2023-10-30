@@ -11,7 +11,6 @@ export class MessageController {
     @Post()
     @UseGuards(JwtAuthGuard)
     async newMessage(@Body() messageData: newMessageDto) {
-        console.log('message dto', messageData);
         await this.messageService.createMessage(messageData);
     }
 }
