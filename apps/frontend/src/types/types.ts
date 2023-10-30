@@ -152,7 +152,7 @@ export interface IChannelRelation {
 }
 
 export interface IChannelPassword {
-  idChannel: number,
+  channelId: number,
   password: string,
 }
 

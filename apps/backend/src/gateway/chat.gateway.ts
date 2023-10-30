@@ -83,9 +83,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
   }
 
-  @SubscribeMessage("updateStatus")
-  handleUpdateStatus(@MessageBody("data") data: { userUpdate: IResponseUser }) {
-    this.server.emit("newUpdateStatus", data.userUpdate);
+  @OnEvent('onNewDmChannel')
+  handleNewDmChannel(payload: any) {
+    payload.users.forEach((user) => {
+      const socket = this.gatewaySessionManager.getSocket(user.username);
+      if (socket) {
+        console.log('client:', user.username, 'joined:', socket.id, payload.id);
+        socket.join(`channel-${payload.id}`);
+      }
+    });
+    this.server.to(`channel-${payload.id}`).emit('DmChannelJoined', payload);
+  }
+
+  @SubscribeMessage('updateStatus')
+  handleUpdateStatus(@MessageBody("data") data: {userUpdate: IResponseUser}) {
+    this.server.emit('newUpdateStatus', data.userUpdate);
   }
 
   @OnEvent("messageCreated")
@@ -141,7 +153,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .emit("adminRemoved", payload);
   }
 
-  @OnEvent("unblockUser")
+  @OnEvent('muteUser')
+  async handleMuteUser(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('userMuted', payload);
+  }
+
+  @OnEvent('unmuteUser')
+  async handleUnmuteUser(payload: ChannelUserObjectDto) {
+    this.server.to(`channel-${payload.channel.id}`).emit('userUnmuted', payload);
+  }
+
+
+  @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {
     const blocked = await this.userRepository.findOne({
       where: { id: payload.receiverId },
@@ -183,28 +206,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     client.leave(`channel-${payload.channelId}`);
     console.log("after leaving room", client.id, client.rooms);
     console.log("onChannelLeaveOwner");
-  }
-
-  @SubscribeMessage("onNewDmChannel")
-  async onNewDmChannel(client: Socket, payload: any) {
-    const dmChannel = await this.channelRepository.findOne({
-      where: {
-        id: payload.id,
-      },
-      relations: {
-        users: true,
-      },
-    });
-    payload.user.forEach((username) => {
-      const socket = this.gatewaySessionManager.getSocket(username);
-      if (socket) {
-        // console.log('client:', username, 'joined:', socket.id, payload.id);
-        // socket.join(payload.id);
-        socket.join(`channel-${payload.id}`);
-      }
-    });
-    console.log(payload);
-    this.server.to(payload.id).emit("DmChannelJoined", dmChannel);
   }
 
   @OnEvent("removeFriend")

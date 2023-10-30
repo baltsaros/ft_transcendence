@@ -8,6 +8,7 @@ import NormalPlayerMenu from "./NormalPlayerMenu";
 import OwnerMenu from "./OwnerMenu";
 import AdminPlayerMenu from "./AdminPlayerMenu";
 import { fetchAdmin } from "../../../store/channel/adminSlice";
+import { fetchMuted } from "../../../store/channel/mutedSlice";
 
 
 function PlayerMenu(props: any) {
@@ -41,6 +42,7 @@ function PlayerMenu(props: any) {
 
   useEffect(() => {
     store.dispatch(fetchAdmin(selectedChannel.id));
+    store.dispatch(fetchMuted(selectedChannel.id));
   }, []);
   
 

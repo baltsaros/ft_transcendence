@@ -1,16 +1,25 @@
+import { GameSettingsData } from "./gameSettingsData";
+
 export class Player {
 	id: string;
 	username: string;
 	score: number;
+	paddleColor: string;
+	gameSettings: GameSettingsData;
 
 	constructor(id: string, username: string) {
 	  this.id = id;
 	  this.username = username;
-	  this.score = -1;
+	  this.score = 0;
+	  this.gameSettings = new GameSettingsData(id, 0, 0, "", "");
 	}
 
-	setScore(score: number) {
-		this.score = score;
+	setPaddleColor(color: string) { this.paddleColor = color; }
+
+	setGameSettings(settings: GameSettingsData) { this.gameSettings = settings; }
+
+	scoreGoal() {
+		this.score++;
 	}
 
 	setUsername(username: string) {

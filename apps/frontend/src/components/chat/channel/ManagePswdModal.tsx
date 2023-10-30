@@ -17,10 +17,7 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
 
   /* STATE */
   const [password, setPassword] = useState("");
-  const [isPasswordFilled, setIsPasswordFilled] = useState<boolean>(false);
   const [oldPassword, setOldPassword] = useState("");
-  const [isOldPasswordFilled, setIsOldPasswordFilled] =
-    useState<boolean>(false);
   const navigate = useNavigate();
 
   /* BEHAVIOR */
@@ -29,50 +26,49 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
       try {
         const data = await ChannelService.getHashedPassword(channel.id);
         const isMatch = bcrypt.compareSync(oldPassword, data.hashed);
-        console.log("oldPass for " + channel.name);
         setOldPassword("");
         if (!isMatch) {
           toast.error("Old password is incorrect! Try again.");
-          setIsOldPasswordFilled(false);
+          return false;
         } else {
           toast.success("Old password was accepted!");
-          setIsOldPasswordFilled(true);
+          return true;
         }
       } catch (err: any) {
         console.log("join channel failed");
+        return false;
       }
-    } else setIsOldPasswordFilled(false);
+    } else return false;
   };
 
   const handleNewPassword = async () => {
     if (password != "") {
       const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync());
       setPassword(hashed);
-      setIsPasswordFilled(true);
-      console.log("new pass: " + password);
-    } else setIsPasswordFilled(false);
+      return { filled: true, pass: hashed };
+    } else return { filled: false, pass: "" };
   };
 
   const handleCancel = async () => {
     onClose();
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    // event.preventDefault();
-    await handleOldPassword();
-    await handleNewPassword();
+    event.preventDefault();
+    const oldPass = await handleOldPassword();
+    const newPass = await handleNewPassword();
     const payload = {
-      idChannel: channel.id,
-      password: password,
+      channelId: channel.id,
+      password: newPass.pass,
     };
-    if (isOldPasswordFilled && isPasswordFilled) {
+    if (oldPass && newPass.filled) {
       const data = await ChannelService.setPasswordToChannel(payload);
       if (data) {
         toast.success("Password has been successfuly changed!");
-        setIsOldPasswordFilled(false);
-        setIsPasswordFilled(false);
         navigate("/chat");
+        window.location.reload();
       } else toast.error("Something went wrong!");
     }
+    else if (!newPass.filled) toast.error("New password is empty!");
   };
 
   /* RENDERING */
