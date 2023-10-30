@@ -365,4 +365,25 @@ export class UserService {
     }
     return (false);
   }
+
+  // async getBanned(idUser: number)
+  // {
+  //   // 1. Find all channels where the user has been banned
+  //   const source = await this.userRepository.findOne({
+  //     where: { id: relationBlock.senderId },
+  //     relations: {
+  //       blocked: true,
+  //     },
+  //   })
+  //   source.blocked = source.blocked.filter((user) => {
+  //     return (user.id !== relationBlock.receiverId)
+  //   })
+  //   const user = await this.userRepository.save(source);
+  //   if (user)
+  //   {
+  //     this.eventEmmiter.emit('unblockUser', relationBlock);
+  //     return (true);
+  //   }
+  //   return (false);
+  // }
 }

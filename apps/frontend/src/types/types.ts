@@ -122,6 +122,7 @@ export interface IChannel {
   owner: IResponseUser,
   users: IResponseUser[],
   messages: IMessage[],
+  banned: IResponseUser[],
 }
 
 export interface IResponseGetChannels {

@@ -57,6 +57,7 @@ export default function SearchBar() {
     const handleJoinChannel = async (channel: IChannel) => {
         console.log('channel', channel);
         try{
+            // 1. Take channel search if user is banned 
             const payload = {
             channelId: channel.id,
             username: userLogged.username,

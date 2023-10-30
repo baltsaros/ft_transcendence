@@ -102,7 +102,7 @@ const channelSlice = createSlice({
       console.log('redux payload:', action.payload);;
       const message = action.payload;
       state.channel = state.channel.map((channel) => {
-        if (channel.id === message.channel.id) {
+        if (channel.id === message.channelId) {
           return {
             ...channel, // clone the channel obj
             messages: [...channel.messages, message], // copy user in the channel.users array

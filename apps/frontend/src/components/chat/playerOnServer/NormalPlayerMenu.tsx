@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
-import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
+import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser } from "../../../types/types";
 
@@ -46,7 +46,10 @@ function NormalPlayerMenu(user: IResponseUser) {
 
     useEffect(() => {
       webSocketService.on("userBlocked", (payload: any) => {
+        console.log('addBlocked');
+        console.log('payload', payload);
           store.dispatch(addBlocked(payload));
+          store.dispatch(fetchBlocked(userLogged!.id));
       });
       webSocketService.on("userUnblocked", (payload: any) => {
         store.dispatch(removeBlocked(payload));

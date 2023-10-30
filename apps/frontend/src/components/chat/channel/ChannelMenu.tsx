@@ -28,7 +28,6 @@ const ChannelMenu: React.FC<ChildProps> = ({channel}) => {
   }
 
   useEffect(() => {
-    console.log('channel', channel);
     if (channel.owner.username === userLogged.username) {
       setIsOwner(true);
     }
