@@ -51,7 +51,7 @@ function Channel() {
                                         	<button
                                         		onClick={() => selectedChannelContext.setSelectedChannel(channel)}
                                         		// onClick={() => onSelectChannel(channel)}
-                                        		className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg">{channel.name}
+                                        		className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg w-60">{channel.name}
                                         	</button>
                                         	<ChannelMenu 
                                             channel={channel}

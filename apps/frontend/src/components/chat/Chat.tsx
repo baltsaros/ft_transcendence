@@ -1,6 +1,5 @@
-import { Scrollbar } from "react-scrollbars-custom";
 import { useEffect, useRef } from "react";
-import { IChannel, IMessage, IResponseMessage } from "../../types/types";
+import { IMessage, IResponseMessage } from "../../types/types";
 import { useChatWebSocket } from "../../context/chat.websocket.context";
 import ChatBar from "./ChatBar";
 import { useSelector } from "react-redux";
@@ -32,6 +31,14 @@ function Chat() {
     );
     messages = channelSelected!.messages;
   }
+  const scrolledElementRef = useRef<HTMLDivElement | null>(null);
+
+  const keepScrolledDown = () => {
+    if (scrolledElementRef.current) {
+      const element = scrolledElementRef.current;
+      element.scrollTop = element.scrollHeight;
+    }
+  };
 
   /* BEHAVIOR */
   useEffect(() => {
@@ -60,10 +67,14 @@ useEffect(() => {
     }
   }, []);
 
-  /* RENDER */
-  return (
-    <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
-        <div className="flex flex-grow w-full">
+  useEffect(() => {
+    keepScrolledDown();
+  });
+
+    /* RENDER */
+    return (
+        <div className="flex items-stretch justify-center h-screen bg-gray-100 w-full">
+          <div className="flex flex-grow w-full">
             <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
                 <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
                 {
@@ -75,29 +86,25 @@ useEffect(() => {
                     <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
                 }
                 </div>
-                <div className="text-lg font-bold mb-2 text-gray-600">
-                    {<Scrollbar style={{ width: 300, height: 700 }}>
+                <div className="text-lg font-bold mb-2 text-gray-600 overflow-y-scroll h-600"
+                  ref={scrolledElementRef}>
                     {
                         selectedChannelContext.selectedChannel &&
                         messages!.map((idx, index) => (
                             !blocked.users.some((elem) => elem.username === idx.username) &&
                             <div
                             key={index}
-                            className={`${
-                                idx.username === 'User1' ? 'self-start' : 'self-end'
-                            } p-2 rounded-lg mb-2`}
+                            className=" self-end p-2 rounded-lg mb-2"
                             >
-                        <div className="text-sm font-semibold">
-                        {idx.username}
-                      </div>
-                      <div className="bg-white p-2 rounded-lg shadow-md overflow-y-auto">
-                        {idx.content}
-                      </div>
-                    </div>
-                  ))}
-              </Scrollbar>
-            }
-            {!selectedChannelContext.selectedChannel && <h2>Select a channel</h2>}
+                              {/*<div className="text-sm">
+                                {idx.username}
+                              </div>*/}
+                              <div className="bg-white p-2 rounded-lg shadow-md auto-rows-max w-64 overflow-y-auto" >
+                                {idx.content}
+                              </div>
+                            </div>
+                        ))}
+                    {!selectedChannelContext.selectedChannel && <h2>Select a channel</h2>}
           </div>
           <div className="mt-auto">
             {selectedChannelContext.selectedChannel && <ChatBar/>}

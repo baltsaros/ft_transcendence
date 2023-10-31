@@ -128,6 +128,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     const socket = this.gatewaySessionManager.getSocket(sender.username);
     socket.emit("userBlocked", reduxPayload);
+    socket.emit("userBlockedPlayer", reduxPayload);
   }
 
   @OnEvent("banUser")
@@ -180,6 +181,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     });
     const socket = this.gatewaySessionManager.getSocket(sender.username);
     socket.emit("userUnblocked", reduxPayload);
+    socket.emit("userUnblockedPlayer", reduxPayload);
   }
 
   @OnEvent("onChannelLeave")

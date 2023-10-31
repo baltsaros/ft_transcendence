@@ -8,6 +8,7 @@ import { getUser } from "../hooks/getUser";
 import FriendList from "./FriendList";
 import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
 import Logout from "./Logout";
+import InfosMenu from "./InfosMenu";
 
 const Header: FC = () => {
   const isAuth = useAuth();
@@ -56,49 +57,9 @@ const Header: FC = () => {
                 "[AVATAR]"
               )}
             </li>
-            <div>
-              <Menu
-                direction={"bottom"}
-                arrow={true}
-                align={"center"}
-                menuButton={
-                  <MenuButton className={"py-2 text-white/50 hover:text-white"}>
-                    {username}
-                  </MenuButton>
-                }
-              >
-                <div className="bg-gray-500 text-black">
-                  <MenuHeader
-                    className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
-                  >
-                    <NavLink
-                      to={"player/" + username}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "py-2 text-white"
-                          : "text-white/50 hover:text-white"
-                      }
-                    >
-                      Statistics
-                    </NavLink>
-                  </MenuHeader>
-                  <MenuHeader
-                    className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
-                  >
-                    <NavLink
-                      to={"edit"}
-                      className={({ isActive }) =>
-                        isActive
-                          ? "py-2 text-white"
-                          : "text-white/50 hover:text-white"
-                      }
-                    >
-                      Edit
-                    </NavLink>
-                  </MenuHeader>
-                </div>
-              </Menu>
-            </div>
+            <li>
+              <InfosMenu username={username} />
+            </li>
             <li>
               <FriendList />
             </li>
