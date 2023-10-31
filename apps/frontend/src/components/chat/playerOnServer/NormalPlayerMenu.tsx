@@ -45,19 +45,6 @@ function NormalPlayerMenu(user: IResponseUser) {
     await PlayerService.unblockUser(payload);
   };
 
-  useEffect(() => {
-      webSocketService!.on("userBlocked", (payload: any) => {
-        store.dispatch(addBlocked(payload));
-      });
-      webSocketService!.on("userUnblocked", (payload: any) => {
-        store.dispatch(removeBlocked(payload));
-      });
-      return () => {
-        webSocketService!.off("userBlocked");
-        webSocketService!.off("userUnblocked");
-      };
-  }, []);
-
   const handleDirectMessage = async () => {
     try {
       const strings = [user.username, userLogged?.username];

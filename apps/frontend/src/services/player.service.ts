@@ -46,8 +46,8 @@ export const PlayerService = {
   async acceptInvitation(invitation: IUserRelation)
   {
     const { data } = await instance.post("user/acceptInvitation", invitation);
-    if (data) return (true);
-    return (false);
+    console.log("data =", data);
+    return data;
   },
 
   async updateElo(player: IResponseUser)
@@ -104,6 +104,11 @@ export const PlayerService = {
     if (data)
       return (true);
     return (false);
+  },
+
+  async getFullUser(username: string) {
+    const { data } = await instance.get("user/" + username);
+    return (data);
   }
 };
 

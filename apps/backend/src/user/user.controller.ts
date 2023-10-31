@@ -53,6 +53,12 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  // @Post("getFullUser/")
+  // @UseGuards(JwtAuthGuard)
+  // getFullUser(@Body() username: string) {
+  //   return (this.userService.findOne(username));
+  // }
+
   @Get(":name")
   findOne(@Param("name") name: string) {
     return this.userService.findOne(name);

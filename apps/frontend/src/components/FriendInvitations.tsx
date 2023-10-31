@@ -22,15 +22,18 @@ export default function FriendInvitations(invitation: IUserUsername) {
                 const senderId = await PlayerService.getInfoUser(invitation);
                 if (!senderId)
                     return toast.error("User doesn't exists !");
-                if (await PlayerService.acceptInvitation({receiverId, senderId}))
-                {
+                const ret = await PlayerService.acceptInvitation({receiverId, senderId})
                     const sender = users.filter((elem) => elem.id === senderId)[0];
                     const senderUserUsername: IUserUsername = {
                         username: sender.username,
                         status: sender.status,
                     };
                     store.dispatch(removeInvitation(senderUserUsername));
+                if (ret) {
                     toast.success("player added as friend");
+                }
+                else {
+                    toast.error("Player already friend")
                 }
             }   
         } catch (err: any) {

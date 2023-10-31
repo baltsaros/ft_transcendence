@@ -8,7 +8,7 @@ import FriendInvitations from "./FriendInvitations";
 import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
-import { addInvitation, fetchInvitations } from "../store/user/invitationSlice";
+import { addInvitation, fetchInvitations, removeInvitation } from "../store/user/invitationSlice";
 import { addFriend, fetchFriends, removeFriend } from "../store/user/friendsSlice";
 import { fetchAllUsers } from "../store/user/allUsersSlice";
 import { useChatWebSocket } from "../context/chat.websocket.context";
