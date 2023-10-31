@@ -82,6 +82,7 @@ export const ChannelService = {
   },
 
   async addUserBannedToChannel(channelRelation: IChannelRelation) {
+    console.log('frontend service');
     const { data } = await instance.post<IUser>(
       "channel/addBannedUserToChannel/",
       channelRelation

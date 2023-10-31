@@ -3,14 +3,13 @@ import { IChannel, IResponseUser } from "../../../types/types";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../../../store/store";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { fetchChannel } from "../../../store/channel/channelSlice";
+import { addBanned, fetchChannel } from "../../../store/channel/channelSlice";
 import PlayerMenu from "./PlayerMenu";
-//import { addBanned } from "../../../store/channel/banSlice";
 import {
   addAdmin,
-  fetchAdmin,
   removeAdmin,
 } from "../../../store/channel/adminSlice";
+// import { addBanned } from "../../../store/channel/channelSlice";
 import { addMuted, removeMuted } from "../../../store/channel/mutedSlice";
 import { useChannel } from "../../../context/selectedChannel.context";
 
@@ -47,7 +46,7 @@ function PlayersOnChannel() {
         store.dispatch(fetchChannel());
       });
       webSocketService.on("userBanned", (payload: any) => {
-        //store.dispatch(addBanned(payload.user));
+        store.dispatch(addBanned(payload));
       });
       webSocketService.on("adminAdded", (payload: any) => {
         store.dispatch(addAdmin(payload.user));
@@ -113,7 +112,7 @@ function PlayersOnChannel() {
                   isOffline(user) && (
                     <li key={user.id}>
                       {selectedChannelContext.selectedChannel && (
-                        <PlayerMenu {...{ user }}></PlayerMenu>
+                        <PlayerMenu {...{ user}}></PlayerMenu>
                       )}
                     </li>
                   )
