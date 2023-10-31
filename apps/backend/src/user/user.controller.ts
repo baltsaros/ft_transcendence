@@ -181,9 +181,9 @@ export class UserController {
     return (this.userService.unblockUser(relation));
   }
 
-  // @Post("getBanned")
-  // @UseGuards(JwtAuthGuard)
-  // getBanned(@Body() userId: number) {
-  //   return (this.userService.getBanned(userId));
-  // }
+	@Post("updateElo")
+	@UseGuards(JwtAuthGuard)
+	updateElo(@Body() player: UpdateUserDto) {
+	  return (this.userService.updateElo(player.intraId, player));
+	}
 }
