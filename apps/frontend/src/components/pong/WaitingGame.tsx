@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { usePongWebSocket } from "../../context/pong.websocket.context";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
-	webSocket: Socket;
 }
 
 
-const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
+const WaitingGame = ({ onClose }: ModalProp) => {
 
     // STATE
+	const pongWebSocketService = usePongWebSocket();
 
 	// Créez une instance du service WebSocket
 	// const webSocket = usePongWebSocket();
@@ -26,21 +27,20 @@ const WaitingGame = ({ onClose, webSocket }: ModalProp) => {
 	useEffect(() => {
 			// Établir la connexion WebSocket
 			console.log(`${username} launch matchmaking`);
-		webSocket.emit('launchMatchmaking', {});
+			pongWebSocketService!.emit('launchMatchmaking', {});
 
-		// Gestion des événements du serveur pour la mise en correspondance
-		webSocket.on('matchmakingSuccess', (data: { roomId: string }) => {
+			// Gestion des événements du serveur pour la mise en correspondance
+			// pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string }) => {
 			// console.log(`${username} matchmaking success`);
 
-			setIsMatchmakingSuccess(true);
-			setRoomId(data.roomId);
+			// setIsMatchmakingSuccess(true);
+			// setRoomId(data.roomId);
 			// console.log(`Matchmaking success. RoomID : ${data.roomId}`);
-		});
+		// });
 
-	  }, [webSocket]);
+	  }, []);
 
 	const closeModal = () => {
-		webSocket.emit('removeFromQueue', {});
 		onClose();
 	}
 

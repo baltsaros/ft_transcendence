@@ -8,11 +8,11 @@ import PongLauncher from "../components/pong/LaunchPong";
 import { toast } from "react-toastify";
 import { AuthService } from "../services/auth.service";
 import { useChatWebSocket } from "../context/chat.websocket.context";
+import { usePongWebSocket } from "../context/pong.websocket.context";
 
 const GamePage: React.FC = () => {
 
-	const webSocketRef = useRef<Socket | null>(null);
-	const [modalView, setModalView] = useState<boolean>(true);
+	const [showWaitingGame, setShowWaitingGame] = useState<boolean>(true);
 	const [showGameSettings, setShowGameSettings] = useState<boolean>(false);
 	const [matchEnded, setMatchEnded] = useState<boolean>(false);
 	const [launchGame, setLaunchGame] = useState(false);
@@ -21,58 +21,70 @@ const GamePage: React.FC = () => {
 	const [player1PaddleColor, setPlayer1PaddleColor] = useState<string | null>(null);
 	const [player2PaddleColor, setPlayer2PaddleColor] = useState<string | null>(null);
 	const [radius, setRadius] = useState<number | null>(null);
-    const webSocketService = useChatWebSocket();
+	const chatWebSocketService = useChatWebSocket();
+	const pongWebSocketService = usePongWebSocket();
 
-	const handleCloseModal = () => {
-		setModalView(false);
+	const handleCloseWaitingGame = () => {
+		pongWebSocketService!.emit('removeFromQueue', {});
+		setShowWaitingGame(false);
 	};
 
-	if (!webSocketRef.current) {
-		webSocketRef.current = io('ws://localhost:3000/pong', {
-			query: {
-				username: Cookies.get('username'),
-			},
-		});
-	}
+	const handleCloseSettingsGame = () => {
+		pongWebSocketService!.emit('leavePong', {});
+		setRoomId(null);
+		setRadius(null);
+		setPlayer1PaddleColor(null);
+		setPlayer2PaddleColor(null);
+		setOpponentUsername(null);
+		setShowGameSettings(false);
+		setShowWaitingGame(false);
+	};
+
+	// if (!pongWebSocketService!.current) {
+	// 	pongWebSocketService!.current = io('ws://localhost:3000/pong', {
+	// 		query: {
+	// 			username: Cookies.get('username'),
+	// 		},
+	// 	});
+	// }
 
 	const updateInGameStatus = async () => {
 		const userUpdate = await AuthService.updateStatus("inGame");
-		webSocketService!.emit("updateStatus", {data: {userUpdate}});
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
 	};
 
 	const updateOnlineStatus = async () => {
 
 		const userUpdate = await AuthService.updateStatus("online");
-		webSocketService!.emit("updateStatus", {data: {userUpdate}});
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
 	};
 
 	useEffect(() => {
 
-		if (modalView)
+		if (showWaitingGame)
 			updateInGameStatus();
 
-		webSocketRef.current?.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
-			setModalView(false);
+		pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string, opponentUsername: string }) => {
+			setShowWaitingGame(false);
 			setRoomId(data.roomId);
 			setShowGameSettings(true);
 			setOpponentUsername(data.opponentUsername);
 		});
 
-		webSocketRef.current?.on('MatchEnded', () =>
+		pongWebSocketService!.on('MatchEnded', () =>
 		{
 			updateOnlineStatus();
 		});
 
-		webSocketRef.current?.on('OpponentDisconnected', () =>
+		pongWebSocketService!.on('OpponentDisconnected', () =>
 		{
-			setModalView(true);
+			setShowWaitingGame(true);
 			setLaunchGame(false);
 			setShowGameSettings(false);
-			updateOnlineStatus();
 			toast.error("Opponent disconnected.");
 		});
 
-		webSocketRef.current?.on('settingsSuccess', (data: {radius: number, player1PaddleColor: string, player2PaddleColor: string}) => {
+		pongWebSocketService!.on('settingsSuccess', (data: {radius: number, player1PaddleColor: string, player2PaddleColor: string}) => {
 			setPlayer1PaddleColor(data.player1PaddleColor);
 			setPlayer2PaddleColor(data.player2PaddleColor);
 			setRadius(data.radius);
@@ -82,16 +94,20 @@ const GamePage: React.FC = () => {
 		});
 
 		return () => {
+			pongWebSocketService!.off('matchmakingSuccess');
+			pongWebSocketService!.off('MatchEnded');
+			pongWebSocketService!.off('OpponentDisconnected');
+			pongWebSocketService!.off('settingsSuccess');
+			pongWebSocketService!.emit('leavePong', {});
 			updateOnlineStatus();
-			webSocketRef.current?.disconnect();
 		  };
 	}, []);
 
 	return (
 		<div className="game-container">
-			{modalView && webSocketRef.current && !showGameSettings && (<WaitingGame onClose={handleCloseModal} webSocket={webSocketRef.current} />)}
-			{showGameSettings && webSocketRef.current && !modalView && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseModal} webSocket={webSocketRef.current}/> )}
-			{launchGame && webSocketRef.current && roomId && radius && opponentUsername && player1PaddleColor && player2PaddleColor && (<PongLauncher webSocket={webSocketRef.current} roomId={roomId} radius={radius} player1PaddleColor={player1PaddleColor} player2PaddleColor={player2PaddleColor} opponent={opponentUsername}/> )}
+			{showWaitingGame && !showGameSettings && (<WaitingGame onClose={handleCloseWaitingGame} />)}
+			{showGameSettings && !showWaitingGame && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseSettingsGame}/> )}
+			{launchGame && roomId && radius && opponentUsername && player1PaddleColor && player2PaddleColor && (<PongLauncher roomId={roomId} radius={radius} player1PaddleColor={player1PaddleColor} player2PaddleColor={player2PaddleColor} opponent={opponentUsername}/> )}
 		</div>
 	);
 };

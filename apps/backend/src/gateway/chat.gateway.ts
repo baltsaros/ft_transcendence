@@ -294,4 +294,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
+  @SubscribeMessage("invitationAccepted")
+  async handleInvitationAccepted(
+	@ConnectedSocket() client: Socket,
+	@MessageBody('data')  data: {sender: string, receiver: string}
+	) {
+	try {
+		const sender = this.gatewaySessionManager.getSocket(data.sender);
+
+		// sender.emit('invitationAccepted', {sender: data.sender})
+
+    } catch (error) {
+      console.log("error sending game invitation");
+    }
+  }
 }

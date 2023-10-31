@@ -56,6 +56,11 @@ export class Room {
 	setPlayer2(player: Player) {
 		this.player2 = player;
 	}
+
+	removePlayers() {
+		this.player1 = null;
+		this.player2 = null;
+	}
 	// Méthode pour obtenir un joueur par son id
 	getPlayerById(id: string): Player | undefined {
 		if (this.player1.id == id)

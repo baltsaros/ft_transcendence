@@ -8,12 +8,15 @@ const PongWebSocketContext = createContext<PongWebSocketService | undefined>(und
 
 /* Provider component */
 export const PongWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-
+  // const getUserInfo = async () => {
+  //   const user = getUser();
+  //   return user;
+  // }
   /* Define the state/data to share along the React component tree */
   const [PongwebSocketService, setPongWebSocketService] = useState<PongWebSocketService | undefined>();
   useEffect(() => {
     const user = Cookies.get('username');
-      console.log('user', user);
+      // console.log('user', user);
       if (user) {
         setPongWebSocketService(new PongWebSocketService(user));
       }
@@ -31,13 +34,10 @@ export const PongWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 }
 
-/* Create a custom hook for consuming the context */
-export const usePongWebSocket = (): PongWebSocketService => {
+export const usePongWebSocket = (): PongWebSocketService | undefined => {
   const context = useContext(PongWebSocketContext);
-  if (!context) {
-    throw new Error('usePongWebSocket must be used within a WebSocketProvider');
-  }
   return context;
 };
+/* Create a custom hook for consuming the context */
 
 /* Wrap the components that need access to the context with the Provider (see main.tsx) */

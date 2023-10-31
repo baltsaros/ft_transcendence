@@ -10,12 +10,14 @@ import { removeUser } from "../store/channel/channelSlice";
 import { store } from "../store/store";
 import { useChatWebSocket } from "../context/chat.websocket.context";
 import GameInvitation from "../components/pong/Invitation";
+import { usePongWebSocket } from "../context/pong.websocket.context";
 
 const chatPage: React.FC = () => {
 
     /* STATE */
     const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
-    const webSocketService = useChatWebSocket();
+    const chatWebSocketService = useChatWebSocket();
+    const pongWebSocketService = usePongWebSocket();
 	const [gameInvitation, setGameInvitation] = useState<boolean>(false);
 
     /* BEHAVIOR */
@@ -24,24 +26,24 @@ const chatPage: React.FC = () => {
 
 		useEffect( () => {
 
-			webSocketService!.on('GameInvitationReceived', (data: { sender: string}) => {
+			chatWebSocketService!.on('GameInvitationReceived', (data: { sender: string}) => {
 				console.log("game invitation received. Sender : ", data.sender);
 				setGameInvitation(true);
 			});
 
 			return () => {
-				webSocketService!.off('GameInvitationReceived');
+				chatWebSocketService!.off('GameInvitationReceived');
 			  };
-		}, [webSocketService]);
+		}, [chatWebSocketService]);
 
 
        useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userLeft", (payload: any) => {
+    if (chatWebSocketService) {
+      chatWebSocketService.on("userLeft", (payload: any) => {
         store.dispatch(removeUser(payload));
       });
       return () => {
-        webSocketService.off("userLeft");
+        chatWebSocketService.off("userLeft");
       };
     }
   }, []);

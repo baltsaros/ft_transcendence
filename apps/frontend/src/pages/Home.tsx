@@ -18,6 +18,7 @@ const Home: FC = () => {
 				// console.log("game invitation received. Sender : ", data.sender);
 				setGameInvitation(true);
 			});
+
 		}
 
 		return () => {

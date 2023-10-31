@@ -27,47 +27,81 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		// console.log(`Client connected: ${client.id}`);
 		// const username = Cookies.get('username');
 		let username = client.handshake.query.username.toString();
-		const player = new Player(client.id, username);
-		this.onlinePlayers.push(player);
+		const user = new Player(client.id, username);
+		this.onlinePlayers.push(user);
 	}
 
 	handleDisconnect(client: Socket) {
-		// console.log(`Client disconnected: ${client.id}`);
-		let index = this.onlinePlayers.findIndex((player) => player.id === client.id);
+		// // console.log(`Client disconnected: ${client.id}`);
+		// const index = this.onlinePlayers.findIndex((player) => player.id === client.id);
+		// if (index !== -1) {
+		//   this.onlinePlayers.splice(index, 1);
+		// }
+		const index = this.onlinePlayers.findIndex((player) => player.id === client.id);
 		if (index !== -1) {
 		  this.onlinePlayers.splice(index, 1);
 		}
+		this.leavePong(client);
+	}
+
+	private leavePong(client: Socket)
+	{
+
 		// Retirer le client de la file d'attente s'il y est
-		index = this.waitingPlayers.findIndex((player) => player.id === client.id);
-		if (index !== -1) {
-			this.waitingPlayers.splice(index, 1);
-			// console.log(`Player ${client.id} removed from the waiting queue.`);
-		}
-		else {
-			// Parcourir toutes les salles pour vérifier si le client était présent
-			this.pongRooms.forEach((room) => {
+		this.leaveWaitingQueue(client);
+
+		// Parcourir toutes les salles pour vérifier si le client était présent
+		this.pongRooms.forEach((room) => {
 			if (room.getPlayerById(client.id)) {
-				this.leavePongRoom(client, room.id);
+				console.log(`room ${room.id} : `);
+				console.log(`player 1 : ${room.player1.username}`);
+				console.log(`player 2 : ${room.player2.username}`);
+				this.leaveRoom(client, room.id);
 			}
 		});
+
+	}
+
+	private leaveWaitingQueue(client: Socket) {
+		const player = this.waitingPlayers.find((player) => player.id === client.id);
+
+		if (player)
+		{
+			const index = this.waitingPlayers.indexOf(player);
+			if (index !== -1) {
+				// Retirez le joueur de la file d'attente
+				this.waitingPlayers.splice(index, 1);
+				console.log(player.username, ": removed waiting players");
+			}
 		}
 	}
 
-	private leavePongRoom(client: Socket, roomId: string): void {
+	@SubscribeMessage('leavePong')
+	async handleLeavePong(
+		@ConnectedSocket() client: Socket
+		) {
+			this.leavePong(client);
+	  }
+
+	private leaveRoom(client: Socket, roomId: string): void {
 		const room = this.pongRooms.get(roomId);
 
 		if (room) {
-			//Retirer le client de la salle
 
 			if (room.gameState == GameState.Playing || room.gameState == GameState.Starting)
 			{
-				if (room.player1)
-					this.server.to(room.player1.id).emit('OpponentDisconnected', {});
-				if (room.player2)
+				console.log("opponent disconnected : ", room.id);
+				if (room.player1.id == client.id)
+				{
 					this.server.to(room.player2.id).emit('OpponentDisconnected', {});
+				}
+				else if (room.player2.id == client.id)
+				{
+					this.server.to(room.player1.id).emit('OpponentDisconnected', {});
+				}
 				room.setGameState(GameState.Stopped);
 			}
-
+			room.removePlayers();
 			this.pongRooms.delete(roomId);
 			console.log(`Room ${roomId} has been deleted.`);
 		}
@@ -97,13 +131,17 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		try {
 			let player = this.waitingPlayers.find((player) => player.id === client.id);
 
-			if (!player) {
+			if (player)
+				console.log("player found in the waiting queue : ", player.username);
 
+			if (!player) {
 				// Ajouter le joueur à la file d'attente
 				player = this.onlinePlayers.find((player) => player.id === client.id);
 
 				if (player)
+				{
 					this.waitingPlayers.push(player);
+				}
 				// Vérifier si suffisamment de joueurs sont en attente pour former un match
 				if (this.waitingPlayers.length >= 2) {
 					// Retirer les deux premiers joueurs de la file d'attente
@@ -128,25 +166,7 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 	@SubscribeMessage('removeFromQueue')
 	async handleRemoveFromQueue(@ConnectedSocket() client: Socket) {
-		try {
-			// Vérifiez d'abord si le joueur est dans la file d'attente
-			const player = this.waitingPlayers.find((player) => player.id === client.id);
-
-			if (player)
-			{
-				const index = this.waitingPlayers.indexOf(player);
-				if (index !== -1) {
-					// Retirez le joueur de la file d'attente
-					this.waitingPlayers.splice(index, 1);
-				}
-			}
-		}
-		catch (error) {
-			console.error(error);
-			client.emit('removeFromQueueError', {
-				message: 'Une erreur s\'est produite lors du retrait de la file d\'attente.',
-			});
-		}
+		this.leaveWaitingQueue(client);
 	}
 
 	@SubscribeMessage('chooseGameSettings')
@@ -369,7 +389,10 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		}
 
 	@SubscribeMessage('testLog')
-	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
-		// console.log("log : ", message);
+	async handleTestLog(
+	@ConnectedSocket() client: Socket,
+	@MessageBody('message') message: string
+	) {
+		console.log("log : ", message);
 	}
 }

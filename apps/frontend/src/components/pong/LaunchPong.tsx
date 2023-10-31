@@ -8,6 +8,7 @@ import { MatchService } from "../../services/matches.service";
 import { PlayerService } from "../../services/player.service";
 import { RootState, store } from "../../store/store";
 import { fetchAllUsers } from "../../store/user/allUsersSlice";
+import { usePongWebSocket } from "../../context/pong.websocket.context";
 
 const scoreMax = 5;
 const fieldWidth = 800;
@@ -18,12 +19,12 @@ const paddleOffset = 5;
 const paddleSpeed = 20;
 const username = Cookies.get('username');
 
-const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2PaddleColor, opponent}: any) => {
+const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, opponent}: any) => {
 
 	// STATE
 	const [matchStarted, setMatchStarted] = useState<boolean>(false);
 	const [matchEnded, setMatchEnded] = useState<boolean>(false);
-
+	const pongWebSocketService = usePongWebSocket();
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const ballXRef = useRef(fieldWidth / 2);
 	const ballYRef = useRef(fieldHeight / 2);
@@ -41,13 +42,13 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 
 	useEffect(() => {
 		  // Démarrez la partie lorsque le composant est monté
-		  webSocket.emit('startMatch', { data: { roomId: roomId } });
+		  pongWebSocketService!.emit('startMatch', { data: { roomId: roomId } });
 
-		  webSocket.on('matchStarted', (data: {player1Username: string, player2Username: string}) => {
+		  pongWebSocketService!.on('matchStarted', (data: {player1Username: string, player2Username: string}) => {
 				player1UsernameRef.current = data.player1Username;
 				player2UsernameRef.current = data.player2Username;
 		  });
-	  }, [webSocket]);
+	  }, [pongWebSocketService]);
 
 
 	//   function calculateNewElo(playerElo, scoreDifference, kFactor = 32) {
@@ -97,7 +98,7 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 			if (!ctx)
 				return;
 
-			webSocket.on('pongUpdate', (data: {ballX: number, ballY: number, leftPaddleY: number, rightPaddleY: number, player1Score: number, player2Score: number}) => {
+				pongWebSocketService!.on('pongUpdate', (data: {ballX: number, ballY: number, leftPaddleY: number, rightPaddleY: number, player1Score: number, player2Score: number}) => {
 					ballXRef.current = data.ballX;
 					ballYRef.current = data.ballY;
 					leftPaddleYRef.current = data.leftPaddleY;
@@ -178,19 +179,19 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 			const moveUser = (e: KeyboardEvent) => {
 				e.preventDefault();
 				if (e.key === "ArrowUp")
-					webSocket.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
+					pongWebSocketService!.emit('movePaddle', {data : {direction : "up", roomId: roomId}});
 				else if (e.key === "ArrowDown")
-					webSocket.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
+					pongWebSocketService!.emit('movePaddle', {data : {direction : "down", roomId: roomId}});
 			};
 
 			// Écoutez les touches de contrôle des raquettes
 			window.addEventListener("keydown", moveUser);
 
 		return () => {
-			webSocket.off('pongUpdate');
+			pongWebSocketService!.off('pongUpdate');
 			window.removeEventListener("keydown", moveUser);
 			};
-	}, [webSocket]);
+	}, [pongWebSocketService!]);
 
 	return (
 		(matchEnded && username && opponent) ?
