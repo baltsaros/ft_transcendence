@@ -8,13 +8,18 @@ import { usePongWebSocket } from "../context/pong.websocket.context";
 import WaitingGame from "../components/pong/WaitingGame";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
+import WaitingInvite from "../components/pong/WaitingInvitation";
 
 const Home: FC = () => {
 	const isAuth = useAuth();
 	const chatWebSocketService = useChatWebSocket();
 	const pongWebSocketService = usePongWebSocket();
 	const [showWaitingGame, setShowWaitingGame] = useState<boolean>(false);
-	const [gameInvitation, setGameInvitation] = useState<boolean>(false);
+	const [gameInvitationSent, setGameInvitationSent] = useState<boolean>(false);
+	const [gameInvitationReceived, setGameInvitationReceived] = useState<boolean>(false);
+	const [sender, setSender] = useState<string | null>(null);
+	const [receiver, setReceiver] = useState<string | null>(null);
+
 	const navigate = useNavigate();
 
 	const updateOnlineStatus = async () => {
@@ -39,12 +44,27 @@ const Home: FC = () => {
 		updateInGameStatus();
 	};
 
-	useEffect( () => {
+	const handleCloseInvitationReceived = async () => {
+		setGameInvitationReceived(false);
+	};
+
+	const handleCloseInvitationSent = async () => {
+		setGameInvitationSent(false);
+	};
+
+	useEffect(() => {
 		if (isAuth)
 		{
-			pongWebSocketService!.on('GameInvitationReceived', (data: { sender: string}) => {
+			pongWebSocketService!.on('GameInvitationReceived', (data: { sender: string }) => {
 				console.log("game invitation received. Sender : ", data.sender);
-				setGameInvitation(true);
+				setSender(data.sender);
+				setGameInvitationReceived(true);
+			});
+
+			pongWebSocketService!.on('GameInvitationSent', (data: { receiver: string }) => {
+				// console.log("game invitation sent. Sender : ", data.receiver);
+				setReceiver(data.receiver);
+				setGameInvitationSent(true);
 			});
 
 			pongWebSocketService!.on('matchmakingError', (data: {error: string}) =>
@@ -57,6 +77,7 @@ const Home: FC = () => {
 		return () => {
 			if (isAuth)
 				pongWebSocketService?.off('GameInvitationReceived');
+				pongWebSocketService?.off('GameInvitationSent');
 				pongWebSocketService?.off('matchmakingError');
 		  };
 	}, [pongWebSocketService, isAuth]);
@@ -81,7 +102,8 @@ const Home: FC = () => {
 		</div>
       ) : (
 		<div className=" grid grid-cols-3 gap-28">
-			{gameInvitation && (<GameInvitation />)}
+			{gameInvitationSent && receiver && (<WaitingInvite onClose={handleCloseInvitationSent} receiver={receiver} />)}
+			{gameInvitationReceived && sender && (<GameInvitation onClose={handleCloseInvitationReceived} sender={sender}/>)}
 			{showWaitingGame && (<WaitingGame onClose={handleCloseWaitingGame} />)}
 			<div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
 			<div/>

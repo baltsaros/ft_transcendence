@@ -424,28 +424,18 @@ import { IUserSocket } from 'src/types/types';
 		  @MessageBody('data')  data: {sender: string, receiver: string}
 		  ) {
 		  try {
-			const receiver = this.gatewaySessionManager.getSocket(data.receiver);
+			// const receiver = this.gatewaySessionManager.getSocket(data.receiver);
 
-			console.log(receiver);
-			console.log(data.sender);
+			let receiver: Player;
 
-			receiver.emit('GameInvitationReceived', {sender: data.sender})
+			this.onlinePlayers.forEach( (player) => {
+				if (player.username == data.receiver)
+					receiver = player;
+			});
 
-		  } catch (error) {
-			console.log("error sending game invitation");
-		  }
-		}
+			this.server.to(receiver.id).emit('GameInvitationReceived', {sender: data.sender})
+			client.emit('GameInvitationSent', {receiver: receiver.username});
 
-
-		@SubscribeMessage("invitationAccepted")
-		async handleInvitationAccepted(
-		  @ConnectedSocket() client: Socket,
-		  @MessageBody('data')  data: {sender: string, receiver: string}
-		  ) {
-		  try {
-			  const sender = this.gatewaySessionManager.getSocket(data.sender);
-
-			  // sender.emit('invitationAccepted', {sender: data.sender})
 		  } catch (error) {
 			console.log("error sending game invitation");
 		  }
@@ -467,7 +457,47 @@ import { IUserSocket } from 'src/types/types';
 			client.emit('RoomError', {error: error});
 		  }
 		}
-		validRoom
+
+		@SubscribeMessage('cancelInvitation')
+		async handleCancelInvitation(
+			@ConnectedSocket() client: Socket,
+			@MessageBody('data')  data: {player: string}
+			) {
+
+				console.log("CANCEL");
+				const player = this.onlinePlayers.find((player) => player.username === data.player);
+
+				if (player)
+					this.server.to(player.id).emit('invitationCanceled', {username: player.username});
+			}
+
+		@SubscribeMessage('inviteMatchmaking')
+		async handleInviteMatchmaking(
+			@ConnectedSocket() client: Socket,
+			@MessageBody('data')  data: {sender: string}
+			) {
+			try {
+				const player1 = this.onlinePlayers.find((player) => player.id === client.id);
+				const player2 = this.onlinePlayers.find((player) => player.username === data.sender);
+
+				if (player1 && player2) {
+					const newRoomId = this.createPongRoom(player1, player2);
+
+					if (newRoomId)
+					{
+						this.server.to(player1.id).emit('inviteMatchmakingSuccess', { roomId: newRoomId });
+						this.server.to(player2.id).emit('inviteMatchmakingSuccess', { roomId: newRoomId });
+					}
+				}
+			}
+			catch (error) {
+				// console.error(error);
+				client.emit('matchmakingError', {
+				  error: error
+				});
+			  }
+		  }
+
 	@SubscribeMessage('testLog')
 	async handleTestLog(
 	@ConnectedSocket() client: Socket,

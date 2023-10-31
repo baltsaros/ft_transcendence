@@ -1,5 +1,5 @@
 import { MenuItem } from "@szhsin/react-menu";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -10,6 +10,8 @@ import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/
 import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser } from "../../../types/types";
 import { usePongWebSocket } from "../../../context/pong.websocket.context";
+import WaitingGame from "../../pong/WaitingGame";
+import WaitingInvite from "../../pong/WaitingInvitation";
 
 function NormalPlayerMenu(user: IResponseUser) {
   //state
