@@ -9,13 +9,15 @@ import { PlayerService } from "../../../services/player.service";
 import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser } from "../../../types/types";
+import { usePongWebSocket } from "../../../context/pong.websocket.context";
 
 function NormalPlayerMenu(user: IResponseUser) {
   //state
   const friends = useSelector((state: RootState) => state.friend.friends);
   const blocked = useSelector((state: RootState) => state.blocked.users);
   const userLogged = useSelector((state: RootState) => state.user.user);
-  const webSocketService = useChatWebSocket();
+  const ChatWebSocketService = useChatWebSocket();
+  const PongWebSocketService = usePongWebSocket();
 
   const isFriend = (username: string) => {
     return friends.some((item) => item.username === username);
@@ -41,16 +43,16 @@ function NormalPlayerMenu(user: IResponseUser) {
   };
 
   useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userBlocked", (payload: any) => {
+    if (ChatWebSocketService) {
+      ChatWebSocketService.on("userBlocked", (payload: any) => {
         store.dispatch(addBlocked(payload));
       });
-      webSocketService.on("userUnblocked", (payload: any) => {
+      ChatWebSocketService.on("userUnblocked", (payload: any) => {
         store.dispatch(removeBlocked(payload));
       });
       return () => {
-        webSocketService.off("userBlocked");
-        webSocketService.off("userUnblocked");
+        ChatWebSocketService.off("userBlocked");
+        ChatWebSocketService.off("userUnblocked");
       };
     }
   }, []);
@@ -83,7 +85,7 @@ function NormalPlayerMenu(user: IResponseUser) {
   };
 
   const handleGameInvitation = () => {
-	webSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
+	PongWebSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
   }
 
   const handleAddInvitation = async () => {

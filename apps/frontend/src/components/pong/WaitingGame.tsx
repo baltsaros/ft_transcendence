@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { usePongWebSocket } from "../../context/pong.websocket.context";
 
@@ -13,32 +13,35 @@ const WaitingGame = ({ onClose }: ModalProp) => {
 
     // STATE
 	const pongWebSocketService = usePongWebSocket();
-
+	const navigate = useNavigate();
 	// Créez une instance du service WebSocket
 	// const webSocket = usePongWebSocket();
 	// const webSocket = usePongWebSocket();
 	// BEHAVIOUR
 
 	const [isMatchmakingSuccess, setIsMatchmakingSuccess] = useState(false);
-	const [roomId, setRoomId] = useState<string | null>(null);
-
-	const username = Cookies.get('username');
+	// const [roomId, setRoomId] = useState<string | null>(null);
+	// const username = Cookies.get('username');
 
 	useEffect(() => {
 			// Établir la connexion WebSocket
-			console.log(`${username} launch matchmaking`);
+			// console.log(`${username} launch matchmaking`);
 			pongWebSocketService!.emit('launchMatchmaking', {});
 
 			// Gestion des événements du serveur pour la mise en correspondance
-			// pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string }) => {
+			pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string}) => {
+				// if (data.player1)
+				navigate(`/game/${data.roomId}`);
+			});
 			// console.log(`${username} matchmaking success`);
 
 			// setIsMatchmakingSuccess(true);
 			// setRoomId(data.roomId);
 			// console.log(`Matchmaking success. RoomID : ${data.roomId}`);
-		// });
-
-	  }, []);
+			return () => {
+					pongWebSocketService?.off('matchmakingSuccess');
+			  };
+	  }, [pongWebSocketService]);
 
 	const closeModal = () => {
 		onClose();

@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { removeFriend } from "../store/user/friendsSlice";
 import { instance } from "../api/axios.api";
 import { useChatWebSocket } from "../context/chat.websocket.context";
+import { usePongWebSocket } from "../context/pong.websocket.context";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
@@ -19,7 +20,8 @@ function ToggleMenuFriendList(user: IUserUsername) {
     const users = useSelector((state: RootState) => state.allUser.users);
     const userLogged = useSelector((state: RootState) => state.user.user);
     const navigate = useNavigate();
-	const webSocketService = useChatWebSocket();
+	const ChatWebSocketService = useChatWebSocket();
+	const PongWebSocketService = usePongWebSocket();
     //behaviour
     
     const deleteFriend = async () => {
@@ -73,7 +75,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
       };
 
 	  const handleGameInvitation = () => {
-		webSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
+		PongWebSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
 	  }
 
     //render

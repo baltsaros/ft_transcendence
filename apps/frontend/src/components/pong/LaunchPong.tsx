@@ -19,7 +19,7 @@ const paddleOffset = 5;
 const paddleSpeed = 20;
 const username = Cookies.get('username');
 
-const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, opponent}: any) => {
+const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, player1, player2}: any) => {
 
 	// STATE
 	const [matchStarted, setMatchStarted] = useState<boolean>(false);
@@ -32,9 +32,8 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 	const rightPaddleYRef = useRef(fieldHeight / 2 - paddleHeight / 2);
 	const player1ScoreRef = useRef(0);
 	const player2ScoreRef = useRef(0);
-	const player1UsernameRef = useRef<string>("");
-	const player2UsernameRef = useRef<string>("");
 	const users = useSelector((state: RootState) => state.allUser.users);
+
 
 	useEffect(() => {
 		store.dispatch(fetchAllUsers());
@@ -42,21 +41,14 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 
 	useEffect(() => {
 		  // Démarrez la partie lorsque le composant est monté
-		  pongWebSocketService!.emit('startMatch', { data: { roomId: roomId } });
+		  pongWebSocketService?.emit('startMatch', { data: { roomId: roomId } });
 
-		  pongWebSocketService!.on('matchStarted', (data: {player1Username: string, player2Username: string}) => {
-				player1UsernameRef.current = data.player1Username;
-				player2UsernameRef.current = data.player2Username;
-		  });
+		//   pongWebSocketService!.on('matchStarted', (data: { player1Username: string, player2Username: string}) => {
+		// 	// setShowWaitingGame(false);
+		// 	setPlayer1(data.player1Username);
+		// 	setPlayer2(data.player2Username);
+		// });
 	  }, [pongWebSocketService]);
-
-
-	//   function calculateNewElo(playerElo, scoreDifference, kFactor = 32) {
-	// 	const expectedScore = 1 / (1 + Math.pow(10, -scoreDifference / 400));
-	// 	const result = scoreDifference > 0 ? 1 : 0.5; // 1 pour victoire, 0.5 pour match nul
-	// 	const newElo = playerElo + kFactor * (result - expectedScore);
-	// 	return newElo;
-	//   }
 
 	const calculateNewElo = async (scoreDifference: number) => {
 		let player = await AuthService.getProfile();
@@ -113,17 +105,20 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 
 					if (!matchEnded && (player1ScoreRef.current == scoreMax || player2ScoreRef.current == scoreMax))
 					{
-						if (player1UsernameRef.current == username)
+						if (player1 == username)
 						{
-							MatchService.addMatch({
-								username: username,
-								opponent: opponent,
-								scoreUser: player1ScoreRef.current,
-								scoreOpponent: player2ScoreRef.current
-							});
+							if (player1 && player2)
+							{
+								MatchService.addMatch({
+									username: player1,
+									opponent: player2,
+									scoreUser: player1ScoreRef.current,
+									scoreOpponent: player2ScoreRef.current
+								});
+							}
 							calculateNewElo(player1ScoreRef.current - player2ScoreRef.current);
 						}
-						else if (player2UsernameRef.current == username)
+						else if (player2 == username)
 						{
 							calculateNewElo(player2ScoreRef.current - player1ScoreRef.current);
 						}
@@ -169,8 +164,8 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 						ctx.fillText(`${player2ScoreRef.current}`, fieldWidth / 2 + 20, 50);
 
 						ctx.font = "20px Arial";
-						ctx.fillText(`${player1UsernameRef.current}`, 35, 35);
-						ctx.fillText(`${player2UsernameRef.current}`, fieldWidth - 120, 35);
+						ctx.fillText(`${player1}`, 35, 35);
+						ctx.fillText(`${player2}`, fieldWidth - 120, 35);
 
 					}
 
@@ -194,7 +189,7 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 	}, [pongWebSocketService!]);
 
 	return (
-		(matchEnded && username && opponent) ?
+		(matchEnded && player1 && player2) ?
 		(
 			<div className="game-container">
 				<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -203,7 +198,7 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 							<h3 className="text-3xl font-semibold leading-6 uppercase text-gray-400 text-center" id="modal-title">Match Result</h3>
 						</div>
 						<div className="bg-gray-400 p-6 space-y-3 text-center">
-							<p className="text-2xl text-black font-bold"> {player1UsernameRef.current} vs {player2UsernameRef.current}</p>
+							<p className="text-2xl text-black font-bold"> {player1} vs {player2}</p>
 							<div className="flex justify-center items-center space-x-4">
 								<p className="text-4xl text-black font-bold">{player1ScoreRef.current}</p>
 								<p className="text-4xl text-red-600 font-bold">-</p>

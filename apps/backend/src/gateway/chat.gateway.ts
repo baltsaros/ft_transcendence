@@ -277,35 +277,4 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log("error joining channel");
     }
   }
-
-  @SubscribeMessage("sendGameInvitation")
-  async handleSendGameInvitation(
-	@ConnectedSocket() client: Socket,
-	@MessageBody('data')  data: {sender: string, receiver: string}
-	) {
-    try {
-		const receiver = this.gatewaySessionManager.getSocket(data.receiver);
-
-		console.log("receiver : ", data.receiver);
-		receiver.emit('GameInvitationReceived', {sender: data.sender})
-
-    } catch (error) {
-      console.log("error sending game invitation");
-    }
-  }
-
-  @SubscribeMessage("invitationAccepted")
-  async handleInvitationAccepted(
-	@ConnectedSocket() client: Socket,
-	@MessageBody('data')  data: {sender: string, receiver: string}
-	) {
-	try {
-		const sender = this.gatewaySessionManager.getSocket(data.sender);
-
-		// sender.emit('invitationAccepted', {sender: data.sender})
-
-    } catch (error) {
-      console.log("error sending game invitation");
-    }
-  }
 }
