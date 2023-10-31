@@ -28,6 +28,7 @@ const friendsSlice = createSlice({
     initialState,
     reducers: {
         addFriend: (state, action: PayloadAction<IUserUsername>) => {
+            if(state.friends.some((item) => item.username === action.payload.username)) return;
             state.friends.push(action.payload);
         },
         removeFriend: (state, action: PayloadAction<IUserUsername>) => {

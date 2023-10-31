@@ -26,6 +26,7 @@ function PlayersOnChannel() {
   const [usersOfChannel, setUsersOfChannel] = useState<IResponseUser[]>();
   const isOnline = (value: IResponseUser) => value.status === "online";
   const isOffline = (value: IResponseUser) => value.status === "offline";
+  const isIngame = (value: IResponseUser) => value.status === 'inGame';
   const userConnected = useSelector((state: RootState) => state.user.user);
 
   const channels = useSelector((state: RootState) => state.channel.channel);
@@ -113,6 +114,23 @@ function PlayersOnChannel() {
                     <li key={user.id}>
                       {selectedChannelContext.selectedChannel && (
                         <PlayerMenu {...{ user}}></PlayerMenu>
+                      )}
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+          <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
+            <p className="text-xl mb-1 text-gray-600">In game</p>
+            <hr />
+            <ul className="text-black">
+              {usersOfChannel?.map(
+                (user) =>
+                  user.id !== userConnected!.id &&
+                  isIngame(user) && (
+                    <li key={user.id}>
+                      {selectedChannel && (
+                        <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>
                       )}
                     </li>
                   )

@@ -271,14 +271,26 @@ export class UserService {
   }
 
   async acceptInvitation(invitation: UserRelationDto) {
-    return (
-      this.addFriend(invitation) &&
+    const source = await this.userRepository.findOne({
+      where: {id: invitation.receiverId}, 
+      relations: {
+        friends: true,
+      }
+    });
+    if (!source) return false;
+    if (source.friends.some((item) => item.id === invitation.senderId)) 
+    {
+      this.removeInvitation(invitation);
+      return false;
+    }
+      return (this.addFriend(invitation) &&
       this.addFriend({
         receiverId: invitation.senderId,
         senderId: invitation.receiverId,
       }) &&
       this.removeInvitation(invitation)
     );
+      
   }
 
   async sendInvitation(friendRequest: UserRelationDto) {
@@ -289,6 +301,9 @@ export class UserService {
       },
     });
     const friend = await this.findOneById(friendRequest.senderId);
+    console.log(source.invitations)
+    if (source.invitations.some((item) => item.id === friendRequest.senderId))
+      return (2);
     source.invitations.push(friend);
     const data = {
       username: friend.username,
@@ -296,9 +311,9 @@ export class UserService {
       socketUsername: source.username,
     }
     const ret = await this.userRepository.save(source);
-    if (!ret) return (false);
+    if (!ret) return (0);
     this.eventEmmiter.emit("addInvitation", data)
-    return true;
+    return (1);
 
   }
 

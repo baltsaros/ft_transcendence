@@ -8,7 +8,7 @@ import FriendInvitations from "./FriendInvitations";
 import { FaUserFriends } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../store/store";
-import { addInvitation, fetchInvitations } from "../store/user/invitationSlice";
+import { addInvitation, fetchInvitations, removeInvitation } from "../store/user/invitationSlice";
 import { addFriend, fetchFriends, removeFriend } from "../store/user/friendsSlice";
 import { fetchAllUsers } from "../store/user/allUsersSlice";
 import { useChatWebSocket } from "../context/chat.websocket.context";
@@ -35,17 +35,15 @@ function FriendList() {
 }, []);
 
   useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("requestRemoveFriend", (payload: any) => {
+      webSocketService!.on("requestRemoveFriend", (payload: any) => {
         store.dispatch(removeFriend(payload));
       });
-      webSocketService.on("requestAddInvitation", (payload: any) => {
+      webSocketService!.on("requestAddInvitation", (payload: any) => {
         store.dispatch(addInvitation(payload));
       });
-      webSocketService.on("requestAddFriend", (payload: any) => {
+      webSocketService!.on("requestAddFriend", (payload: any) => {
         store.dispatch(addFriend(payload));
       });
-    }
   }, []);
 
   //render
