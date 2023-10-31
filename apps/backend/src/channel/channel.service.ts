@@ -236,6 +236,7 @@ export class ChannelService {
       channel: channel,
       user: bannedUser,
     };
+    console.log('addBannedUserToChannel');
     this.eventEmmiter.emit("banUser", payload);
     return bannedUser;
   }

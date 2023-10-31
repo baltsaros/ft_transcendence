@@ -70,6 +70,7 @@ export default function SearchBar() {
   const handleJoinChannel = async (channel: IChannel) => {
     console.log("channel", channel);
     try {
+      console.log('channel banned', channel.banned);
       if (channel.banned) {if (channel.banned.some((b) =>
         b.username === userLogged.username
     )) {
