@@ -10,6 +10,7 @@ import { RootState, store } from "../store/store";
 import { useSelector } from "react-redux";
 import { removeFriend } from "../store/user/friendsSlice";
 import { instance } from "../api/axios.api";
+import { useChatWebSocket } from "../context/chat.websocket.context";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
@@ -18,6 +19,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
     const users = useSelector((state: RootState) => state.allUser.users);
     const userLogged = useSelector((state: RootState) => state.user.user);
     const navigate = useNavigate();
+	const webSocketService = useChatWebSocket();
     //behaviour
     
     const deleteFriend = async () => {
@@ -70,6 +72,9 @@ function ToggleMenuFriendList(user: IUserUsername) {
         }
       };
 
+	  const handleGameInvitation = () => {
+		webSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
+	  }
 
     //render
     return (
@@ -84,7 +89,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
                 <MenuItem onClick={handleDirectMessage}>Direct message</MenuItem>
             </div>
             <div className="bg-gray-500">
-                <MenuItem>Invite to game</MenuItem>
+                <MenuItem onClick={handleGameInvitation}>Invite to game</MenuItem>
             </div>
             <div className="bg-gray-500">
                 <MenuItem onClick={() => deleteFriend()}>Remove friend</MenuItem>

@@ -32,6 +32,7 @@ import { ChannelUserObjectDto } from "src/channel/dto/channelUserObject.dto";
     origin: "*",
   },
 })
+
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -160,7 +161,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(`channel-${payload.channel.id}`).emit('userUnmuted', payload);
   }
 
-
   @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {
     const blocked = await this.userRepository.findOne({
@@ -277,4 +277,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log("error joining channel");
     }
   }
+
+  @SubscribeMessage("sendGameInvitation")
+  async handleSendGameInvitation(
+	@ConnectedSocket() client: Socket,
+	@MessageBody('data')  data: {sender: string, receiver: string}
+	) {
+    try {
+		const receiver = this.gatewaySessionManager.getSocket(data.receiver);
+
+		console.log("receiver : ", data.receiver);
+		receiver.emit('GameInvitationReceived', {sender: data.sender})
+
+    } catch (error) {
+      console.log("error sending game invitation");
+    }
+  }
+
 }

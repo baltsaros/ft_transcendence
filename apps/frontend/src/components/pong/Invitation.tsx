@@ -23,7 +23,7 @@ const GameInvitation = ({ onClose}: any) => {
 				</div>
 				<div className="bg-gray-400 px-4 py-3 text-right">
 					<Link to={"/"}>
-						<button type="button" className="inline-flex rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-green-500">Accept</button>
+						<button type="button" className="inline-flex rounded-md items-center bg-green-600 text-white px-3 py-2 text-sm font-semibold hover:bg-green-500">Accept</button>
 					</Link>
 				</div>
 			</div>

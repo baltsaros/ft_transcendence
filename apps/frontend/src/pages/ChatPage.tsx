@@ -9,20 +9,35 @@ import { IChannel } from "../types/types";
 import { removeUser } from "../store/channel/channelSlice";
 import { store } from "../store/store";
 import { useChatWebSocket } from "../context/chat.websocket.context";
+import GameInvitation from "../components/pong/Invitation";
 
 const chatPage: React.FC = () => {
-    
+
     /* STATE */
     const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
     const webSocketService = useChatWebSocket();
+	const [gameInvitation, setGameInvitation] = useState<boolean>(false);
+
     /* BEHAVIOR */
     const handleSelectedChannel = (channel: IChannel | null) => {
         setSelectedChannel(channel);}
 
+		useEffect( () => {
+
+			webSocketService!.on('GameInvitationReceived', (data: { sender: string}) => {
+				console.log("game invitation received. Sender : ", data.sender);
+				setGameInvitation(true);
+			});
+
+			return () => {
+				webSocketService!.off('GameInvitationReceived');
+			  };
+		}, [webSocketService]);
+
+
        useEffect(() => {
     if (webSocketService) {
       webSocketService.on("userLeft", (payload: any) => {
-        console.log("prout");
         store.dispatch(removeUser(payload));
       });
       return () => {
@@ -33,12 +48,13 @@ const chatPage: React.FC = () => {
 
     /* RENDER */
     return (
-    <div className="flex items-stretch justify-center">
-        <Channels onSelectChannel={handleSelectedChannel}/>
-        <Chat selectedChannel={selectedChannel} />
-        <PlayersOnChannel selectedChannel={selectedChannel} />
-    </div>
-    );
+			<div className="flex items-stretch justify-center">
+				{gameInvitation && (<GameInvitation />)}
+				<Channels onSelectChannel={handleSelectedChannel}/>
+				<Chat selectedChannel={selectedChannel} />
+				<PlayersOnChannel selectedChannel={selectedChannel} />
+			</div>
+		);
 }
 
 export default chatPage;

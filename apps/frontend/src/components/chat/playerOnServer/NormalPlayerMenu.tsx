@@ -82,6 +82,10 @@ function NormalPlayerMenu(user: IResponseUser) {
     }
   };
 
+  const handleGameInvitation = () => {
+	webSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
+  }
+
   const handleAddInvitation = async () => {
     const payload = {
       senderId: userLogged!.id,
@@ -114,7 +118,7 @@ function NormalPlayerMenu(user: IResponseUser) {
       {(user.status === "offline" || user.status === "inGame") && (
         <MenuItem disabled>Invite to game</MenuItem>
       )}
-      {user.status === "online" && <MenuItem>Invite to game</MenuItem>}
+      {user.status === "online" && <MenuItem onClick={handleGameInvitation}>Invite to game</MenuItem>}
     </div>
   );
 }
