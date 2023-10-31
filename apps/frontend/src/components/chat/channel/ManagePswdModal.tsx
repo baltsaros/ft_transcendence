@@ -49,7 +49,7 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
     } else return { filled: false, pass: "" };
   };
 
-  const handleCancel = async () => {
+  const handleCancel = () => {
     onClose();
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

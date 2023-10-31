@@ -143,6 +143,7 @@ export class ChannelService {
   }
 
   async getHashedPass(channelId: string) {
+    console.log('service back');
     const channel = await this.channelRepository.findOne({
       where: { id: parseInt(channelId) },
     });
