@@ -31,6 +31,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleKickChannel = async() => {
     try{
+      console.log('handleKickChannelAdmin');
         const payload = {
             channelId: selectedChannelContext.selectedChannel!.id,
             username: user.username,
@@ -38,7 +39,8 @@ function AdminPlayerMenu(props: any) {
         const response = await instance.post("channel/leaveChannel", payload);
         if (response) {
           store.dispatch(removeUser(payload));
-          // onSelectChannel(null);
+          selectedChannelContext.setSelectedChannel(null);
+          console.log('selectedChannel:', selectedChannelContext.selectedChannel);
         }
     } catch(error: any) {
         const err = error.response?.data.message;

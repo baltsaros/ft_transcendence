@@ -14,6 +14,7 @@ import { useChannel } from "../context/selectedChannel.context";
 const chatPage: React.FC = () => {
     
   const webSocketService = useChatWebSocket();
+  const selectedChannelContext = useChannel();
     /* STATE */
     // const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
     /* BEHAVIOR */
@@ -23,8 +24,8 @@ const chatPage: React.FC = () => {
        useEffect(() => {
     if (webSocketService) {
       webSocketService.on("userLeft", (payload: any) => {
-        console.log("prout");
         store.dispatch(removeUser(payload));
+        selectedChannelContext.setSelectedChannel(null);
       });
       return () => {
         webSocketService.off("userLeft");

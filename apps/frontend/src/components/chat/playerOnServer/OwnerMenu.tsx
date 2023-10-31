@@ -25,14 +25,18 @@ function OwnerMenu(props: any) {
     }
 
     const handleKickChannel = async() => {
+      console.log('handleKickChannelOwner');
       try{
-          const payload = {
-              channelId: selectedChannelContext.selectedChannel!.id,
-              username: user.username,
+        const payload = {
+          channelId: selectedChannelContext.selectedChannel!.id,
+          username: user.username,
+        }
+        const response = await instance.post("channel/leaveChannel", payload);
+        if (response) {
+          console.log('here');
+            store.dispatch(removeUser(payload));
+            selectedChannelContext.setSelectedChannel(null);
           }
-          const response = await instance.post("channel/leaveChannel", payload);
-          if (response)
-              store.dispatch(removeUser(payload));
       } catch(error: any) {
           const err = error.response?.data.message;
           toast.error(err.toString());
