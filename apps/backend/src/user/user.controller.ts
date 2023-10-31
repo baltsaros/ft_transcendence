@@ -43,17 +43,20 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.userService.findAll();
   }
 
   @Get(":name")
+  @UseGuards(JwtAuthGuard)
   findOne(@Param("name") name: string) {
     return this.userService.findOne(name);
   }
