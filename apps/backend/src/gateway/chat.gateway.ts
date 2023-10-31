@@ -5,7 +5,6 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   MessageBody,
-  ConnectedSocket,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { OnEvent } from "@nestjs/event-emitter";
@@ -56,7 +55,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     const filteredChannel = channel.filter((channel) =>
       channel.users.some((user) => user.username === username)
     );
-    // 2. Make him join each room.
     filteredChannel.forEach((channel) => {
       client.join(`channel-${channel.id}`);
       // console.log(client.id, client.rooms);
@@ -181,28 +179,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent("onChannelLeave")
   async handleChanneLeave(payload: any) {
-    console.log("payload", payload);
-    // 1. Emit an event to the all clients to update the users array in the redux state
+    console.log("onChannelLeave", payload);
     const client = this.gatewaySessionManager.getSocket(payload.username);
-    // this.server.to(payload.channelId).emit('userLeft', payload);
-    console.log("before leaving room", client.id, client.rooms);
-    // client.to(`channel-${payload.channelId}`).emit('userLeft', payload);
     this.server.to(`channel-${payload.channelId}`).emit("userLeft", payload);
     client.leave(`channel-${payload.channelId}`);
-    console.log("after leaving room", client.id, client.rooms);
-    console.log("userLeft event emitted:", payload);
   }
 
   @OnEvent("onChannelLeaveOwner")
   async handleChannelLeaveOwner(payload: any) {
-    // 1. Emit an event to all clients of the channel w.
     const client = this.gatewaySessionManager.getSocket(payload.username);
-    console.log("before leaving room", client.id, client.rooms);
-    // this.server.emit('ownerLeft', payload);
     this.server.to(`channel-${payload.channelId}`).emit("ownerLeft", payload);
     client.leave(`channel-${payload.channelId}`);
-    console.log("after leaving room", client.id, client.rooms);
-    console.log("onChannelLeaveOwner");
+    // console.log("after leaving room", client.id, client.rooms);
   }
 
   @OnEvent("removeFriend")
@@ -249,7 +237,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  /* any should be specified */
   @SubscribeMessage("onChannelJoin")
   async onChannelJoin(client: Socket, payload: any) {
     try {

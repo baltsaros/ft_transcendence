@@ -76,4 +76,7 @@ export class Channel {
         }
     })
     banned: User[];
+
+    @Column({nullable: true})
+    dm: boolean;
 }

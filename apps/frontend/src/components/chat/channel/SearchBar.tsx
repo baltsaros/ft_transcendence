@@ -32,7 +32,8 @@ export default function SearchBar() {
 
   const filterFunction = (channel: IChannel) => {
     const isUserInChannel = channel.users.some(isTrue);
-    return !isUserInChannel;
+    const isDm = channel.dm
+    return !isUserInChannel && !isDm;
   };
 
   const AccessibleChannel = channels.filter(filterFunction);

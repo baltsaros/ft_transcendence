@@ -9,18 +9,20 @@ import AdminPlayerMenu from "./AdminPlayerMenu";
 import { fetchAdmin } from "../../../store/channel/adminSlice";
 import { fetchMuted } from "../../../store/channel/mutedSlice";
 import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
+import { useChannel } from "../../../context/selectedChannel.context";
 
 
 function PlayerMenu(props: any) {
-  const {user, selectedChannel} = props;
+  const {user} = props;
+  // const {user, selectedChannel} = props;
 
     //state
     const userLogged = useSelector((state: RootState) => state.user.user);
-    const webSocketService = useChatWebSocket();
+    const selectedChannelContext = useChannel();
     const admins = useSelector((state: RootState) => state.admin.users);
 
     const isOwner = (id: number) => {
-      return (selectedChannel?.owner.id === id);
+      return (selectedChannelContext.selectedChannel?.owner.id === id);
     }
 
     const isAdmin = (id: number) => {
@@ -41,8 +43,8 @@ function PlayerMenu(props: any) {
   // }, []);
 
   useEffect(() => {
-    store.dispatch(fetchAdmin(selectedChannel.id));
-    store.dispatch(fetchMuted(selectedChannel.id));
+    store.dispatch(fetchAdmin(selectedChannelContext.selectedChannel!.id));
+    store.dispatch(fetchMuted(selectedChannelContext.selectedChannel!.id));
   }, []);
   
 
@@ -53,9 +55,11 @@ function PlayerMenu(props: any) {
       <Menu direction={"left"} arrow={true} align={"center"} menuButton={<MenuButton className="w-24">{user.username}</MenuButton>}>
         <NormalPlayerMenu {...user}/>
 
-        {isOwner(userLogged!.id) && <OwnerMenu {...{user, selectedChannel}}/>}
+        {isOwner(userLogged!.id) && <OwnerMenu {...{user}}/>}
+        {/* {isOwner(userLogged!.id) && <OwnerMenu {...{user, selectedChannel}}/>} */}
 
-        {!isOwner(userLogged!.id) && isAdmin(userLogged!.id) && <AdminPlayerMenu {...{user, selectedChannel}}/>}
+        {!isOwner(userLogged!.id) && isAdmin(userLogged!.id) && <AdminPlayerMenu {...{user}}/>}
+        {/* {!isOwner(userLogged!.id) && isAdmin(userLogged!.id) && <AdminPlayerMenu {...{user, selectedChannel}}/>} */}
 
 
       </Menu>
