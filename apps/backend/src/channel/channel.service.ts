@@ -37,6 +37,7 @@ export class ChannelService {
       password: channelData.password,
       users: [user],
       messages: [],
+      dm: false,
     });
     const channel = await this.channelRepository.save(newChannel);
     this.eventEmmiter.emit("newChannel", channel);
@@ -59,6 +60,7 @@ export class ChannelService {
       password: channelDmData.password,
       users: [sender, receiver],
       messages: [],
+      dm: true,
     });
     const dmChannel = await this.channelRepository.save(newDmChannel);
     // console.log('dmChannel', dmChannel);
@@ -78,14 +80,10 @@ export class ChannelService {
     });
     const user = await this.userService.findOne(payload.username);
     if (user.id === channel.owner.id) {
-      // 1. check if there are users in the channel, if not prevent owner from leaving the channel
-      if (channel.users.length > 1) {
-        // 1. remove the owner as user and as owner
+      if (channel.adminUsers.length > 1) {
         channel.users = channel.users.filter((usr) => usr.id !== user.id);
-        // 2. set new owner, for now it's a user that replaces the owner but it should be an admin
-        const randomIndex = Math.floor(Math.random() * channel.users.length);
-        channel.owner = channel.users[randomIndex];
-        // console.log('new channel owner:', channel.owner.username);
+        const randomIndex = Math.floor(Math.random() * channel.adminUsers.length);
+        channel.owner = channel.adminUsers[randomIndex];
         await this.channelRepository.save(channel);
         const obj = {
           username: user.username,

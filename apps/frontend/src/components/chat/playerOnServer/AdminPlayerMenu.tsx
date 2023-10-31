@@ -1,13 +1,17 @@
 import { MenuItem } from "@szhsin/react-menu";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
+
+interface ChildProps {
+  channel: IChannel;
+  onSelectChannel: (channel: IChannel | null) => void;
+}
+
 
 function AdminPlayerMenu(props: any) {
   const { user, selectedChannel } = props;
@@ -28,19 +32,22 @@ function AdminPlayerMenu(props: any) {
     return muted.some((item) => item.id === user.id);
   };
 
-  const handleKickChannel = async () => {
-    try {
-      const payload = {
-        channelId: selectedChannel.id,
-        username: user.username,
-      };
-      const response = await instance.post("channel/leaveChannel", payload);
-      if (response) store.dispatch(removeUser(payload));
-    } catch (error: any) {
-      const err = error.response?.data.message;
-      toast.error(err.toString());
+  const handleKickChannel = async() => {
+    try{
+        const payload = {
+            channelId: selectedChannel.id,
+            username: user.username,
+        }
+        const response = await instance.post("channel/leaveChannel", payload);
+        if (response) {
+          store.dispatch(removeUser(payload));
+          onSelectChannel(null);
+        }
+    } catch(error: any) {
+        const err = error.response?.data.message;
+        toast.error(err.toString());
     }
-  };
+  }
 
   const handleBanUser = async () => {
     const payload = {
