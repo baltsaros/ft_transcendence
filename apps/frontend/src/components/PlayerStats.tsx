@@ -1,6 +1,6 @@
-import { IUserPlayerProfileData } from "../types/types";
+import { IResponseChannelData, IResponseUser, IUserPlayerProfileData } from "../types/types";
 
-export default function PlayerStats(user: IUserPlayerProfileData) {
+export default function PlayerStats(user: IResponseUser) {
 
     //state
 

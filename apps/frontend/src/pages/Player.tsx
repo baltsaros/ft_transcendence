@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import {  IUserPlayerProfileData } from "../types/types";
+import {  IResponseUser, IUserPlayerProfileData } from "../types/types";
 import PlayerNameBox from "../components/PlayerNameBox";
 import PlayerStats from "../components/PlayerStats";
 import MatchHistory from "../components/MatchHistory";
@@ -11,28 +11,32 @@ export default function Player(){
   
   //state
 
-  const [user, setUser] = useState<IUserPlayerProfileData>({
-    username: "default", loses: -1, wins: -1, rank: -1});
+  const [user, setUser] = useState<IResponseUser>();
   const usernameParam = useParams();
   const [_loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   const getUserProfile = async () => {
     try {
-      const data = await PlayerService.getProfile(usernameParam.username!)
-      if (data)
-      {
-        const temp = user;
-        temp.username = data.username;
-        temp.wins = data.wins;
-        temp.loses = data.loses;
-        temp.rank = data.rank;
-        setUser(temp);
-        setLoading(false);
-      }
-      else {
-        navigate("/")
-        toast("User doesn't exists !")
+      console.log("username = ", usernameParam.username);
+      if (usernameParam.username) {
+        const data = await PlayerService.getFullUser(usernameParam.username);
+        console.log("data = ", data);
+        if (data)
+        {
+          // const temp = user;
+          // temp.username = data.username;
+          // temp.wins = data.wins;
+          // temp.loses = data.loses;
+          // temp.rank = data.rank;
+          setUser(data);
+          setLoading(false);
+        }
+        else {
+          navigate("/")
+          toast("User doesn't exists !")
+        }
+
       }
     } catch (err: any) {
         setLoading(false);
@@ -44,7 +48,7 @@ export default function Player(){
 
   useEffect(() => {
     getUserProfile();
-  }, [user.username, usernameParam]) 
+  }, [usernameParam]) 
 
   //render
   if (_loading)
@@ -54,13 +58,13 @@ export default function Player(){
   return (
       <div className="flex flex-col text-black space-y-20 flex justify-center items-center">
         <PlayerNameBox
-          {...user}
+          {...user!}
         />
         <PlayerStats
-          {...user}
+          {...user!}
         />
         <MatchHistory
-          {...user}
+          {...user!}
         />
       </div>
     );

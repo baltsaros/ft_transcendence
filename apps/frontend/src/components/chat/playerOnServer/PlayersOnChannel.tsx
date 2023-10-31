@@ -3,39 +3,42 @@ import { IChannel, IResponseUser } from "../../../types/types";
 import { useSelector } from "react-redux";
 import { RootState, store } from "../../../store/store";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { fetchChannel } from "../../../store/channel/channelSlice";
+import { addBanned, fetchChannel } from "../../../store/channel/channelSlice";
 import PlayerMenu from "./PlayerMenu";
-import { addBanned } from "../../../store/channel/banSlice";
 import {
   addAdmin,
-  fetchAdmin,
   removeAdmin,
 } from "../../../store/channel/adminSlice";
+// import { addBanned } from "../../../store/channel/channelSlice";
 import { addMuted, removeMuted } from "../../../store/channel/mutedSlice";
+import { useChannel } from "../../../context/selectedChannel.context";
 
-interface ChildProps {
-  selectedChannel: IChannel | null;
-}
+// interface ChildProps {
+//   selectedChannel: IChannel | null;
+// }
 
-const PlayersOnChannel: React.FC<ChildProps> = ({ selectedChannel }) => {
+function PlayersOnChannel() {
+// const PlayersOnChannel: React.FC<ChildProps> = ({ selectedChannel }) => {
   const webSocketService = useChatWebSocket();
+  const selectedChannelContext = useChannel();
 
   // behavior
   const [usersOfChannel, setUsersOfChannel] = useState<IResponseUser[]>();
   const isOnline = (value: IResponseUser) => value.status === "online";
   const isOffline = (value: IResponseUser) => value.status === "offline";
+  const isIngame = (value: IResponseUser) => value.status === 'inGame';
   const userConnected = useSelector((state: RootState) => state.user.user);
 
   const channels = useSelector((state: RootState) => state.channel.channel);
 
   useEffect(() => {
-    if (selectedChannel) {
+    if (selectedChannelContext.selectedChannel) {
       const channel = channels.filter(
-        (elem) => elem.id === selectedChannel?.id
+        (elem) => elem.id === selectedChannelContext.selectedChannel?.id
       )[0];
       setUsersOfChannel(channel.users);
     }
-  }, [selectedChannel, channels]);
+  }, [selectedChannelContext.selectedChannel, channels]);
 
   useEffect(() => {
     if (webSocketService) {
@@ -44,7 +47,7 @@ const PlayersOnChannel: React.FC<ChildProps> = ({ selectedChannel }) => {
         store.dispatch(fetchChannel());
       });
       webSocketService.on("userBanned", (payload: any) => {
-        store.dispatch(addBanned(payload.user));
+        store.dispatch(addBanned(payload));
       });
       webSocketService.on("adminAdded", (payload: any) => {
         store.dispatch(addAdmin(payload.user));
@@ -91,8 +94,9 @@ const PlayersOnChannel: React.FC<ChildProps> = ({ selectedChannel }) => {
                   user.id !== userConnected!.id &&
                   isOnline(user) && (
                     <li key={user.id}>
-                      {selectedChannel && (
-                        <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>
+                      {selectedChannelContext.selectedChannel && (
+                        <PlayerMenu {...{ user }}></PlayerMenu>
+                        // <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>
                       )}
                     </li>
                   )
@@ -107,6 +111,23 @@ const PlayersOnChannel: React.FC<ChildProps> = ({ selectedChannel }) => {
                 (user) =>
                   user.id !== userConnected!.id &&
                   isOffline(user) && (
+                    <li key={user.id}>
+                      {selectedChannelContext.selectedChannel && (
+                        <PlayerMenu {...{ user}}></PlayerMenu>
+                      )}
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+          <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
+            <p className="text-xl mb-1 text-gray-600">In game</p>
+            <hr />
+            <ul className="text-black">
+              {usersOfChannel?.map(
+                (user) =>
+                  user.id !== userConnected!.id &&
+                  isIngame(user) && (
                     <li key={user.id}>
                       {selectedChannel && (
                         <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>

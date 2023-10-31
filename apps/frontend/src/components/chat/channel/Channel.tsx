@@ -8,12 +8,15 @@ import { fetchChannel } from "../../../store/channel/channelSlice";
 import SearchBar from "./SearchBar";
 import ChannelMenu from "./ChannelMenu"
 import Scrollbar from "react-scrollbars-custom";
+import { useChannel } from "../../../context/selectedChannel.context";
 
-interface ChildProps {
-    onSelectChannel: (channel: IChannel | null) => void;
-}
+// interface ChildProps {
+//     onSelectChannel: (channel: IChannel | null) => void;
+// }
 
-const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
+function Channel() {
+    const selectedChannelContext = useChannel();
+// const Channel: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
     const userLogged = useSelector((state: RootState) => state.user);
     
@@ -46,12 +49,13 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
                                         <div key={channel.id} className="flex items-center justify-between mb-2">
                                         <div className="flex items-center bg-gray-500 rounded-lg">
                                         	<button
-                                        		onClick={() => onSelectChannel(channel)}
-                                        		className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg">{channel.name}
+                                        		onClick={() => selectedChannelContext.setSelectedChannel(channel)}
+                                        		// onClick={() => onSelectChannel(channel)}
+                                        		className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg w-60">{channel.name}
                                         	</button>
                                         	<ChannelMenu 
                                             channel={channel}
-                                            onSelectChannel={onSelectChannel}
+                                            // onSelectChannel={onSelectChannel}
                                             />
                                         </div>
                                         </div>
@@ -69,4 +73,4 @@ const Channels: React.FC<ChildProps> = ({onSelectChannel}) => {
     );
 }
 
-export default Channels;
+export default Channel;

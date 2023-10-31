@@ -1,27 +1,28 @@
 import { MenuItem } from "@szhsin/react-menu";
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
-import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
+import { useChannel } from "../../../context/selectedChannel.context";
+
 
 function AdminPlayerMenu(props: any) {
-  const { user, selectedChannel } = props;
+  const { user } = props;
+  // const { user, selectedChannel } = props;
   //state
   const admins = useSelector((state: RootState) => state.admin.users);
   const muted = useSelector((state: RootState) => state.muted.users);
-  const webSocketService = useChatWebSocket();
+  const selectedChannelContext = useChannel();
 
   const isAdmin = () => {
     return admins.some((item) => item.id === user.id);
   };
 
   const isOwner = () => {
-    return selectedChannel?.owner.id === user.id;
+    return selectedChannelContext.selectedChannel?.owner.id === user.id;
   };
 
   const isMuted = () => {
@@ -30,13 +31,16 @@ function AdminPlayerMenu(props: any) {
 
   const handleKickChannel = async() => {
     try{
+      console.log('handleKickChannelAdmin');
         const payload = {
-            channelId: selectedChannel.id,
+            channelId: selectedChannelContext.selectedChannel!.id,
             username: user.username,
         }
         const response = await instance.post("channel/leaveChannel", payload);
         if (response) {
           store.dispatch(removeUser(payload));
+          selectedChannelContext.setSelectedChannel(null);
+          console.log('selectedChannel:', selectedChannelContext.selectedChannel);
         }
     } catch(error: any) {
         const err = error.response?.data.message;
@@ -46,7 +50,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleBanUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.addUserBannedToChannel(payload);
@@ -55,7 +59,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleMuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.addMutedUserOfChannel(payload);
@@ -63,7 +67,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleUnmuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.removeMutedUserOfChannel(payload);

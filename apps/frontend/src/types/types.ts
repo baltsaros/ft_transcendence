@@ -123,6 +123,7 @@ export interface IChannel {
   users: IResponseUser[],
   messages: IMessage[],
   banned: IResponseUser[],
+  dm: boolean,
 }
 
 export interface IResponseGetChannels {

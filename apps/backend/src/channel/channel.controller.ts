@@ -104,6 +104,7 @@ export class ChannelController {
   @Post("addBannedUserToChannel")
   @UseGuards(JwtAuthGuard)
   async addBannedUserToChannel(@Body() relation: ChannelUserDto) {
+    console.log('addBannedUserToChannel controller');
     return this.ChannelService.addBannedUserToChannel(relation);
   }
 

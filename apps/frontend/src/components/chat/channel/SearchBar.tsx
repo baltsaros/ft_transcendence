@@ -16,10 +16,12 @@ import {
 import bcrypt from "bcryptjs";
 import { ChannelService } from "../../../services/channels.service";
 import { toast } from "react-toastify";
+import JoinPvtChannelModal from "./JoinPvtChannelModal";
 
 export default function SearchBar() {
   const webSocketService = useChatWebSocket();
   const userLogged = useSelector((state: RootState) => state.user);
+  const [modalView, setModalView] = useState(false);
 
   /* STATE */
   const [input, setInput] = useState<string>("");
@@ -32,7 +34,8 @@ export default function SearchBar() {
 
   const filterFunction = (channel: IChannel) => {
     const isUserInChannel = channel.users.some(isTrue);
-    return !isUserInChannel;
+    const isDm = channel.dm
+    return !isUserInChannel && !isDm;
   };
 
   const AccessibleChannel = channels.filter(filterFunction);
@@ -69,6 +72,7 @@ export default function SearchBar() {
   const handleJoinChannel = async (channel: IChannel) => {
     console.log("channel", channel);
     try {
+      console.log('channel banned', channel.banned);
       if (channel.banned) {if (channel.banned.some((b) =>
         b.username === userLogged.username
     )) {
@@ -121,6 +125,14 @@ export default function SearchBar() {
     }
   }, []);
 
+const handleOpenModal = () => {
+    setModalView(true);
+  }
+
+  const handleCloseModal = () => {
+    setModalView(false);
+  }
+
   /* RENDER */
   return (
     <div>
@@ -140,17 +152,17 @@ export default function SearchBar() {
                 <h3>{channel.name}</h3>
                 {channel.mode === "Private" ? (
                   <div>
-                    <input
+                    {/* <input
                       type="password"
                       placeholder="Enter the channel password"
                       onChange={(e) => setPasswordInput(e.target.value)}
-                    />
+                    /> */}
                     <button
                       className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg"
-                      onClick={() => handleChannelPassword(channel)}
-                    >
-                      Join
+                      onClick={handleOpenModal}
+                    >Join
                     </button>
+                    {modalView && <JoinPvtChannelModal onClose={handleCloseModal} channel={channel}/>}
                   </div>
                 ) : (
                   // Condition for public channels

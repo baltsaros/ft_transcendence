@@ -7,14 +7,17 @@ import ManagePswdModal from "./ManagePswdModal";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { IChannel } from "../../../types/types";
+import { useChannel } from "../../../context/selectedChannel.context";
 
 interface ChildProps {
   channel: IChannel;
-  onSelectChannel: (channel: IChannel | null) => void;
+  // onSelectChannel: (channel: IChannel | null) => void;
 }
 
-const ChannelMenu: React.FC<ChildProps> = ({channel, onSelectChannel}) => {
-  const userLogged = useSelector((state: RootState) => state.user);  
+const ChannelMenu: React.FC<ChildProps> = ({channel }) => {
+// const ChannelMenu: React.FC<ChildProps> = ({channel, onSelectChannel}) => {
+  const userLogged = useSelector((state: RootState) => state.user); 
+  const selectedChannelContext = useChannel(); 
   
   /* STATE */
   const [modalView, setModalView] = useState(false);
@@ -44,7 +47,7 @@ const ChannelMenu: React.FC<ChildProps> = ({channel, onSelectChannel}) => {
         const response = await instance.post("channel/leaveChannel", payload);
         if (response) {
           store.dispatch(removeUser(payload));
-          onSelectChannel(null);
+          selectedChannelContext.setSelectedChannel(null);
         }
     } catch(error: any) {
         const err = error.response?.data.message;

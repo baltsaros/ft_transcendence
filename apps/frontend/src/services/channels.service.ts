@@ -82,6 +82,7 @@ export const ChannelService = {
   },
 
   async addUserBannedToChannel(channelRelation: IChannelRelation) {
+    console.log('frontend service');
     const { data } = await instance.post<IUser>(
       "channel/addBannedUserToChannel/",
       channelRelation
@@ -90,6 +91,7 @@ export const ChannelService = {
   },
 
   async getHashedPassword(channelId: number) {
+    console.log('service front');
     const { data } = await instance.get(
       "channel/getPass/" + channelId.toString()
     );

@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Chat from "../components/chat/Chat";
 import PlayersOnChannel from "../components/chat/playerOnServer/PlayersOnChannel";
-import Channels from "../components/chat/channel/Channel";
+import Channel from "../components/chat/channel/Channel";
 import { IChannel } from "../types/types";
 import { removeUser } from "../store/channel/channelSlice";
 import { store } from "../store/store";
@@ -12,6 +12,7 @@ import { useChatWebSocket } from "../context/chat.websocket.context";
 import GameInvitation from "../components/pong/Invitation";
 import { usePongWebSocket } from "../context/pong.websocket.context";
 import WaitingInvite from "../components/pong/WaitingInvitation";
+import { useChannel } from "../context/selectedChannel.context";
 
 const chatPage: React.FC = () => {
 
@@ -24,9 +25,13 @@ const chatPage: React.FC = () => {
 	const [sender, setSender] = useState<string | null>(null);
 	const [receiver, setReceiver] = useState<string | null>(null);
 
+//   const webSocketService = useChatWebSocket();
+  const selectedChannelContext = useChannel();
+    /* STATE */
+    // const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
     /* BEHAVIOR */
-    const handleSelectedChannel = (channel: IChannel | null) => {
-        setSelectedChannel(channel);}
+    // const handleSelectedChannel = (channel: IChannel | null) => {
+    //     setSelectedChannel(channel);}
 
 	useEffect( () => {
 
@@ -49,18 +54,19 @@ const chatPage: React.FC = () => {
 
 
 
+	
+
 	useEffect(() => {
-
 		if (chatWebSocketService) {
-			chatWebSocketService.on("userLeft", (payload: any) => {
-				store.dispatch(removeUser(payload));
-			});
-
-			return () => {
-				chatWebSocketService.off("userLeft");
-			};
+		  chatWebSocketService.on("userLeft", (payload: any) => {
+			store.dispatch(removeUser(payload));
+			selectedChannelContext.setSelectedChannel(null);
+		  });
+		  return () => {
+			chatWebSocketService.off("userLeft");
+		  };
 		}
-	}, []);
+	  }, []);
 
 	const handleCloseInvitationReceived = async () => {
 		setGameInvitationReceived(false);
@@ -75,9 +81,12 @@ const chatPage: React.FC = () => {
 			<div className="flex items-stretch justify-center">
 				{gameInvitationSent && receiver && (<WaitingInvite onClose={handleCloseInvitationSent} receiver={receiver} />)}
 				{gameInvitationReceived && sender && (<GameInvitation onClose={handleCloseInvitationReceived} sender={sender}/>)}
-				<Channels onSelectChannel={handleSelectedChannel}/>
-				<Chat selectedChannel={selectedChannel} />
-				<PlayersOnChannel selectedChannel={selectedChannel} />
+				<Channel/>
+				{/* <Channels onSelectChannel={handleSelectedChannel}/> */}
+				<Chat/>
+				{/* <Chat selectedChannel={selectedChannel} /> */}
+				<PlayersOnChannel/>
+				{/* <PlayersOnChannel selectedChannel={selectedChannel} /> */}
 			</div>
 		);
 }

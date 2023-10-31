@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { IMatch, IUserPlayerProfileData } from "../types/types";
+import { IMatch, IResponseUser, IUserPlayerProfileData } from "../types/types";
 import Match from "./Match";
 import { toast } from "react-toastify";
 import { MatchService } from "../services/matches.service";
 import Scrollbar from "react-scrollbars-custom";
 
 
-export default function MatchHistory(userData: IUserPlayerProfileData) {
+export default function MatchHistory(userData: IResponseUser) {
 
     //state
     const [matches, setMatches] = useState<IMatch[] | undefined>([

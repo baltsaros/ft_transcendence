@@ -18,7 +18,7 @@ export default function Match(matchInfo: IMatch) {
                     ? <div className="text-white bg-green-600 rounded-md"> Win </div>
                     : <div className="text-white bg-red-600 rounded-md"> Loss </div>}
                      {/* font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline */}
-                <NavLink reloadDocument className="text-white lowercase bg-blue-600 hover:bg-gray-400 focus:outline-none focus:shadow-outline w-full rounded-md" to={"/player/" + matchInfo.opponent.username}>
+                <NavLink className="text-black lowercase bg-cyan-300 hover:bg-blue-700 focus:outline-none focus:shadow-outline w-full rounded-full" to={"/player/" + matchInfo.opponent.username}>
                     {matchInfo.opponent.username}
                 </NavLink>
                 {/* <div><Link to={"player/"+ matchInfo.opponent.username} className="btn btn-primary rounded-full w-full bg-cyan-300 text-black">{matchInfo.opponent.username}</Link></div> */}

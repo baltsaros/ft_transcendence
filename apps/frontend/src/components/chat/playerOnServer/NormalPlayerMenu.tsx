@@ -8,10 +8,10 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
-import { IChannelDmData, IResponseUser } from "../../../types/types";
 import { usePongWebSocket } from "../../../context/pong.websocket.context";
 import WaitingGame from "../../pong/WaitingGame";
 import WaitingInvite from "../../pong/WaitingInvitation";
+import { IChannelDmData, IResponseUser, IUserUsername } from "../../../types/types";
 
 function NormalPlayerMenu(user: IResponseUser) {
   //state
@@ -20,6 +20,8 @@ function NormalPlayerMenu(user: IResponseUser) {
   const userLogged = useSelector((state: RootState) => state.user.user);
   const ChatWebSocketService = useChatWebSocket();
   const PongWebSocketService = usePongWebSocket();
+//   const webSocketService = useChatWebSocket();
+  const invitations = useSelector((state: RootState) => state.invitation.invitations);
 
   const isFriend = (username: string) => {
     return friends.some((item) => item.username === username);
@@ -29,35 +31,24 @@ function NormalPlayerMenu(user: IResponseUser) {
     return blocked.some((item) => item.username === username);
   };
 
+  const isInvited = (username: string) => {
+    return invitations.some((item) => item.username === username);
+  };
+
   const handleBlockUser = async () => {
     const payload = {
       senderId: userLogged!.id,
       receiverId: user.id,
     };
-    PlayerService.blockUser(payload);
+    await PlayerService.blockUser(payload);
   };
   const handleUnblockUser = async () => {
     const payload = {
       senderId: userLogged!.id,
       receiverId: user.id,
     };
-    PlayerService.unblockUser(payload);
+    await PlayerService.unblockUser(payload);
   };
-
-  useEffect(() => {
-    if (ChatWebSocketService) {
-      ChatWebSocketService.on("userBlocked", (payload: any) => {
-        store.dispatch(addBlocked(payload));
-      });
-      ChatWebSocketService.on("userUnblocked", (payload: any) => {
-        store.dispatch(removeBlocked(payload));
-      });
-      return () => {
-        ChatWebSocketService.off("userBlocked");
-        ChatWebSocketService.off("userUnblocked");
-      };
-    }
-  }, []);
 
   const handleDirectMessage = async () => {
     try {
@@ -91,20 +82,27 @@ function NormalPlayerMenu(user: IResponseUser) {
   }
 
   const handleAddInvitation = async () => {
-    const payload = {
+      const payload = {
       senderId: userLogged!.id,
       receiverId: user.id,
     };
-    PlayerService.sendInvitation(payload);
+    const ret = await PlayerService.sendInvitation(payload);
+    if (!ret){
+      toast.error("something went wrong with invitation");
+      return;
+    }
+    if (ret.data === 2)
+      return (toast.error("Invitation already sent!"))
+    toast.success("Invitation sent !");
   }
 
   //render
   return (
     <div className="bg-gray-500">
-      {isFriend(user.username) && (
+      {(isFriend(user.username) || isInvited(user.username)) && (
         <MenuItem disabled>Invite as Friend</MenuItem>
       )}
-      {!isFriend(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
+      {!isFriend(user.username) && !isInvited(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
 
       <MenuItem>
         <Link to={"/player/" + user.username}>View profile</Link>
