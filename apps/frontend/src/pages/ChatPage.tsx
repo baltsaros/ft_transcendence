@@ -4,20 +4,21 @@
 import { useEffect, useState } from "react";
 import Chat from "../components/chat/Chat";
 import PlayersOnChannel from "../components/chat/playerOnServer/PlayersOnChannel";
-import Channels from "../components/chat/channel/Channel";
+import Channel from "../components/chat/channel/Channel";
 import { IChannel } from "../types/types";
 import { removeUser } from "../store/channel/channelSlice";
 import { store } from "../store/store";
 import { useChatWebSocket } from "../context/chat.websocket.context";
+import { useChannel } from "../context/selectedChannel.context";
 
 const chatPage: React.FC = () => {
     
+  const webSocketService = useChatWebSocket();
     /* STATE */
-    const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
-    const webSocketService = useChatWebSocket();
+    // const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
     /* BEHAVIOR */
-    const handleSelectedChannel = (channel: IChannel | null) => {
-        setSelectedChannel(channel);}
+    // const handleSelectedChannel = (channel: IChannel | null) => {
+    //     setSelectedChannel(channel);}
 
        useEffect(() => {
     if (webSocketService) {
@@ -34,9 +35,12 @@ const chatPage: React.FC = () => {
     /* RENDER */
     return (
     <div className="flex items-stretch justify-center">
-        <Channels onSelectChannel={handleSelectedChannel}/>
-        <Chat selectedChannel={selectedChannel} />
-        <PlayersOnChannel selectedChannel={selectedChannel} />
+        <Channel/>
+        {/* <Channels onSelectChannel={handleSelectedChannel}/> */}
+        <Chat/>
+        {/* <Chat selectedChannel={selectedChannel} /> */}
+        <PlayersOnChannel/>
+        {/* <PlayersOnChannel selectedChannel={selectedChannel} /> */}
     </div>
     );
 }

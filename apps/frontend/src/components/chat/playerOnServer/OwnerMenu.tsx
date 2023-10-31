@@ -5,10 +5,13 @@ import { instance } from "../../../api/axios.api";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
+import { useChannel } from "../../../context/selectedChannel.context";
 
 
 function OwnerMenu(props: any) {
-    const {user, selectedChannel} = props;
+    const {user} = props;
+    const selectedChannelContext = useChannel();
+    // const {user, selectedChannel} = props;
     //state
     const admins = useSelector((state: RootState) => state.admin.users);
     const muted = useSelector((state: RootState) => state.muted.users);
@@ -24,7 +27,7 @@ function OwnerMenu(props: any) {
     const handleKickChannel = async() => {
       try{
           const payload = {
-              channelId: selectedChannel.id,
+              channelId: selectedChannelContext.selectedChannel!.id,
               username: user.username,
           }
           const response = await instance.post("channel/leaveChannel", payload);
@@ -38,7 +41,7 @@ function OwnerMenu(props: any) {
 
   const handleBanUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id
     }
     await ChannelService.addUserBannedToChannel(payload);
@@ -48,7 +51,7 @@ function OwnerMenu(props: any) {
 
   const handleAddUserAsAdmin = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id
     }
     await ChannelService.addUserAsAdmin(payload);
@@ -56,7 +59,7 @@ function OwnerMenu(props: any) {
 
   const handleRemoveUserAsAdmin = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id
     }
     await ChannelService.removeUserAsAdmin(payload);
@@ -64,7 +67,7 @@ function OwnerMenu(props: any) {
 
   const handleMuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id
     }
     await ChannelService.addMutedUserOfChannel(payload);
@@ -72,7 +75,7 @@ function OwnerMenu(props: any) {
 
   const handleUnmuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id
     }
     await ChannelService.removeMutedUserOfChannel(payload);

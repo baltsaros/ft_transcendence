@@ -6,27 +6,23 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
-import { IChannel } from "../../../types/types";
-
-interface ChildProps {
-  channel: IChannel;
-  onSelectChannel: (channel: IChannel | null) => void;
-}
+import { useChannel } from "../../../context/selectedChannel.context";
 
 
 function AdminPlayerMenu(props: any) {
-  const { user, selectedChannel } = props;
+  const { user } = props;
+  // const { user, selectedChannel } = props;
   //state
   const admins = useSelector((state: RootState) => state.admin.users);
   const muted = useSelector((state: RootState) => state.muted.users);
-  const webSocketService = useChatWebSocket();
+  const selectedChannelContext = useChannel();
 
   const isAdmin = () => {
     return admins.some((item) => item.id === user.id);
   };
 
   const isOwner = () => {
-    return selectedChannel?.owner.id === user.id;
+    return selectedChannelContext.selectedChannel?.owner.id === user.id;
   };
 
   const isMuted = () => {
@@ -36,7 +32,7 @@ function AdminPlayerMenu(props: any) {
   const handleKickChannel = async() => {
     try{
         const payload = {
-            channelId: selectedChannel.id,
+            channelId: selectedChannelContext.selectedChannel!.id,
             username: user.username,
         }
         const response = await instance.post("channel/leaveChannel", payload);
@@ -52,7 +48,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleBanUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.addUserBannedToChannel(payload);
@@ -61,7 +57,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleMuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.addMutedUserOfChannel(payload);
@@ -69,7 +65,7 @@ function AdminPlayerMenu(props: any) {
 
   const handleUnmuteUser = async () => {
     const payload = {
-      idChannel: selectedChannel.id,
+      idChannel: selectedChannelContext.selectedChannel!.id,
       idUser: user.id,
     };
     await ChannelService.removeMutedUserOfChannel(payload);

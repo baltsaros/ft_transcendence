@@ -40,6 +40,7 @@ export class ChannelService {
       dm: false,
     });
     const channel = await this.channelRepository.save(newChannel);
+    console.log('here');
     this.eventEmmiter.emit("newChannel", channel);
     return channel;
   }
@@ -76,11 +77,12 @@ export class ChannelService {
       relations: {
         users: true,
         owner: true,
+        adminUsers: true,
       },
     });
     const user = await this.userService.findOne(payload.username);
     if (user.id === channel.owner.id) {
-      if (channel.adminUsers.length > 1) {
+      if (channel.adminUsers.length > 0) {
         channel.users = channel.users.filter((usr) => usr.id !== user.id);
         const randomIndex = Math.floor(Math.random() * channel.adminUsers.length);
         channel.owner = channel.adminUsers[randomIndex];

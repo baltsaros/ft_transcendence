@@ -8,6 +8,7 @@ import { ProtectedRoute } from "../components/ProtectedRoute";
 import Chat from "../pages/ChatPage";
 import Auth from "../pages/Auth";
 import GamePage from "../pages/GamePage";
+import { SelectedChannelProvider } from "../context/selectedChannel.context";
 
 export const router = createBrowserRouter([
   {
@@ -39,7 +40,9 @@ export const router = createBrowserRouter([
         path: "chat",
         element: (
           <ProtectedRoute>
+            <SelectedChannelProvider>
             	<Chat />
+            </SelectedChannelProvider>
           </ProtectedRoute>
         ),
       },

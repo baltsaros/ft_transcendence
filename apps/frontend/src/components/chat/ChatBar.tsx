@@ -5,15 +5,18 @@ import { useAppSelector } from "../../store/hooks";
 import { RootState, store } from "../../store/store";
 import { toast } from "react-toastify"
 import { fetchMuted } from "../../store/channel/mutedSlice";
+import { useChannel } from "../../context/selectedChannel.context";
 
-interface ChildProps {
-    selectedChannel: IChannel | null;
-}
+// interface ChildProps {
+//     selectedChannel: IChannel | null;
+// }
 
-const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
+function ChatBar() {
+// const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
 
     const user = useAppSelector((state: RootState) => state.user.user);
     const muted = useAppSelector((state: RootState) => state.muted.users);
+    const selectedChannelContext = useChannel();
     
     /* STATE */
     const [newMessage, setMessage] =  useState("");
@@ -28,7 +31,7 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     /* IMessage type on undefined because useState can be null (TBD)*/
     const handleClick = async () => {
         const message: IMessage = {
-            channelId: selectedChannel!.id,
+            channelId: selectedChannelContext.selectedChannel!.id,
             username: user!.username,
             content: newMessage,
         };
@@ -53,8 +56,8 @@ const ChatBar: React.FC<ChildProps> = ({selectedChannel}) => {
     }
 
     useEffect(() => {
-        if (selectedChannel)
-            store.dispatch(fetchMuted(selectedChannel.id));
+        if (selectedChannelContext.selectedChannel)
+            store.dispatch(fetchMuted(selectedChannelContext.selectedChannel.id));
     }, [])
 
     /* RENDER */

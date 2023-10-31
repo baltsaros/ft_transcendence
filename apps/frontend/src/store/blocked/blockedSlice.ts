@@ -9,7 +9,6 @@ import { PlayerService } from "../../services/player.service";
 
 const fetchBlocked = createAsyncThunk('get/fetchBlocked', async(id: number) => {
     const blocked = await PlayerService.getAllBlocked(id);
-    console.log("blocked = ", blocked);
     return blocked;
 })
 
