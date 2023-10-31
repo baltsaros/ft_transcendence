@@ -177,4 +177,10 @@ export class UserController {
   unblockUser(@Body() relation: UserRelationDto) {
     return (this.userService.unblockUser(relation));
   }
+
+  // @Post("getBanned")
+  // @UseGuards(JwtAuthGuard)
+  // getBanned(@Body() userId: number) {
+  //   return (this.userService.getBanned(userId));
+  // }
 }

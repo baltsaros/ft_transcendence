@@ -1,6 +1,6 @@
 import { MenuItem, SubMenu } from "@szhsin/react-menu";
-import {  IUserUsername } from "../types/types";
-import { NavLink } from "react-router-dom";
+import {  IChannelDmData, IUserUsername } from "../types/types";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import '@szhsin/react-menu/dist/index.css';
 import '@szhsin/react-menu/dist/transitions/slide.css';
 import { PlayerService } from "../services/player.service";
@@ -9,12 +9,15 @@ import { toast } from "react-toastify";
 import { RootState, store } from "../store/store";
 import { useSelector } from "react-redux";
 import { removeFriend } from "../store/user/friendsSlice";
+import { instance } from "../api/axios.api";
 
 
 function ToggleMenuFriendList(user: IUserUsername) {
 
     //state
     const users = useSelector((state: RootState) => state.allUser.users);
+    const userLogged = useSelector((state: RootState) => state.user.user);
+    const navigate = useNavigate();
     //behaviour
     
     const deleteFriend = async () => {
@@ -40,6 +43,32 @@ function ToggleMenuFriendList(user: IUserUsername) {
           const error = err.response?.data.message;
         }
       }
+      
+      const handleDirectMessage = async () => {
+        try {
+          const strings = [user.username, userLogged?.username];
+          strings.sort();
+          const channelName = strings.join("_");
+          const channelData: IChannelDmData = {
+            name: channelName,
+            mode: "private",
+            sender: userLogged?.id!,
+            receiver: user.username,
+            password: "",
+          };
+          const newDmChannel = await instance.post(
+            "channel/dmChannel",
+            channelData
+          );
+          if (newDmChannel.data) {
+            toast.success("Channel successfully added!");
+        }
+        navigate("chat/");
+        } catch (error: any) {
+          const err = error.response?.data.message;
+          toast.error(err.toString());
+        }
+      };
 
 
     //render
@@ -52,7 +81,7 @@ function ToggleMenuFriendList(user: IUserUsername) {
                 </MenuItem>
             </div>
             <div className="bg-gray-500">
-                <MenuItem>Direct message</MenuItem>
+                <MenuItem onClick={handleDirectMessage}>Direct message</MenuItem>
             </div>
             <div className="bg-gray-500">
                 <MenuItem>Invite to game</MenuItem>

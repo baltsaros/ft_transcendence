@@ -28,19 +28,21 @@ function AdminPlayerMenu(props: any) {
     return muted.some((item) => item.id === user.id);
   };
 
-  const handleKickChannel = async () => {
-    try {
-      const payload = {
-        channelId: selectedChannel.id,
-        username: user.username,
-      };
-      const response = await instance.post("channel/leaveChannel", payload);
-      if (response) store.dispatch(removeUser(payload));
-    } catch (error: any) {
-      const err = error.response?.data.message;
-      toast.error(err.toString());
+  const handleKickChannel = async() => {
+    try{
+        const payload = {
+            channelId: selectedChannel.id,
+            username: user.username,
+        }
+        const response = await instance.post("channel/leaveChannel", payload);
+        if (response) {
+          store.dispatch(removeUser(payload));
+        }
+    } catch(error: any) {
+        const err = error.response?.data.message;
+        toast.error(err.toString());
     }
-  };
+}
 
   const handleBanUser = async () => {
     const payload = {
@@ -67,21 +69,21 @@ function AdminPlayerMenu(props: any) {
     await ChannelService.removeMutedUserOfChannel(payload);
   };
 
-  useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userBlocked", (payload: any) => {
-        store.dispatch(addBlocked(payload));
-      });
-      webSocketService.on("userUnblocked", (payload: any) => {
-        store.dispatch(removeBlocked(payload));
-      });
+  // useEffect(() => {
+  //   if (webSocketService) {
+  //     webSocketService.on("userBlocked", (payload: any) => {
+  //       store.dispatch(addBlocked(payload));
+  //     });
+  //     webSocketService.on("userUnblocked", (payload: any) => {
+  //       store.dispatch(removeBlocked(payload));
+  //     });
 
-      return () => {
-        webSocketService.off("userBlocked");
-        webSocketService.off("userUnblocked");
-      };
-    }
-  }, []);
+  //     return () => {
+  //       webSocketService.off("userBlocked");
+  //       webSocketService.off("userUnblocked");
+  //     };
+  //   }
+  // }, []);
 
   //render
   return (

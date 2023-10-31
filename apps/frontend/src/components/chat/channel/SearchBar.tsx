@@ -69,6 +69,11 @@ export default function SearchBar() {
   const handleJoinChannel = async (channel: IChannel) => {
     console.log("channel", channel);
     try {
+      if (channel.banned) {if (channel.banned.some((b) =>
+        b.username === userLogged.username
+    )) {
+        return toast.error("You have been banned from this channel");
+    }}
       const payload = {
         channelId: channel.id,
         username: userLogged.username,
@@ -76,7 +81,7 @@ export default function SearchBar() {
       if (webSocketService) webSocketService.emit("onChannelJoin", payload);
       setInput("");
     } catch (err: any) {
-      console.log("join channel failed");
+      console.log("join channel failed", err);
     }
   };
 

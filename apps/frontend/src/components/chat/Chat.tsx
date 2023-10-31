@@ -36,34 +36,16 @@ const Chat: React.FC<ChildProps> = ({ selectedChannel }) => {
     store.dispatch(fetchBlocked(userLogged.user!.id));
   }, []);
 
-  useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("onMessage", (payload: IResponseMessage) => {
-        console.log("ws event received");
-        if (
-          blocked.status === "fulfilled" &&
-          !blocked.blocked.some((b) => b.username === payload.user.username)
-        ) {
-          console.log("redux state updated");
-          store.dispatch(addMessage(payload));
-        }
+useEffect(() => {
+  if (webSocketService) {
+    webSocketService.on('onMessage', (payload: IResponseMessage) => {
+              store.dispatch(addMessage(payload));
       });
       return () => {
-        webSocketService.off("onMessage");
+          webSocketService.off('onMessage');
       };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userLeft", (payload: any) => {
-        store.dispatch(removeUser(payload));
-      });
-      return () => {
-        webSocketService.off("userLeft");
-      };
-    }
-  }, []);
+  }  
+}, []);
 
   useEffect(() => {
     if (webSocketService) {
@@ -79,30 +61,31 @@ const Chat: React.FC<ChildProps> = ({ selectedChannel }) => {
   /* RENDER */
   return (
     <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
-      <div className="flex flex-grow w-full">
-        <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
-          <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
-            {selectedChannel && (
-              <h1 className="text-lg font-bold mb-2 text-gray-600">
-                {selectedChannel?.name}
-              </h1>
-            )}
-            {!selectedChannel && (
-              <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
-            )}
-          </div>
-          <div className="text-lg font-bold mb-2 text-gray-600">
-            {
-              <Scrollbar style={{ width: 300, height: 700 }}>
-                {selectedChannel &&
-                  messages!.map((idx, index) => (
-                    <div
-                      key={index}
-                      className={`${
-                        idx.username === "User1" ? "self-start" : "self-end"
-                      } p-2 rounded-lg mb-2`}
-                    >
-                      <div className="text-sm font-semibold">
+        <div className="flex flex-grow w-full">
+            <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
+                <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
+                {
+                    selectedChannel &&
+                    <h1 className="text-lg font-bold mb-2 text-gray-600">{selectedChannel?.name}</h1>
+                }
+                {
+                    !selectedChannel &&
+                    <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
+                }
+                </div>
+                <div className="text-lg font-bold mb-2 text-gray-600">
+                    {<Scrollbar style={{ width: 300, height: 700 }}>
+                    {
+                        selectedChannel &&
+                        messages!.map((idx, index) => (
+                            !blocked.users.some((elem) => elem.username === idx.username) &&
+                            <div
+                            key={index}
+                            className={`${
+                                idx.username === 'User1' ? 'self-start' : 'self-end'
+                            } p-2 rounded-lg mb-2`}
+                            >
+                        <div className="text-sm font-semibold">
                         {idx.username}
                       </div>
                       <div className="bg-white p-2 rounded-lg shadow-md">

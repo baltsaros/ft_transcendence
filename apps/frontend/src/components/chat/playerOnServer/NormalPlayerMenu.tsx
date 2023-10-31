@@ -6,14 +6,14 @@ import { toast } from "react-toastify";
 import { instance } from "../../../api/axios.api";
 import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
-import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
+import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
 import { IChannelDmData, IResponseUser } from "../../../types/types";
 
 function NormalPlayerMenu(user: IResponseUser) {
   //state
   const friends = useSelector((state: RootState) => state.friend.friends);
-  const blocked = useSelector((state: RootState) => state.blocked.blocked);
+  const blocked = useSelector((state: RootState) => state.blocked.users);
   const userLogged = useSelector((state: RootState) => state.user.user);
   const webSocketService = useChatWebSocket();
 
@@ -82,13 +82,21 @@ function NormalPlayerMenu(user: IResponseUser) {
     }
   };
 
+  const handleAddInvitation = async () => {
+    const payload = {
+      senderId: userLogged!.id,
+      receiverId: user.id,
+    };
+    PlayerService.sendInvitation(payload);
+  }
+
   //render
   return (
     <div className="bg-gray-500">
       {isFriend(user.username) && (
         <MenuItem disabled>Invite as Friend</MenuItem>
       )}
-      {!isFriend(user.username) && <MenuItem>Invite as Friend</MenuItem>}
+      {!isFriend(user.username) && <MenuItem onClick={handleAddInvitation}>Invite as Friend</MenuItem>}
 
       <MenuItem>
         <Link to={"/player/" + user.username}>View profile</Link>

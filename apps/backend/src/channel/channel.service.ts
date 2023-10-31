@@ -127,6 +127,7 @@ export class ChannelService {
                   users: true,
                   owner: true,
                   messages: true,
+                  banned: true,
               }
           }
       );
@@ -223,13 +224,13 @@ export class ChannelService {
   async addBannedUserToChannel(channelRelation: ChannelUserDto) {
     const channel = await this.channelRepository.findOne({
       where: { id: channelRelation.idChannel },
-      relations: { bannedUsers: true },
+      relations: { banned: true },
     });
     const bannedUser = await this.userService.findOneById(
       channelRelation.idUser
     );
     if (!bannedUser) return bannedUser;
-    channel.bannedUsers.push(bannedUser);
+    channel.banned.push(bannedUser);
     await this.channelRepository.save(channel);
     const payload = {
       channel: channel,
@@ -275,9 +276,9 @@ export class ChannelService {
   async getAllBannedUsersOfChannel(channelId: ChannelIdDto) {
     const request = await this.channelRepository.findOne({
       where: { id: channelId.idChannel },
-      relations: { bannedUsers: true },
+      relations: { banned: true },
     });
-    return request.bannedUsers;
+    return request.banned;
   }
 
   async getAllMutedUsersOfChannel(channelId: ChannelIdDto) {
