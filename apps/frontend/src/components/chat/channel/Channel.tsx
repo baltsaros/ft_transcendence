@@ -18,6 +18,7 @@ function Channel() {
     const selectedChannelContext = useChannel();
 // const Channel: React.FC<ChildProps> = ({onSelectChannel}) => {
     const channels = useSelector((state: RootState) => state.channel.channel);
+    console.log('channels', channels);
     const userLogged = useSelector((state: RootState) => state.user);
     
     const filteredChannels = channels.filter((channel) => 

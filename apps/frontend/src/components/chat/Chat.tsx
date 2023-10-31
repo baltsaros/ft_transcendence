@@ -30,6 +30,7 @@ function Chat() {
       (channel) => channel.id === selectedChannelContext.selectedChannel?.id
     );
     messages = channelSelected!.messages;
+    console.log('blocked', blocked.users);
   }
   const scrolledElementRef = useRef<HTMLDivElement | null>(null);
 
