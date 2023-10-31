@@ -6,6 +6,7 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { removeUser } from "../../../store/channel/channelSlice";
 import { RootState, store } from "../../../store/store";
 import { ChannelService } from "../../../services/channels.service";
+import { IChannel } from "../../../types/types";
 
 interface ChildProps {
   channel: IChannel;
@@ -41,13 +42,13 @@ function AdminPlayerMenu(props: any) {
         const response = await instance.post("channel/leaveChannel", payload);
         if (response) {
           store.dispatch(removeUser(payload));
-          onSelectChannel(null);
+          // onSelectChannel(null);
         }
     } catch(error: any) {
         const err = error.response?.data.message;
         toast.error(err.toString());
     }
-  }
+}
 
   const handleBanUser = async () => {
     const payload = {
