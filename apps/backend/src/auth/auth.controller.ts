@@ -41,6 +41,10 @@ export class AuthController {
       sameSite: "none",
       secure: true,
     });
+    res.cookie("username", user.username, {
+      sameSite: "none",
+      secure: true,
+    });
     if (firstEntry) return res.redirect(path + "/edit");
     return res.redirect(path);
   }

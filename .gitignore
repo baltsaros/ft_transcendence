@@ -44,3 +44,4 @@ apps/frontend/.env
 apps/frontend/.env.prod
 apps/backend/src/uploads/avatars/
 database
+.turbo

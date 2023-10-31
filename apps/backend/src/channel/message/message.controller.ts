@@ -1,17 +1,16 @@
-import { Controller, Post, Body } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards } from "@nestjs/common";
 import { newMessageDto } from "./new-message.dto";
 import { MessageService } from "./message.service";
 import { EventEmitter2 } from "@nestjs/event-emitter";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 
 @Controller('message')
 export class MessageController {
     constructor(private readonly messageService: MessageService,
-        private eventEmitter: EventEmitter2
         ) {}
     @Post()
+    @UseGuards(JwtAuthGuard)
     async newMessage(@Body() messageData: newMessageDto) {
-        const newMessage = await this.messageService.createMessage(messageData);
-        this.eventEmitter.emit('messageCreated', newMessage);
-        console.log('messageCreated emitted');
+        await this.messageService.createMessage(messageData);
     }
 }

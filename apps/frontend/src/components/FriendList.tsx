@@ -22,6 +22,7 @@ function FriendList() {
   const userConnected = useSelector((state: RootState) => state.user.user);
   const isOnline = (value: IUserUsername) => value.status === 'online';
   const isOffline = (value: IUserUsername) => value.status === 'offline';
+  const isIngame = (value: IUserUsername) => value.status === 'inGame';
   const webSocketService = useChatWebSocket();
 
   useEffect(() => {
@@ -34,15 +35,17 @@ function FriendList() {
 }, []);
 
   useEffect(() => {
-    webSocketService.on("requestRemoveFriend", (payload: any) => {
-      store.dispatch(removeFriend(payload));
-    });
-    webSocketService.on("requestAddInvitation", (payload: any) => {
-      store.dispatch(addInvitation(payload));
-    });
-    webSocketService.on("requestAddFriend", (payload: any) => {
-      store.dispatch(addFriend(payload));
-    });
+    if (webSocketService) {
+      webSocketService.on("requestRemoveFriend", (payload: any) => {
+        store.dispatch(removeFriend(payload));
+      });
+      webSocketService.on("requestAddInvitation", (payload: any) => {
+        store.dispatch(addInvitation(payload));
+      });
+      webSocketService.on("requestAddFriend", (payload: any) => {
+        store.dispatch(addFriend(payload));
+      });
+    }
   }, []);
 
   //render
@@ -74,6 +77,20 @@ function FriendList() {
         {!Object.values(friendList).filter(isOffline).length && 
           <div className="bg-gray-500 flex items-center justify-center text-sm">
             <MenuItem className="" disabled >No friends offline</MenuItem>
+          </div>
+        }
+        <div className="bg-orange-500 text-lg">
+        <MenuHeader className="text-white">In Game</MenuHeader>
+        </div>
+        {Object.values(friendList).filter(isIngame).length > 0 && friendList.map((friend) => (
+          isIngame(friend) && 
+            <div className="bg-gray-500" key={friend.username}>
+              <ToggleMenuFriendList {...friend} />
+            </div>              
+        ))}
+        {!Object.values(friendList).filter(isIngame).length && 
+          <div className="bg-gray-500 flex items-center justify-center text-sm">
+            <MenuItem className="" disabled >No friends in game</MenuItem>
           </div>
         }
         <div className="bg-blue-500 text-lg">

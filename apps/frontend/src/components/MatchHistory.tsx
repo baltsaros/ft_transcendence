@@ -51,19 +51,24 @@ export default function MatchHistory(userData: IUserPlayerProfileData) {
               </td>
             </tr>
           </thead>
-          <Scrollbar style={{ width: 400, height: 150 }}>
-            <div>
-              <table className="w-96 divide-y-2 divide-gray-400">
-                <tbody className="divide-y-2 divide-gray-400">
-                  {matches!.map((match) => (
-                    <Match key={match.id}
-                        {...match}
-                      />
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Scrollbar>
+          <tbody>
+            <tr>
+              <td colSpan={3}>
+                <div className="w-96 divide-y-2 divide-gray-400 overflow-y-scroll scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-300"
+                    style={{ width: 400, height: 150 }}>
+                  <table className="w-96 divide-y-2 divide-gray-400">
+                    <tbody className="divide-y-2 divide-gray-400">
+                      {matches!.map((match) => (
+                        <Match key={match.id}
+                            {...match}
+                          />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     );

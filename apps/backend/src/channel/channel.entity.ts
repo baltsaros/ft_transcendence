@@ -75,5 +75,5 @@ export class Channel {
             referencedColumnName: "id"
         }
     })
-    bannedUsers: User[];
+    banned: User[];
 }

@@ -71,34 +71,30 @@ const Header: FC = () => {
                   <MenuHeader
                     className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
                   >
-                    <li>
-                      <NavLink
-                        to={"player/" + username}
-                        className={({ isActive }) =>
-                          isActive
-                            ? "py-2 text-white"
-                            : "text-white/50 hover:text-white"
-                        }
-                      >
-                        Statistics
-                      </NavLink>
-                    </li>
+                    <NavLink
+                      to={"player/" + username}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "py-2 text-white"
+                          : "text-white/50 hover:text-white"
+                      }
+                    >
+                      Statistics
+                    </NavLink>
                   </MenuHeader>
                   <MenuHeader
                     className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}
                   >
-                    <li>
-                      <NavLink
-                        to={"edit"}
-                        className={({ isActive }) =>
-                          isActive
-                            ? "py-2 text-white"
-                            : "text-white/50 hover:text-white"
-                        }
-                      >
-                        Edit
-                      </NavLink>
-                    </li>
+                    <NavLink
+                      to={"edit"}
+                      className={({ isActive }) =>
+                        isActive
+                          ? "py-2 text-white"
+                          : "text-white/50 hover:text-white"
+                      }
+                    >
+                      Edit
+                    </NavLink>
                   </MenuHeader>
                 </div>
               </Menu>

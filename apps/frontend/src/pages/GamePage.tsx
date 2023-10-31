@@ -37,13 +37,13 @@ const GamePage: React.FC = () => {
 
 	const updateInGameStatus = async () => {
 		const userUpdate = await AuthService.updateStatus("inGame");
-		webSocketService.emit("updateStatus", {data: {userUpdate}});
+		webSocketService!.emit("updateStatus", {data: {userUpdate}});
 	};
 
 	const updateOnlineStatus = async () => {
 
 		const userUpdate = await AuthService.updateStatus("online");
-		webSocketService.emit("updateStatus", {data: {userUpdate}});
+		webSocketService!.emit("updateStatus", {data: {userUpdate}});
 	};
 
 	useEffect(() => {

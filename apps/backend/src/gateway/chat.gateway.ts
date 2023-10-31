@@ -102,10 +102,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @OnEvent("messageCreated")
   handleMessage(payload: any) {
-    // 1. Emit message event to memeber of socket.io room
-    console.log("channel id gateway:", payload.channel.id);
-    const socket = this.gatewaySessionManager.getSocket(payload.user.username);
-    this.server.to(`channel-${payload.channel.id}`).emit("onMessage", payload);
+    this.server.to(`channel-${payload.channelId}`).emit('onMessage', payload);
   }
 
   @OnEvent("onSetChannelPassword")

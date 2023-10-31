@@ -24,6 +24,10 @@ const ProfileEdit: FC = () => {
         toast.error("Username cannot be the same");
         return;
       }
+      if (username.length > 15) {
+        toast.error("Username cannot be longer than 15 characters!");
+        return;
+      }
       const tmp = {
         username: username == "" ? (user ? user.username : "") : username,
         avatar: filename.length > 0 ? filename : user ? user.avatar : "",
