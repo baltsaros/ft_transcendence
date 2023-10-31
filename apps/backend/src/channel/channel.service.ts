@@ -81,11 +81,14 @@ export class ChannelService {
       },
     });
     const user = await this.userService.findOne(payload.username);
+    console.log('channel admin:', channel.adminUsers);
+    console.log('result for admin:', channel.adminUsers.includes(user));
     if (user.id === channel.owner.id) {
       if (channel.adminUsers.length > 0) {
         channel.users = channel.users.filter((usr) => usr.id !== user.id);
         const randomIndex = Math.floor(Math.random() * channel.adminUsers.length);
         channel.owner = channel.adminUsers[randomIndex];
+        console.log('channel owner:', channel.owner);
         await this.channelRepository.save(channel);
         const obj = {
           username: user.username,
@@ -96,7 +99,11 @@ export class ChannelService {
       } else {
         throw new BadRequestException("Owner cannot leave channel");
       }
-    } else {
+    } else if (channel.adminUsers.includes(user)) {
+
+    } 
+    
+    else {
       channel.users = channel.users.filter((usr) => usr.id !== user.id);
       await this.channelRepository.save(channel);
       const obj = {

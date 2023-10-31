@@ -14,7 +14,6 @@ interface ModalProp {
 
 const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
   const user = useAppSelector((state: RootState) => state.user.user);
-
   /* STATE */
   const [password, setPassword] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -60,15 +59,33 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
       channelId: channel.id,
       password: newPass.pass,
     };
-    if (oldPass && newPass.filled) {
-      const data = await ChannelService.setPasswordToChannel(payload);
-      if (data) {
-        toast.success("Password has been successfuly changed!");
-        navigate("/chat");
-        window.location.reload();
-      } else toast.error("Something went wrong!");
+    if (channel.mode === 'Public') {
+      if (newPass.filled) {
+        const data = await ChannelService.setPasswordToChannel(payload);
+        console.log('data', data);
+        if (data) {
+          toast.success("Password has been successfuly changed!");
+          onClose();
+          // navigate("/chat");
+          // window.location.reload();
+        } else toast.error("Something went wrong!"); 
+      }
+      else if (!newPass.filled) toast.error("New password is empty!");
     }
-    else if (!newPass.filled) toast.error("New password is empty!");
+    else {
+      console.log('oldPass', oldPass);
+      console.log('newPass', newPass);
+      if (oldPass) {
+        const data = await ChannelService.setPasswordToChannel(payload);
+        console.log('data', data);
+        if (data) {
+          toast.success("Password has been successfuly changed!");
+          onClose();
+          // navigate("/chat");
+          // window.location.reload();
+        } else toast.error("Something went wrong!");
+      }
+    }
   };
 
   /* RENDERING */
