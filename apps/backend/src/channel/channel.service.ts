@@ -28,6 +28,7 @@ export class ChannelService {
       where: { name: channelData.name },
     });
     if (existingChannel) {
+      console.log('here');
       return undefined;
     }
     const newChannel = this.channelRepository.create({
