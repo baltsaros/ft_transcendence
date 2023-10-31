@@ -105,6 +105,7 @@ const AddChannelModal: React.FC<ModalProp> = ({onClose}) =>  {
 						id="channelName"
 						className="w-full mt-1 p-2 border rounded text-gray-800 focus:outline-none focus:border-blue-500"
 						placeholder="Enter channel name"
+						maxLength={20}
 						onChange={handleChannelName}
 					/>
 				</div>
