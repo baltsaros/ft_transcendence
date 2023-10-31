@@ -1,7 +1,13 @@
 import Cookies from "js-cookie";
 import { useRef, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import Player from "../../pages/Player";
+import { AuthService } from "../../services/auth.service";
 import { MatchService } from "../../services/matches.service";
+import { PlayerService } from "../../services/player.service";
+import { RootState, store } from "../../store/store";
+import { fetchAllUsers } from "../../store/user/allUsersSlice";
 
 const scoreMax = 5;
 const fieldWidth = 800;
@@ -27,6 +33,11 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 	const player2ScoreRef = useRef(0);
 	const player1UsernameRef = useRef<string>("");
 	const player2UsernameRef = useRef<string>("");
+	const users = useSelector((state: RootState) => state.allUser.users);
+
+	useEffect(() => {
+		store.dispatch(fetchAllUsers());
+	}, []);
 
 	useEffect(() => {
 		  // Démarrez la partie lorsque le composant est monté
@@ -37,6 +48,44 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 				player2UsernameRef.current = data.player2Username;
 		  });
 	  }, [webSocket]);
+
+
+	//   function calculateNewElo(playerElo, scoreDifference, kFactor = 32) {
+	// 	const expectedScore = 1 / (1 + Math.pow(10, -scoreDifference / 400));
+	// 	const result = scoreDifference > 0 ? 1 : 0.5; // 1 pour victoire, 0.5 pour match nul
+	// 	const newElo = playerElo + kFactor * (result - expectedScore);
+	// 	return newElo;
+	//   }
+
+	const calculateNewElo = async (scoreDifference: number) => {
+		let player = await AuthService.getProfile();
+		if (player) {
+			let kFactor: number;
+
+			if (player.rank < 1200)
+			{
+				if (scoreDifference > 0)
+					kFactor = 60;
+				else
+					kFactor = 20;
+			}
+			else if (player.rank < 1800)
+			{
+				kFactor = 40;
+			}
+			else
+			{
+				if (scoreDifference > 0)
+					kFactor = 20;
+				else
+					kFactor = 60;
+			}
+
+			player.rank += scoreDifference * kFactor;
+			PlayerService.updateElo(player);
+		}
+	};
+
 
 	useEffect(() => {
 			const canvas = canvasRef.current;
@@ -71,6 +120,11 @@ const PongLauncher = ({ webSocket, roomId, radius, player1PaddleColor, player2Pa
 								scoreUser: player1ScoreRef.current,
 								scoreOpponent: player2ScoreRef.current
 							});
+							calculateNewElo(player1ScoreRef.current - player2ScoreRef.current);
+						}
+						else if (player2UsernameRef.current == username)
+						{
+							calculateNewElo(player2ScoreRef.current - player1ScoreRef.current);
 						}
 						setMatchEnded(true);
 					}

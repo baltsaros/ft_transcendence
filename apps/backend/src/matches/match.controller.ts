@@ -1,7 +1,8 @@
-import { BadRequestException, Body, Controller, Get, Param, Post, UsePipes } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Post, UseGuards, UsePipes } from "@nestjs/common";
 import { CreateMatchDto } from "./dto/create-match.dto";
 import { MatchService } from "./match.service";
 import { UserService } from "src/user/user.service";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 
 @Controller('matches')
 export class MatchController {
@@ -10,6 +11,7 @@ export class MatchController {
         private readonly userService: UserService) {}
 
     @Get(':username')
+    @UseGuards(JwtAuthGuard)
     async findAllMatchForUser(@Param('username') username: string) {
         const user = await this.userService.findOne(username);
         if (!user)
@@ -20,6 +22,7 @@ export class MatchController {
     }
 
     @Post()
+    @UseGuards(JwtAuthGuard)
     @UsePipes()
     createMatch(@Body() createMatchDto: CreateMatchDto) {
         return this.matchService.createMatch(createMatchDto);
@@ -27,6 +30,7 @@ export class MatchController {
 
     //Only for testing needs to be delete
     @Post(":clear")
+    @UseGuards(JwtAuthGuard)
     async clearAllMatches() {
         await this.matchService.clearAllMatches();
     }
