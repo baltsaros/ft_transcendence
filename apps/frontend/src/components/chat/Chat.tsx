@@ -88,7 +88,7 @@ useEffect(() => {
                         <div className="text-sm font-semibold">
                         {idx.username}
                       </div>
-                      <div className="bg-white p-2 rounded-lg shadow-md">
+                      <div className="bg-white p-2 rounded-lg shadow-md overflow-y-auto">
                         {idx.content}
                       </div>
                     </div>
