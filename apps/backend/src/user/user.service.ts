@@ -278,6 +278,9 @@ export class UserService {
       },
     });
     const friend = await this.findOneById(friendRequest.senderId);
+    console.log(source.invitations)
+    if (source.invitations.some((item) => item.id === friendRequest.senderId))
+      return (2);
     source.invitations.push(friend);
     const data = {
       username: friend.username,
@@ -285,9 +288,9 @@ export class UserService {
       socketUsername: source.username,
     }
     const ret = await this.userRepository.save(source);
-    if (!ret) return (false);
+    if (!ret) return (0);
     this.eventEmmiter.emit("addInvitation", data)
-    return true;
+    return (1);
 
   }
 
