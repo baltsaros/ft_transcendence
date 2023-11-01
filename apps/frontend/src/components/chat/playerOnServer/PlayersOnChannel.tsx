@@ -129,8 +129,8 @@ function PlayersOnChannel() {
                   user.id !== userConnected!.id &&
                   isIngame(user) && (
                     <li key={user.id}>
-                      {selectedChannel && (
-                        <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>
+                      {selectedChannelContext.selectedChannel && (
+                        <PlayerMenu {...{ user}}></PlayerMenu>
                       )}
                     </li>
                   )
