@@ -22,13 +22,6 @@ const handleCancel = () => {
     console.log('cancel');
     onClose();
 }
-
-const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission behavior
-    console.log('submit');
-    // Add your logic for handling form submission here
-  }
-
   const handleChannelPassword = (channel: IChannel) => async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("channel", channel);

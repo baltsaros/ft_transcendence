@@ -329,23 +329,19 @@ import { IUserSocket } from 'src/types/types';
 				if (room.ball.y + room.ball.radius > room.fieldHeight || room.ball.y - room.ball.radius < 0)
 					room.ball.setSpeedY(-room.ball.speedY);
 
-				// Vérifiez les collisions avec les paddles
-				if (
-					room.ball.x - room.ball.radius < room.leftPaddle.width + 10 &&	// Prend en compte le décalage des raquettes
-					room.ball.y + room.ball.radius > room.leftPaddle.y &&
-					room.ball.y - room.ball.radius < room.leftPaddle.y + room.leftPaddle.height
-				)
-				{
-					// Collision avec la raquette gauche, inversez la direction horizontale
-					room.ball.setSpeedX(-room.ball.speedX);
-				}
 
-				if (
-					room.ball.x + room.ball.radius > room.fieldWidth - room.leftPaddle.width - 10 &&	// Prend en compte le décalage des raquettes
+				// Vérifiez les collisions avec les paddles
+				if (room.ball.x - room.ball.radius < room.leftPaddle.width + 10 &&
+					room.ball.y + room.ball.radius > room.leftPaddle.y &&
+					room.ball.y - room.ball.radius < room.leftPaddle.y + room.leftPaddle.height) {
+    				// Collision avec le bord droit de la raquette gauche, inversez la direction horizontale
+					if (room.ball.speedX <= 0)
+	    				room.ball.setSpeedX(-room.ball.speedX);
+				}
+				if (room.ball.x + room.ball.radius > room.fieldWidth - room.leftPaddle.width - 10 &&
 					room.ball.y + room.ball.radius > room.rightPaddle.y &&
-					room.ball.y - room.ball.radius < room.rightPaddle.y + room.leftPaddle.height
-				) {
-					// Collision avec la raquette droite, inversez la direction horizontale
+					room.ball.y - room.ball.radius < room.rightPaddle.y + room.leftPaddle.height) {
+					if (room.ball.speedX >= 0)
 					room.ball.setSpeedX(-room.ball.speedX);
 				}
 
