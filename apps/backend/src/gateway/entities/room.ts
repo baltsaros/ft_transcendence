@@ -58,8 +58,8 @@ export class Room {
 	}
 
 	removePlayers() {
-		this.player1 = null;
-		this.player2 = null;
+		this.player1.resetPlayer();
+		this.player2.resetPlayer();
 	}
 	// Méthode pour obtenir un joueur par son id
 	getPlayerById(id: string): Player | undefined {
@@ -68,7 +68,7 @@ export class Room {
 		else if (this.player2.id == id)
 			return (this.player2);
 		else
-			return (null);
+			return (undefined);
 	}
 
 	getUsernameById( id:string ) : string | null{
