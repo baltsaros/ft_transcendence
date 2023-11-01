@@ -1,5 +1,5 @@
 import { MenuItem } from "@szhsin/react-menu";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,6 +8,9 @@ import { useChatWebSocket } from "../../../context/chat.websocket.context";
 import { PlayerService } from "../../../services/player.service";
 import { addBlocked, fetchBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 import { RootState, store } from "../../../store/store";
+import { usePongWebSocket } from "../../../context/pong.websocket.context";
+import WaitingGame from "../../pong/WaitingGame";
+import WaitingInvite from "../../pong/WaitingInvitation";
 import { IChannelDmData, IResponseUser, IUserUsername } from "../../../types/types";
 
 function NormalPlayerMenu(user: IResponseUser) {
@@ -15,7 +18,9 @@ function NormalPlayerMenu(user: IResponseUser) {
   const friends = useSelector((state: RootState) => state.friend.friends);
   const blocked = useSelector((state: RootState) => state.blocked.users);
   const userLogged = useSelector((state: RootState) => state.user.user);
-  const webSocketService = useChatWebSocket();
+  const ChatWebSocketService = useChatWebSocket();
+  const PongWebSocketService = usePongWebSocket();
+//   const webSocketService = useChatWebSocket();
   const invitations = useSelector((state: RootState) => state.invitation.invitations);
 
   const isFriend = (username: string) => {
@@ -72,6 +77,10 @@ function NormalPlayerMenu(user: IResponseUser) {
     }
   };
 
+  const handleGameInvitation = () => {
+	PongWebSocketService!.emit("sendGameInvitation", {data: {sender: userLogged!.username, receiver: user.username}});
+  }
+
   const handleAddInvitation = async () => {
       const payload = {
       senderId: userLogged!.id,
@@ -111,7 +120,7 @@ function NormalPlayerMenu(user: IResponseUser) {
       {(user.status === "offline" || user.status === "inGame") && (
         <MenuItem disabled>Invite to game</MenuItem>
       )}
-      {user.status === "online" && <MenuItem>Invite to game</MenuItem>}
+      {user.status === "online" && <MenuItem onClick={handleGameInvitation}>Invite to game</MenuItem>}
     </div>
   );
 }

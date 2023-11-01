@@ -22,7 +22,6 @@ function PlayerMenu(props: any) {
     const admins = useSelector((state: RootState) => state.admin.users);
     const webSocketService = useChatWebSocket();
 
-
     const isOwner = (id: number) => {
       return (selectedChannelContext.selectedChannel?.owner.id === id);
     }

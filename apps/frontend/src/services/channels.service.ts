@@ -91,6 +91,7 @@ export const ChannelService = {
   },
 
   async getHashedPassword(channelId: number) {
+    console.log('service front');
     const { data } = await instance.get(
       "channel/getPass/" + channelId.toString()
     );

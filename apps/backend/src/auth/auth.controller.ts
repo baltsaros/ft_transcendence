@@ -107,3 +107,6 @@ export class AuthController {
 function useChatWebSocket() {
   throw new Error("Function not implemented.");
 }
+function usePongWebSocket() {
+	throw new Error("Function not implemented.");
+  }

@@ -9,11 +9,23 @@ import { IChannel } from "../types/types";
 import { removeUser } from "../store/channel/channelSlice";
 import { store } from "../store/store";
 import { useChatWebSocket } from "../context/chat.websocket.context";
+import GameInvitation from "../components/pong/Invitation";
+import { usePongWebSocket } from "../context/pong.websocket.context";
+import WaitingInvite from "../components/pong/WaitingInvitation";
 import { useChannel } from "../context/selectedChannel.context";
 
 const chatPage: React.FC = () => {
-    
-  const webSocketService = useChatWebSocket();
+
+    /* STATE */
+    const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
+    const chatWebSocketService = useChatWebSocket();
+    const pongWebSocketService = usePongWebSocket();
+	const [gameInvitationSent, setGameInvitationSent] = useState<boolean>(false);
+	const [gameInvitationReceived, setGameInvitationReceived] = useState<boolean>(false);
+	const [sender, setSender] = useState<string | null>(null);
+	const [receiver, setReceiver] = useState<string | null>(null);
+
+//   const webSocketService = useChatWebSocket();
   const selectedChannelContext = useChannel();
     /* STATE */
     // const [selectedChannel, setSelectedChannel] = useState<IChannel | null>(null);
@@ -21,29 +33,62 @@ const chatPage: React.FC = () => {
     // const handleSelectedChannel = (channel: IChannel | null) => {
     //     setSelectedChannel(channel);}
 
-       useEffect(() => {
-    if (webSocketService) {
-      webSocketService.on("userLeft", (payload: any) => {
-        store.dispatch(removeUser(payload));
-        selectedChannelContext.setSelectedChannel(null);
-      });
-      return () => {
-        webSocketService.off("userLeft");
-      };
-    }
-  }, []);
+	useEffect( () => {
+
+		pongWebSocketService!.on('GameInvitationReceived', (data: { sender: string }) => {
+			console.log("game invitation received. Sender : ", data.sender);
+			setSender(data.sender);
+			setGameInvitationReceived(true);
+		});
+
+		pongWebSocketService!.on('GameInvitationSent', (data: { receiver: string }) => {
+			// console.log("game invitation sent. Sender : ", data.receiver);
+			setReceiver(data.receiver);
+			setGameInvitationSent(true);
+		});
+		return () => {
+			pongWebSocketService!.off('GameInvitationReceived');
+			pongWebSocketService!.off('GameInvitationSent');
+		};
+	}, [pongWebSocketService]);
+
+
+
+	
+
+	useEffect(() => {
+		if (chatWebSocketService) {
+		  chatWebSocketService.on("userLeft", (payload: any) => {
+			store.dispatch(removeUser(payload));
+			selectedChannelContext.setSelectedChannel(null);
+		  });
+		  return () => {
+			chatWebSocketService.off("userLeft");
+		  };
+		}
+	  }, []);
+
+	const handleCloseInvitationReceived = async () => {
+		setGameInvitationReceived(false);
+	};
+
+	const handleCloseInvitationSent = async () => {
+		setGameInvitationSent(false);
+	};
 
     /* RENDER */
     return (
-    <div className="flex items-stretch justify-center">
-        <Channel/>
-        {/* <Channels onSelectChannel={handleSelectedChannel}/> */}
-        <Chat/>
-        {/* <Chat selectedChannel={selectedChannel} /> */}
-        <PlayersOnChannel/>
-        {/* <PlayersOnChannel selectedChannel={selectedChannel} /> */}
-    </div>
-    );
+			<div className="flex items-stretch justify-center">
+				{gameInvitationSent && receiver && (<WaitingInvite onClose={handleCloseInvitationSent} receiver={receiver} />)}
+				{gameInvitationReceived && sender && (<GameInvitation onClose={handleCloseInvitationReceived} sender={sender}/>)}
+				<Channel/>
+				{/* <Channels onSelectChannel={handleSelectedChannel}/> */}
+				<Chat/>
+				{/* <Chat selectedChannel={selectedChannel} /> */}
+				<PlayersOnChannel/>
+				{/* <PlayersOnChannel selectedChannel={selectedChannel} /> */}
+			</div>
+		);
 }
 
 export default chatPage;

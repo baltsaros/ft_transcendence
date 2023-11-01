@@ -28,7 +28,7 @@ export class ChannelService {
       where: { name: channelData.name },
     });
     if (existingChannel) {
-      return undefined;
+      throw new BadRequestException("Channel already exists!");
     }
     const newChannel = this.channelRepository.create({
       name: channelData.name,
@@ -143,6 +143,7 @@ export class ChannelService {
   }
 
   async getHashedPass(channelId: string) {
+    console.log('service back');
     const channel = await this.channelRepository.findOne({
       where: { id: parseInt(channelId) },
     });

@@ -8,7 +8,6 @@ const ChatWebSocketContext = createContext<ChatWebSocketService | undefined>(und
 
 /* Provider component */
 export const ChatWebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  
   // const getUserInfo = async () => {
   //   const user = getUser();
   //   return user;
