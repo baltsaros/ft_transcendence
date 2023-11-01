@@ -2,14 +2,9 @@ import { ChangeEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { Socket } from "socket.io-client";
 import { GameSettingsData } from "../../../../backend/src/gateway/entities/gameSettingsData";
+import { usePongWebSocket } from "../../context/pong.websocket.context";
 
-interface ModalProp {
-	onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
-	webSocket: Socket;
-	roomId: string;
-}
-
-const GameSettings = ({ roomId, onClose, webSocket }: any) => {
+const GameSettings = ({ roomId, onClose }: any) => {
 
 	// STATE
 
@@ -17,6 +12,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 	const [ radius, setRadius] = useState<number>(10);
 	const [ paddleColor, setPaddleColor ] = useState<string | null>(null);
 	const [ waitingOpponent, setWaitingOpponent] = useState<boolean>(false);
+	const pongWebSocketService = usePongWebSocket();
 	const opponentColor = "";
 	// BEHAVIOUR
 	const closeModal = () => {
@@ -43,7 +39,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 
   const sendGameSettings = () => {
 	if (roomId) {
-		webSocket.emit("chooseGameSettings", {data: {roomId: roomId, ballSpeed: ballSpeed, radius: radius, userPaddleColor: paddleColor}});
+		pongWebSocketService!.emit("chooseGameSettings", {data: {roomId: roomId, ballSpeed: ballSpeed, radius: radius, userPaddleColor: paddleColor}});
 		setWaitingOpponent(true);
 	}
 };
@@ -70,7 +66,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 				</div>
 				<div className="flex justify-center bg-gray-400 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
 					<Link to={"/"}>
-						<button type="button" className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
+						<button type="button" onClick={closeModal} className="mt-3 inline-flex items-center rounded-md bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
 					</Link>
 				</div>
 			</div>
@@ -125,7 +121,7 @@ const GameSettings = ({ roomId, onClose, webSocket }: any) => {
 					onClick={() => { sendGameSettings(); }}
 					className={`col-start-5 col-span-1 px-4 py-2 text-white font-semibold ${paddleColor ? 'bg-green-500 hover:bg-green-400' : 'bg-gray-400 cursor-not-allowed'} transition duration-300 rounded shadow-sm focus:outline-none focus:ring-2 ${paddleColor ? 'focus:ring-green-400' : ''}`}
 					disabled={!paddleColor}>Submit</button>
-								</div>
+				</div>
 			</div>
 		</div>
 		)

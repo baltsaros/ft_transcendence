@@ -3,16 +3,21 @@ import { Socket } from "socket.io-client";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { usePongWebSocket } from "../../context/pong.websocket.context";
+import { AuthService } from "../../services/auth.service";
+import { useChatWebSocket } from "../../context/chat.websocket.context";
+import { toast } from "react-toastify";
 
 interface ModalProp {
     onClose: () => void; // Define the type of onClose prop as a function that returns void & takes no arg
+	receiver: string;
 }
 
 
-const WaitingGame = ({ onClose }: ModalProp) => {
+const WaitingInvite = ({ onClose, receiver }: ModalProp) => {
 
     // STATE
 	const pongWebSocketService = usePongWebSocket();
+	const chatWebSocketService = useChatWebSocket();
 	const navigate = useNavigate();
 	// Créez une instance du service WebSocket
 	// const webSocket = usePongWebSocket();
@@ -23,37 +28,74 @@ const WaitingGame = ({ onClose }: ModalProp) => {
 	// const [roomId, setRoomId] = useState<string | null>(null);
 	// const username = Cookies.get('username');
 
+	const updateOnlineStatus = async () => {
+
+		const userUpdate = await AuthService.updateStatus("online");
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
+	};
+
+	const updateInGameStatus = async () => {
+		const userUpdate = await AuthService.updateStatus("inGame");
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
+	};
+
 	useEffect(() => {
 			// Établir la connexion WebSocket
 			// console.log(`${username} launch matchmaking`);
-			pongWebSocketService!.emit('launchMatchmaking', {});
 
 			// Gestion des événements du serveur pour la mise en correspondance
-			pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string}) => {
-				// if (data.player1)
-				navigate(`/game/${data.roomId}`);
-			});
+			// pongWebSocketService!.on('matchmakingSuccess', (data: { roomId: string }) => {
+			// 	// if (data.player1)
+			// 	navigate(`/game/${data.roomId}`);
+			// });
 			// console.log(`${username} matchmaking success`);
 
 			// setIsMatchmakingSuccess(true);
 			// setRoomId(data.roomId);
 			// console.log(`Matchmaking success. RoomID : ${data.roomId}`);
+			pongWebSocketService!.on('invitationDeclined', () => {
+				updateOnlineStatus();
+				closeModal();
+			});
+
+			pongWebSocketService!.on('inviteMatchmakingSuccess', (data: { roomId: string}) => {
+				updateInGameStatus();
+				navigate(`/game/${data.roomId}`);
+			});
+
+			pongWebSocketService!.on('invitationCanceled', () => {
+					toast.error("Invitation declined.");
+
+					updateOnlineStatus();
+					onClose();
+			});
+
 			return () => {
-					pongWebSocketService?.off('matchmakingSuccess');
-			  };
-	  }, [pongWebSocketService]);
+					pongWebSocketService!.emit('cancelInvitation', {data : {player: receiver}});
+					pongWebSocketService!.off('inviteMatchmakingSuccess');
+					pongWebSocketService!.off('invitationCanceled');
+			};
+
+	  }, []);
+
+	  useEffect( () => {
+
+		return () => {
+			pongWebSocketService!.emit('cancelInvitation', {data : {player: receiver}});
+		};
+	  }, []);
 
 	const closeModal = () => {
+		pongWebSocketService!.emit('cancelInvitation', {data : {player: receiver}});
 		onClose();
 	}
-
 
 	//render
 	return (
 		<div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-40 overflow-y-auto flex items-center justify-center" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 			<div className="relative bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:max-w-lg w-full">
 				<div className="bg-gray-400 p-4">
-					<h3 className="text-3xl font-semibold leading-6 text-gray-800 text-center" id="modal-title">Waiting for an opponent...</h3>
+					<h3 className="text-3xl font-semibold leading-6 text-gray-800 text-center" id="modal-title">Waiting for the invited player...</h3>
 				</div>
 				<div className="bg-gray-400 text-black h-12 flex items-center justify-center">
 					<div className="text-2xl text-center">
@@ -67,13 +109,11 @@ const WaitingGame = ({ onClose }: ModalProp) => {
 					</div>
 				</div>
 				<div className="bg-gray-400 px-4 py-3 text-center">
-					<Link to={"/"}>
 						<button type="button" onClick={closeModal} className="inline-flex rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Cancel</button>
-					</Link>
 				</div>
 			</div>
 		</div>
 	)
 }
 
-	export default WaitingGame;
+	export default WaitingInvite;

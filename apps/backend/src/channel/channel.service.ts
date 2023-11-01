@@ -28,8 +28,7 @@ export class ChannelService {
       where: { name: channelData.name },
     });
     if (existingChannel) {
-      console.log('here');
-      return undefined;
+      throw new BadRequestException("Channel already exists!");
     }
     const newChannel = this.channelRepository.create({
       name: channelData.name,

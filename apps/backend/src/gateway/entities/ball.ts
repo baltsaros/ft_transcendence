@@ -16,7 +16,7 @@ export class Ball {
 	setRandomDirection(ballSpeed: number)
 	{
 		const random = Math.random() * 4;
-		let angle: number;
+		let angle = 0;
 
 		if (random < 1)
 			angle = 22.5 + Math.random() * 45;

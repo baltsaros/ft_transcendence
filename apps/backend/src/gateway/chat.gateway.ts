@@ -31,6 +31,7 @@ import { ChannelUserObjectDto } from "src/channel/dto/channelUserObject.dto";
     origin: "*",
   },
 })
+
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
@@ -163,7 +164,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   async handleUnmuteUser(payload: ChannelUserObjectDto) {
     this.server.to(`channel-${payload.channel.id}`).emit('userUnmuted', payload);
   }
-
 
   @OnEvent('unblockUser')
   async handleUnblockUser(payload: UserRelationDto) {
