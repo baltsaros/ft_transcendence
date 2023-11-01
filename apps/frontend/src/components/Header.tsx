@@ -6,7 +6,6 @@ import { getAvatar } from "../hooks/getAvatar";
 import { getUsername } from "../hooks/getUsername";
 import { getUser } from "../hooks/getUser";
 import FriendList from "./FriendList";
-import { Menu, MenuButton, MenuHeader } from "@szhsin/react-menu";
 import Logout from "./Logout";
 import InfosMenu from "./InfosMenu";
 

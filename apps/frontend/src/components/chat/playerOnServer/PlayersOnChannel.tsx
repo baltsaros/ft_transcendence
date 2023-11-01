@@ -7,11 +7,16 @@ import { addBanned, fetchChannel } from "../../../store/channel/channelSlice";
 import PlayerMenu from "./PlayerMenu";
 import {
   addAdmin,
+  fetchAdmin,
   removeAdmin,
 } from "../../../store/channel/adminSlice";
 // import { addBanned } from "../../../store/channel/channelSlice";
-import { addMuted, removeMuted } from "../../../store/channel/mutedSlice";
+import { addMuted, fetchMuted, removeMuted } from "../../../store/channel/mutedSlice";
 import { useChannel } from "../../../context/selectedChannel.context";
+import { fetchBlocked } from "../../../store/blocked/blockedSlice";
+import { fetchInvitations } from "../../../store/user/invitationSlice";
+import { fetchFriends } from "../../../store/user/friendsSlice";
+import { PlayerService } from "../../../services/player.service";
 
 // interface ChildProps {
 //   selectedChannel: IChannel | null;
@@ -61,7 +66,6 @@ function PlayersOnChannel() {
       webSocketService.on("userUnmuted", (payload: any) => {
         store.dispatch(removeMuted(payload.user));
       });
-
       return () => {
         webSocketService.off("userLeft");
         webSocketService.off("userJoined");
@@ -129,8 +133,8 @@ function PlayersOnChannel() {
                   user.id !== userConnected!.id &&
                   isIngame(user) && (
                     <li key={user.id}>
-                      {selectedChannel && (
-                        <PlayerMenu {...{ user, selectedChannel }}></PlayerMenu>
+                      {selectedChannelContext.selectedChannel && (
+                        <PlayerMenu {...{ user,selectedChannel: selectedChannelContext.selectedChannel }}></PlayerMenu>
                       )}
                     </li>
                   )

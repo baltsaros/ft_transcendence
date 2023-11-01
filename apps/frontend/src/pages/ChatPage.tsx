@@ -6,13 +6,20 @@ import Chat from "../components/chat/Chat";
 import PlayersOnChannel from "../components/chat/playerOnServer/PlayersOnChannel";
 import Channel from "../components/chat/channel/Channel";
 import { IChannel } from "../types/types";
-import { removeUser } from "../store/channel/channelSlice";
-import { store } from "../store/store";
+import { fetchChannel, removeUser } from "../store/channel/channelSlice";
+import { RootState, store } from "../store/store";
 import { useChatWebSocket } from "../context/chat.websocket.context";
 import GameInvitation from "../components/pong/Invitation";
 import { usePongWebSocket } from "../context/pong.websocket.context";
 import WaitingInvite from "../components/pong/WaitingInvitation";
 import { useChannel } from "../context/selectedChannel.context";
+import { fetchBlocked } from "../store/blocked/blockedSlice";
+import { fetchInvitations } from "../store/user/invitationSlice";
+import { fetchAdmin } from "../store/channel/adminSlice";
+import { fetchFriends } from "../store/user/friendsSlice";
+import { fetchMuted } from "../store/channel/mutedSlice";
+import { useSelector } from "react-redux";
+import { fetchAllUsers } from "../store/user/allUsersSlice";
 
 const chatPage: React.FC = () => {
 
@@ -24,6 +31,7 @@ const chatPage: React.FC = () => {
 	const [gameInvitationReceived, setGameInvitationReceived] = useState<boolean>(false);
 	const [sender, setSender] = useState<string | null>(null);
 	const [receiver, setReceiver] = useState<string | null>(null);
+	const userConnected = useSelector((state: RootState) => state.user.user);
 
 //   const webSocketService = useChatWebSocket();
   const selectedChannelContext = useChannel();
@@ -64,6 +72,22 @@ const chatPage: React.FC = () => {
 		  });
 		  return () => {
 			chatWebSocketService.off("userLeft");
+		  };
+		}
+	  }, []);
+	  useEffect(() => {
+		if (chatWebSocketService) {
+			chatWebSocketService.on("usernameUpdatedChannel", (payload: any) => {
+			  store.dispatch(fetchBlocked(userConnected!.id));
+			  store.dispatch(fetchInvitations(userConnected!.username));
+			  store.dispatch(fetchChannel());
+			  store.dispatch(fetchAdmin(userConnected!.id));
+			  store.dispatch(fetchFriends(userConnected!.username));
+			  store.dispatch(fetchMuted(userConnected!.id));
+			  store.dispatch(fetchAllUsers());
+		  });
+		  return () => {
+			chatWebSocketService.off("usernameUpdatedChannel");
 		  };
 		}
 	  }, []);

@@ -14,7 +14,6 @@ import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 
 function PlayerMenu(props: any) {
   const {user} = props;
-  // const {user, selectedChannel} = props;
 
     //state
     const userLogged = useSelector((state: RootState) => state.user.user);

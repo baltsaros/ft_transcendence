@@ -152,6 +152,7 @@ export class UserService {
       },
     });
     if (!userUpd) throw new NotFoundException("User not found");
+    this.eventEmmiter.emit("uploadUsername", userUpd);
     return userUpd;
   }
 
