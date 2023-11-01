@@ -25,34 +25,33 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     login: (state, action: PayloadAction<IResponseUser>) => {
-      state.user = action.payload;
-      state.isAuth = true;
+      return {
+      ...state,
+        isAuth: true,
+        user: action.payload
+      }
     },
     logout: (state) => {
-      state.user = null;
-      state.username = "";
-      state.avatar = "";
-      state.isAuth = false;
+      return {
+        ...state,
+        user: null,
+        username: "",
+        avatar: "",
+        isAuth: false,
+      }
     },
     setAvatar: (state, action: PayloadAction<string>) => {
-      state.avatar = action.payload;
+      return {
+        ...state,
+        avatar: action.payload
+      }
     },
     setUsername: (state, action: PayloadAction<string>) => {
-      state.username = action.payload;
+      return {
+        ...state,
+        username: action.payload
+      }
     },
-    // addInvitation: (state, action: PayloadAction<IUserUsername>) => {
-    //   state.user!.invitations.push(action.payload);
-    // },
-    // removeInvitation: (state, action: PayloadAction<string>) => {
-    //   state.user!.invitations = state.user!.invitations.filter((user) => user.username !== action.payload);
-    // },
-    // addFriend: (state, action: PayloadAction<string>) => {
-    //   const friend = state.user!.invitations.filter((user) => user.username === action.payload);
-    //   state.user!.friends.push(friend[0]);
-    // },
-    // removeFriend: (state, action: PayloadAction<string>) => {
-    //   state.user!.friends = state.user!.friends.filter((user) => user.username !== action.payload);
-    // }
   },
 });
 
