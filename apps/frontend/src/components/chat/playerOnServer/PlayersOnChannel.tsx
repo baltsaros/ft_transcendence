@@ -7,11 +7,16 @@ import { addBanned, fetchChannel } from "../../../store/channel/channelSlice";
 import PlayerMenu from "./PlayerMenu";
 import {
   addAdmin,
+  fetchAdmin,
   removeAdmin,
 } from "../../../store/channel/adminSlice";
 // import { addBanned } from "../../../store/channel/channelSlice";
-import { addMuted, removeMuted } from "../../../store/channel/mutedSlice";
+import { addMuted, fetchMuted, removeMuted } from "../../../store/channel/mutedSlice";
 import { useChannel } from "../../../context/selectedChannel.context";
+import { fetchBlocked } from "../../../store/blocked/blockedSlice";
+import { fetchInvitations } from "../../../store/user/invitationSlice";
+import { fetchFriends } from "../../../store/user/friendsSlice";
+import { PlayerService } from "../../../services/player.service";
 
 // interface ChildProps {
 //   selectedChannel: IChannel | null;
@@ -61,7 +66,6 @@ function PlayersOnChannel() {
       webSocketService.on("userUnmuted", (payload: any) => {
         store.dispatch(removeMuted(payload.user));
       });
-
       return () => {
         webSocketService.off("userLeft");
         webSocketService.off("userJoined");
@@ -77,67 +81,68 @@ function PlayersOnChannel() {
 
   // render
   return (
-		<div className="max-w-xs flex-1 p-4 border rounded-lg bg-white m-6 shadow-md h-[80vh]">
-		  <div className="p-4 bg-gray-200 rounded-lg">
-		    <h1 className="text-2xl font-semibold mb-2 text-gray-800">
-		      Players on channel
-		    </h1>
-		  </div>
-		  <div className="bg-gray-100 m-2 rounded-lg space-y-4">
-		    <div className="p-4">
-		      <p className="text-xl mb-2 text-gray-600">Online</p>
-		      <hr className="mb-2" />
-		      <ul className="text-gray-700">
-		        {usersOfChannel?.map(
-		          (user) =>
-		            user.id !== userConnected!.id &&
-		            isOnline(user) && (
-		              <li key={user.id} className="mb-2">
+    <div className="flex flex-col items-stretch justify-center h-screen bg-gray-100 w-full">
+      <div className="flex flex-grow w-full">
+        <div className="flex-1 p-4 border bg-gray-100 m-2">
+          <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
+            <h1 className="text-lg font-bold mb-2 text-gray-600">
+              Players on channel
+            </h1>
+          </div>
+          <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
+            <p className="text-xl mb-1 text-gray-600">Online</p>
+            <hr />
+            <ul className="text-black">
+              {usersOfChannel?.map(
+                (user) =>
+                  user.id !== userConnected!.id &&
+                  isOnline(user) && (
+                    <li key={user.id}>
+ 		                {selectedChannelContext.selectedChannel && (
+		                  <PlayerMenu {...{ user }}></PlayerMenu>
+		                )}
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+          <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
+            <p className="text-xl mb-1 text-gray-600">Offline</p>
+            <hr />
+            <ul className="text-black">
+              {usersOfChannel?.map(
+                (user) =>
+                  user.id !== userConnected!.id &&
+                  isOffline(user) && (
+                    <li key={user.id}>
 		                {selectedChannelContext.selectedChannel && (
 		                  <PlayerMenu {...{ user }}></PlayerMenu>
 		                )}
-		              </li>
-		            )
-		        )}
-		      </ul>
-		    </div>
-		    <div className="p-4">
-		      <p className="text-xl mb-2 text-gray-600">Offline</p>
-		      <hr className="mb-2" />
-		      <ul className="text-gray-700">
-		        {usersOfChannel?.map(
-		          (user) =>
-		            user.id !== userConnected!.id &&
-		            isOffline(user) && (
-		              <li key={user.id} className="mb-2">
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+          <div className="flex-shrink-0 p-4 bg-gray-100 m-2">
+            <p className="text-xl mb-1 text-gray-600">In game</p>
+            <hr />
+            <ul className="text-black">
+              {usersOfChannel?.map(
+                (user) =>
+                  user.id !== userConnected!.id &&
+                  isIngame(user) && (
+                    <li key={user.id}>
 		                {selectedChannelContext.selectedChannel && (
 		                  <PlayerMenu {...{ user }}></PlayerMenu>
 		                )}
-		              </li>
-		            )
-		        )}
-		      </ul>
-		    </div>
-		    <div className="p-4">
-		      <p className="text-xl mb-2 text-gray-600">In game</p>
-		      <hr className="mb-2" />
-		      <ul className="text-gray-700">
-		        {usersOfChannel?.map(
-		          (user) =>
-		            user.id !== userConnected!.id &&
-		            isIngame(user) && (
-		              <li key={user.id} className="mb-2">
-		                {selectedChannelContext.selectedChannel && (
-		                  <PlayerMenu {...{ user }}></PlayerMenu>
-		                )}
-		              </li>
-		            )
-		        )}
-		      </ul>
-		    </div>
-		  </div>
-		</div>
-
+                    </li>
+                  )
+              )}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

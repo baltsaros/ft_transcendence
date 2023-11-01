@@ -9,6 +9,15 @@ import WaitingGame from "../components/pong/WaitingGame";
 import { AuthService } from "../services/auth.service";
 import { toast } from "react-toastify";
 import WaitingInvite from "../components/pong/WaitingInvitation";
+import { fetchBlocked } from "../store/blocked/blockedSlice";
+import { RootState, store } from "../store/store";
+import { fetchInvitations } from "../store/user/invitationSlice";
+import { useSelector } from "react-redux";
+import { fetchFriends } from "../store/user/friendsSlice";
+import { fetchChannel } from "../store/channel/channelSlice";
+import { fetchAdmin } from "../store/channel/adminSlice";
+import { fetchMuted } from "../store/channel/mutedSlice";
+import { fetchAllUsers } from "../store/user/allUsersSlice";
 
 const Home: FC = () => {
 	const isAuth = useAuth();
@@ -19,6 +28,8 @@ const Home: FC = () => {
 	const [gameInvitationReceived, setGameInvitationReceived] = useState<boolean>(false);
 	const [sender, setSender] = useState<string | null>(null);
 	const [receiver, setReceiver] = useState<string | null>(null);
+	const userConnected = useSelector((state: RootState) => state.user.user);
+
 
 	const navigate = useNavigate();
 
@@ -51,6 +62,24 @@ const Home: FC = () => {
 	const handleCloseInvitationSent = async () => {
 		setGameInvitationSent(false);
 	};
+
+	useEffect(() => {
+		if (isAuth) {
+			chatWebSocketService!.on("usernameUpdatedHome", (payload: any) => {
+				store.dispatch(fetchBlocked(userConnected!.id));
+				store.dispatch(fetchInvitations(userConnected!.username));
+				store.dispatch(fetchChannel());
+				store.dispatch(fetchAdmin(userConnected!.id));
+				store.dispatch(fetchFriends(userConnected!.username));
+				store.dispatch(fetchMuted(userConnected!.id));
+				store.dispatch(fetchAllUsers());
+		  });
+		  return () => {
+			chatWebSocketService!.off("usernameUpdatedHome");
+		  };
+		}
+	  }, []);
+	
 
 	useEffect(() => {
 		if (isAuth)

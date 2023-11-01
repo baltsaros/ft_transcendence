@@ -38,7 +38,6 @@ const ChannelMenu: React.FC<ChildProps> = ({channel }) => {
 
   useEffect(() => {
     if (webSocketService) {
-      console.log('here');
       webSocketService.on("ownerLeft", (payload: any) => {
         store.dispatch(removeOwner(payload));
         console.log('channel.owner.username', channel.owner.username);
