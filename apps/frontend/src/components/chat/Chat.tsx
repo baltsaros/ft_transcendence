@@ -91,17 +91,33 @@ useEffect(() => {
                     {
                         selectedChannelContext.selectedChannel &&
                         messages!.map((idx, index) => (
-                            !blocked.users.some((elem) => elem.username === idx.username) &&
+                            !blocked.users.some((elem) => elem.username === idx.user!.username) &&
                             <div
                             key={index}
                             className=" self-end p-2 rounded-lg mb-2"
                             >
-                              {/*<div className="text-sm">
-                                {idx.username}
-                              </div>*/}
-                              <div className="bg-white p-2 rounded-lg shadow-md auto-rows-max w-64 overflow-y-auto" >
-                                {idx.content}
+                              <div className="text-sm">
+                                {idx.user?.username}
                               </div>
+                              <div className="grid grid-cols-3 gap-4">
+                                    {idx.user?.username === userLogged.username &&
+                                    <div
+                                    key={index}
+                                    className="col-start-2 col-end-4 bg-blue-200 p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto" >
+                                    {idx.content}
+                                    </div>
+                                    }
+                                    {idx.user?.username !== userLogged.username &&
+                                    <div
+                                    key={index}
+                                    className="col-start-1 col-end-3 bg-white p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto" >
+                                    {idx.content}
+                                    </div>
+                                    }
+                                  </div>
+                              {/*<div className="bg-white p-2 rounded-lg shadow-md auto-rows-max w-64 overflow-y-auto" >
+                                {idx.content}
+                              </div>*/}
                             </div>
                         ))}
                     {!selectedChannelContext.selectedChannel && <h2>Select a channel</h2>}

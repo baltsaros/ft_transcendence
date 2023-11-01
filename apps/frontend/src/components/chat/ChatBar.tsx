@@ -32,7 +32,7 @@ function ChatBar() {
     const handleClick = async () => {
         const message: IMessage = {
             channelId: selectedChannelContext.selectedChannel!.id,
-            username: user!.username,
+            user: user!,
             content: newMessage,
         };
         if (message.content.length === 0)
