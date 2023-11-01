@@ -33,6 +33,10 @@ const GamePage: React.FC = () => {
 	// 	setShowWaitingGame(false);
 	// };
 
+	const handleEndMatchModal = () => {
+		navigate("/");
+	};
+
 	const handleCloseSettingsGame = () => {
 		pongWebSocketService!.emit('leavePong', {});
 		// setRoomId(null);
@@ -69,10 +73,10 @@ const GamePage: React.FC = () => {
 			toast.error(data.error);
 			navigate("/");
 		});
-		pongWebSocketService!.on('MatchEnded', () =>
-		{
-			updateOnlineStatus();
-		});
+		// pongWebSocketService!.on('MatchEnded', () =>
+		// {
+		// 	updateOnlineStatus();
+		// });
 
 		pongWebSocketService!.on('OpponentDisconnected', () =>
 		{
@@ -98,9 +102,7 @@ const GamePage: React.FC = () => {
 		});
 
 		return () => {
-			pongWebSocketService!.off('matchmakingSuccess');
-			pongWebSocketService!.off('matchmakingError');
-			pongWebSocketService!.off('MatchEnded');
+			pongWebSocketService!.off('RoomError');
 			pongWebSocketService!.off('OpponentDisconnected');
 			pongWebSocketService!.off('settingsSuccess');
 			pongWebSocketService!.emit('leavePong', {});
@@ -112,7 +114,7 @@ const GamePage: React.FC = () => {
 		<div className="game-container">
 			{/* {showWaitingGame && !showGameSettings && (<WaitingGame onClose={handleCloseWaitingGame} />)} */}
 			{showGameSettings && roomId && ( <GameSettings roomId={roomId} onClose={handleCloseSettingsGame} /> )}
-			{launchGame && roomId && radius && player1 && player2 && player1PaddleColor && player2PaddleColor && (<PongLauncher roomId={roomId} radius={radius} player1PaddleColor={player1PaddleColor} player2PaddleColor={player2PaddleColor} player1={player1} player2={player2}/> )}
+			{launchGame && roomId && radius && player1 && player2 && player1PaddleColor && player2PaddleColor && (<PongLauncher onClose={handleEndMatchModal} roomId={roomId} radius={radius} player1PaddleColor={player1PaddleColor} player2PaddleColor={player2PaddleColor} player1={player1} player2={player2}/> )}
 		</div>
 	);
 };

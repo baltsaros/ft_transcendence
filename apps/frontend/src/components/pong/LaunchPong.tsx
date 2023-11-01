@@ -9,6 +9,7 @@ import { PlayerService } from "../../services/player.service";
 import { RootState, store } from "../../store/store";
 import { fetchAllUsers } from "../../store/user/allUsersSlice";
 import { usePongWebSocket } from "../../context/pong.websocket.context";
+import { useChatWebSocket } from "../../context/chat.websocket.context";
 
 const scoreMax = 5;
 const fieldWidth = 800;
@@ -19,7 +20,7 @@ const paddleOffset = 5;
 const paddleSpeed = 20;
 const username = Cookies.get('username');
 
-const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, player1, player2}: any) => {
+const PongLauncher = ({ onClose, roomId, radius, player1PaddleColor, player2PaddleColor, player1, player2}: any) => {
 
 	// STATE
 	const [matchStarted, setMatchStarted] = useState<boolean>(false);
@@ -33,8 +34,18 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 	const player1ScoreRef = useRef(0);
 	const player2ScoreRef = useRef(0);
 	const users = useSelector((state: RootState) => state.allUser.users);
+	const chatWebSocketService = useChatWebSocket();
 
 
+	const updateOnlineStatus = async () => {
+		const userUpdate = await AuthService.updateStatus("online");
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
+	};
+
+	const handleClose = () => {
+		updateOnlineStatus();
+		onClose();
+	};
 	useEffect(() => {
 		store.dispatch(fetchAllUsers());
 	}, []);
@@ -78,7 +89,6 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 			PlayerService.updateElo(player);
 		}
 	};
-
 
 	useEffect(() => {
 			const canvas = canvasRef.current;
@@ -206,9 +216,7 @@ const PongLauncher = ({ roomId, radius, player1PaddleColor, player2PaddleColor, 
 							</div>
 						</div>
 						<div className="bg-gray-400 px-4 py-3 text-center">
-							<Link to={"/"} className="col-span-3 text-center">
-								<button type="button" style={{ transition: 'all .15s ease' }} className="inline-flex mx-auto rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Leave</button>
-							</Link>
+								<button type="button" onClick={handleClose} style={{ transition: 'all .15s ease' }} className="inline-flex mx-auto rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Leave</button>
 						</div>
 					</div>
 				</div>

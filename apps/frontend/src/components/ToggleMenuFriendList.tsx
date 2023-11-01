@@ -90,14 +90,16 @@ function ToggleMenuFriendList(user: IUserUsername) {
             <div className="bg-gray-500">
                 <MenuItem onClick={handleDirectMessage}>Direct message</MenuItem>
             </div>
-            <div className="bg-gray-500">
-                <MenuItem onClick={handleGameInvitation}>Invite to game</MenuItem>
+			<div className="bg-gray-500">
+				{(user.status === "offline" || user.status === "inGame") && (
+				<MenuItem disabled>Invite to game</MenuItem>)}
+				{user.status === "online" && <MenuItem onClick={handleGameInvitation}>Invite to game</MenuItem>}
             </div>
             <div className="bg-gray-500">
                 <MenuItem onClick={() => deleteFriend()}>Remove friend</MenuItem>
             </div>
             </SubMenu>
-        </div> 
+        </div>
     );
 
 }
