@@ -104,10 +104,11 @@ const Home: FC = () => {
 		}
 
 		return () => {
-			if (isAuth)
+			if (isAuth) {
 				pongWebSocketService?.off('GameInvitationReceived');
 				pongWebSocketService?.off('GameInvitationSent');
 				pongWebSocketService?.off('matchmakingError');
+			}
 		  };
 	}, [pongWebSocketService, isAuth]);
 

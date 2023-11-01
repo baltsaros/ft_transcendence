@@ -29,6 +29,10 @@ export class AuthController {
     const path = process.env.REDIR
       ? process.env.REDIR
       : "http://localhost:5173";
+      res.cookie("username", user.username, {
+        sameSite: "none",
+        secure: true,
+      });
     if (user.twoFactorAuth) {
       res.cookie("intraId", user.intraId, {
         sameSite: "none",
@@ -38,10 +42,6 @@ export class AuthController {
     }
     const jwt = await this.authService.login(user);
     res.cookie("jwt_token", jwt.access_token, {
-      sameSite: "none",
-      secure: true,
-    });
-    res.cookie("username", user.username, {
       sameSite: "none",
       secure: true,
     });
