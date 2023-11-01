@@ -80,7 +80,7 @@ const ChannelMenu: React.FC<ChildProps> = ({channel }) => {
     /* RENDER */
     return (
       <div className="text-center">
-        <Menu direction={"right"} arrow={true} align={"center"} menuButton={<MenuButton className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-lg text-sm">+</MenuButton>}>
+        <Menu direction={"right"} arrow={true} align={"center"} menuButton={<MenuButton className="bg-gray-500 rounded-lg hover:bg-gray-600 text-white p-3 text-sm">+</MenuButton>}>
           <div className="bg-gray-500">
             <MenuItem onClick={() => handleLeaveChannel(channel.id)}>Leave Channel</MenuItem>
             {channel.owner.username === userLogged.username &&

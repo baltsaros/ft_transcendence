@@ -82,7 +82,6 @@ const GameInvitation = ({ onClose, sender}: any) => {
 	// 	  window.removeEventListener('beforeunload', handleBeforeUnload);
 	// 	};
 	//   }, []);
-	
 
 	// RENDER
 	return (
@@ -91,14 +90,13 @@ const GameInvitation = ({ onClose, sender}: any) => {
 				<div className="bg-gray-400 p-4">
 					<h3 className="text-3xl font-semibold leading-10 text-gray-800 text-center" id="modal-title">Invitation for a game</h3>
 				</div>
-				<div className="bg-gray-400 px-4 py-3 text-left">
-						<button type="button" onClick={handleDecline} className="inline-flex rounded-md items-center bg-red-600 text-white px-3 py-2 text-sm font-semibold hover:bg-red-500">Decline</button>
-				</div>
-				<div className="bg-gray-400 px-4 py-3 text-right">
-						<button type="button" onClick={handleAccept} className="inline-flex rounded-md items-center bg-green-600 text-white px-3 py-2 text-sm font-semibold hover:bg-green-500">Accept</button>
+				<div className="bg-gray-400 px-4 py-3 flex justify-between">
+					<button type="button" onClick={handleDecline} className="rounded-md items-center bg-red-600 text-white px-6 py-3 text-sm font-semibold hover:bg-red-500">Decline</button>
+					<button type="button" onClick={handleAccept} className="rounded-md items-center bg-green-600 text-white px-6 py-3 text-sm font-semibold hover:bg-green-500">Accept</button>
 				</div>
 			</div>
 		</div>
+
 	);
 };
 

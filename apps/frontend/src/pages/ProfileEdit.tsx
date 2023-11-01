@@ -29,7 +29,7 @@ const ProfileEdit: FC = () => {
         return;
       }
       const tmp = {
-        username: username == "" ? (user ? user.username : "") : username,
+        username: user!.username,
         avatar: filename.length > 0 ? filename : user ? user.avatar : "",
         id: user ? user.id : 0,
         intraId: user ? user.intraId : 0,

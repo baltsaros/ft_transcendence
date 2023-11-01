@@ -62,26 +62,25 @@ function ChatBar() {
 
     /* RENDER */
     return (
-        <div className="flex text-black items-center bg-gray-200 p-2">
+        <div className="flex text-black rounded-lg items-center justify-center bg-gray-200 p-2 ">
             {isMuted() && <div><input
                 value={newMessage}
-                type="text" 
+                type="text"
                 placeholder="You're muted"
                 disabled
                 className="flex-grow p-2 border rounded-lg"
                 />
-                <button disabled className="bg-gray-500 text-gray p-3 rounded-lg">Send</button></div>}
-            
+                <button disabled className="text-gray p-3 rounded-lg">Send</button></div>}
             {!isMuted() && <div>
             <input
             value={newMessage}
-            type="text" 
+            type="text"
             placeholder="Type your message..."
             onChange={handleChange}
             onKeyDown={handleKeyDown}
             className="flex-grow p-2 border rounded-lg"
             />
-        <button className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleClick}>Send</button></div>}
+        <button className="ml-2 bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg" onClick={handleClick}>Send</button></div>}
         </div>
     );
 }

@@ -16,7 +16,7 @@ function FriendList({username}: any) {
       <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={ <MenuButton className={"py-2 text-white/50 hover:text-white"}>{username}</MenuButton>}>
             <MenuHeader className={"bg-gray-500 py-2 text-white hover:bg-gray-400"}>
                 <MenuItem>
-                    <NavLink 
+                    <NavLink
                         to={"player/" + username}
                         className={({ isActive }) =>
                           isActive

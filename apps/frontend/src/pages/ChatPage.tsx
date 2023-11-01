@@ -78,7 +78,7 @@ const chatPage: React.FC = () => {
 
     /* RENDER */
     return (
-			<div className="flex items-stretch justify-center">
+			<div className="flex ">
 				{gameInvitationSent && receiver && (<WaitingInvite onClose={handleCloseInvitationSent} receiver={receiver} />)}
 				{gameInvitationReceived && sender && (<GameInvitation onClose={handleCloseInvitationReceived} sender={sender}/>)}
 				<Channel/>
