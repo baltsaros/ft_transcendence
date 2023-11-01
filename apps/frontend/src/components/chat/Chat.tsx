@@ -75,7 +75,7 @@ useEffect(() => {
     /* RENDER */
     return (
 
-		<div className="flex flex-col flex-1 p-4 border rounded-lg bg-white m-6 h-screen h-[80vh] ">
+		<div className="flex flex-col flex-1 p-4 border rounded-lg bg-white m-6  h-[80vh] ">
 		<div className="p-4 bg-gray-200 rounded-t-lg">
 		  <h1 className="text-2xl font-semibold mb-2 text-gray-800">
 			{selectedChannelContext.selectedChannel ? selectedChannelContext.selectedChannel.name : "Chat"}
