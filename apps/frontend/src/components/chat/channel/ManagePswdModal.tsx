@@ -66,8 +66,6 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
         if (data) {
           toast.success("Password has been successfuly changed!");
           onClose();
-          // navigate("/chat");
-          // window.location.reload();
         } else toast.error("Something went wrong!"); 
       }
       else if (!newPass.filled) toast.error("New password is empty!");
@@ -81,8 +79,6 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
         if (data) {
           toast.success("Password has been successfuly changed!");
           onClose();
-          // navigate("/chat");
-          // window.location.reload();
         } else toast.error("Something went wrong!");
       }
     }
