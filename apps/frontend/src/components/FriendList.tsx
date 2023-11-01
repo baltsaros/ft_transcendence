@@ -48,7 +48,7 @@ function FriendList() {
 
   //render
   return (
-    <div className="py-2 ">
+    <div className="py-2 z-50">
       <Menu direction={"bottom"} arrow={true} align={"center"} menuButton={<MenuButton className="text-lg"><FaUserFriends /></MenuButton>}>
         <div className="bg-green-500 text-lg">
           <MenuHeader className="text-white">Online</MenuHeader>

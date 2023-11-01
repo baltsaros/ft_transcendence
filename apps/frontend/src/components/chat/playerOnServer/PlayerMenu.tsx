@@ -8,6 +8,8 @@ import AdminPlayerMenu from "./AdminPlayerMenu";
 import { fetchAdmin } from "../../../store/channel/adminSlice";
 import { fetchMuted } from "../../../store/channel/mutedSlice";
 import { useChannel } from "../../../context/selectedChannel.context";
+import { useChatWebSocket } from "../../../context/chat.websocket.context";
+import { addBlocked, removeBlocked } from "../../../store/blocked/blockedSlice";
 
 
 function PlayerMenu(props: any) {
@@ -18,6 +20,8 @@ function PlayerMenu(props: any) {
     const userLogged = useSelector((state: RootState) => state.user.user);
     const selectedChannelContext = useChannel();
     const admins = useSelector((state: RootState) => state.admin.users);
+    const webSocketService = useChatWebSocket();
+
 
     const isOwner = (id: number) => {
       return (selectedChannelContext.selectedChannel?.owner.id === id);
