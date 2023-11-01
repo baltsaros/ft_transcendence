@@ -1,11 +1,86 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import ftLogo from "../assets/42_Logo.svg";
 import { useAuth } from "../hooks/useAuth";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useChatWebSocket } from "../context/chat.websocket.context";
+import GameInvitation from "../components/pong/Invitation";
+import { usePongWebSocket } from "../context/pong.websocket.context";
+import WaitingGame from "../components/pong/WaitingGame";
+import { AuthService } from "../services/auth.service";
+import { toast } from "react-toastify";
+import WaitingInvite from "../components/pong/WaitingInvitation";
 
 const Home: FC = () => {
-  const isAuth = useAuth();
+	const isAuth = useAuth();
+	const chatWebSocketService = useChatWebSocket();
+	const pongWebSocketService = usePongWebSocket();
+	const [showWaitingGame, setShowWaitingGame] = useState<boolean>(false);
+	const [gameInvitationSent, setGameInvitationSent] = useState<boolean>(false);
+	const [gameInvitationReceived, setGameInvitationReceived] = useState<boolean>(false);
+	const [sender, setSender] = useState<string | null>(null);
+	const [receiver, setReceiver] = useState<string | null>(null);
+
+	const navigate = useNavigate();
+
+	const updateOnlineStatus = async () => {
+
+		const userUpdate = await AuthService.updateStatus("online");
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
+	};
+
+	const updateInGameStatus = async () => {
+		const userUpdate = await AuthService.updateStatus("inGame");
+		chatWebSocketService!.emit("updateStatus", {data: {userUpdate}});
+	};
+
+	const handleCloseWaitingGame = () => {
+		if (isAuth)
+			pongWebSocketService?.emit('removeFromQueue', {});
+		setShowWaitingGame(false);
+	};
+
+	const handleOpenWaitingGame = () => {
+		setShowWaitingGame(true);
+		updateInGameStatus();
+	};
+
+	const handleCloseInvitationReceived = async () => {
+		setGameInvitationReceived(false);
+	};
+
+	const handleCloseInvitationSent = async () => {
+		setGameInvitationSent(false);
+	};
+
+	useEffect(() => {
+		if (isAuth)
+		{
+			pongWebSocketService!.on('GameInvitationReceived', (data: { sender: string }) => {
+				console.log("game invitation received. Sender : ", data.sender);
+				setSender(data.sender);
+				setGameInvitationReceived(true);
+			});
+
+			pongWebSocketService!.on('GameInvitationSent', (data: { receiver: string }) => {
+				// console.log("game invitation sent. Sender : ", data.receiver);
+				setReceiver(data.receiver);
+				setGameInvitationSent(true);
+			});
+
+			pongWebSocketService!.on('matchmakingError', (data: {error: string}) =>
+			{
+				handleCloseWaitingGame();
+				toast.error(data.error);
+			});
+		}
+
+		return () => {
+			if (isAuth)
+				pongWebSocketService?.off('GameInvitationReceived');
+				pongWebSocketService?.off('GameInvitationSent');
+				pongWebSocketService?.off('matchmakingError');
+		  };
+	}, [pongWebSocketService, isAuth]);
 
   return (
     <>
@@ -27,12 +102,13 @@ const Home: FC = () => {
 		</div>
       ) : (
 		<div className=" grid grid-cols-3 gap-28">
+			{gameInvitationSent && receiver && (<WaitingInvite onClose={handleCloseInvitationSent} receiver={receiver} />)}
+			{gameInvitationReceived && sender && (<GameInvitation onClose={handleCloseInvitationReceived} sender={sender}/>)}
+			{showWaitingGame && (<WaitingGame onClose={handleCloseWaitingGame} />)}
 			<div className="col-start-2 justify-self-center grid grid-rows-4 gap-10">
 			<div/>
 			<div className="row-span-1">
-				<Link to="/game">
-					<button className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-gray-200 text-4xl font-bold rounded-lg transition-colors duration-300">PLAY</button>
-				</Link>
+					<button onClick={handleOpenWaitingGame} className="w-64 h-32 bg-gray-500 hover:bg-gray-600 text-gray-200 text-4xl font-bold rounded-lg transition-colors duration-300">PLAY</button>
 			</div>
 			 <div className="row-span-1">
 				<Link to="/chat">

@@ -12,11 +12,17 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Player } from './entities/player';
 import { GameSettingsData, GameState, Room } from './entities/room';
+import { GatewaySessionManager } from './gateway.session';
+import { IUserSocket } from 'src/types/types';
 
   @WebSocketGateway({ namespace: '/pong', cors: { origin: '*' } })
   export class PongGateway implements OnGatewayConnection, OnGatewayDisconnect {
 	@WebSocketServer()
 	server: Server;
+
+	constructor(
+		private readonly gatewaySessionManager: GatewaySessionManager,
+	) {}
 
 	private pongRooms: Map<string, Room> = new Map();
 	// Liste d'attente des joueurs en attente de match
@@ -26,48 +32,95 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 	handleConnection(client: Socket) {
 		// console.log(`Client connected: ${client.id}`);
 		// const username = Cookies.get('username');
-		let username = client.handshake.query.username.toString();
-		const player = new Player(client.id, username);
-		this.onlinePlayers.push(player);
+		try
+		{
+			// let alreadyConnectedUser: IUserSocket;
+
+			// if ((alreadyConnectedUser = this.gatewaySessionManager.getSocket(client.handshake.query.username.toString())))
+			// 	throw "Client already connected.";
+			this.gatewaySessionManager.setSocket(
+				client.handshake.query.username.toString(),
+				client
+			  );
+			let username = client.handshake.query.username.toString();
+			const user = new Player(client.id, username);
+			this.onlinePlayers.push(user);
+		}
+		catch (error) {
+			console.error(error);
+			client.emit('matchmakingError', {
+			  message: 'Une erreur s\'est produite lors de la mise en correspondance.',
+			});
+		}
 	}
 
 	handleDisconnect(client: Socket) {
-		// console.log(`Client disconnected: ${client.id}`);
-		let index = this.onlinePlayers.findIndex((player) => player.id === client.id);
+		// // console.log(`Client disconnected: ${client.id}`);
+		// const index = this.onlinePlayers.findIndex((player) => player.id === client.id);
+		// if (index !== -1) {
+		//   this.onlinePlayers.splice(index, 1);
+		// }
+		const index = this.onlinePlayers.findIndex((player) => player.id === client.id);
 		if (index !== -1) {
 		  this.onlinePlayers.splice(index, 1);
 		}
+		this.leavePong(client);
+	}
+
+	private leavePong(client: Socket)
+	{
+
 		// Retirer le client de la file d'attente s'il y est
-		index = this.waitingPlayers.findIndex((player) => player.id === client.id);
-		if (index !== -1) {
-			this.waitingPlayers.splice(index, 1);
-			// console.log(`Player ${client.id} removed from the waiting queue.`);
-		}
-		else {
-			// Parcourir toutes les salles pour vérifier si le client était présent
-			this.pongRooms.forEach((room) => {
+		this.leaveWaitingQueue(client);
+
+		// Parcourir toutes les salles pour vérifier si le client était présent
+		this.pongRooms.forEach((room) => {
 			if (room.getPlayerById(client.id)) {
-				this.leavePongRoom(client, room.id);
+				this.leaveRoom(client, room.id);
 			}
 		});
+
+	}
+
+	private leaveWaitingQueue(client: Socket) {
+		const player = this.waitingPlayers.find((player) => player.id === client.id);
+
+		if (player)
+		{
+			const index = this.waitingPlayers.indexOf(player);
+			if (index !== -1) {
+				// Retirez le joueur de la file d'attente
+				this.waitingPlayers.splice(index, 1);
+			}
 		}
 	}
 
-	private leavePongRoom(client: Socket, roomId: string): void {
+	@SubscribeMessage('leavePong')
+	async handleLeavePong(
+		@ConnectedSocket() client: Socket
+		) {
+			this.leavePong(client);
+	  }
+
+	private leaveRoom(client: Socket, roomId: string): void {
 		const room = this.pongRooms.get(roomId);
 
 		if (room) {
-			//Retirer le client de la salle
 
 			if (room.gameState == GameState.Playing || room.gameState == GameState.Starting)
 			{
-				if (room.player1)
-					this.server.to(room.player1.id).emit('OpponentDisconnected', {});
-				if (room.player2)
+				console.log("opponent disconnected : ", room.id);
+				if (room.player1.id == client.id)
+				{
 					this.server.to(room.player2.id).emit('OpponentDisconnected', {});
+				}
+				else if (room.player2.id == client.id)
+				{
+					this.server.to(room.player1.id).emit('OpponentDisconnected', {});
+				}
 				room.setGameState(GameState.Stopped);
 			}
-
+			room.removePlayers();
 			this.pongRooms.delete(roomId);
 			console.log(`Room ${roomId} has been deleted.`);
 		}
@@ -97,56 +150,52 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 		try {
 			let player = this.waitingPlayers.find((player) => player.id === client.id);
 
-			if (!player) {
+			// if (player)
+			// {
+			// 	const test = this.onlinePlayers.find((player) => player.id === client.id);
+			// 	if (player.username == test.username)
+			// 		throw ("You can't play against yourself.");
+			// }
 
+			if (!player) {
 				// Ajouter le joueur à la file d'attente
 				player = this.onlinePlayers.find((player) => player.id === client.id);
 
 				if (player)
+				{
 					this.waitingPlayers.push(player);
+				}
 				// Vérifier si suffisamment de joueurs sont en attente pour former un match
 				if (this.waitingPlayers.length >= 2) {
 					// Retirer les deux premiers joueurs de la file d'attente
 					const player1 = this.waitingPlayers.shift();
 					const player2 = this.waitingPlayers.shift();
 
+					if (player1.username == player2.username)
+					{
+						this.waitingPlayers.push(player1);
+						this.waitingPlayers.push(player2);
+						throw ("You can't play against yourself.");
+					}
 					// Créer une nouvelle salle pour les deux joueurs
 					const newRoomId = this.createPongRoom(player1, player2);
 
-					this.server.to(player1.id).emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player2.username });
-					this.server.to(player2.id).emit('matchmakingSuccess', { roomId: newRoomId, opponentUsername: player1.username });
+					this.server.to(player1.id).emit('matchmakingSuccess', { roomId: newRoomId });
+					this.server.to(player2.id).emit('matchmakingSuccess', { roomId: newRoomId });
 				}
 			}
 		}
 		catch (error) {
-			console.error(error);
+			// console.error(error);
 			client.emit('matchmakingError', {
-			  message: 'Une erreur s\'est produite lors de la mise en correspondance.',
+			  error: error
 			});
 		  }
 	  }
 
 	@SubscribeMessage('removeFromQueue')
 	async handleRemoveFromQueue(@ConnectedSocket() client: Socket) {
-		try {
-			// Vérifiez d'abord si le joueur est dans la file d'attente
-			const player = this.waitingPlayers.find((player) => player.id === client.id);
-
-			if (player)
-			{
-				const index = this.waitingPlayers.indexOf(player);
-				if (index !== -1) {
-					// Retirez le joueur de la file d'attente
-					this.waitingPlayers.splice(index, 1);
-				}
-			}
-		}
-		catch (error) {
-			console.error(error);
-			client.emit('removeFromQueueError', {
-				message: 'Une erreur s\'est produite lors du retrait de la file d\'attente.',
-			});
-		}
+		this.leaveWaitingQueue(client);
 	}
 
 	@SubscribeMessage('chooseGameSettings')
@@ -190,8 +239,8 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 					const player2PaddleColor = room.player2.gameSettings.userPaddlecolor;
 
 					// Envoyez les paramètres générés à tous les joueurs de la salle
-					this.server.to(room.player1.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
-					this.server.to(room.player2.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor});
+					this.server.to(room.player1.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor, player1: room.player1.username, player2: room.player2.username});
+					this.server.to(room.player2.id).emit('settingsSuccess', {radius: room.ball.radius, player1PaddleColor: player1PaddleColor, player2PaddleColor: player2PaddleColor, player1: room.player1.username, player2: room.player2.username});
 				}
 			}
 		}
@@ -361,15 +410,100 @@ import { GameSettingsData, GameState, Room } from './entities/room';
 
 			if (room.counter == 2) {
 			  room.setGameState(GameState.Playing);
-			  this.server.to(room.player1.id).emit('matchStarted', {player1Username: room.player1.username, player2Username: room.player2.username});
-			  this.server.to(room.player2.id).emit('matchStarted', {player1Username: room.player1.username, player2Username: room.player2.username});
+			  this.server.to(room.player1.id).emit('matchStarted', {});
+			  this.server.to(room.player2.id).emit('matchStarted', {});
 			  this.startGame(room);
 			}
 		  }
 		}
 
+
+		@SubscribeMessage("sendGameInvitation")
+		async handleSendGameInvitation(
+		  @ConnectedSocket() client: Socket,
+		  @MessageBody('data')  data: {sender: string, receiver: string}
+		  ) {
+		  try {
+			// const receiver = this.gatewaySessionManager.getSocket(data.receiver);
+
+			let receiver: Player;
+
+			this.onlinePlayers.forEach( (player) => {
+				if (player.username == data.receiver)
+					receiver = player;
+			});
+
+			this.server.to(receiver.id).emit('GameInvitationReceived', {sender: data.sender})
+			client.emit('GameInvitationSent', {receiver: receiver.username});
+
+		  } catch (error) {
+			console.log("error sending game invitation");
+		  }
+		}
+
+		@SubscribeMessage("validRoom")
+		async handleValidRoom(
+		  @ConnectedSocket() client: Socket,
+		  @MessageBody('data')  data: {roomId: string}
+		  ) {
+		  try {
+				const room = this.pongRooms.get(data.roomId);
+
+				if (!room)
+					throw ("This game room doesn't exist.");
+				if (room && !room.getPlayerById(client.id))
+						throw ("You're not allowed in this room.");
+		  } catch (error) {
+			client.emit('RoomError', {error: error});
+		  }
+		}
+
+		@SubscribeMessage('cancelInvitation')
+		async handleCancelInvitation(
+			@ConnectedSocket() client: Socket,
+			@MessageBody('data')  data: {player: string}
+			) {
+
+				console.log("CANCEL");
+				const player = this.onlinePlayers.find((player) => player.username === data.player);
+
+				if (player)
+					this.server.to(player.id).emit('invitationCanceled', {username: player.username});
+			}
+
+		@SubscribeMessage('inviteMatchmaking')
+		async handleInviteMatchmaking(
+			@ConnectedSocket() client: Socket,
+			@MessageBody('data')  data: {sender: string}
+			) {
+			try {
+				const player1 = this.onlinePlayers.find((player) => player.id === client.id);
+				const player2 = this.onlinePlayers.find((player) => player.username === data.sender);
+
+				if (player1 && player2) {
+					const newRoomId = this.createPongRoom(player1, player2);
+
+					if (newRoomId)
+					{
+						this.server.to(player1.id).emit('inviteMatchmakingSuccess', { roomId: newRoomId });
+						this.server.to(player2.id).emit('inviteMatchmakingSuccess', { roomId: newRoomId });
+					}
+				}
+			}
+			catch (error) {
+				// console.error(error);
+				client.emit('matchmakingError', {
+				  error: error
+				});
+			  }
+		  }
+
 	@SubscribeMessage('testLog')
-	async handleTestLog(@ConnectedSocket() client: Socket, @MessageBody('message') message: string) {
-		// console.log("log : ", message);
+	async handleTestLog(
+	@ConnectedSocket() client: Socket,
+	@MessageBody('message') message: string
+	) {
+		console.log("log : ", message);
 	}
+
 }

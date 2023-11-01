@@ -129,19 +129,17 @@ const ManagePswdModal: React.FC<ModalProp> = ({ onClose, channel }) => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className="flex justify-between">
-          <button
-            onClick={handleCancel}
-            className="bg-red-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
-          >
-            Cancel
-          </button>
-          <form onSubmit={handleSubmit}>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg ml-auto hover:bg-red-600 focus:outline-none focus:ring focus:ring-green-300">
-              Ok
-            </button>
-          </form>
-        </div>
+		<div className="flex justify-between">
+			<button
+				onClick={handleCancel}
+				 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300"
+			>Cancel</button>
+			<form onSubmit={handleSubmit}>
+				<button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300">
+				Ok
+				</button>
+			</form>
+		</div>
       </div>
     </div>
   );

@@ -132,7 +132,7 @@ export interface IResponseGetChannels {
 
 export interface IMessage {
   channelId: number,
-  username: string,
+  user: IResponseUser,
   content: string,
 }
 

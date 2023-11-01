@@ -12,6 +12,7 @@ export class Player {
 	  this.username = username;
 	  this.score = 0;
 	  this.gameSettings = new GameSettingsData(id, 0, 0, "", "");
+	  this.paddleColor = "";
 	}
 
 	setPaddleColor(color: string) { this.paddleColor = color; }
@@ -24,6 +25,14 @@ export class Player {
 
 	setUsername(username: string) {
 		this.username = username;
+	}
+
+	resetPlayer() {
+		this.id = "";
+		this.username = "";
+		this.score = 0;
+		this.gameSettings = new GameSettingsData("", 0, 0, "", "");
+		this.paddleColor = "";
 	}
 
 	setId(id: string) {

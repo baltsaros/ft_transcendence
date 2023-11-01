@@ -38,7 +38,8 @@ export class ChannelController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getChannel() {
-    return await this.ChannelService.findAll();
+    const channelData = await this.ChannelService.findAll();
+    return channelData;
   }
 
   @Get("getPass/:channelId")

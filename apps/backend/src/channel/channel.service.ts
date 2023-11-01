@@ -123,7 +123,7 @@ export class ChannelService {
   }
 
     async findAll() {
-      const channel = await this.channelRepository.find(
+      const channel: Channel[] = await this.channelRepository.find(
           {
             order: {
               messages: {
@@ -133,7 +133,9 @@ export class ChannelService {
               relations: {
                   users: true,
                   owner: true,
-                  messages: true,
+                  messages: { 
+                    user: true,
+                  },
                   banned: true,
               }
           }

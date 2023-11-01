@@ -18,7 +18,7 @@ export class MessageService {
     ) {}
 
     async createMessage(messageData: newMessageDto) {
-        const user = await this.userService.findOne(messageData.username);
+        const user = await this.userService.findOne(messageData.user.username);
         const channel = await this.channelService.findOne(messageData.channelId);
         const newMessage = this.messageRepository.create(
             {
@@ -29,7 +29,7 @@ export class MessageService {
             await this.messageRepository.save(newMessage);
             const payload = {
                 channelId: channel.id,
-                username: user.username,
+                user: user,
                 content: messageData.content,
             }
             this.eventEmmiter.emit('messageCreated', payload);
