@@ -85,7 +85,10 @@ const PongLauncher = ({ onClose, roomId, radius, player1PaddleColor, player2Padd
 					kFactor = 60;
 			}
 
-			player.rank += scoreDifference * kFactor;
+			if (player.rank + scoreDifference * kFactor < 0)
+				player.rank = 0;
+			else
+				player.rank += scoreDifference * kFactor;
 			PlayerService.updateElo(player);
 		}
 	};
