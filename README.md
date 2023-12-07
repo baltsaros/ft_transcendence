@@ -73,6 +73,7 @@ Profile page:
 ![profile edit](https://github.com/baltsaros/ft_transcendence/blob/main/pics/profile.png)
 
 Drop down menus:
+
 ![Drop down menu 1](https://github.com/baltsaros/ft_transcendence/blob/main/pics/DDmenu1.png)
 ![Drop down menu 2](https://github.com/baltsaros/ft_transcendence/blob/main/pics/DDmenu2.png)
 
