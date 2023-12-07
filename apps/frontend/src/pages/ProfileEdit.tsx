@@ -98,6 +98,16 @@ const ProfileEdit: FC = () => {
 				 Edit Profile Settings
 			</h2>
 			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
+				<h3 className="font-semibold">Enter a new username :</h3>
+				<form className="">
+					<input
+						type="text"
+						className="input text-gray-600 bg-gray-400 border border-gray-500 rounded p-2 focus:outline-none focus:border-gray-500"
+						onChange={(e) => setUsername(e.target.value)}
+					/>
+				</form>
+			</div>
+			<div className="bg-gray-300 flex justify-start p-4 space-x-4 items-center">
 				<h3 className="font-semibold">Two-factor Authentication :</h3>
 				<form className="">
 					<input
