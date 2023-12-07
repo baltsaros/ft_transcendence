@@ -55,7 +55,7 @@ import { IUserSocket } from 'src/types/types';
 	}
 
 	handleDisconnect(client: Socket) {
-		// // console.log(`Client disconnected: ${client.id}`);
+		// console.log(`Client disconnected: ${client.id}`);
 		// const index = this.onlinePlayers.findIndex((player) => player.id === client.id);
 		// if (index !== -1) {
 		//   this.onlinePlayers.splice(index, 1);
@@ -109,7 +109,7 @@ import { IUserSocket } from 'src/types/types';
 
 			if (room.gameState == GameState.Playing || room.gameState == GameState.Starting)
 			{
-				console.log("opponent disconnected : ", room.id);
+				// console.log("opponent disconnected : ", room.id);
 				if (room.player1.id == client.id)
 				{
 					this.server.to(room.player2.id).emit('OpponentDisconnected', {});
@@ -122,7 +122,7 @@ import { IUserSocket } from 'src/types/types';
 			}
 			room.removePlayers();
 			this.pongRooms.delete(roomId);
-			console.log(`Room ${roomId} has been deleted.`);
+			// console.log(`Room ${roomId} has been deleted.`);
 		}
 	}
 
@@ -139,7 +139,7 @@ import { IUserSocket } from 'src/types/types';
 		room = new Room(roomId, player1, player2);
 
 		this.pongRooms.set(roomId, room);
-		console.log(`Pong room '${roomId}' created with ${player1.username} & ${player2.username} `);
+		// console.log(`Pong room '${roomId}' created with ${player1.username} & ${player2.username} `);
 		return roomId;
 	}
 
@@ -329,23 +329,19 @@ import { IUserSocket } from 'src/types/types';
 				if (room.ball.y + room.ball.radius > room.fieldHeight || room.ball.y - room.ball.radius < 0)
 					room.ball.setSpeedY(-room.ball.speedY);
 
-				// Vérifiez les collisions avec les paddles
-				if (
-					room.ball.x - room.ball.radius < room.leftPaddle.width + 10 &&	// Prend en compte le décalage des raquettes
-					room.ball.y + room.ball.radius > room.leftPaddle.y &&
-					room.ball.y - room.ball.radius < room.leftPaddle.y + room.leftPaddle.height
-				)
-				{
-					// Collision avec la raquette gauche, inversez la direction horizontale
-					room.ball.setSpeedX(-room.ball.speedX);
-				}
 
-				if (
-					room.ball.x + room.ball.radius > room.fieldWidth - room.leftPaddle.width - 10 &&	// Prend en compte le décalage des raquettes
+				// Vérifiez les collisions avec les paddles
+				if (room.ball.x - room.ball.radius < room.leftPaddle.width + 10 &&
+					room.ball.y + room.ball.radius > room.leftPaddle.y &&
+					room.ball.y - room.ball.radius < room.leftPaddle.y + room.leftPaddle.height) {
+    				// Collision avec le bord droit de la raquette gauche, inversez la direction horizontale
+					if (room.ball.speedX <= 0)
+	    				room.ball.setSpeedX(-room.ball.speedX);
+				}
+				if (room.ball.x + room.ball.radius > room.fieldWidth - room.leftPaddle.width - 10 &&
 					room.ball.y + room.ball.radius > room.rightPaddle.y &&
-					room.ball.y - room.ball.radius < room.rightPaddle.y + room.leftPaddle.height
-				) {
-					// Collision avec la raquette droite, inversez la direction horizontale
+					room.ball.y - room.ball.radius < room.rightPaddle.y + room.leftPaddle.height) {
+					if (room.ball.speedX >= 0)
 					room.ball.setSpeedX(-room.ball.speedX);
 				}
 
@@ -437,7 +433,7 @@ import { IUserSocket } from 'src/types/types';
 			client.emit('GameInvitationSent', {receiver: receiver.username});
 
 		  } catch (error) {
-			console.log("error sending game invitation");
+			// console.log("error sending game invitation");
 		  }
 		}
 
@@ -464,7 +460,6 @@ import { IUserSocket } from 'src/types/types';
 			@MessageBody('data')  data: {player: string}
 			) {
 
-				console.log("CANCEL");
 				const player = this.onlinePlayers.find((player) => player.username === data.player);
 
 				if (player)
@@ -503,7 +498,7 @@ import { IUserSocket } from 'src/types/types';
 	@ConnectedSocket() client: Socket,
 	@MessageBody('message') message: string
 	) {
-		console.log("log : ", message);
+		// console.log("log : ", message);
 	}
 
 }

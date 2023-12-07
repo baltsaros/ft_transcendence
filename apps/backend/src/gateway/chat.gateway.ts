@@ -271,4 +271,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log("error joining channel");
     }
   }
+
+  @OnEvent("uploadUsername")
+  async onUpdateUser(payload: any) {
+    this.server.emit("usernameUpdatedChannel", payload);
+    this.server.emit("usernameUpdatedProfile", payload);
+    this.server.emit("usernameUpdatedHome", payload);
+  }
 }

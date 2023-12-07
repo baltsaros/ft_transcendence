@@ -24,7 +24,7 @@
     @apply bg-transparent p-2 border bg-cyan-700 placeholder:text-black border-gray-800 rounded-none outline-none focus:border-gray-300;
   }
   .container {
-    @apply max-w-[1000px];
+    /* @apply max-w-[1500px]; */
   }
 }
 

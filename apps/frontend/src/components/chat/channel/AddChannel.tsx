@@ -53,10 +53,10 @@ function AddChannel() {
   return (
     <div>
       <button
-        className="bg-gray-500 hover:bg-gray-600 text-gray p-3 rounded-lg"
+        className="bg-green-500 hover:bg-green-600 text-gray p-3 rounded-lg"
         onClick={handleOpenModal}
       >
-        Add channel
+        Add a new channel
       </button>
       {modalView && <AddChannelModal onClose={handleCloseModal} />}
     </div>

@@ -46,7 +46,6 @@ export const PlayerService = {
   async acceptInvitation(invitation: IUserRelation)
   {
     const { data } = await instance.post("user/acceptInvitation", invitation);
-    console.log("data =", data);
     return data;
   },
 

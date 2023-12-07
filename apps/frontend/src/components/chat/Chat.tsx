@@ -30,6 +30,7 @@ function Chat() {
       (channel) => channel.id === selectedChannelContext.selectedChannel?.id
     );
     messages = channelSelected!.messages;
+    console.log('blocked', blocked.users);
   }
   const scrolledElementRef = useRef<HTMLDivElement | null>(null);
 
@@ -73,62 +74,42 @@ useEffect(() => {
 
     /* RENDER */
     return (
-        <div className="flex items-stretch justify-center h-screen bg-gray-100 w-full">
-          <div className="flex flex-grow w-full">
-            <div className="flex flex-col flex-1 p-4 border bg-gray-100 m-2">
-                <div className="flex-shrink-0 p-4 border bg-gray-100 m-2">
-                {
-                    selectedChannelContext.selectedChannel &&
-                    <h1 className="text-lg font-bold mb-2 text-gray-600">{selectedChannelContext.selectedChannel.name}</h1>
-                }
-                {
-                    !selectedChannelContext.selectedChannel &&
-                    <h1 className="text-lg font-bold mb-2 text-gray-600">Chat</h1>
-                }
-                </div>
-                <div className="text-lg font-bold mb-2 text-gray-600 overflow-y-scroll h-600"
-                  ref={scrolledElementRef}>
-                    {
-                        selectedChannelContext.selectedChannel &&
-                        messages!.map((idx, index) => (
-                            !blocked.users.some((elem) => elem.username === idx.user!.username) &&
-                            <div
-                            key={index}
-                            className=" self-end p-2 rounded-lg mb-2"
-                            >
-                              <div className="text-sm">
-                                {idx.user?.username}
-                              </div>
-                              <div className="grid grid-cols-3 gap-4">
-                                    {idx.user?.username === userLogged.username &&
-                                    <div
-                                    key={index}
-                                    className="col-start-2 col-end-4 bg-blue-200 p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto" >
-                                    {idx.content}
-                                    </div>
-                                    }
-                                    {idx.user?.username !== userLogged.username &&
-                                    <div
-                                    key={index}
-                                    className="col-start-1 col-end-3 bg-white p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto" >
-                                    {idx.content}
-                                    </div>
-                                    }
-                                  </div>
-                              {/*<div className="bg-white p-2 rounded-lg shadow-md auto-rows-max w-64 overflow-y-auto" >
-                                {idx.content}
-                              </div>*/}
-                            </div>
-                        ))}
-                    {!selectedChannelContext.selectedChannel && <h2>Select a channel</h2>}
-          </div>
-          <div className="mt-auto">
-            {selectedChannelContext.selectedChannel && <ChatBar/>}
-            {/* {selectedChannelContext.selectedChannel && <ChatBar selectedChannel={selectedChannel} />} */}
-          </div>
-        </div>
-      </div>
-    </div>
+
+		<div className="flex flex-col flex-1 p-4 border rounded-lg bg-white m-6  h-[80vh] ">
+		<div className="p-4 bg-gray-200 rounded-t-lg">
+		  <h1 className="text-2xl font-semibold mb-2 text-gray-800">
+			{selectedChannelContext.selectedChannel ? selectedChannelContext.selectedChannel.name : "Chat"}
+		  </h1>
+		</div>
+		<div className="text-lg font-bold mb-2 text-gray-600 overflow-y-scroll" ref={scrolledElementRef}>
+		  {selectedChannelContext.selectedChannel && messages!.map((idx, index) => (
+			!blocked.users.some((elem) => elem.username === idx.user!.username) && (
+			  <div key={index} className="self-end p-2 rounded-lg mb-2">
+				<div className="text-sm">
+				  {idx.user?.username}
+				</div>
+				<div className="grid grid-cols-3 gap-4">
+				  {idx.user?.username === userLogged.username && (
+					<div key={index} className="col-start-2 col-end-4 bg-blue-200 p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto">
+					  {idx.content}
+					</div>
+				  )}
+				  {idx.user?.username !== userLogged.username && (
+					<div key={index} className="col-start-1 col-end-3 bg-gray-100 p-2 rounded-lg shadow-md auto-rows-max overflow-y-auto">
+					  {idx.content}
+					</div>
+				  )}
+				</div>
+			  </div>
+			)
+		  ))}
+		</div>
+		  {!selectedChannelContext.selectedChannel && <h2 className="text-2xl font-semibold mt-10 mb-2 text-gray-800">Select a channel</h2>}
+		<div className="mt-auto rounded-lg">
+		  {selectedChannelContext.selectedChannel && <ChatBar />}
+		</div>
+	  </div>
+
   );
 };
 
