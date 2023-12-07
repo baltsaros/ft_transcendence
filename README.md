@@ -63,3 +63,12 @@
 * *index.css* - file where many tailwind parameters are defined
 
 ## Screenshots
+![42 authentication](https://github.com/baltsaros/ft_transcendence/blob/main/pics/auth.png)
+![home page](https://github.com/baltsaros/ft_transcendence/blob/main/pics/home.png)
+![profile edit](https://github.com/baltsaros/ft_transcendence/blob/main/pics/profile.png)
+![Drop down menu 1](https://github.com/baltsaros/ft_transcendence/blob/main/pics/DDmenu1.png)
+![Drop down menu 2](https://github.com/baltsaros/ft_transcendence/blob/main/pics/DDmenu2.png)
+![Chat](https://github.com/baltsaros/ft_transcendence/blob/main/pics/chat.png)
+![Game customization](https://github.com/baltsaros/ft_transcendence/blob/main/pics/gameCustomization.png)
+![Game](https://github.com/baltsaros/ft_transcendence/blob/main/pics/game.png)
+![Match history](https://github.com/baltsaros/ft_transcendence/blob/main/pics/result.png)
