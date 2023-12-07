@@ -13,11 +13,11 @@
 * For two-factor authentication it is required to have Google authenticator to scan a QR-code
 
 ## The team
-* Jérémy Vander Motte (42: [jvander-](https://profile.intra.42.fr/users/jvander-)/git: [JeremyVanderMotte](https://github.com/JeremyVanderMotte))
-* Hadrien Dony (42: [hdony](https://profile.intra.42.fr/users/hdony)/git: [hdony640](https://github.com/hdony640))
-* Aleksandr Buzdin (42: [abuzdin](https://profile.intra.42.fr/users/abuzdin)/git: [baltsaros](https://github.com/baltsaros))
-* Arthur Demurger (42: [ademurge](https://profile.intra.42.fr/users/ademurge)/git: [ademurge](https://github.com/arthurdemurger))
-* Elsa Joo Thomson (42: [ejoo-tho](https://profile.intra.42.fr/users/ejoo-tho)/git: [ejt22](https://github.com/ejt22))
+* Jérémy Vander Motte (42: [jvander-](https://profile.intra.42.fr/users/jvander-) / git: [JeremyVanderMotte](https://github.com/JeremyVanderMotte))
+* Hadrien Dony (42: [hdony](https://profile.intra.42.fr/users/hdony) / git: [hdony640](https://github.com/hdony640))
+* Aleksandr Buzdin (42: [abuzdin](https://profile.intra.42.fr/users/abuzdin) / git: [baltsaros](https://github.com/baltsaros))
+* Arthur Demurger (42: [ademurge](https://profile.intra.42.fr/users/ademurge) / git: [ademurge](https://github.com/arthurdemurger))
+* Elsa Joo Thomson (42: [ejoo-tho](https://profile.intra.42.fr/users/ejoo-tho) / git: [ejt22](https://github.com/ejt22))
 
 
 ## Makefile rules
